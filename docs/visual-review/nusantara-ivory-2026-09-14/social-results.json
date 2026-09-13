@@ -1,0 +1,31 @@
+[
+  {
+    "width": 320,
+    "instagram": true,
+    "longRecipient": true,
+    "noOverflow": true
+  },
+  {
+    "width": 390,
+    "instagram": true,
+    "longRecipient": true,
+    "noOverflow": true
+  },
+  {
+    "width": 768,
+    "instagram": true,
+    "longRecipient": true,
+    "noOverflow": true
+  },
+  {
+    "width": 1440,
+    "instagram": true,
+    "longRecipient": true,
+    "noOverflow": true
+  },
+  {
+    "emptyLinksHidden": true,
+    "genericRecipient": true,
+    "shortScreenKeyboard": true
+  }
+]

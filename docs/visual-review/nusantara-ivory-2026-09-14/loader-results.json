@@ -1,0 +1,13 @@
+{
+  "method": "Actual loader source executed with mocked Supabase reads and normalized data; no database writes.",
+  "results": [
+    "missing: PASS",
+    "draft: PASS",
+    "archived: PASS",
+    "expired status: PASS",
+    "expired date: PASS",
+    "published: PASS",
+    "valid guest: PASS",
+    "invalid guest: PASS"
+  ]
+}

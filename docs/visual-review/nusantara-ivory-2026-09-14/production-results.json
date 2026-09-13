@@ -1,0 +1,37 @@
+[
+  {
+    "width": 320,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "iframes": 0
+  },
+  {
+    "width": 375,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "iframes": 0
+  },
+  {
+    "width": 390,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "iframes": 0
+  },
+  {
+    "width": 768,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "iframes": 0
+  },
+  {
+    "width": 1440,
+    "status": 200,
+    "overflow": false,
+    "errors": [],
+    "iframes": 0
+  }
+]

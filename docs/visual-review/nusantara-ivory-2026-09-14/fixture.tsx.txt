@@ -1,0 +1,29 @@
+import { notFound } from "next/navigation";
+import { NusantaraIvory } from "@/themes/nusantara-ivory/NusantaraIvory";
+import { NusantaraIvory as Baseline } from "./baseline/NusantaraIvory";
+import type { PublicInvitation, Guest } from "@/types/invitation";
+
+export default async function Review({ searchParams }: { searchParams: Promise<Record<string,string>> }) {
+  if (process.env.NODE_ENV !== "development") notFound();
+  const q = await searchParams;
+  const long = 'Nama Pengujian Sangat Panjang untuk Memastikan Tampilan Tetap Terbaca dengan Baik';
+  // Synthetic QA data only; never persisted or used as customer content.
+  const photo = '/ni-qa-photo.svg';
+  const invitation: PublicInvitation = {
+    id:'00000000-0000-0000-0000-000000000000', type:'wedding',slug:'ni-visual-review',title:'Undangan QA',status:'published',eventDate:'2026-10-20',venueSummary:'Tempat Pengujian',publishedAt:'2026-09-01',expiresAt:null,
+    theme:{slug:'nusantara-ivory',settings:{}},
+    people:[0,1].map(i=>({id:`person-${i}`,role:i?'groom':'bride',fullName:q.long?long:`Mempelai Uji ${i+1}`,nickname:null,fatherName:q.long?long:null,motherName:q.long?long:null,photoUrl:q.minimal?null:photo,bio:null,sortOrder:i})),
+    events:q.minimal?[]:[0,1].map(i=>({id:`event-${i}`,eventType:i?'reception':'akad',title:i?'Resepsi Pengujian':'Akad Pengujian',eventDate:'2026-10-20',startTime:q.nulls?null:'09:00:00',endTime:null,venueName:q.long?long:'Tempat Pengujian',address:q.nulls?null:'Alamat khusus pengujian layout, bukan alamat acara.',mapsUrl:'https://maps.google.com',livestreamUrl:'https://example.com',sortOrder:i})),
+    stories:q.minimal?[]:[0,1,2].map(i=>({id:`story-${i}`,title:`Cerita Pengujian ${i+1}`,storyDate:null,yearLabel:`${2020+i*2}`,description:q.long?long.repeat(4):'Narasi sintetis untuk memeriksa ritme layout.',imageUrl:q.nulls?null:photo,sortOrder:i})),
+    gallery:q.minimal?[]:Array.from({length:Number(q.count??8)},(_,i)=>({id:`photo-${i}`,imageUrl:q.broken?'/missing-qa-photo.jpg':photo,caption:`Komposisi pengujian ${i+1}`,altText:'Gambar geometris untuk pengujian layout, bukan foto pasangan',sortOrder:i})),
+    gifts:q.minimal?[]:[{id:'gift',providerType:'bank',providerName:'Bank Pengujian',accountNumber:'0000000000',accountName:'Data Uji',logoUrl:null,sortOrder:0}],
+    wishes:q.minimal?[]:Array.from({length:7},(_,i)=>({id:`wish-${i}`,guestId:null,guestName:q.long?long:`Tamu Uji ${i+1}`,message:q.long?long.repeat(5):'Ucapan pengujian tampilan.',isVisible:true,createdAt:'2026-09-01'})),
+    content:{openingQuote:'Kutipan pengujian komposisi editorial.',openingMessage:'Pesan pembuka pengujian, bukan konten pelanggan.',closingMessage:'Pesan penutup pengujian.'},
+    features:{music:true,countdown:true,maps:true,story:true,gallery:true,livestream:true,rsvp:true,wishes:true,gift:true,guestPersonalization:true},
+    media:{musicUrl:'/ni-qa-tone.wav',coverImageUrl:q.minimal?null:photo},
+  };
+  if(q.off) for(const key of q.off.split(',')) invitation.features[key as keyof typeof invitation.features]=false;
+  const guest: Guest={id:'guest-qa',displayName:q.long?long:'Tamu Pengujian',token:'qa-not-a-real-token',notes:null};
+  const Theme=q.baseline?Baseline:NusantaraIvory;
+  return <Theme invitation={invitation} guest={q.anonymous?null:guest} />;
+}

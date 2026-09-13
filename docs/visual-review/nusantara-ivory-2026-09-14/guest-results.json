@@ -1,0 +1,6 @@
+{
+  "turnstileSiteConfigured": true,
+  "turnstileSecretConfigured": true,
+  "invalidTokenGreeting": true,
+  "validToken": "NOT TESTED: no existing guest"
+}

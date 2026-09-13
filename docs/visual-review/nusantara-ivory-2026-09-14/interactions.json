@@ -1,0 +1,22 @@
+{
+  "results": [
+    "Cover keyboard opening, focus transfer, guest greeting, one cover action: PASS",
+    "Music starts after opening; pause and resume: PASS (synthetic local WAV)",
+    "RSVP choices, disabled guard, success presentation: PASS (mocked action response)",
+    "Wishes success presentation and pagination: PASS (mocked action response; fixture list)",
+    "Normal-motion scroll reveals all headings; no duplicate actions on scroll: PASS",
+    "countdown OFF: PASS",
+    "story OFF: PASS",
+    "gallery OFF: PASS",
+    "rsvp OFF: PASS",
+    "wishes OFF: PASS",
+    "gift OFF: PASS",
+    "livestream OFF: PASS",
+    "maps OFF: PASS",
+    "music OFF: PASS",
+    "guestPersonalization OFF: PASS",
+    "RSVP real server rejects missing verification: Verifikasi belum selesai, coba lagi",
+    "Wishes real server rejects missing verification: Verifikasi belum selesai, coba lagi"
+  ],
+  "errors": []
+}
