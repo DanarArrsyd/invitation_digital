@@ -36,10 +36,8 @@ export function ConfirmDeleteForm({
         <input key={name} type="hidden" name={name} value={value} />
       ))}
       <AlertDialog>
-        <AlertDialogTrigger>
-          <Button type="button" variant="destructive" size="sm">
-            {triggerLabel}
-          </Button>
+        <AlertDialogTrigger render={<Button type="button" variant="destructive" size="sm" />}>
+          {triggerLabel}
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
