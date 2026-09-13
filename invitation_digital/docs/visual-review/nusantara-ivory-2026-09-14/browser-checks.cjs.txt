@@ -1,0 +1,21 @@
+const {chromium}=require('playwright');const fs=require('fs');
+(async()=>{const b=await chromium.launch({channel:'chrome',headless:true});let results=[];
+for(const width of [320,375,390,768,1440]) {
+ for(const mode of ['pilot','fixture']) {
+ console.log('capture',width,mode);const p=await b.newPage({viewport:{width,height:900},reducedMotion:'reduce'});let errors=[];p.on('pageerror',e=>errors.push(e.message));
+ // Do not add QA cover events to the live invitation's analytics.
+ await p.route('**/*',async route=>route.request().method()==='POST'?route.abort():route.continue());
+ await p.goto('http://localhost:3000/'+(mode==='pilot'?'rayhana-febri':'ni-visual-review'));await p.getByRole('button',{name:'Buka Undangan'}).click();await p.waitForTimeout(500);
+ for(let y=0;y<await p.locator('body').evaluate(e=>e.scrollHeight);y+=700){await p.evaluate(y=>window.scrollTo(0,y),y);await p.waitForTimeout(50);}await p.evaluate(()=>window.scrollTo(0,0));
+ const overflow=await p.evaluate(()=>({document:document.documentElement.scrollWidth,width:innerWidth,bad:[...document.querySelectorAll('h1,h2,h3,p,form,button,input,textarea')].filter(e=>{let r=e.getBoundingClientRect();return r.width&& (r.right>innerWidth+1||r.left<-1)}).map(e=>e.tagName+':'+e.textContent.slice(0,80))}));
+ await p.screenshot({path:`/tmp/ni-redesign/${mode}-after-${width}.png`,fullPage:true});results.push({mode,width,overflow,errors});await p.close();
+ }
+}
+for(const [label,query] of [['long','long=1'],['nulls','nulls=1'],['minimal','minimal=1'],['broken','broken=1&count=3'],['single','count=1'],['few','count=3'],['off','off=music,countdown,maps,story,gallery,livestream,rsvp,wishes,gift,guestPersonalization']]){
+ const p=await b.newPage({viewport:{width:320,height:740},reducedMotion:'reduce'});await p.route('**/*',async r=>r.request().method()==='POST'?r.abort():r.continue());await p.goto('http://localhost:3000/ni-visual-review?'+query);await p.getByRole('button',{name:'Buka Undangan'}).click();
+ for(let y=0;y<await p.locator('body').evaluate(e=>e.scrollHeight);y+=600){await p.evaluate(y=>window.scrollTo(0,y),y);await p.waitForTimeout(80)}
+ const data=await p.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,sections:document.querySelectorAll('section').length,images:document.querySelectorAll('img').length}));results.push({label,...data});await p.screenshot({path:`/tmp/ni-redesign/fixture-${label}-320.png`,fullPage:true});await p.close();
+}
+// Equivalent baseline photography compositions for visual comparison.
+for (const width of [390,768,1440]) {const p=await b.newPage({viewport:{width,height:900},reducedMotion:'reduce'});await p.route('**/*',async r=>r.request().method()==='POST'?r.abort():r.continue());await p.goto('http://localhost:3000/ni-visual-review?baseline=1');await p.getByRole('button',{name:'Buka Undangan'}).click();await p.waitForTimeout(300);await p.screenshot({path:`/tmp/ni-redesign/fixture-before-${width}.png`,fullPage:true});await p.close();}
+fs.writeFileSync('/tmp/ni-redesign/results.json',JSON.stringify(results,null,2));console.log(JSON.stringify(results,null,2));await b.close();})();

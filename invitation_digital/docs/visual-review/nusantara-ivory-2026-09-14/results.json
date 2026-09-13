@@ -1,0 +1,151 @@
+[
+  {
+    "mode": "pilot",
+    "width": 320,
+    "overflow": {
+      "document": 320,
+      "width": 320,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "mode": "fixture",
+    "width": 320,
+    "overflow": {
+      "document": 320,
+      "width": 320,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "mode": "pilot",
+    "width": 375,
+    "overflow": {
+      "document": 375,
+      "width": 375,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "mode": "fixture",
+    "width": 375,
+    "overflow": {
+      "document": 375,
+      "width": 375,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "mode": "pilot",
+    "width": 390,
+    "overflow": {
+      "document": 390,
+      "width": 390,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "mode": "fixture",
+    "width": 390,
+    "overflow": {
+      "document": 390,
+      "width": 390,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "mode": "pilot",
+    "width": 768,
+    "overflow": {
+      "document": 768,
+      "width": 768,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "mode": "fixture",
+    "width": 768,
+    "overflow": {
+      "document": 768,
+      "width": 768,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "mode": "pilot",
+    "width": 1440,
+    "overflow": {
+      "document": 1440,
+      "width": 1440,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "mode": "fixture",
+    "width": 1440,
+    "overflow": {
+      "document": 1440,
+      "width": 1440,
+      "bad": []
+    },
+    "errors": []
+  },
+  {
+    "label": "long",
+    "width": 320,
+    "scrollWidth": 320,
+    "sections": 12,
+    "images": 15
+  },
+  {
+    "label": "nulls",
+    "width": 320,
+    "scrollWidth": 320,
+    "sections": 12,
+    "images": 12
+  },
+  {
+    "label": "minimal",
+    "width": 320,
+    "scrollWidth": 320,
+    "sections": 8,
+    "images": 0
+  },
+  {
+    "label": "broken",
+    "width": 320,
+    "scrollWidth": 320,
+    "sections": 12,
+    "images": 6
+  },
+  {
+    "label": "single",
+    "width": 320,
+    "scrollWidth": 320,
+    "sections": 12,
+    "images": 8
+  },
+  {
+    "label": "few",
+    "width": 320,
+    "scrollWidth": 320,
+    "sections": 12,
+    "images": 10
+  },
+  {
+    "label": "off",
+    "width": 320,
+    "scrollWidth": 320,
+    "sections": 5,
+    "images": 4
+  }
+]
