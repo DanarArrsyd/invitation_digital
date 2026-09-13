@@ -27,7 +27,7 @@ export async function uploadGalleryItemAction(formData: FormData) {
   }
 
   await revalidateInvitation(invitationId);
-  redirect(path(invitationId));
+  redirect(path(invitationId, `ok=${encodeURIComponent("Foto diunggah")}`));
 }
 
 export async function updateGalleryItemAction(formData: FormData) {
@@ -49,7 +49,7 @@ export async function updateGalleryItemAction(formData: FormData) {
   }
 
   await revalidateInvitation(invitationId);
-  redirect(path(invitationId));
+  redirect(path(invitationId, `ok=${encodeURIComponent("Perubahan disimpan")}`));
 }
 
 export async function deleteGalleryItemAction(formData: FormData) {
@@ -64,5 +64,5 @@ export async function deleteGalleryItemAction(formData: FormData) {
   }
 
   await revalidateInvitation(invitationId);
-  redirect(path(invitationId));
+  redirect(path(invitationId, `ok=${encodeURIComponent("Foto dihapus")}`));
 }

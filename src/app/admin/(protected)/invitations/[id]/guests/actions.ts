@@ -32,7 +32,7 @@ export async function createGuestAction(formData: FormData) {
     redirect(path(invitationId, `error=${encodeURIComponent(result.error)}`));
   }
 
-  redirect(path(invitationId));
+  redirect(path(invitationId, `ok=${encodeURIComponent("Tamu ditambahkan")}`));
 }
 
 export async function deleteGuestAction(formData: FormData) {
@@ -46,5 +46,5 @@ export async function deleteGuestAction(formData: FormData) {
   if (!parsed.success) redirect(path(invitationId));
 
   await deleteGuest(parsed.data.id);
-  redirect(path(invitationId));
+  redirect(path(invitationId, `ok=${encodeURIComponent("Tamu dihapus")}`));
 }

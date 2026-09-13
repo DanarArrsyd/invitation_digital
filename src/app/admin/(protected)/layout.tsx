@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ToastListener } from "@/components/admin/toast-listener";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { logout } from "./actions";
@@ -21,14 +23,17 @@ export default async function ProtectedAdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-3">
+    <div className="min-h-screen bg-background">
+      <Suspense fallback={null}>
+        <ToastListener />
+      </Suspense>
+      <header className="flex items-center justify-between border-b border-border bg-card px-6 py-3">
         <div className="flex items-center gap-6">
-          <span className="text-sm font-medium text-neutral-900">Invitation Admin</span>
-          <Link href="/admin/dashboard" className="text-sm text-neutral-500 hover:text-neutral-900">
+          <span className="text-sm font-medium text-foreground">Invitation Admin</span>
+          <Link href="/admin/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
             Dashboard
           </Link>
-          <Link href="/admin/invitations" className="text-sm text-neutral-500 hover:text-neutral-900">
+          <Link href="/admin/invitations" className="text-sm text-muted-foreground hover:text-foreground">
             Invitations
           </Link>
         </div>
