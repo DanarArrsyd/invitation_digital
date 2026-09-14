@@ -282,6 +282,49 @@ const CSS = `
   box-shadow: 0 0 0 1px rgba(169,138,92,0.4) inset, 0 6px 14px -8px rgba(74,63,52,0.45);
 }
 
+.ni-addcal-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  min-height: 44px;
+  padding: .7rem 1.3rem;
+  border: 1px solid var(--ni-gold-soft);
+  color: var(--ni-ivory-2);
+  font-size: .68rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  transition: background-color .3s ease, color .3s ease;
+}
+.ni-addcal-trigger:hover { background: var(--ni-gold-soft); color: var(--ni-espresso); }
+.ni-addcal-menu {
+  z-index: 50;
+  display: flex;
+  min-width: 13rem;
+  flex-direction: column;
+  border: 1px solid rgba(199,174,133,0.35);
+  background: rgba(28,23,17,0.96);
+  box-shadow: 0 20px 40px -18px rgba(0,0,0,0.55);
+  backdrop-filter: blur(10px);
+}
+.ni-addcal-item {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding: .8rem 1.1rem;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-family: var(--ni-sans);
+  font-size: .78rem;
+  letter-spacing: .02em;
+  color: var(--ni-ivory-2);
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease;
+}
+.ni-addcal-item svg { flex-shrink: 0; }
+.ni-addcal-item + .ni-addcal-item { border-top: 1px solid rgba(199,174,133,0.2); }
+.ni-addcal-item:hover, .ni-addcal-item:focus-visible { background: rgba(199,174,133,0.14); color: var(--ni-gold-soft); }
+
 @media (prefers-reduced-motion: reduce) {
   .ni-theme *,
   .ni-theme *::before,
