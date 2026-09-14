@@ -3,6 +3,10 @@
 import { redirect } from "next/navigation";
 
 import {
+  reorderGalleryItemsSchema,
+  updateGalleryRatioSchema,
+} from "@/lib/validation/gallery";
+import {
   deleteGalleryItem,
   reorderGalleryItems,
   updateGalleryItemMeta,
@@ -51,10 +55,24 @@ export async function updateGalleryItemAction(formData: FormData) {
 
 export async function updateGalleryItemRatioAction(formData: FormData) {
   const invitationId = String(formData.get("invitationId"));
-  const id = String(formData.get("id"));
-  const aspectRatio = String(formData.get("aspectRatio"));
 
-  const result = await updateGalleryItemRatio({ id, aspectRatio });
+  const parsed = updateGalleryRatioSchema.safeParse({
+    id: formData.get("id"),
+    invitationId,
+    aspectRatio: formData.get("aspectRatio"),
+  });
+
+  if (!parsed.success) {
+    redirect(
+      path(invitationId, `error=${encodeURIComponent(parsed.error.issues[0]?.message ?? "Data tidak valid")}`),
+    );
+  }
+
+  const result = await updateGalleryItemRatio({
+    id: parsed.data.id,
+    invitationId: parsed.data.invitationId,
+    aspectRatio: parsed.data.aspectRatio,
+  });
 
   if (result?.error) {
     redirect(path(invitationId, `error=${encodeURIComponent(result.error)}`));
@@ -66,9 +84,19 @@ export async function updateGalleryItemRatioAction(formData: FormData) {
 
 export async function reorderGalleryItemsAction(formData: FormData) {
   const invitationId = String(formData.get("invitationId"));
-  const orderedIds = String(formData.get("orderedIds")).split(",").filter(Boolean);
 
-  const result = await reorderGalleryItems({ invitationId, orderedIds });
+  const parsed = reorderGalleryItemsSchema.safeParse({
+    invitationId,
+    orderedIds: String(formData.get("orderedIds")).split(",").filter(Boolean),
+  });
+
+  if (!parsed.success) {
+    redirect(
+      path(invitationId, `error=${encodeURIComponent(parsed.error.issues[0]?.message ?? "Data tidak valid")}`),
+    );
+  }
+
+  const result = await reorderGalleryItems(parsed.data);
 
   if (result?.error) {
     redirect(path(invitationId, `error=${encodeURIComponent(result.error)}`));

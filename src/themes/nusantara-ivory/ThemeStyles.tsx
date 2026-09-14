@@ -176,8 +176,8 @@ const CSS = `
 .ni-gallery-photo[data-ratio="landscape_16_9"] { aspect-ratio: 16 / 9; }
 .ni-gallery-photo[data-ratio="landscape_4_3"] { aspect-ratio: 4 / 3; }
 
-.ni-gallery-grid > figure[data-ratio="landscape_16_9"],
-.ni-gallery-grid > figure[data-ratio="landscape_4_3"] { grid-column: span 2; }
+.ni-gallery-grid > *:has(> figure[data-ratio="landscape_16_9"]),
+.ni-gallery-grid > *:has(> figure[data-ratio="landscape_4_3"]) { grid-column: span 2; }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
 .ni-theme .ni-rsvp-panel button[aria-pressed='true'] { background: var(--ni-brown) !important; border-color: var(--ni-brown) !important; }
 .ni-wishes-empty { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-direction: column; min-height: 220px; border-block: 1px solid var(--ni-sand); }
@@ -191,9 +191,9 @@ const CSS = `
 
 @media (min-width: 900px) {
   .ni-gallery-grid { grid-template-columns: repeat(12,minmax(0,1fr)); gap: 2rem; }
-  .ni-gallery-grid > figure { grid-column: span 4; }
-  .ni-gallery-grid > figure[data-ratio="landscape_16_9"],
-  .ni-gallery-grid > figure[data-ratio="landscape_4_3"] { grid-column: span 8; }
+  .ni-gallery-grid > * { grid-column: span 4; }
+  .ni-gallery-grid > *:has(> figure[data-ratio="landscape_16_9"]),
+  .ni-gallery-grid > *:has(> figure[data-ratio="landscape_4_3"]) { grid-column: span 8; }
   .ni-gallery-grid > :only-child { grid-column: 1/-1; }
   .ni-gallery-grid > :only-child .ni-gallery-photo { aspect-ratio: 16/10; }
 }
