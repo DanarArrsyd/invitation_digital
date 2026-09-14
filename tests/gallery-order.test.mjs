@@ -1,3 +1,6 @@
+// Loose assert (not node:assert/strict) — reorderIds runs in vm.runInNewContext's
+// separate realm, so its returned arrays have a different Array constructor than
+// this file's literals; deepStrictEqual fails on that alone even when contents match.
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
 import test from "node:test";
