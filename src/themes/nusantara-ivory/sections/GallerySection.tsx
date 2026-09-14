@@ -12,8 +12,8 @@ export function GallerySection({ gallery }: { gallery: GalleryItem[] }) {
       <div className="ni-gallery-grid">
         {gallery.map((item, index) => (
           <Reveal key={item.id} variant="mask" delay={(index % 2) * .1}>
-            <figure className="group">
-              <div className="ni-photo-wrap ni-gallery-photo">
+            <figure className="group" data-ratio={item.aspectRatio}>
+              <div className="ni-photo-wrap ni-gallery-photo" data-ratio={item.aspectRatio}>
                 <EditorialImage src={item.imageUrl} alt={item.altText ?? item.caption ?? ""} className="ni-photo transition-transform duration-700 group-hover:scale-[1.035] motion-reduce:transform-none" />
               </div>
               {item.caption ? <figcaption className="ni-gallery-caption">{item.caption}</figcaption> : null}
