@@ -117,15 +117,10 @@ export async function uploadMusic(
   return null;
 }
 
-export async function uploadGalleryItem(
+export async function uploadGalleryItems(
   invitationId: string,
-  file: File,
-  caption: string | null,
-  altText: string | null,
+  files: File[],
 ): Promise<{ error: string } | null> {
-  const result = await uploadObject(invitationId, "gallery", file);
-  if ("error" in result) return { error: result.error };
-
   const supabase = await createSupabaseServerClient();
 
   const { count } = await supabase
@@ -133,17 +128,28 @@ export async function uploadGalleryItem(
     .select("id", { count: "exact", head: true })
     .eq("invitation_id", invitationId);
 
-  const { error } = await supabase.from("gallery_items").insert({
-    invitation_id: invitationId,
-    image_path: result.path,
-    caption,
-    alt_text: altText,
-    sort_order: count ?? 0,
-  });
+  let nextSortOrder = count ?? 0;
 
-  if (error) {
-    await removeObject(result.path);
-    return { error: error.message };
+  for (const file of files) {
+    const result = await uploadObject(invitationId, "gallery", file);
+    if ("error" in result) {
+      return { error: `${file.name}: ${result.error}` };
+    }
+
+    const { error } = await supabase.from("gallery_items").insert({
+      invitation_id: invitationId,
+      image_path: result.path,
+      caption: null,
+      alt_text: null,
+      sort_order: nextSortOrder,
+    });
+
+    if (error) {
+      await removeObject(result.path);
+      return { error: `${file.name}: ${error.message}` };
+    }
+
+    nextSortOrder += 1;
   }
 
   return null;

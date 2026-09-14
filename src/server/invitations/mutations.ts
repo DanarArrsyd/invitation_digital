@@ -410,16 +410,45 @@ export async function updateGalleryItemMeta(input: {
   id: string;
   caption: string | null;
   altText: string | null;
-  sortOrder: number;
 }): Promise<{ error: string } | null> {
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase
     .from("gallery_items")
-    .update({ caption: input.caption, alt_text: input.altText, sort_order: input.sortOrder })
+    .update({ caption: input.caption, alt_text: input.altText })
     .eq("id", input.id);
 
   return error ? { error: error.message } : null;
+}
+
+export async function updateGalleryItemRatio(input: {
+  id: string;
+  aspectRatio: string;
+}): Promise<{ error: string } | null> {
+  const supabase = await createSupabaseServerClient();
+
+  const { error } = await supabase
+    .from("gallery_items")
+    .update({ aspect_ratio: input.aspectRatio })
+    .eq("id", input.id);
+
+  return error ? { error: error.message } : null;
+}
+
+export async function reorderGalleryItems(input: {
+  invitationId: string;
+  orderedIds: string[];
+}): Promise<{ error: string } | null> {
+  const supabase = await createSupabaseServerClient();
+
+  const updates = input.orderedIds.map((id, index) =>
+    supabase.from("gallery_items").update({ sort_order: index }).eq("id", id).eq("invitation_id", input.invitationId),
+  );
+
+  const results = await Promise.all(updates);
+  const failed = results.find((r) => r.error);
+
+  return failed?.error ? { error: failed.error.message } : null;
 }
 
 // --- Wishes moderation ---------------------------------------------------
