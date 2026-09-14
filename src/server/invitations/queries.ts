@@ -17,6 +17,8 @@ export async function listInvitations(status?: string): Promise<InvitationListIt
     .select(
       "id, title, slug, type, status, event_date, theme:themes(name, slug), gallery_items(image_path)",
     )
+    .order("sort_order", { referencedTable: "gallery_items", ascending: true })
+    .limit(1, { foreignTable: "gallery_items" })
     .order("created_at", { ascending: false });
 
   if (status && status !== "all") {
