@@ -10,6 +10,7 @@ const DEFAULT_FEATURES: InvitationFeatures = {
   maps: false,
   story: false,
   gallery: false,
+  dressCode: false,
   livestream: false,
   rsvp: false,
   wishes: false,

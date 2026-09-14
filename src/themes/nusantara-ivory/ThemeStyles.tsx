@@ -199,6 +199,18 @@ const CSS = `
 .ni-gallery-caption { padding-top: .75rem; font-size: .8rem; line-height: 1.5; color: var(--ni-brown-soft); }
 
 .ni-gallery-photo { aspect-ratio: 4 / 5; }
+.ni-dresscode-groups { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(2.5rem, 8vw, 5rem); }
+.ni-dresscode-group { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
+.ni-dresscode-swatches { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem; }
+.ni-dresscode-swatch { display: flex; flex-direction: column; align-items: center; gap: .55rem; }
+.ni-dresscode-dot {
+  display: block;
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(169,138,92,0.35), 0 6px 16px -10px rgba(74,63,52,0.5);
+}
+.ni-dresscode-hex { font-size: .62rem; letter-spacing: .08em; color: var(--ni-brown-soft); }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
 .ni-theme .ni-rsvp-panel button[aria-pressed='true'] { background: var(--ni-brown) !important; border-color: var(--ni-brown) !important; }
 .ni-wishes-empty { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-direction: column; min-height: 220px; border-block: 1px solid var(--ni-sand); }

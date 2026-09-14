@@ -14,6 +14,7 @@ const FEATURE_LABELS: Record<keyof InvitationFeatures, string> = {
   maps: "Maps",
   story: "Love Story",
   gallery: "Gallery",
+  dressCode: "Dress Code",
   livestream: "Livestream",
   rsvp: "RSVP",
   wishes: "Wishes",

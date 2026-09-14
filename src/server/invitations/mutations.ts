@@ -10,6 +10,7 @@ export const DEFAULT_FEATURES: InvitationFeatures = {
   maps: true,
   story: true,
   gallery: true,
+  dressCode: false,
   livestream: false,
   rsvp: true,
   wishes: true,

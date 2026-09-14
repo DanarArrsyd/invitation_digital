@@ -2,8 +2,9 @@
 
 import { redirect } from "next/navigation";
 
-import { updateContentSchema } from "@/lib/validation/invitation";
+import { updateContentSchema, updateDressCodeSchema } from "@/lib/validation/invitation";
 import { deleteStorySchema, upsertStorySchema } from "@/lib/validation/stories";
+import { updateDressCode } from "@/server/invitations/dress-code";
 import { deleteStory, updateInvitationContent, upsertStory } from "@/server/invitations/mutations";
 import { revalidateInvitation } from "@/server/invitations/revalidate";
 
@@ -30,6 +31,39 @@ export async function updateContentAction(formData: FormData) {
     openingQuote: parsed.data.openingQuote || null,
     openingMessage: parsed.data.openingMessage || null,
     closingMessage: parsed.data.closingMessage || null,
+  });
+
+  if (result?.error) {
+    redirect(path(invitationId, `error=${encodeURIComponent(result.error)}`));
+  }
+
+  await revalidateInvitation(invitationId);
+  redirect(path(invitationId, "saved=1"));
+}
+
+export async function updateDressCodeAction(formData: FormData) {
+  const invitationId = String(formData.get("invitationId"));
+
+  const parsed = updateDressCodeSchema.safeParse({
+    invitationId,
+    description: formData.get("description"),
+    group1Label: formData.get("group1Label"),
+    group1Colors: formData.get("group1Colors"),
+    group2Label: formData.get("group2Label"),
+    group2Colors: formData.get("group2Colors"),
+  });
+
+  if (!parsed.success) {
+    redirect(path(invitationId, `error=${encodeURIComponent(parsed.error.issues[0]?.message ?? "")}`));
+  }
+
+  const result = await updateDressCode({
+    invitationId: parsed.data.invitationId,
+    description: parsed.data.description ?? "",
+    group1Label: parsed.data.group1Label ?? "",
+    group1Colors: parsed.data.group1Colors ?? "",
+    group2Label: parsed.data.group2Label ?? "",
+    group2Colors: parsed.data.group2Colors ?? "",
   });
 
   if (result?.error) {
