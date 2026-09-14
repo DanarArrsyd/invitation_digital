@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { AddToCalendar, type CalendarEventInput } from "../components/AddToCalendar";
 import { BotanicalDivider } from "../components/Botanical";
 import { Reveal, Stagger, StaggerItem } from "../components/Reveal";
 
@@ -21,7 +22,15 @@ const UNITS = [
   { key: "seconds", label: "Detik" },
 ] as const;
 
-export function CountdownSection({ targetIso }: { targetIso: string | null }) {
+export function CountdownSection({
+  targetIso,
+  calendarEvent,
+  calendarUid,
+}: {
+  targetIso: string | null;
+  calendarEvent: CalendarEventInput | null;
+  calendarUid: string;
+}) {
   const target = targetIso ? new Date(targetIso).getTime() : null;
   const [timeLeft, setTimeLeft] = useState(() => (target ? getTimeLeft(target) : null));
 
@@ -76,6 +85,12 @@ export function CountdownSection({ targetIso }: { targetIso: string | null }) {
             </StaggerItem>
           ))}
         </Stagger>
+
+        {calendarEvent ? (
+          <Reveal variant="fade" delay={0.15}>
+            <AddToCalendar event={calendarEvent} uid={calendarUid} />
+          </Reveal>
+        ) : null}
       </div>
     </section>
   );
