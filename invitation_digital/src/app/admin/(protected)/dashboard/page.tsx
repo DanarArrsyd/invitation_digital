@@ -29,7 +29,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {metrics.map((metric) => (
           <Card key={metric.label}>
-            <CardContent className="gap-1">
+            <CardContent className="flex flex-col gap-1">
               <p className="text-xs text-muted-foreground">{metric.label}</p>
               <p className="text-2xl font-semibold text-foreground">{metric.value}</p>
             </CardContent>
@@ -52,7 +52,7 @@ export default async function AdminDashboardPage() {
           <div className="mt-3 flex flex-col gap-2">
             {expiringSoon.map((item) => (
               <Card key={item.id}>
-                <CardContent className="flex-row items-center justify-between">
+                <CardContent className="flex flex-row items-center justify-between">
                   <div>
                     <p className="font-medium text-foreground">{item.title}</p>
                     <p className="text-sm text-muted-foreground">Expired {formatDate(item.expiresAt)}</p>
