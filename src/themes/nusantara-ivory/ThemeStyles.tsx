@@ -183,18 +183,22 @@ const CSS = `
 .ni-events-frame { position: relative; border: 1px solid var(--ni-sand); padding: clamp(1.5rem, 4vw, 4rem); background: rgba(252,250,245,.65); }
 .ni-events-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(169,138,92,.17); pointer-events: none; }
 .ni-event-date { border-bottom: 1px solid var(--ni-sand); padding-bottom: 1.5rem; }
-.ni-gallery-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; align-items: start; margin-top: 3rem; grid-auto-flow: dense; }
+/* No grid-auto-flow: dense here on purpose: dense reorders items to
+   backfill gaps, which silently shuffles photos out of the couple's
+   curated order once a wide (landscape) item can't fit the remaining
+   row -- verified with a 12-photo mix where it visibly jumped a later
+   photo ahead of two earlier ones. Sparse flow only ever wraps forward,
+   so a stray gap stays at the end of a row instead of scrambling order. */
+/* Every cell shares the same column span and the same aspect-ratio, so every
+   row lands at the identical height by construction -- no masonry-style gaps
+   to reconcile, at 6 photos or 60. object-fit: cover on .ni-photo absorbs
+   whatever ratio the source image actually is; data-ratio is kept in the DOM
+   for a11y/future use but no longer drives per-item sizing. */
+.ni-gallery-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; margin-top: 3rem; }
 .ni-gallery-grid > :only-child { max-width: 960px; width: 100%; margin-inline: auto; }
 .ni-gallery-caption { padding-top: .75rem; font-size: .8rem; line-height: 1.5; color: var(--ni-brown-soft); }
 
 .ni-gallery-photo { aspect-ratio: 4 / 5; }
-.ni-gallery-photo[data-ratio="square_1_1"] { aspect-ratio: 1 / 1; }
-.ni-gallery-photo[data-ratio="portrait_3_4"] { aspect-ratio: 3 / 4; }
-.ni-gallery-photo[data-ratio="landscape_16_9"] { aspect-ratio: 16 / 9; }
-.ni-gallery-photo[data-ratio="landscape_4_3"] { aspect-ratio: 4 / 3; }
-
-.ni-gallery-grid > *:has(> figure[data-ratio="landscape_16_9"]),
-.ni-gallery-grid > *:has(> figure[data-ratio="landscape_4_3"]) { grid-column: span 2; }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
 .ni-theme .ni-rsvp-panel button[aria-pressed='true'] { background: var(--ni-brown) !important; border-color: var(--ni-brown) !important; }
 .ni-wishes-empty { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-direction: column; min-height: 220px; border-block: 1px solid var(--ni-sand); }
@@ -207,11 +211,8 @@ const CSS = `
 }
 
 @media (min-width: 900px) {
-  .ni-gallery-grid { grid-template-columns: repeat(12,minmax(0,1fr)); gap: 2rem; }
-  .ni-gallery-grid > * { grid-column: span 4; }
-  .ni-gallery-grid > *:has(> figure[data-ratio="landscape_16_9"]),
-  .ni-gallery-grid > *:has(> figure[data-ratio="landscape_4_3"]) { grid-column: span 8; }
-  .ni-gallery-grid > :only-child { grid-column: 1/-1; }
+  .ni-gallery-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2rem; }
+  .ni-gallery-grid > :only-child { grid-column: 1/-1; max-width: none; }
   .ni-gallery-grid > :only-child .ni-gallery-photo { aspect-ratio: 16/10; }
 }
 @media (max-width: 374px) {
