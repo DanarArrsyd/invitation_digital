@@ -9,7 +9,7 @@ export function GiftSection({ gifts }: { gifts: GiftAccount[] }) {
   if (gifts.length === 0) return null;
 
   return (
-    <Section tone="dark" lattice>
+    <Section id="ni-kado" tone="dark" lattice>
       <div className="grid gap-10 md:grid-cols-12 md:gap-14">
         <div className="md:col-span-4">
           <SectionHeading eyebrow="Tanda Kasih" title="Wedding Gift" align="left" tone="light" />

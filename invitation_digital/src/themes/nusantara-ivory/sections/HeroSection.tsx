@@ -22,7 +22,7 @@ export function HeroSection({ coverImageUrl, displayName, eventDate, venueSummar
 }) {
   const formatted = formatLongDate(eventDate);
   return (
-    <section className="ni-hero ni-grain ni-panel-cream relative isolate overflow-hidden">
+    <section id="ni-beranda" className="ni-hero ni-grain ni-panel-cream relative isolate overflow-hidden">
       <div className="ni-lattice absolute inset-0 opacity-[0.12]" aria-hidden="true" />
       <FloralCorner className="ni-hero-floral" />
       <div className="ni-hero-inner">
