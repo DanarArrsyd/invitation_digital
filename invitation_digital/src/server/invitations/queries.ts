@@ -6,15 +6,24 @@ export type InvitationListItem = Pick<
   "id" | "title" | "slug" | "type" | "status" | "event_date"
 > & {
   theme: Pick<Tables<"themes">, "name" | "slug"> | null;
+  gallery_items: Pick<Tables<"gallery_items">, "image_path">[];
 };
 
-export async function listInvitations(): Promise<InvitationListItem[]> {
+export async function listInvitations(status?: string): Promise<InvitationListItem[]> {
   const supabase = await createSupabaseServerClient();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("invitations")
-    .select("id, title, slug, type, status, event_date, theme:themes(name, slug)")
+    .select(
+      "id, title, slug, type, status, event_date, theme:themes(name, slug), gallery_items(image_path)",
+    )
     .order("created_at", { ascending: false });
+
+  if (status && status !== "all") {
+    query = query.eq("status", status);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(error.message);
