@@ -71,6 +71,7 @@ export type Database = {
       gallery_items: {
         Row: {
           alt_text: string | null
+          aspect_ratio: string
           caption: string | null
           created_at: string
           id: string
@@ -80,6 +81,7 @@ export type Database = {
         }
         Insert: {
           alt_text?: string | null
+          aspect_ratio?: string
           caption?: string | null
           created_at?: string
           id?: string
@@ -89,6 +91,7 @@ export type Database = {
         }
         Update: {
           alt_text?: string | null
+          aspect_ratio?: string
           caption?: string | null
           created_at?: string
           id?: string

@@ -46,11 +46,26 @@ export interface InvitationStory {
   sortOrder: number;
 }
 
+export const GALLERY_ASPECT_RATIOS = [
+  { value: "square_1_1", label: "Persegi (1:1)", css: "1 / 1" },
+  { value: "portrait_4_5", label: "Potret 4:5", css: "4 / 5" },
+  { value: "portrait_3_4", label: "Potret 3:4", css: "3 / 4" },
+  { value: "landscape_16_9", label: "Landscape 16:9", css: "16 / 9" },
+  { value: "landscape_4_3", label: "Landscape 4:3", css: "4 / 3" },
+] as const;
+
+export type GalleryAspectRatio = (typeof GALLERY_ASPECT_RATIOS)[number]["value"];
+
+export const GALLERY_ASPECT_RATIO_CSS: Record<GalleryAspectRatio, string> = Object.fromEntries(
+  GALLERY_ASPECT_RATIOS.map((r) => [r.value, r.css]),
+) as Record<GalleryAspectRatio, string>;
+
 export interface GalleryItem {
   id: string;
   imageUrl: string;
   caption: string | null;
   altText: string | null;
+  aspectRatio: GalleryAspectRatio;
   sortOrder: number;
 }
 
