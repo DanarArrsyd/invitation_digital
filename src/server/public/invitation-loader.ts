@@ -1,3 +1,5 @@
+import { unstable_cache } from "next/cache";
+
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { getCoupleDisplayName } from "@/lib/utils/coupleName";
 import type { Guest, PublicInvitation } from "@/types/invitation";
@@ -8,6 +10,49 @@ export type PublicInvitationResult =
   | { kind: "not_found" }
   | { kind: "expired"; displayName: string; eventDate: string | null }
   | { kind: "ok"; invitation: PublicInvitation; guest: Guest | null };
+
+type CachedInvitationResult =
+  | { kind: "not_found" }
+  | { kind: "found"; status: string; invitation: PublicInvitation };
+
+export function publicInvitationCacheTag(slug: string): string {
+  return `public-invitation:${slug}`;
+}
+
+async function loadPublicInvitationContent(slug: string): Promise<CachedInvitationResult> {
+  const supabase = createSupabaseAdminClient();
+
+  const { data: invitation, error } = await supabase
+    .from("invitations")
+    .select("*, theme:themes(*)")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+
+  if (
+    !invitation ||
+    !invitation.theme ||
+    invitation.status === "draft" ||
+    invitation.status === "archived"
+  ) {
+    return { kind: "not_found" };
+  }
+
+  return {
+    kind: "found",
+    status: invitation.status,
+    invitation: await loadNormalizedInvitation(supabase, invitation),
+  };
+}
+
+function getCachedPublicInvitationContent(slug: string): Promise<CachedInvitationResult> {
+  return unstable_cache(
+    () => loadPublicInvitationContent(slug),
+    ["public-invitation", slug],
+    { revalidate: 300, tags: [publicInvitationCacheTag(slug)] },
+  )();
+}
 
 /**
  * Public-facing loader: resolves a slug to normalized invitation data.
@@ -21,47 +66,27 @@ export async function getPublicInvitationBySlug(
   slug: string,
   guestToken?: string,
 ): Promise<PublicInvitationResult> {
-  const supabase = createSupabaseAdminClient();
+  const cached = await getCachedPublicInvitationContent(slug);
+  if (cached.kind === "not_found") return cached;
 
-  const { data: invitation, error } = await supabase
-    .from("invitations")
-    .select("*, theme:themes(*)")
-    .eq("slug", slug)
-    .maybeSingle();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!invitation || !invitation.theme) {
-    return { kind: "not_found" };
-  }
-
-  // Draft/archived invitations are never publicly visible.
-  if (invitation.status === "draft" || invitation.status === "archived") {
-    return { kind: "not_found" };
-  }
+  const { invitation, status } = cached;
 
   const isExpired =
-    invitation.status === "expired" ||
-    (invitation.expires_at !== null && new Date(invitation.expires_at) < new Date());
+    status === "expired" ||
+    (invitation.expiresAt !== null && new Date(invitation.expiresAt) < new Date());
 
   if (isExpired) {
-    const { data: people } = await supabase
-      .from("invitation_people")
-      .select("role, nickname, full_name")
-      .eq("invitation_id", invitation.id);
-
     const displayName = getCoupleDisplayName(
-      (people ?? []).map((p) => ({ role: p.role, nickname: p.nickname, fullName: p.full_name })),
+      invitation.people,
       invitation.title,
     );
 
-    return { kind: "expired", displayName, eventDate: invitation.event_date };
+    return { kind: "expired", displayName, eventDate: invitation.eventDate };
   }
 
   let guest: Guest | null = null;
   if (guestToken) {
+    const supabase = createSupabaseAdminClient();
     const { data: guestRow } = await supabase
       .from("guests")
       .select("*")
@@ -79,7 +104,5 @@ export async function getPublicInvitationBySlug(
     }
   }
 
-  const normalized = await loadNormalizedInvitation(supabase, invitation);
-
-  return { kind: "ok", invitation: normalized, guest };
+  return { kind: "ok", invitation, guest };
 }
