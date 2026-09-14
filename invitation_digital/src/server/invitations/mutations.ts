@@ -423,6 +423,7 @@ export async function updateGalleryItemMeta(input: {
 
 export async function updateGalleryItemRatio(input: {
   id: string;
+  invitationId: string;
   aspectRatio: string;
 }): Promise<{ error: string } | null> {
   const supabase = await createSupabaseServerClient();
@@ -430,7 +431,8 @@ export async function updateGalleryItemRatio(input: {
   const { error } = await supabase
     .from("gallery_items")
     .update({ aspect_ratio: input.aspectRatio })
-    .eq("id", input.id);
+    .eq("id", input.id)
+    .eq("invitation_id", input.invitationId);
 
   return error ? { error: error.message } : null;
 }

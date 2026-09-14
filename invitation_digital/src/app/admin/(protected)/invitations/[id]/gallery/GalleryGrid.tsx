@@ -44,7 +44,11 @@ export function GalleryGrid({
   const [, startTransition] = useTransition();
 
   const byId = new Map(items.map((item) => [item.id, item]));
-  const orderedItems = order.map((id) => byId.get(id)).filter((item): item is GalleryGridItem => Boolean(item));
+  const known = new Set(order);
+  const orderedItems = [
+    ...order.map((id) => byId.get(id)).filter((item): item is GalleryGridItem => Boolean(item)),
+    ...items.filter((item) => !known.has(item.id)),
+  ];
 
   function commitOrder(nextOrder: string[]) {
     setOrder(nextOrder);
@@ -115,18 +119,20 @@ export function GalleryGrid({
             <input type="hidden" name="invitationId" value={invitationId} />
             <Input name="caption" placeholder="Caption" defaultValue={item.caption ?? ""} />
             <Input name="altText" placeholder="Alt text" defaultValue={item.altText ?? ""} />
-            <div className="flex justify-between gap-2">
+            <div className="flex justify-end gap-2">
               <SubmitButton variant="outline" size="sm" pendingText="Menyimpan...">
                 Simpan caption
               </SubmitButton>
-              <ConfirmDeleteForm
-                action={deleteGalleryItemAction}
-                hiddenFields={{ id: item.id, invitationId, imagePath: item.imagePath }}
-                title="Hapus foto ini?"
-                description="Foto akan hilang permanen dari galeri undangan. Tindakan ini tidak bisa dibatalkan."
-              />
             </div>
           </form>
+          <div className="mt-2 flex justify-end">
+            <ConfirmDeleteForm
+              action={deleteGalleryItemAction}
+              hiddenFields={{ id: item.id, invitationId, imagePath: item.imagePath }}
+              title="Hapus foto ini?"
+              description="Foto akan hilang permanen dari galeri undangan. Tindakan ini tidak bisa dibatalkan."
+            />
+          </div>
         </div>
       ))}
     </div>
