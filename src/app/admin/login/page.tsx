@@ -16,10 +16,10 @@ export default async function AdminLoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
-      <Card className="w-full max-w-sm">
+    <main className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
+      <Card className="w-full max-w-sm shadow-sm">
         <CardHeader>
-          <CardTitle>Admin Login</CardTitle>
+          <CardTitle className="text-lg">Invitation Admin</CardTitle>
           <CardDescription>Sign in to manage invitations.</CardDescription>
         </CardHeader>
         <CardContent>
