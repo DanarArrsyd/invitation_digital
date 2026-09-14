@@ -24,3 +24,23 @@ export function BotanicalDivider({ className = "" }: { className?: string }) {
     <g stroke="currentColor" strokeWidth=".8"><path d="M4 16h70m72 0h70M80 16h60M110 5l11 11-11 11-11-11Z" /><path d="M87 16q-8-15-16-9 3 10 16 9Zm0 0q-8 15-16 9 3-10 16-9Zm46 0q8-15 16-9-3 10-16 9Zm0 0q8 15 16 9-3-10-16-9Z" /></g>
   </svg>;
 }
+
+/**
+ * The invitation's recurring signature mark — couple initials bracketed by
+ * thin verticals, echoing a personal wax-seal/monogram rather than a generic
+ * icon. Reused on the cover and the closing so the two bookends visually
+ * rhyme; intentionally the only "branding" element in the whole theme.
+ */
+export function MonogramBadge({ initials, className = "" }: { initials: [string, string]; className?: string }) {
+  return (
+    <div className={`ni-monogram-badge ${className}`} aria-hidden="true">
+      <span className="ni-monogram-badge-bar" />
+      <span className="ni-monogram-badge-letters">
+        {initials[0]}
+        <span className="ni-monogram-badge-amp">&amp;</span>
+        {initials[1]}
+      </span>
+      <span className="ni-monogram-badge-bar" />
+    </div>
+  );
+}

@@ -5,7 +5,9 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { trackCoverOpenedAction } from "@/app/(public)/[slug]/actions";
 
-import { FloralCorner } from "./components/Botanical";
+import { getCoupleInitials } from "@/lib/utils/coupleName";
+
+import { FloralCorner, MonogramBadge } from "./components/Botanical";
 import { FloatingNav, type NavItem } from "./components/FloatingNav";
 import { OrnamentArch, OrnamentDivider } from "./components/Ornament";
 
@@ -61,6 +63,7 @@ export function CoverGate({
 
   const canPlayMusic = musicEnabled && Boolean(musicUrl);
   const couple = splitCoupleName(displayName);
+  const initials = getCoupleInitials(displayName);
 
   function handleOpen() {
     setOpened(true);
@@ -130,6 +133,12 @@ export function CoverGate({
                     <p key="eyebrow" className="ni-eyebrow">
                       {eyebrow}
                     </p>
+                  ) : null,
+
+                  initials ? (
+                    <div key="monogram" className="mt-5">
+                      <MonogramBadge initials={initials} />
+                    </div>
                   ) : null,
 
                   couple ? (

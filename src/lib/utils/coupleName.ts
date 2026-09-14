@@ -19,3 +19,18 @@ export function getCoupleDisplayName(
 
   return fallbackTitle;
 }
+
+/**
+ * Two-letter monogram ("R" + "F") for the couple's signature badge. Only
+ * meaningful for the bride & groom pair shape — returns null for anything
+ * that isn't exactly two names joined by "&" (e.g. the fallback title, or
+ * event types without a couple), so callers can skip the badge entirely
+ * rather than render a monogram from unrelated text.
+ */
+export function getCoupleInitials(displayName: string): [string, string] | null {
+  const parts = displayName.split(/\s+&\s+/);
+  if (parts.length !== 2) return null;
+  const [a, b] = parts;
+  if (!a || !b) return null;
+  return [a.charAt(0).toUpperCase(), b.charAt(0).toUpperCase()];
+}
