@@ -103,7 +103,10 @@ export function CoupleSection({ people, settings }: { people: InvitationPerson[]
                 <PersonDetails person={person} instagram={getPersonInstagram(settings, person.id)} align={index % 2 ? "right" : "left"} />
               </Reveal>
             </> : <>
-              <div className="ni-monogram ni-serif" aria-hidden="true">{(person.nickname || person.fullName).charAt(0)}</div>
+              <div className="ni-monogram ni-serif" aria-hidden="true">
+                <OrnamentCorner tone="gold" />
+                {(person.nickname || person.fullName).charAt(0)}
+              </div>
               <Reveal><PersonDetails person={person} instagram={getPersonInstagram(settings, person.id)} align="left" /></Reveal>
             </>}
           </article>

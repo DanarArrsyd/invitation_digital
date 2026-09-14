@@ -1,5 +1,7 @@
+import { getCoupleInitials } from "@/lib/utils/coupleName";
+
 import { EditorialImage } from "../components/EditorialImage";
-import { BotanicalDivider, FloralCorner } from "../components/Botanical";
+import { BotanicalDivider, FloralCorner, MonogramBadge } from "../components/Botanical";
 import { Parallax } from "../components/Parallax";
 import { Reveal } from "../components/Reveal";
 
@@ -16,6 +18,8 @@ export function ClosingSection({
   title: string;
   imageUrl: string | null;
 }) {
+  const initials = getCoupleInitials(title);
+
   return (
     <section className="ni-grain ni-panel-dark relative isolate overflow-hidden">
       {imageUrl ? (
@@ -66,7 +70,13 @@ export function ClosingSection({
           </p>
         </Reveal>
 
-        <Reveal variant="fade" delay={0.24}>
+        {initials ? (
+          <Reveal variant="fade" delay={0.22}>
+            <MonogramBadge initials={initials} />
+          </Reveal>
+        ) : null}
+
+        <Reveal variant="fade" delay={0.28}>
           <p
             className="text-[0.62rem] tracking-[0.4em] uppercase"
             style={{ color: "var(--ni-gold-soft)" }}

@@ -162,7 +162,24 @@ const CSS = `
 .ni-person-details { position: relative; margin: -2rem 0 0 1.5rem; padding: 1.5rem 0 0 1.5rem; background: var(--ni-ivory); }
 .ni-person:nth-child(even) .ni-person-details { margin: -2rem 1.5rem 0 0; padding: 1.5rem 1.5rem 0 0; }
 .ni-person-empty { display: grid; grid-template-columns: 5.5rem 1fr; align-items: center; gap: 1.5rem; padding-block: 2rem; border-block: 1px solid var(--ni-sand); }
-.ni-monogram { position: relative; display: grid; place-items: center; height: 8rem; border: 1px solid var(--ni-sand); font-size: 4rem; background: var(--ni-ivory-2); }
+.ni-monogram { position: relative; display: grid; place-items: center; height: 8rem; border: 1px solid var(--ni-sand); font-size: 4rem; background: var(--ni-ivory-2); overflow: hidden; }
+.ni-monogram > svg { position: absolute; top: 6px; left: 6px; width: 1.4rem; height: 1.4rem; opacity: .8; }
+
+/* Signature monogram — the couple-initials badge reused on cover + closing. */
+.ni-monogram-badge { display: inline-flex; align-items: center; gap: .7rem; }
+.ni-monogram-badge-bar { width: 1px; height: 1.5rem; background: var(--ni-gold); opacity: .55; }
+.ni-monogram-badge-letters {
+  font-family: var(--ni-serif);
+  font-size: 1.15rem;
+  letter-spacing: .1em;
+  padding: .55rem 1rem;
+  border: 1px solid var(--ni-gold);
+  color: var(--ni-brown);
+}
+.ni-monogram-badge-amp { display: inline-block; margin: 0 .3em; color: var(--ni-gold); font-style: italic; font-size: .85em; }
+.ni-panel-dark .ni-monogram-badge-letters { color: var(--ni-ivory-2); border-color: var(--ni-gold-soft); }
+.ni-panel-dark .ni-monogram-badge-bar { background: var(--ni-gold-soft); }
+.ni-panel-dark .ni-monogram-badge-amp { color: var(--ni-gold-soft); }
 .ni-events-frame { position: relative; border: 1px solid var(--ni-sand); padding: clamp(1.5rem, 4vw, 4rem); background: rgba(252,250,245,.65); }
 .ni-events-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(169,138,92,.17); pointer-events: none; }
 .ni-event-date { border-bottom: 1px solid var(--ni-sand); padding-bottom: 1.5rem; }
