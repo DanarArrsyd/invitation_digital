@@ -15,7 +15,12 @@ export function TurnstileWidget() {
   return (
     <>
       <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
-      <div className="cf-turnstile" data-sitekey={siteKey} data-theme="light" />
+      <div
+        className="cf-turnstile"
+        data-sitekey={siteKey}
+        data-theme="light"
+        data-appearance="interaction-only"
+      />
     </>
   );
 }
