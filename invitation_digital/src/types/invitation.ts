@@ -85,6 +85,7 @@ export interface InvitationFeatures {
   maps: boolean;
   story: boolean;
   gallery: boolean;
+  dressCode: boolean;
   livestream: boolean;
   rsvp: boolean;
   wishes: boolean;

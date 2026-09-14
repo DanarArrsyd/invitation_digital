@@ -1,4 +1,5 @@
 import { getCoupleDisplayName } from "@/lib/utils/coupleName";
+import { getDressCode } from "@/lib/utils/dressCode";
 import type { ThemeComponentProps } from "@/types/theme";
 
 import { CoverGate } from "./CoverGate";
@@ -9,6 +10,7 @@ import { bodySans, displaySerif } from "./fonts";
 import { ClosingSection } from "./sections/ClosingSection";
 import { CountdownSection } from "./sections/CountdownSection";
 import { CoupleSection } from "./sections/CoupleSection";
+import { DressCodeSection } from "./sections/DressCodeSection";
 import { EventsSection } from "./sections/EventsSection";
 import { GallerySection } from "./sections/GallerySection";
 import { GiftSection } from "./sections/GiftSection";
@@ -59,6 +61,8 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
           description: `Undangan pernikahan ${coupleDisplayName}`,
         }
       : null;
+
+  const dressCode = features.dressCode ? getDressCode(invitation.theme.settings) : null;
 
   const heroImageUrl = invitation.media.coverImageUrl;
   const closingImageUrl =
@@ -123,6 +127,8 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
             calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
           />
         ) : null}
+
+        {dressCode ? <DressCodeSection dressCode={dressCode} /> : null}
 
         {features.story ? <StorySection stories={invitation.stories} /> : null}
 

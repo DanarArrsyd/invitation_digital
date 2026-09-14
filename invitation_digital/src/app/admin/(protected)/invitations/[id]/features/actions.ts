@@ -12,6 +12,7 @@ const FEATURE_KEYS = [
   "maps",
   "story",
   "gallery",
+  "dressCode",
   "livestream",
   "rsvp",
   "wishes",

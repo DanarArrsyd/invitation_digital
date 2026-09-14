@@ -1,14 +1,16 @@
 import { notFound } from "next/navigation";
 
+import { ColorListInput } from "@/components/admin/color-list-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
+import { getDressCode } from "@/lib/utils/dressCode";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
-import { deleteStoryAction, updateContentAction, upsertStoryAction } from "./actions";
+import { deleteStoryAction, updateContentAction, updateDressCodeAction, upsertStoryAction } from "./actions";
 import { uploadStoryImageAction } from "./media-actions";
 
 export default async function ContentPage({
@@ -25,6 +27,9 @@ export default async function ContentPage({
   if (!detail) notFound();
 
   const { invitation, stories } = detail;
+  const dressCode = getDressCode(invitation.settings);
+  const group1 = dressCode?.groups[0];
+  const group2 = dressCode?.groups[1];
 
   return (
     <div className="flex flex-col gap-10">
@@ -61,6 +66,52 @@ export default async function ContentPage({
               defaultValue={invitation.closing_message ?? ""}
               rows={3}
             />
+          </div>
+
+          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          {saved ? <p className="text-sm text-green-600">Saved.</p> : null}
+
+          <Button type="submit" className="mt-2 w-fit">
+            Save
+          </Button>
+        </form>
+      </section>
+
+      <Separator />
+
+      <section>
+        <h2 className="text-sm font-semibold text-neutral-900">Dress Code</h2>
+        <p className="mt-1 text-sm text-neutral-500">
+          Aktifkan section ini lewat tab Features.
+        </p>
+        <form action={updateDressCodeAction} className="mt-4 flex max-w-lg flex-col gap-4">
+          <input type="hidden" name="invitationId" value={invitation.id} />
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="dressCodeDescription">Deskripsi</Label>
+            <Textarea
+              id="dressCodeDescription"
+              name="description"
+              defaultValue={dressCode?.description ?? ""}
+              rows={2}
+              placeholder="Kami dengan hormat menganjurkan tamu untuk mengenakan busana dengan nuansa warna berikut."
+            />
+          </div>
+
+          <div className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="group1Label">Label grup 1</Label>
+              <Input id="group1Label" name="group1Label" defaultValue={group1?.label ?? ""} placeholder="Pria" />
+            </div>
+            <ColorListInput name="group1Colors" defaultValue={group1?.colors.join(", ") ?? ""} label="Warna grup 1" />
+          </div>
+
+          <div className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="group2Label">Label grup 2</Label>
+              <Input id="group2Label" name="group2Label" defaultValue={group2?.label ?? ""} placeholder="Wanita" />
+            </div>
+            <ColorListInput name="group2Colors" defaultValue={group2?.colors.join(", ") ?? ""} label="Warna grup 2" />
           </div>
 
           {error ? <p className="text-sm text-red-600">{error}</p> : null}

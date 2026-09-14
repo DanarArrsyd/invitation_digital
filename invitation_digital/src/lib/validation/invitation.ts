@@ -53,6 +53,7 @@ export const featuresSchema = z.object({
   maps: z.boolean(),
   story: z.boolean(),
   gallery: z.boolean(),
+  dressCode: z.boolean(),
   livestream: z.boolean(),
   rsvp: z.boolean(),
   wishes: z.boolean(),
@@ -63,4 +64,13 @@ export const featuresSchema = z.object({
 export const updateFeaturesSchema = z.object({
   invitationId: z.string().uuid(),
   features: featuresSchema,
+});
+
+export const updateDressCodeSchema = z.object({
+  invitationId: z.string().uuid(),
+  description: z.string().trim().max(500).optional().or(z.literal("")),
+  group1Label: z.string().trim().max(40).optional().or(z.literal("")),
+  group1Colors: z.string().trim().max(200).optional().or(z.literal("")),
+  group2Label: z.string().trim().max(40).optional().or(z.literal("")),
+  group2Colors: z.string().trim().max(200).optional().or(z.literal("")),
 });
