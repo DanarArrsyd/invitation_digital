@@ -32,10 +32,10 @@ function renderWidget(siteKey = "test-site-key") {
   return exports.TurnstileWidget();
 }
 
-test("keeps Turnstile hidden unless visitor interaction is required", () => {
+test("shows Turnstile immediately when the widget is ready", () => {
   const widget = renderWidget();
   const container = widget.props.children[1];
 
   assert.equal(container.props.className, "cf-turnstile");
-  assert.equal(container.props["data-appearance"], "interaction-only");
+  assert.equal(container.props["data-appearance"], "always");
 });

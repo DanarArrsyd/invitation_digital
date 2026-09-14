@@ -19,7 +19,7 @@ export function TurnstileWidget() {
         className="cf-turnstile"
         data-sitekey={siteKey}
         data-theme="light"
-        data-appearance="interaction-only"
+        data-appearance="always"
       />
     </>
   );
