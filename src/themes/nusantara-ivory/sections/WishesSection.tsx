@@ -38,7 +38,7 @@ export function WishesSection({
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   return (
-    <Section tone="ivory" floral>
+    <Section id="ni-ucapan" tone="ivory" floral>
       <div className="grid gap-12 md:grid-cols-12 md:gap-14">
         <div className="md:col-span-5">
           <SectionHeading title="Doa & Ucapan" align="left" />

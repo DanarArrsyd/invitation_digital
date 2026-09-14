@@ -2,6 +2,7 @@ import { getCoupleDisplayName } from "@/lib/utils/coupleName";
 import type { ThemeComponentProps } from "@/types/theme";
 
 import { CoverGate } from "./CoverGate";
+import type { NavItem } from "./components/FloatingNav";
 import { ThemeStyles } from "./ThemeStyles";
 import { bodySans, displaySerif } from "./fonts";
 import { ClosingSection } from "./sections/ClosingSection";
@@ -40,6 +41,22 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
   const closingImageUrl =
     invitation.gallery.at(-1)?.imageUrl ?? invitation.media.coverImageUrl ?? null;
 
+  const navCandidates: (NavItem | null)[] = [
+    { id: "ni-beranda", label: "Beranda", icon: "home" },
+    invitation.people.length > 0 ? { id: "ni-mempelai", label: "Mempelai", icon: "heart" } : null,
+    { id: "ni-acara", label: "Acara", icon: "calendar" },
+    features.story && invitation.stories.length > 0
+      ? { id: "ni-cerita", label: "Cerita", icon: "book" }
+      : null,
+    features.gallery && invitation.gallery.length > 0
+      ? { id: "ni-galeri", label: "Galeri", icon: "gallery" }
+      : null,
+    features.rsvp ? { id: "ni-rsvp", label: "RSVP", icon: "message" } : null,
+    features.wishes ? { id: "ni-ucapan", label: "Ucapan", icon: "sparkle" } : null,
+    features.gift && invitation.gifts.length > 0 ? { id: "ni-kado", label: "Kado", icon: "gift" } : null,
+  ];
+  const navItems = navCandidates.filter((item): item is NavItem => item !== null).slice(0, 5);
+
   return (
     <div className={`ni-theme ${displaySerif.variable} ${bodySans.variable}`}>
       <ThemeStyles />
@@ -54,6 +71,7 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
         coverImageUrl={invitation.media.coverImageUrl}
         musicUrl={invitation.media.musicUrl}
         musicEnabled={features.music}
+        navItems={navItems}
       >
         <HeroSection
           coverImageUrl={heroImageUrl}

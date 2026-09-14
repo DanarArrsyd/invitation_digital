@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { trackCoverOpenedAction } from "@/app/(public)/[slug]/actions";
 
 import { FloralCorner } from "./components/Botanical";
+import { FloatingNav, type NavItem } from "./components/FloatingNav";
 import { OrnamentArch, OrnamentDivider } from "./components/Ornament";
 
 function formatEventDate(eventDate: string | null): string {
@@ -33,6 +34,7 @@ export function CoverGate({
   guestDisplayName,
   musicUrl,
   musicEnabled,
+  navItems,
   children,
 }: {
   invitationId: string;
@@ -44,6 +46,7 @@ export function CoverGate({
   coverImageUrl: string | null;
   musicUrl: string | null;
   musicEnabled: boolean;
+  navItems: NavItem[];
   children: React.ReactNode;
 }) {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -243,6 +246,8 @@ export function CoverGate({
         </motion.div>
       ) : null}
 
+      {opened ? <FloatingNav items={navItems} /> : null}
+
       {/* Kept outside the animated wrapper: an ancestor transform would turn
           this fixed control into an absolutely positioned one. */}
       {opened && canPlayMusic ? (
@@ -250,8 +255,9 @@ export function CoverGate({
               type="button"
               onClick={togglePlay}
               aria-label={playing ? "Jeda musik" : "Putar musik"}
-              className="fixed right-5 bottom-5 z-40 flex size-12 items-center justify-center rounded-full border backdrop-blur transition-colors"
+              className="fixed right-5 z-40 flex size-12 items-center justify-center rounded-full border backdrop-blur transition-colors"
               style={{
+                bottom: "calc(5.4rem + env(safe-area-inset-bottom))",
                 borderColor: "rgba(169,138,92,0.5)",
                 background: "rgba(252,250,245,0.88)",
                 color: "var(--ni-brown)",

@@ -27,7 +27,7 @@ export function RsvpSection({
   const [attendance, setAttendance] = useState<"attending" | "not_attending" | null>(null);
 
   return (
-    <Section className="ni-rsvp" tone="cream" floral>
+    <Section id="ni-rsvp" className="ni-rsvp" tone="cream" floral>
       <div className="grid gap-10 md:grid-cols-12 md:gap-14">
         <div className="md:col-span-4">
           <SectionHeading eyebrow="Konfirmasi Kehadiran" title="RSVP" align="left" />

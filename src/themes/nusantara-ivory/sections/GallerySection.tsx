@@ -7,7 +7,7 @@ import { EditorialImage } from "../components/EditorialImage";
 export function GallerySection({ gallery }: { gallery: GalleryItem[] }) {
   if (gallery.length === 0) return null;
   return (
-    <Section tone="ivory" wide floral>
+    <Section id="ni-galeri" tone="ivory" wide floral>
       <SectionHeading title="Galeri" />
       <div className="ni-gallery-grid">
         {gallery.map((item, index) => (

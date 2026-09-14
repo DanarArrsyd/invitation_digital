@@ -204,6 +204,67 @@ const CSS = `
   .ni-theme button { letter-spacing: .12em; }
 }
 
+.ni-floating-nav {
+  padding-bottom: max(1.1rem, env(safe-area-inset-bottom));
+  padding-inline: max(1rem, env(safe-area-inset-left)) max(1rem, env(safe-area-inset-right));
+  pointer-events: none;
+}
+.ni-floating-nav-rail {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(0px, 0.6vw, 2px);
+  padding: 6px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  list-style: none;
+  pointer-events: auto;
+  border-radius: 999px;
+  border: 1px solid rgba(169,138,92,0.35);
+  background: rgba(252,250,245,0.86);
+  box-shadow: 0 18px 44px -22px rgba(42,34,25,0.38), 0 1px 0 rgba(255,255,255,0.6) inset;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.ni-floating-nav-rail::-webkit-scrollbar { display: none; }
+.ni-floating-nav-btn {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: clamp(3.15rem, 16vw, 4.4rem);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0.55rem clamp(0.4rem, 2.4vw, 0.85rem);
+  border-radius: 999px;
+  color: var(--ni-brown-soft);
+  transition: color 0.35s ease, transform 0.25s ease;
+}
+.ni-floating-nav-btn:hover { color: var(--ni-brown); }
+.ni-floating-nav-btn:active { transform: scale(0.94); }
+.ni-floating-nav-btn[data-active] { color: var(--ni-espresso); }
+.ni-floating-nav-glyph { position: relative; z-index: 1; display: grid; place-items: center; transition: transform 0.35s cubic-bezier(.22,.61,.36,1); }
+.ni-floating-nav-glyph svg { width: clamp(15px, 4.6vw, 19px); height: clamp(15px, 4.6vw, 19px); }
+.ni-floating-nav-btn[data-active] .ni-floating-nav-glyph { transform: translateY(-1px); color: var(--ni-gold); }
+.ni-floating-nav-label {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(0.5rem, 2.4vw, 0.58rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ni-floating-nav-pill {
+  position: absolute;
+  inset: 2px;
+  z-index: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--ni-ivory-2), var(--ni-cream));
+  box-shadow: 0 0 0 1px rgba(169,138,92,0.4) inset, 0 6px 14px -8px rgba(74,63,52,0.45);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ni-theme *,
   .ni-theme *::before,

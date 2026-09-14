@@ -7,6 +7,7 @@ import { FloralCorner } from "./Botanical";
  */
 export function Section({
   children,
+  id,
   tone = "ivory",
   lattice = false,
   className = "",
@@ -15,6 +16,7 @@ export function Section({
   floral = false,
 }: {
   children: React.ReactNode;
+  id?: string;
   tone?: "ivory" | "cream" | "dark";
   lattice?: boolean;
   className?: string;
@@ -31,6 +33,7 @@ export function Section({
 
   return (
     <section
+      id={id}
       className={`ni-grain relative isolate overflow-hidden ${toneClass} ${className}`}
       style={{ paddingBlock: "var(--ni-section-y)" }}
     >

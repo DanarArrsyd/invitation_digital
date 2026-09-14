@@ -88,7 +88,7 @@ export function CoupleSection({ people, settings }: { people: InvitationPerson[]
   if (people.length === 0) return null;
 
   return (
-    <Section tone="ivory" wide floral>
+    <Section id="ni-mempelai" tone="ivory" wide floral>
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading title="Mempelai" />
         <Reveal variant="fade"><BotanicalDivider /></Reveal>

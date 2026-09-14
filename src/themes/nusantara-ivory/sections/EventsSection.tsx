@@ -127,7 +127,7 @@ export function EventsSection({
   if (events.length === 0 && !venueSummary) return null;
 
   return (
-    <Section className="ni-events" tone="cream" floral wide>
+    <Section id="ni-acara" className="ni-events" tone="cream" floral wide>
       <SectionHeading title="Rangkaian Acara" align="center" />
 
       <div className="ni-events-frame mt-10 md:mt-12">

@@ -9,7 +9,7 @@ export function StorySection({ stories }: { stories: InvitationStory[] }) {
   if (stories.length === 0) return null;
 
   return (
-    <Section className="ni-story" tone="cream" floral>
+    <Section id="ni-cerita" className="ni-story" tone="cream" floral>
       <SectionHeading title="Perjalanan Kami" align="left" />
 
       <div className="relative mt-14 md:mt-20">
