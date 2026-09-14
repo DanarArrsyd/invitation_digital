@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import type { Database, Tables } from "@/types/database";
-import type { InvitationFeatures, PublicInvitation } from "@/types/invitation";
+import type { GalleryItem, InvitationFeatures, PublicInvitation } from "@/types/invitation";
 
 const DEFAULT_FEATURES: InvitationFeatures = {
   music: false,
@@ -129,6 +129,7 @@ export async function loadNormalizedInvitation(
       imageUrl: getMediaPublicUrl(g.image_path) ?? "",
       caption: g.caption,
       altText: g.alt_text,
+      aspectRatio: g.aspect_ratio as GalleryItem["aspectRatio"],
       sortOrder: g.sort_order,
     })),
 
