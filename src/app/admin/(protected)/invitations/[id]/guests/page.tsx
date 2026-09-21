@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { buildPublishedInvitationPath } from "@/lib/share/invitation-share";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
 import { createGuestAction, deleteGuestAction } from "./actions";
@@ -66,7 +67,11 @@ export default async function GuestsPage({
               </TableRow>
             ) : (
               guests.map((guest) => {
-                const link = `/${invitation.slug}?guest=${guest.token}`;
+                const link = buildPublishedInvitationPath({
+                  slug: invitation.slug,
+                  publishedAt: invitation.published_at,
+                  guestToken: guest.token,
+                });
                 return (
                   <TableRow key={guest.id}>
                     <TableCell className="font-medium">{guest.display_name}</TableCell>

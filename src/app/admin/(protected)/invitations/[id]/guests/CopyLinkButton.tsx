@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { toAbsoluteInvitationUrl } from "@/lib/share/invitation-share";
 
 export function CopyLinkButton({ link }: { link: string }) {
   const [copied, setCopied] = useState(false);
@@ -13,7 +14,8 @@ export function CopyLinkButton({ link }: { link: string }) {
       variant="outline"
       size="sm"
       onClick={async () => {
-        await navigator.clipboard.writeText(link);
+        const absoluteLink = toAbsoluteInvitationUrl(link, window.location.origin);
+        await navigator.clipboard.writeText(absoluteLink);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}

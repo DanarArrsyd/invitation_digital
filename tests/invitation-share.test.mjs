@@ -50,6 +50,7 @@ function loadShareModule() {
     vm.runInNewContext(transpile(shareModuleUrl), {
       exports,
       module: { exports },
+      URL,
       require(name) {
         if (name === "@/lib/utils/coupleName") return { getCoupleDisplayName };
         return nodeRequire(name);
@@ -116,6 +117,39 @@ test("derives invitation-specific social copy and card data", () => {
     venueLabel: "Puri Nirwaran Residence",
     coverImageUrl: "https://images.example.test/cover.jpg",
   });
+});
+
+test("versions published public and guest links from the publication timestamp", () => {
+  const share = loadShareModule();
+  assert.equal(typeof share.buildPublishedInvitationPath, "function");
+
+  assert.equal(
+    share.buildPublishedInvitationPath({
+      slug: "rayhana-febri",
+      publishedAt: "2026-09-14T04:30:00.000Z",
+    }),
+    "/rayhana-febri?v=1789360200000",
+  );
+  assert.equal(
+    share.buildPublishedInvitationPath({
+      slug: "rayhana-febri",
+      publishedAt: "2026-09-22T03:15:00.000Z",
+      guestToken: "guest-token",
+    }),
+    "/rayhana-febri?guest=guest-token&v=1790046900000",
+  );
+});
+
+test("turns copied invitation paths into absolute share URLs", () => {
+  const share = loadShareModule();
+  assert.equal(typeof share.toAbsoluteInvitationUrl, "function");
+  assert.equal(
+    share.toAbsoluteInvitationUrl(
+      "/rayhana-febri?guest=guest-token&v=1790046900000",
+      "https://invitation-digital-delta.vercel.app/admin/invitations/1",
+    ),
+    "https://invitation-digital-delta.vercel.app/rayhana-febri?guest=guest-token&v=1790046900000",
+  );
 });
 
 test("publishes Open Graph and large Twitter card metadata for each slug", async () => {
