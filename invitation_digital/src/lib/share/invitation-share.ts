@@ -17,6 +17,29 @@ export interface InvitationShareData {
   coverImageUrl: string | null;
 }
 
+export function buildPublishedInvitationPath({
+  slug,
+  publishedAt,
+  guestToken,
+}: {
+  slug: string;
+  publishedAt: string | null;
+  guestToken?: string;
+}): string {
+  const query: string[] = [];
+  if (guestToken) query.push(`guest=${encodeURIComponent(guestToken)}`);
+
+  const publishedTimestamp = publishedAt ? Date.parse(publishedAt) : Number.NaN;
+  if (Number.isFinite(publishedTimestamp)) query.push(`v=${publishedTimestamp}`);
+
+  const queryString = query.length > 0 ? `?${query.join("&")}` : "";
+  return `/${encodeURIComponent(slug)}${queryString}`;
+}
+
+export function toAbsoluteInvitationUrl(path: string, origin: string): string {
+  return new URL(path, origin).toString();
+}
+
 function formatEventDate(value: string | null): string | null {
   if (!value) return null;
 

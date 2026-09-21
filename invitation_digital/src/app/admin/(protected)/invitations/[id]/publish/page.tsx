@@ -2,8 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { buildPublishedInvitationPath } from "@/lib/share/invitation-share";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
+import { CopyLinkButton } from "../guests/CopyLinkButton";
 import { publishAction, unpublishAction } from "./actions";
 
 function formatDateTime(iso: string | null): string {
@@ -26,6 +28,12 @@ export default async function PublishPage({
 
   const { invitation } = detail;
   const isPublished = invitation.status === "published";
+  const publicLink = isPublished
+    ? buildPublishedInvitationPath({
+        slug: invitation.slug,
+        publishedAt: invitation.published_at,
+      })
+    : null;
 
   return (
     <div className="flex max-w-md flex-col gap-4">
@@ -35,17 +43,18 @@ export default async function PublishPage({
         </p>
         <p>Published at: {formatDateTime(invitation.published_at)}</p>
         <p>Expires at: {formatDateTime(invitation.expires_at)}</p>
-        {isPublished ? (
-          <p>
-            Public URL:{" "}
+        {publicLink ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <span>Public URL:</span>
             <Link
-              href={`/${invitation.slug}`}
+              href={publicLink}
               target="_blank"
               className="text-neutral-900 underline underline-offset-2"
             >
-              /{invitation.slug}
+              {publicLink}
             </Link>
-          </p>
+            <CopyLinkButton link={publicLink} />
+          </div>
         ) : null}
       </div>
 
