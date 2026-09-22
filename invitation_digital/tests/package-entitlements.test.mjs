@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import test from "node:test";
 import ts from "typescript";
 import vm from "node:vm";
+
+const nodeRequire = createRequire(import.meta.url);
 
 function loadEntitlements() {
   const source = ts.transpileModule(
@@ -18,6 +21,50 @@ function loadEntitlements() {
     },
   });
   return exports;
+}
+
+function loadCreateInvitationAction() {
+  const validationSource = ts.transpileModule(
+    readFileSync(new URL("../src/lib/validation/invitation.ts", import.meta.url), "utf8"),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+  ).outputText;
+  const validationExports = {};
+  vm.runInNewContext(validationSource, {
+    exports: validationExports,
+    module: { exports: validationExports },
+    require(name) {
+      if (name === "zod") return nodeRequire("zod");
+      throw new Error(`Unexpected validation import: ${name}`);
+    },
+  });
+
+  const actionSource = ts.transpileModule(
+    readFileSync(
+      new URL("../src/app/admin/(protected)/invitations/new/actions.ts", import.meta.url),
+      "utf8",
+    ),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+  ).outputText;
+  const actionExports = {};
+  vm.runInNewContext(actionSource, {
+    exports: actionExports,
+    module: { exports: actionExports },
+    require(name) {
+      if (name === "next/navigation") {
+        return { redirect: () => { throw new Error("Unexpected redirect"); } };
+      }
+      if (name === "@/lib/validation/invitation") return validationExports;
+      if (name === "@/server/invitations/mutations") {
+        return {
+          createInvitation: async () => {
+            throw new Error("Invalid package key reached the invitation mutation");
+          },
+        };
+      }
+      throw new Error(`Unexpected action import: ${name}`);
+    },
+  });
+  return actionExports.createInvitationAction;
 }
 
 test("defines stable package limits and ordering", () => {
@@ -282,4 +329,18 @@ test("reports stable Indonesian capacity errors without mutating conflict snapsh
   const before = JSON.parse(JSON.stringify(snapshot));
   findPackageChangeConflicts("intimate", snapshot);
   assert.deepEqual(snapshot, before);
+});
+
+test("rejects invalid package keys in the invitation creation server action", async () => {
+  const createInvitationAction = loadCreateInvitationAction();
+  const formData = new FormData();
+  formData.set("title", "Rayhana & Febri");
+  formData.set("slug", "rayhana-febri");
+  formData.set("type", "wedding");
+  formData.set("themeId", "d290f1ee-6c54-4b01-90e6-d701748f0851");
+  formData.set("packageKey", "premium");
+
+  const result = await createInvitationAction({ error: null }, formData);
+
+  assert.equal(typeof result.error, "string");
 });
