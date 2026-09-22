@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import {
   getDefaultInvitationFeatures,
+  validatePackageCapacity,
   type PackageKey,
 } from "@/lib/packages/entitlements";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -256,6 +257,32 @@ export async function upsertEvent(input: {
   sortOrder: number;
 }): Promise<{ error: string } | null> {
   const supabase = await createSupabaseServerClient();
+
+  if (!input.id) {
+    const [{ data: invitation, error: invitationError }, { count, error: countError }] =
+      await Promise.all([
+        supabase
+          .from("invitations")
+          .select("package_key")
+          .eq("id", input.invitationId)
+          .single(),
+        supabase
+          .from("invitation_events")
+          .select("id", { count: "exact", head: true })
+          .eq("invitation_id", input.invitationId),
+      ]);
+
+    if (invitationError) return { error: invitationError.message };
+    if (countError) return { error: countError.message };
+
+    const policyError = validatePackageCapacity(
+      invitation.package_key as PackageKey,
+      "events",
+      count ?? 0,
+      1,
+    );
+    if (policyError) return { error: policyError.message };
+  }
 
   const row = {
     invitation_id: input.invitationId,

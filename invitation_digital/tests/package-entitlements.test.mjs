@@ -282,6 +282,13 @@ test("rejects additions beyond event and gallery limits", () => {
   );
 });
 
+test("allows event edits conceptually without consuming capacity", () => {
+  const { validatePackageCapacity } = loadEntitlements();
+  assert.equal(validatePackageCapacity("intimate", "events", 2, 0), null);
+  assert.equal(validatePackageCapacity("intimate", "events", 2, 1).limit, 2);
+  assert.equal(validatePackageCapacity("grand", "events", 4, 1), null);
+});
+
 test("reports every incompatible downgrade condition", () => {
   const { findPackageChangeConflicts } = loadEntitlements();
   const conflicts = findPackageChangeConflicts("intimate", {

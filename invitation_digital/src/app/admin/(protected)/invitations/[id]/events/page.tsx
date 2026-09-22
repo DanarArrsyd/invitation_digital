@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getPackageDefinition, type PackageKey } from "@/lib/packages/entitlements";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
 import { deleteEventAction, upsertEventAction } from "./actions";
@@ -21,10 +22,15 @@ export default async function EventsPage({
   if (!detail) notFound();
 
   const { invitation, events } = detail;
+  const packageDefinition = getPackageDefinition(invitation.package_key as PackageKey);
+  const limitReached = events.length >= packageDefinition.limits.maxEvents;
 
   return (
     <div className="flex flex-col gap-6">
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      <p className="text-sm text-neutral-600">
+        {events.length} dari {packageDefinition.limits.maxEvents} acara digunakan · Paket {packageDefinition.label}
+      </p>
 
       {events.map((event) => (
         <form
@@ -98,48 +104,56 @@ export default async function EventsPage({
         <input type="hidden" name="invitationId" value={invitation.id} />
         <input type="hidden" name="sortOrder" value={events.length} />
 
-        <div className="flex flex-col gap-2">
-          <Label>Event type</Label>
-          <Input name="eventType" placeholder="akad, reception..." />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Title</Label>
-          <Input name="title" required />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Date</Label>
-          <Input name="eventDate" type="date" required />
-        </div>
-        <div className="flex gap-3">
-          <div className="flex flex-1 flex-col gap-2">
-            <Label>Start time</Label>
-            <Input name="startTime" type="time" />
+        <fieldset disabled={limitReached} className="col-span-2 grid grid-cols-2 gap-3 border-0 p-0">
+          <div className="flex flex-col gap-2">
+            <Label>Event type</Label>
+            <Input name="eventType" placeholder="akad, reception..." />
           </div>
-          <div className="flex flex-1 flex-col gap-2">
-            <Label>End time</Label>
-            <Input name="endTime" type="time" />
+          <div className="flex flex-col gap-2">
+            <Label>Title</Label>
+            <Input name="title" required />
           </div>
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Venue name</Label>
-          <Input name="venueName" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Address</Label>
-          <Input name="address" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Maps URL</Label>
-          <Input name="mapsUrl" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Livestream URL</Label>
-          <Input name="livestreamUrl" />
-        </div>
+          <div className="flex flex-col gap-2">
+            <Label>Date</Label>
+            <Input name="eventDate" type="date" required />
+          </div>
+          <div className="flex gap-3">
+            <div className="flex flex-1 flex-col gap-2">
+              <Label>Start time</Label>
+              <Input name="startTime" type="time" />
+            </div>
+            <div className="flex flex-1 flex-col gap-2">
+              <Label>End time</Label>
+              <Input name="endTime" type="time" />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Venue name</Label>
+            <Input name="venueName" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Address</Label>
+            <Input name="address" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Maps URL</Label>
+            <Input name="mapsUrl" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Livestream URL</Label>
+            <Input name="livestreamUrl" />
+          </div>
+        </fieldset>
 
-        <Button type="submit" className="col-span-2 w-fit">
-          Add event
-        </Button>
+        {limitReached ? (
+          <p className="col-span-2 text-sm text-neutral-600">
+            Batas acara paket tercapai. Hapus acara atau upgrade paket.
+          </p>
+        ) : (
+          <Button type="submit" className="col-span-2 w-fit">
+            Add event
+          </Button>
+        )}
       </form>
     </div>
   );
