@@ -4,21 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import type { PackageKey } from "@/lib/packages/entitlements";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
 import { GeneralForm } from "./GeneralForm";
 import { uploadCoverImageAction, uploadMusicAction } from "./media-actions";
+import { PackageForm } from "./PackageForm";
 
 export default async function GeneralPage({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string; saved?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    saved?: string;
+    packageError?: string;
+    packageSaved?: string;
+  }>;
 }) {
   const { id } = await params;
-  const { error, saved } = await searchParams;
+  const { error, saved, packageError, packageSaved } = await searchParams;
 
   const detail = await getInvitationDetail(id);
   if (!detail) notFound();
@@ -52,6 +59,15 @@ export default async function GeneralPage({
       <Separator />
 
       <GeneralForm invitation={invitation} themes={themes} saved={saved} />
+
+      <Separator />
+
+      <PackageForm
+        invitationId={invitation.id}
+        currentPackage={invitation.package_key as PackageKey}
+        error={packageError}
+        saved={packageSaved === "1"}
+      />
 
       <Separator />
 

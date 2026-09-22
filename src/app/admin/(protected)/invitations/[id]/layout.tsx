@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlements";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { AdminSidebar } from "./AdminSidebar";
@@ -21,7 +22,7 @@ export default async function InvitationEditLayout({
 
   const { data: invitation } = await supabase
     .from("invitations")
-    .select("id, title, status")
+    .select("id, title, status, package_key")
     .eq("id", id)
     .maybeSingle();
 
@@ -43,6 +44,9 @@ export default async function InvitationEditLayout({
             <h1 className="text-lg font-semibold text-foreground">{invitation.title}</h1>
             <Badge variant={invitation.status === "published" ? "default" : "secondary"}>
               {invitation.status}
+            </Badge>
+            <Badge variant="secondary">
+              {PACKAGE_DEFINITIONS[invitation.package_key as PackageKey].label}
             </Badge>
           </div>
 
