@@ -32,6 +32,151 @@ test("defines stable package limits and ordering", () => {
   assert.equal(isPackageUpgrade("signature", "signature"), false);
 });
 
+test("defines the complete package entitlement matrix", () => {
+  const { PACKAGE_DEFINITIONS, getDefaultInvitationFeatures } = loadEntitlements();
+  const expected = {
+    intimate: {
+      label: "Intimate",
+      recommended: false,
+      limits: { maxEvents: 2, maxGalleryImages: 8, maxSponsors: 0 },
+      invitationFeatures: {
+        music: true,
+        countdown: true,
+        maps: true,
+        story: false,
+        gallery: true,
+        dressCode: false,
+        livestream: false,
+        rsvp: true,
+        wishes: false,
+        gift: true,
+        guestPersonalization: true,
+      },
+      defaults: {
+        music: true,
+        countdown: true,
+        maps: true,
+        story: false,
+        gallery: true,
+        dressCode: false,
+        livestream: false,
+        rsvp: true,
+        wishes: false,
+        gift: true,
+        guestPersonalization: true,
+      },
+      capabilities: {
+        instagram: false,
+        rsvpExport: false,
+        sponsorship: false,
+        videoGallery: false,
+        advancedRsvp: false,
+        analytics: false,
+        stylePresets: false,
+      },
+    },
+    signature: {
+      label: "Signature",
+      recommended: true,
+      limits: { maxEvents: 3, maxGalleryImages: 20, maxSponsors: 5 },
+      invitationFeatures: {
+        music: true,
+        countdown: true,
+        maps: true,
+        story: true,
+        gallery: true,
+        dressCode: true,
+        livestream: false,
+        rsvp: true,
+        wishes: true,
+        gift: true,
+        guestPersonalization: true,
+      },
+      defaults: {
+        music: true,
+        countdown: true,
+        maps: true,
+        story: true,
+        gallery: true,
+        dressCode: false,
+        livestream: false,
+        rsvp: true,
+        wishes: true,
+        gift: true,
+        guestPersonalization: true,
+      },
+      capabilities: {
+        instagram: true,
+        rsvpExport: true,
+        sponsorship: true,
+        videoGallery: false,
+        advancedRsvp: false,
+        analytics: false,
+        stylePresets: false,
+      },
+    },
+    grand: {
+      label: "Grand",
+      recommended: false,
+      limits: { maxEvents: 5, maxGalleryImages: 40, maxSponsors: 10 },
+      invitationFeatures: {
+        music: true,
+        countdown: true,
+        maps: true,
+        story: true,
+        gallery: true,
+        dressCode: true,
+        livestream: true,
+        rsvp: true,
+        wishes: true,
+        gift: true,
+        guestPersonalization: true,
+      },
+      defaults: {
+        music: true,
+        countdown: true,
+        maps: true,
+        story: true,
+        gallery: true,
+        dressCode: false,
+        livestream: false,
+        rsvp: true,
+        wishes: true,
+        gift: true,
+        guestPersonalization: true,
+      },
+      capabilities: {
+        instagram: true,
+        rsvpExport: true,
+        sponsorship: true,
+        videoGallery: true,
+        advancedRsvp: true,
+        analytics: true,
+        stylePresets: true,
+      },
+    },
+  };
+
+  for (const [packageKey, packageExpectation] of Object.entries(expected)) {
+    const definition = PACKAGE_DEFINITIONS[packageKey];
+    assert.equal(definition.label, packageExpectation.label);
+    assert.equal(definition.recommended, packageExpectation.recommended);
+    assert.deepEqual(JSON.parse(JSON.stringify(definition.limits)), packageExpectation.limits);
+    assert.deepEqual(
+      JSON.parse(JSON.stringify(definition.invitationFeatures)),
+      packageExpectation.invitationFeatures,
+    );
+    assert.deepEqual(
+      JSON.parse(JSON.stringify(getDefaultInvitationFeatures(packageKey))),
+      packageExpectation.defaults,
+    );
+    assert.deepEqual(
+      JSON.parse(JSON.stringify(definition.capabilities)),
+      packageExpectation.capabilities,
+    );
+  }
+});
+
 test("intersects saved invitation features with package entitlements", () => {
   const { resolveEffectiveInvitationFeatures } = loadEntitlements();
   const requested = {
