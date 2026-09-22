@@ -1,12 +1,3 @@
-/**
- * Generated via Supabase MCP `generate_typescript_types` against project
- * kcmddkxpwhphyqynghsl (invitation-digital) after applying all migrations
- * in supabase/migrations/. Source of truth is the schema, not this file.
- *
- * Regenerate after any schema change:
- *   supabase gen types typescript --project-id kcmddkxpwhphyqynghsl > src/types/database.ts
- */
-
 export type Json =
   | string
   | number
@@ -365,6 +356,7 @@ export type Database = {
           music_path: string | null
           opening_message: string | null
           opening_quote: string | null
+          package_key: string
           published_at: string | null
           settings: Json
           slug: string
@@ -386,6 +378,7 @@ export type Database = {
           music_path?: string | null
           opening_message?: string | null
           opening_quote?: string | null
+          package_key?: string
           published_at?: string | null
           settings?: Json
           slug: string
@@ -407,6 +400,7 @@ export type Database = {
           music_path?: string | null
           opening_message?: string | null
           opening_quote?: string | null
+          package_key?: string
           published_at?: string | null
           settings?: Json
           slug?: string
