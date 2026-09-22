@@ -11,6 +11,8 @@ export const invitationTypeSchema = z.enum([
   "corporate",
 ]);
 
+export const packageKeySchema = z.enum(["intimate", "signature", "grand"]);
+
 export const createInvitationSchema = z.object({
   title: z.string().trim().min(1, "Judul wajib diisi").max(200),
   slug: z
@@ -22,6 +24,12 @@ export const createInvitationSchema = z.object({
     .regex(slugPattern, "Slug hanya boleh huruf kecil, angka, dan tanda strip"),
   type: invitationTypeSchema,
   themeId: z.string().uuid("Theme wajib dipilih"),
+  packageKey: packageKeySchema,
+});
+
+export const updatePackageSchema = z.object({
+  invitationId: z.string().uuid(),
+  packageKey: packageKeySchema,
 });
 
 export const updateGeneralSchema = z.object({

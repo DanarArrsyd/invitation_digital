@@ -1,26 +1,16 @@
 import { randomUUID } from "node:crypto";
 
+import {
+  getDefaultInvitationFeatures,
+  type PackageKey,
+} from "@/lib/packages/entitlements";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 import type { InvitationFeatures } from "@/types/invitation";
 
-export const DEFAULT_FEATURES: InvitationFeatures = {
-  music: true,
-  countdown: true,
-  maps: true,
-  story: true,
-  gallery: true,
-  dressCode: false,
-  livestream: false,
-  rsvp: true,
-  wishes: true,
-  gift: true,
-  guestPersonalization: true,
-};
-
-function defaultSettings(): Json {
+function defaultSettings(packageKey: PackageKey): Json {
   return {
-    features: { ...DEFAULT_FEATURES },
+    features: { ...getDefaultInvitationFeatures(packageKey) },
     music: { autoplayAfterOpen: true, loop: true },
     gallery: { initialDisplayLimit: 8 },
     expiration: { monthsAfterPublish: 3 },
@@ -32,6 +22,7 @@ export async function createInvitation(input: {
   slug: string;
   type: string;
   themeId: string;
+  packageKey: PackageKey;
 }): Promise<{ id: string } | { error: string }> {
   const supabase = await createSupabaseServerClient();
 
@@ -46,8 +37,9 @@ export async function createInvitation(input: {
       slug: input.slug,
       type: input.type,
       theme_id: input.themeId,
+      package_key: input.packageKey,
       status: "draft",
-      settings: defaultSettings(),
+      settings: defaultSettings(input.packageKey),
       created_by: user?.id ?? null,
     })
     .select("id")

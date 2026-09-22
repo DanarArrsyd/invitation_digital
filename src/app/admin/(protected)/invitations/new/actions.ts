@@ -18,6 +18,7 @@ export async function createInvitationAction(
     slug: formData.get("slug"),
     type: formData.get("type"),
     themeId: formData.get("themeId"),
+    packageKey: formData.get("packageKey"),
   });
 
   if (!parsed.success) {
