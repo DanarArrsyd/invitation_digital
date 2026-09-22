@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PACKAGE_DEFINITIONS, PACKAGE_KEYS } from "@/lib/packages/entitlements";
 import { slugify } from "@/lib/utils/slug";
 import type { Tables } from "@/types/database";
 
@@ -91,6 +92,25 @@ export function NewInvitationForm({ themes }: { themes: Tables<"themes">[] }) {
                 {theme.name}
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="packageKey">Package</Label>
+        <Select name="packageKey">
+          <SelectTrigger id="packageKey" className="w-full">
+            <SelectValue placeholder="Select a package" />
+          </SelectTrigger>
+          <SelectContent>
+            {PACKAGE_KEYS.map((key) => {
+              const definition = PACKAGE_DEFINITIONS[key];
+              return (
+                <SelectItem key={key} value={key}>
+                  {definition.label}{definition.recommended ? " — Recommended" : ""}
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
       </div>
