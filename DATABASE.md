@@ -124,8 +124,15 @@ pre-existing invitation to `grand` before setting the `intimate` default for
 new rows. Admin creation requires an explicit selection; the database default
 is a fallback. Package definitions and limits live in application code, not a
 separate `packages` table. The package-key migration was applied to the linked
-remote project and its pilot row was verified as `grand`; the later atomic
-event-capacity migration is still pending remote rollout.
+remote project and its pilot row was verified as `grand`. The later
+`20260923000001_atomic_event_capacity.sql` and
+`20260923000002_package_integrity.sql` migrations are pending remote rollout
+in that order. The second migration adds `SECURITY INVOKER` triggers that
+serialize child inserts with package changes through the parent row lock,
+validate every downgrade conflict in the package update transaction, prevent
+event/gallery reparenting, and reject disallowed feature, metadata, and wish
+writes. Existing content is preserved; edits and deletes remain available.
+These SQL limits mirror the application registry and must be updated together.
 
 Future:
 

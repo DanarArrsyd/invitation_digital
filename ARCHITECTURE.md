@@ -258,13 +258,18 @@ lives in themes: themes receive the normalized data and do not import package
 definitions or display package upgrade messages.
 
 The registry currently limits events to 2/3/5 and gallery images to 8/20/40
-for Intimate/Signature/Grand. Server actions enforce limits before creation or
-upload; the event insert trigger also serializes capacity checks in the
-database. Editing and deletion remain possible at a limit. Downgrades report
-all current capacity and feature conflicts and preserve content until an admin
-resolves them. Future capabilities in the registry do not imply their product
-features are implemented. Customer self-service and payments remain outside
-this foundation.
+for Intimate/Signature/Grand. Server actions preflight additions; database
+triggers serialize event and gallery inserts with package changes on the
+invitation row. A package update validates all current capacity and enabled
+feature conflicts in that same transaction. Settings writes are checked
+against the current package, and public wish inserts recheck the saved toggle
+under the same lock. Editing and deletion remain possible at a limit. Intimate
+keeps previously saved Instagram and Dress Code content but locks new edits.
+The SQL guard mirrors the typed registry and must change with any package
+matrix revision. Gallery upload preflight still operates per batch, so two
+simultaneous batches may partially complete; there is no batch reservation.
+Future capabilities in the registry do not imply their product features are
+implemented. Customer self-service and payments remain outside this foundation.
 
 ---
 

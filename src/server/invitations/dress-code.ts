@@ -1,3 +1,4 @@
+import { getRequiredPackageForFeature, PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlements";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { parseHexColorList } from "@/lib/utils/dressCode";
 import type { Json } from "@/types/database";
@@ -21,7 +22,7 @@ export async function updateDressCode(input: {
 
   const { data: current, error: readError } = await supabase
     .from("invitations")
-    .select("settings, updated_at")
+    .select("settings, updated_at, package_key")
     .eq("id", input.invitationId)
     .maybeSingle();
   if (readError || !current) return { error: "Undangan tidak dapat dimuat." };
@@ -32,6 +33,11 @@ export async function updateDressCode(input: {
   ].filter((g) => g.label && g.colors.length > 0);
 
   const description = input.description.trim();
+  const requiredPackage = getRequiredPackageForFeature("dressCode");
+  if ((description || groups.length > 0) && requiredPackage &&
+      !PACKAGE_DEFINITIONS[current.package_key as PackageKey].invitationFeatures.dressCode) {
+    return { error: `Dress Code membutuhkan paket ${PACKAGE_DEFINITIONS[requiredPackage].label}.` };
+  }
   const settings = record(current.settings);
   const dressCode = { description: description || null, groups };
 
@@ -43,6 +49,7 @@ export async function updateDressCode(input: {
     .select("id")
     .maybeSingle();
 
+  if (error?.code === "P0001") return { error: error.message };
   if (error) return { error: "Dress code gagal disimpan. Silakan coba lagi." };
   if (!saved) return { error: "Data berubah. Muat ulang halaman lalu simpan kembali." };
   return null;

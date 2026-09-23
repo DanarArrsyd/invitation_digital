@@ -1,3 +1,4 @@
+import { getRequiredPackageForFeature, PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlements";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { normalizeInstagramProfile } from "@/lib/utils/instagram";
 import type { Json } from "@/types/database";
@@ -29,10 +30,16 @@ export async function updatePersonInstagram(input: {
 
   const { data: current, error: readError } = await supabase
     .from("invitations")
-    .select("settings, updated_at")
+    .select("settings, updated_at, package_key")
     .eq("id", input.invitationId)
     .maybeSingle();
   if (readError || !current) return { error: "Undangan tidak dapat dimuat." };
+
+  const requiredPackage = getRequiredPackageForFeature("instagram");
+  if (profile && requiredPackage &&
+      !PACKAGE_DEFINITIONS[current.package_key as PackageKey].capabilities.instagram) {
+    return { error: `Instagram membutuhkan paket ${PACKAGE_DEFINITIONS[requiredPackage].label}.` };
+  }
 
   const settings = record(current.settings);
   const socials = record(settings.personSocials);
@@ -48,6 +55,7 @@ export async function updatePersonInstagram(input: {
     .select("id")
     .maybeSingle();
 
+  if (error?.code === "P0001") return { error: error.message };
   if (error) return { error: "Instagram gagal disimpan. Silakan coba lagi." };
   if (!saved) return { error: "Data berubah. Muat ulang halaman lalu simpan kembali." };
   return null;

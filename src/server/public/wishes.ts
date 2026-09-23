@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getSessionId } from "@/lib/analytics/session";
+import { isPackageKey, PACKAGE_DEFINITIONS } from "@/lib/packages/entitlements";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sanitizePlainText } from "@/lib/security/sanitize";
 import { verifyTurnstileToken } from "@/lib/turnstile/verify";
@@ -11,6 +12,8 @@ export interface SubmitWishResult {
   ok: boolean;
   error?: string;
 }
+
+const WISH_UNAVAILABLE_MESSAGE = "Ucapan tidak tersedia untuk undangan ini.";
 
 export async function submitWish(input: unknown): Promise<SubmitWishResult> {
   const parsed = publicWishSchema.safeParse(input);
@@ -30,12 +33,19 @@ export async function submitWish(input: unknown): Promise<SubmitWishResult> {
 
   const { data: invitation } = await supabase
     .from("invitations")
-    .select("id, status")
+    .select("id, status, package_key, settings")
     .eq("id", invitationId)
     .maybeSingle();
 
   if (!invitation || invitation.status !== "published") {
     return { ok: false, error: "Undangan tidak ditemukan." };
+  }
+
+  const settings = invitation.settings as { features?: { wishes?: unknown } } | null;
+  if (!isPackageKey(invitation.package_key) ||
+      !PACKAGE_DEFINITIONS[invitation.package_key].invitationFeatures.wishes ||
+      settings?.features?.wishes !== true) {
+    return { ok: false, error: WISH_UNAVAILABLE_MESSAGE };
   }
 
   let guestId: string | null = null;
@@ -74,6 +84,9 @@ export async function submitWish(input: unknown): Promise<SubmitWishResult> {
   });
 
   if (error) {
+    if (error.code === "P0001" && error.message === WISH_UNAVAILABLE_MESSAGE) {
+      return { ok: false, error: WISH_UNAVAILABLE_MESSAGE };
+    }
     return { ok: false, error: "Gagal mengirim ucapan. Coba lagi." };
   }
 

@@ -309,7 +309,6 @@ export async function upsertEvent(input: {
   }
 
   const row = {
-    invitation_id: input.invitationId,
     event_type: input.eventType,
     title: input.title,
     event_date: input.eventDate,
@@ -322,10 +321,22 @@ export async function upsertEvent(input: {
     sort_order: input.sortOrder,
   };
 
-  const { error } = input.id
-    ? await supabase.from("invitation_events").update(row).eq("id", input.id)
-    : await supabase.from("invitation_events").insert(row);
+  if (input.id) {
+    const { data, error } = await supabase
+      .from("invitation_events")
+      .update(row)
+      .eq("id", input.id)
+      .eq("invitation_id", input.invitationId)
+      .select("id")
+      .maybeSingle();
+    if (error) return { error: error.message };
+    return data ? null : { error: "Acara tidak ditemukan pada undangan ini." };
+  }
 
+  const { error } = await supabase.from("invitation_events").insert({
+    ...row,
+    invitation_id: input.invitationId,
+  });
   return error ? { error: error.message } : null;
 }
 

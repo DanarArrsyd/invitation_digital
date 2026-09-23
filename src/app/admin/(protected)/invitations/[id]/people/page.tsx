@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getRequiredPackageForFeature, PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlements";
 import { getPersonInstagram } from "@/lib/utils/instagram";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import { getInvitationDetail } from "@/server/invitations/queries";
@@ -24,6 +25,8 @@ export default async function PeoplePage({
   if (!detail) notFound();
 
   const { invitation, people } = detail;
+  const instagramLocked = !PACKAGE_DEFINITIONS[invitation.package_key as PackageKey].capabilities.instagram;
+  const instagramPackage = getRequiredPackageForFeature("instagram");
 
   return (
     <div className="flex flex-col gap-6">
@@ -109,21 +112,25 @@ export default async function PeoplePage({
           <form action={updatePersonInstagramAction} className="mt-5 flex flex-col gap-3 border-t border-neutral-200 pt-5">
             <input type="hidden" name="invitationId" value={invitation.id} />
             <input type="hidden" name="personId" value={person.id} />
-            <Label htmlFor={`instagram-${person.id}`}>Instagram (opsional)</Label>
-            <Input
-              id={`instagram-${person.id}`}
-              name="instagram"
-              maxLength={200}
-              autoCapitalize="none"
-              spellCheck={false}
-              placeholder="@username atau https://www.instagram.com/username/"
-              defaultValue={getPersonInstagram(invitation.settings, person.id)?.url ?? ""}
-              aria-describedby={`instagram-help-${person.id}`}
-            />
-            <p id={`instagram-help-${person.id}`} className="text-sm text-neutral-500">
-              Tampil di bawah profil pada undangan. Kosongkan untuk menyembunyikan tautan.
-            </p>
-            <Button type="submit" variant="outline" className="w-fit">Simpan Instagram</Button>
+            <fieldset disabled={instagramLocked} className="flex flex-col gap-3">
+              <Label htmlFor={`instagram-${person.id}`}>Instagram (opsional)</Label>
+              <Input
+                id={`instagram-${person.id}`}
+                name="instagram"
+                maxLength={200}
+                autoCapitalize="none"
+                spellCheck={false}
+                placeholder="@username atau https://www.instagram.com/username/"
+                defaultValue={getPersonInstagram(invitation.settings, person.id)?.url ?? ""}
+                aria-describedby={`instagram-help-${person.id}`}
+              />
+              <p id={`instagram-help-${person.id}`} className="text-sm text-neutral-500">
+                {instagramLocked && instagramPackage
+                  ? `Tersedia di ${PACKAGE_DEFINITIONS[instagramPackage].label}. Konten tersimpan tetap disimpan.`
+                  : "Tampil di bawah profil pada undangan. Kosongkan untuk menyembunyikan tautan."}
+              </p>
+              <Button type="submit" variant="outline" className="w-fit">Simpan Instagram</Button>
+            </fieldset>
           </form>
         </div>
       ))}

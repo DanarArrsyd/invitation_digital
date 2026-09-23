@@ -6,7 +6,10 @@ import ts from "typescript";
 import { normalizeInstagramProfile } from "../src/lib/utils/instagram.ts";
 
 const source = ts.transpileModule(readFileSync(new URL("../src/server/invitations/person-socials.ts", import.meta.url), "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
-async function run({ user = true, person = true, conflict = false, instagram = "@nama.uji" } = {}) {
+const entitlementSource = ts.transpileModule(readFileSync(new URL("../src/lib/packages/entitlements.ts", import.meta.url), "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+const entitlements = {};
+vm.runInNewContext(entitlementSource, { exports: entitlements, module: { exports: entitlements } });
+async function run({ user = true, person = true, conflict = false, instagram = "@nama.uji", packageKey = "grand", writeError = null } = {}) {
   const settings = { features: { gallery: false }, expiration: { monthsAfterPublish: 3 }, personSocials: { other: { instagram: "@other" }, person: { instagram: "@old", note: "keep" } } };
   const writes = [];
   const filters = [];
@@ -18,13 +21,14 @@ async function run({ user = true, person = true, conflict = false, instagram = "
         select() { return query; },
         eq(key, value) { filters.push([table, key, value]); return query; },
         update(value) { write = true; writes.push(value); return query; },
-        async maybeSingle() { return {data: table === "invitation_people" ? (person ? {id: "person"} : null) : write ? (conflict ? null : {id: "invitation"}) : {settings, updated_at: "version"}, error: null}; },
+        async maybeSingle() { return {data: table === "invitation_people" ? (person ? {id: "person"} : null) : write ? (conflict || writeError ? null : {id: "invitation"}) : {settings, updated_at: "version", package_key: packageKey}, error: write ? writeError : null}; },
       };
       return query;
     },
   };
   const exports = {};
   vm.runInNewContext(source, { exports, URL, require(name) {
+    if (name === "@/lib/packages/entitlements") return entitlements;
     if (name.includes("supabase/server")) return {createSupabaseServerClient: async () => supabase};
     if (name.includes("utils/instagram")) return {normalizeInstagramProfile};
     throw new Error(name);
@@ -61,4 +65,18 @@ test("rejects unsafe input and reports concurrent updates", async () => {
   assert.ok(invalid.result?.error);
   assert.equal(invalid.writes.length, 0);
   assert.ok((await run({conflict: true})).result?.error);
+});
+test("Intimate rejects new Instagram while allowing existing links to be cleared", async () => {
+  const blocked = await run({packageKey: "intimate"});
+  assert.equal(blocked.result?.error, "Instagram membutuhkan paket Signature.");
+  assert.equal(blocked.writes.length, 0);
+
+  const cleared = await run({packageKey: "intimate", instagram: ""});
+  assert.equal(cleared.result, null);
+  assert.equal(cleared.writes.length, 1);
+  assert.equal(cleared.writes[0].settings.personSocials.person.instagram, undefined);
+});
+test("a raced downgrade returns the database's Instagram package message", async () => {
+  const result = await run({packageKey: "signature", writeError: {code: "P0001", message: "Instagram membutuhkan paket Signature."}});
+  assert.equal(result.result?.error, "Instagram membutuhkan paket Signature.");
 });
