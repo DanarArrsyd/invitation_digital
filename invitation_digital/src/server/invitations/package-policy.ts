@@ -1,6 +1,4 @@
 import {
-  findPackageChangeConflicts,
-  isPackageDowngrade,
   isPackageKey,
   type PackageKey,
 } from "@/lib/packages/entitlements";
@@ -66,18 +64,8 @@ export async function updateInvitationPackage(input: {
   invitationId: string;
   packageKey: PackageKey;
 }): Promise<{ error: string } | null> {
-  const usage = await getInvitationPackageUsage(input.invitationId);
-  if ("error" in usage) return usage;
-
-  if (isPackageDowngrade(usage.packageKey, input.packageKey)) {
-    const conflicts = findPackageChangeConflicts(input.packageKey, usage);
-    if (conflicts.length > 0) {
-      return {
-        error: `Paket tidak dapat diubah karena: ${conflicts.map((conflict) => conflict.message).join(" ")}`,
-      };
-    }
-  }
-
+  // The invitation update and its database trigger share one transaction. The
+  // trigger locks this row and reports all conflicts from the current snapshot.
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase
     .from("invitations")

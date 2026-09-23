@@ -52,7 +52,7 @@ export function PackageForm({
                 />
                 <label
                   htmlFor={`package-${key}`}
-                  className="flex cursor-pointer flex-col gap-3 rounded-lg border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-400 peer-checked:border-primary peer-checked:bg-primary/5"
+                  className="flex cursor-pointer flex-col gap-3 rounded-lg border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-400 peer-checked:border-primary peer-checked:bg-primary/5 peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2"
                 >
                   <span className="flex flex-wrap items-center gap-2">
                     <span className="font-medium text-neutral-900">{definition.label}</span>
