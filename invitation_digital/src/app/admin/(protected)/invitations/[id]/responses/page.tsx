@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -9,7 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getInvitationAnalyticsSummary, getInvitationResponses } from "@/server/invitations/queries";
+import { PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlements";
+import { getInvitationAnalyticsSummary, getInvitationDetail, getInvitationResponses } from "@/server/invitations/queries";
 
 import { deleteWishAction, hideWishAction, unhideWishAction } from "./actions";
 import { DeleteWishButton } from "./DeleteWishButton";
@@ -24,17 +27,23 @@ export default async function ResponsesPage({
   const { id } = await params;
   const { error } = await searchParams;
 
-  const [{ rsvps, wishes }, analytics] = await Promise.all([
+  const [{ rsvps, wishes }, detail] = await Promise.all([
     getInvitationResponses(id),
-    getInvitationAnalyticsSummary(id),
+    getInvitationDetail(id),
   ]);
+  if (!detail) notFound();
+  const analytics = PACKAGE_DEFINITIONS[detail.invitation.package_key as PackageKey].capabilities.analytics
+    ? await getInvitationAnalyticsSummary(id)
+    : null;
   const attending = rsvps.filter((r) => r.attendance === "attending").length;
   const notAttending = rsvps.filter((r) => r.attendance === "not_attending").length;
 
   const metrics = [
-    { label: "Total Opens", value: analytics.totalOpens },
-    { label: "Unique Visitors", value: analytics.uniqueVisitors },
-    { label: "Cover Opened", value: analytics.coverOpened },
+    ...(analytics ? [
+      { label: "Total Opens", value: analytics.totalOpens },
+      { label: "Unique Visitors", value: analytics.uniqueVisitors },
+      { label: "Cover Opened", value: analytics.coverOpened },
+    ] : []),
     { label: "RSVP Total", value: rsvps.length },
     { label: "Hadir", value: attending },
     { label: "Tidak Hadir", value: notAttending },
@@ -56,6 +65,11 @@ export default async function ResponsesPage({
             </div>
           ))}
         </div>
+        {!analytics ? (
+          <div className="mt-3 rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-500">
+            Visitor analytics tersedia di Grand
+          </div>
+        ) : null}
       </section>
 
       <section>
