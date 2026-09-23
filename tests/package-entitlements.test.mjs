@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import test from "node:test";
 import ts from "typescript";
@@ -22,6 +22,251 @@ function loadEntitlements() {
   });
   return exports;
 }
+
+// Exercise the real mutation; replace only the external database boundary.
+function loadFeatureMutation(packageKey, settings, { readError, writeError } = {}) {
+  const writes = [];
+  const source = ts.transpileModule(
+    readFileSync(new URL("../src/server/invitations/mutations.ts", import.meta.url), "utf8"),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+  ).outputText;
+  const exports = {};
+  vm.runInNewContext(source, {
+    exports,
+    module: { exports },
+    require(name) {
+      if (name === "node:crypto") return nodeRequire(name);
+      if (name === "@/lib/packages/entitlements") return loadEntitlements();
+      if (name === "@/lib/supabase/server") return {
+        createSupabaseServerClient: async () => ({
+          from(table) {
+            assert.equal(table, "invitations");
+            return {
+              select(columns) {
+                return { eq: () => ({ single: async () => ({
+                  data: Object.fromEntries(columns.split(",").map((column) => {
+                    const key = column.trim();
+                    return [key, { settings, package_key: packageKey }[key]];
+                  })),
+                  error: readError ? { message: readError } : null,
+                }) }) };
+              },
+              update(payload) {
+                writes.push(JSON.parse(JSON.stringify(payload)));
+                return { eq: async (key, value) => {
+                  assert.equal(key, "id");
+                  assert.equal(value, "invitation-id");
+                  return { error: writeError ? { message: writeError } : null };
+                } };
+              },
+            };
+          },
+        }),
+      };
+      throw new Error(`Unexpected feature mutation import: ${name}`);
+    },
+  });
+  return { updateInvitationFeatures: exports.updateInvitationFeatures, writes };
+}
+
+// Keep pages, entitlement helpers, query code and UI primitives real. The fake
+// database is the only read boundary and records analytics table access.
+function loadFeatureAdminPage(section, packageKey, settings = {}, { empty = false, missing = false } = {}) {
+  const tableReads = [];
+  const invitation = { id: "invitation-id", package_key: packageKey, settings };
+  const rows = {
+    rsvps: empty ? [] : [
+      { id: "rsvp-1", invitation_id: "invitation-id", guest_id: null, guest_name: "Alya", attendance: "attending", created_at: "2026-09-01T00:00:00Z", updated_at: "2026-09-01T00:00:00Z" },
+      { id: "rsvp-2", invitation_id: "invitation-id", guest_id: null, guest_name: "Bima", attendance: "not_attending", created_at: "2026-09-01T00:00:00Z", updated_at: "2026-09-01T00:00:00Z" },
+    ],
+    wishes: [],
+    analytics_events: [
+      { event_type: "invitation_open", session_id: "session-1" },
+      { event_type: "invitation_open", session_id: "session-1" },
+      { event_type: "cover_opened", session_id: "session-1" },
+    ],
+  };
+  const supabase = { from(table) {
+    tableReads.push(table);
+    const query = {
+      select: () => query,
+      eq: () => query,
+      order: () => query,
+      maybeSingle: async () => ({ data: missing ? null : invitation, error: null }),
+      single: async () => ({ data: missing ? null : invitation, error: null }),
+      then: (resolve) => resolve({ data: rows[table] ?? [], error: null }),
+    };
+    return query;
+  } };
+  const cache = new Map();
+  function load(path) {
+    if (cache.has(path)) return cache.get(path);
+    const file = [".tsx", ".ts"].map((ext) => new URL(`../src/${path}${ext}`, import.meta.url)).find(existsSync);
+    assert.ok(file, `Module exists: ${path}`);
+    const source = ts.transpileModule(readFileSync(file, "utf8"), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
+    }).outputText;
+    const exports = {};
+    cache.set(path, exports);
+    vm.runInNewContext(source, {
+      exports,
+      module: { exports },
+      require(name) {
+        if (name === "next/navigation") return { notFound: () => { throw new Error("NOT_FOUND"); } };
+        if (name === "@/lib/supabase/server") return { createSupabaseServerClient: async () => supabase };
+        if (name === "./actions") return {
+          updateFeaturesAction() {}, deleteWishAction() {}, hideWishAction() {}, unhideWishAction() {},
+        };
+        if (name.startsWith("@/")) return load(name.slice(2));
+        if (name.startsWith("./")) return load(`${path.slice(0, path.lastIndexOf("/"))}/${name.slice(2)}`);
+        return nodeRequire(name);
+      },
+    });
+    return exports;
+  }
+  return { Page: load(`app/admin/(protected)/invitations/[id]/${section}/page`).default, tableReads };
+}
+
+async function renderAdminPage(Page, searchParams = {}) {
+  return nodeRequire("react-dom/server").renderToStaticMarkup(await Page({
+    params: Promise.resolve({ id: "invitation-id" }),
+    searchParams: Promise.resolve(searchParams),
+  }));
+}
+
+// Using stale saved true values in a locked switch would make an unavailable
+// feature appear active; hiding the row would remove the upgrade explanation.
+test("features admin keeps unavailable controls visible, disabled and unchecked", async () => {
+  const { Page } = loadFeatureAdminPage("features", "intimate", {
+    features: { story: true, wishes: true, dressCode: true, livestream: true, music: true, rsvp: false },
+  });
+  const html = await renderAdminPage(Page);
+  for (const key of ["story", "wishes", "dressCode", "livestream"]) {
+    const control = html.match(new RegExp(`<input(?=[^>]*id="${key}")[^>]*>`))?.[0];
+    assert.ok(control, `${key} switch remains visible`);
+    assert.match(control, /disabled=""/);
+    assert.doesNotMatch(control, /checked=""/);
+  }
+  assert.match(html, /Tersedia di Signature/);
+  assert.match(html, /Tersedia di Grand/);
+});
+
+test("features admin uses saved checked and unchecked values only for granted controls", async () => {
+  for (const packageKey of ["signature", "grand"]) {
+    const { Page } = loadFeatureAdminPage("features", packageKey, {
+      features: { story: true, wishes: false, music: false, livestream: true },
+    });
+    const html = await renderAdminPage(Page, { saved: "1" });
+    for (const [key, checked, disabled] of [
+      ["story", true, false], ["wishes", false, false], ["music", false, false],
+      ["livestream", packageKey === "grand", packageKey !== "grand"],
+    ]) {
+      const control = html.match(new RegExp(`<input(?=[^>]*id="${key}")[^>]*>`))?.[0];
+      assert.ok(control, key);
+      assert.equal(control.includes('checked=""'), checked, key);
+      assert.equal(control.includes('disabled=""'), disabled, key);
+    }
+    assert.match(html, /Saved\./);
+  }
+});
+
+// Querying analytics before package authorization can leak visitor metrics and
+// makes locked plans depend on analytics service availability.
+test("responses admin skips analytics reads for locked packages but keeps RSVP totals and rows", async () => {
+  for (const packageKey of ["intimate", "signature"]) {
+    const { Page, tableReads } = loadFeatureAdminPage("responses", packageKey);
+    const html = await renderAdminPage(Page);
+    assert.equal(tableReads.includes("analytics_events"), false);
+    assert.match(html, /Visitor analytics tersedia di Grand/);
+    assert.match(html, /RSVP Total<\/p><p[^>]*>2<\/p>/);
+    assert.match(html, /Hadir<\/p><p[^>]*>1<\/p>/);
+    assert.match(html, /Tidak Hadir<\/p><p[^>]*>1<\/p>/);
+    assert.match(html, /Alya/);
+    assert.match(html, /Bima/);
+    assert.doesNotMatch(html, /Total Opens|Unique Visitors|Cover Opened/);
+  }
+});
+
+test("responses admin queries and renders visitor analytics for Grand alongside RSVP data", async () => {
+  const { Page, tableReads } = loadFeatureAdminPage("responses", "grand");
+  const html = await renderAdminPage(Page);
+  assert.equal(tableReads.filter((table) => table === "analytics_events").length, 1);
+  assert.match(html, /Total Opens<\/p><p[^>]*>2<\/p>/);
+  assert.match(html, /Unique Visitors<\/p><p[^>]*>1<\/p>/);
+  assert.match(html, /Cover Opened<\/p><p[^>]*>1<\/p>/);
+  assert.match(html, /RSVP Total<\/p><p[^>]*>2<\/p>/);
+  assert.match(html, /Alya/);
+  assert.doesNotMatch(html, /Visitor analytics tersedia/);
+});
+
+test("locked responses admin retains empty and error states", async () => {
+  const { Page, tableReads } = loadFeatureAdminPage("responses", "intimate", {}, { empty: true });
+  const html = await renderAdminPage(Page, { error: "Response failed" });
+  assert.equal(tableReads.includes("analytics_events"), false);
+  assert.match(html, /No RSVP yet\./);
+  assert.match(html, /No wishes yet\./);
+  assert.match(html, /Response failed/);
+  assert.match(html, /RSVP Total<\/p><p[^>]*>0<\/p>/);
+});
+
+test("responses admin returns not found before analytics when the invitation is missing", async () => {
+  const { Page, tableReads } = loadFeatureAdminPage("responses", "grand", {}, { missing: true });
+  await assert.rejects(renderAdminPage(Page), /NOT_FOUND/);
+  assert.equal(tableReads.includes("analytics_events"), false);
+});
+
+// Missing entitlement validation would accept a gated toggle and write the other
+// submitted changes. Each rejection must leave the entire settings row intact.
+test("rejects unavailable feature updates before any settings write", async () => {
+  for (const [packageKey, feature, label, required] of [
+    ["intimate", "story", "Love Story", "Signature"],
+    ["intimate", "wishes", "Wishes", "Signature"],
+    ["intimate", "dressCode", "Dress Code", "Signature"],
+    ["signature", "livestream", "Livestream", "Grand"],
+  ]) {
+    const settings = { music: { loop: false }, features: { music: true } };
+    const { updateInvitationFeatures, writes } = loadFeatureMutation(packageKey, settings);
+    const features = { ...loadEntitlements().getDefaultInvitationFeatures(packageKey), music: false, [feature]: true };
+
+    const result = await updateInvitationFeatures({ invitationId: "invitation-id", features });
+
+    assert.equal(result?.error, `Fitur ${label} membutuhkan paket ${required}.`);
+    assert.deepEqual(writes, []);
+    assert.deepEqual(settings, { music: { loop: false }, features: { music: true } });
+  }
+});
+
+test("saves allowed feature changes while preserving unrelated settings exactly", async () => {
+  for (const packageKey of ["intimate", "signature", "grand"]) {
+    const settings = {
+      features: { music: true, story: true },
+      music: { loop: false, autoplayAfterOpen: true },
+      gallery: { initialDisplayLimit: 5 },
+      personSocials: { person: { instagram: "https://instagram.com/example" } },
+      dressCode: { colors: ["ivory"] },
+      custom: { nested: [null, "keep", false, 0] },
+    };
+    const before = JSON.parse(JSON.stringify(settings));
+    const { updateInvitationFeatures, writes } = loadFeatureMutation(packageKey, settings);
+    const features = JSON.parse(JSON.stringify(loadEntitlements().getDefaultInvitationFeatures(packageKey)));
+    features.music = false;
+    if (packageKey === "grand") features.livestream = true;
+
+    assert.equal(await updateInvitationFeatures({ invitationId: "invitation-id", features }), null);
+    assert.deepEqual(writes, [{ settings: { ...before, features } }]);
+    assert.deepEqual(settings, before);
+  }
+});
+
+test("returns feature settings read and write failures", async () => {
+  const features = loadEntitlements().getDefaultInvitationFeatures("intimate");
+  for (const options of [{ readError: "Read failed" }, { writeError: "Write failed" }]) {
+    const { updateInvitationFeatures, writes } = loadFeatureMutation("intimate", {}, options);
+    const result = await updateInvitationFeatures({ invitationId: "invitation-id", features });
+    assert.equal(result?.error, options.readError ?? options.writeError);
+    assert.equal(writes.length, options.readError ? 0 : 1);
+  }
+});
 
 function loadCreateInvitationAction() {
   const validationSource = ts.transpileModule(

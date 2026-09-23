@@ -2,6 +2,9 @@ import { randomUUID } from "node:crypto";
 
 import {
   getDefaultInvitationFeatures,
+  getRequiredPackageForFeature,
+  PACKAGE_DEFINITIONS,
+  resolveEffectiveInvitationFeatures,
   validatePackageCapacity,
   type PackageKey,
 } from "@/lib/packages/entitlements";
@@ -117,12 +120,33 @@ export async function updateInvitationFeatures(input: {
 
   const { data: current, error: readError } = await supabase
     .from("invitations")
-    .select("settings")
+    .select("settings, package_key")
     .eq("id", input.invitationId)
     .single();
 
   if (readError) {
     return { error: readError.message };
+  }
+
+  const effectiveFeatures = resolveEffectiveInvitationFeatures(
+    current.package_key as PackageKey,
+    input.features,
+  );
+  for (const key of Object.keys(input.features) as (keyof InvitationFeatures)[]) {
+    if (input.features[key] && !effectiveFeatures[key]) {
+      const requiredPackage = getRequiredPackageForFeature(key);
+      const labels: Partial<Record<keyof InvitationFeatures, string>> = {
+        story: "Love Story",
+        wishes: "Wishes",
+        dressCode: "Dress Code",
+        livestream: "Livestream",
+      };
+      return {
+        error: requiredPackage
+          ? `Fitur ${labels[key] ?? key} membutuhkan paket ${PACKAGE_DEFINITIONS[requiredPackage].label}.`
+          : `Fitur ${labels[key] ?? key} tidak tersedia.`,
+      };
+    }
   }
 
   const settings = (current.settings ?? {}) as Record<string, unknown>;

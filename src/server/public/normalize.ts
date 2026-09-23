@@ -1,5 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import {
+  PACKAGE_DEFINITIONS,
+  resolveEffectiveInvitationFeatures,
+  type PackageKey,
+} from "@/lib/packages/entitlements";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import type { Database, Tables } from "@/types/database";
 import type { GalleryItem, InvitationFeatures, PublicInvitation } from "@/types/invitation";
@@ -68,10 +73,18 @@ export async function loadNormalizedInvitation(
     if (res.error) throw new Error(res.error.message);
   }
 
-  const settings = (invitation.settings ?? {}) as {
+  const settings = (invitation.settings ?? {}) as Record<string, unknown> & {
     features?: Partial<InvitationFeatures>;
   };
-  const features: InvitationFeatures = { ...DEFAULT_FEATURES, ...settings.features };
+  const packageKey = invitation.package_key as PackageKey;
+  const features = resolveEffectiveInvitationFeatures(
+    packageKey,
+    { ...DEFAULT_FEATURES, ...settings.features },
+  );
+  const effectiveSettings: Record<string, unknown> = { ...settings, features };
+  const definition = PACKAGE_DEFINITIONS[packageKey];
+  if (!definition.capabilities.instagram) delete effectiveSettings.personSocials;
+  if (!definition.invitationFeatures.dressCode) delete effectiveSettings.dressCode;
 
   return {
     id: invitation.id,
@@ -86,7 +99,7 @@ export async function loadNormalizedInvitation(
 
     theme: {
       slug: invitation.theme.slug,
-      settings: settings as Record<string, unknown>,
+      settings: effectiveSettings,
     },
 
     people: (peopleRes.data ?? []).map((p) => ({
