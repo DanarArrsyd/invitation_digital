@@ -231,6 +231,43 @@ Themes must not care about raw database table shape.
 
 ---
 
+## 5.1. Package Entitlements
+
+Each invitation has a `package_key` (`intimate`, `signature`, or `grand`). The
+typed package registry in `src/lib/packages/entitlements.ts` defines feature
+availability and content limits. Admin and server mutations use that shared
+policy; the public loader resolves saved feature choices against it before
+passing normalized data to a theme.
+
+```text
+Invitation package_key
+        |
+Package registry and server policy
+        |
+Saved invitation feature choices
+        |
+Effective normalized features
+        |
+Theme renderer
+```
+
+Effective feature = saved choice AND package entitlement. The public normalized
+invitation and its `theme.settings.features` both contain effective values, so
+stale saved switches cannot enable unavailable sections. Package logic never
+lives in themes: themes receive the normalized data and do not import package
+definitions or display package upgrade messages.
+
+The registry currently limits events to 2/3/5 and gallery images to 8/20/40
+for Intimate/Signature/Grand. Server actions enforce limits before creation or
+upload; the event insert trigger also serializes capacity checks in the
+database. Editing and deletion remain possible at a limit. Downgrades report
+all current capacity and feature conflicts and preserve content until an admin
+resolves them. Future capabilities in the registry do not imply their product
+features are implemented. Customer self-service and payments remain outside
+this foundation.
+
+---
+
 ## 6. Theme Registry
 
 Use a registry rather than conditional logic scattered around routes.
