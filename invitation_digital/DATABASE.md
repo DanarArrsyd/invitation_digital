@@ -123,8 +123,9 @@ by `invitations_package_key_check`. The package migration backfills every
 pre-existing invitation to `grand` before setting the `intimate` default for
 new rows. Admin creation requires an explicit selection; the database default
 is a fallback. Package definitions and limits live in application code, not a
-separate `packages` table. The package migration is present locally but has
-not yet been applied to the linked remote project.
+separate `packages` table. The package-key migration was applied to the linked
+remote project and its pilot row was verified as `grand`; the later atomic
+event-capacity migration is still pending remote rollout.
 
 Future:
 
