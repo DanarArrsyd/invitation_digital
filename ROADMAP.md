@@ -126,8 +126,9 @@ Acceptance:
 
 ## Package Entitlements Foundation
 
-Status: Implemented locally; remote migration and production rollout pending
-review. This is managed-service infrastructure, not customer self-service.
+Status: Implemented locally, with the package-key migration applied remotely;
+the atomic event-capacity migration and production rollout are pending review.
+This is managed-service infrastructure, not customer self-service.
 
 - Invitations persist an Intimate, Signature, or Grand package key. The
   migration preserves existing invitations as Grand and defaults future
