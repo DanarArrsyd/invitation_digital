@@ -67,6 +67,113 @@ function loadCreateInvitationAction() {
   return actionExports.createInvitationAction;
 }
 
+function loadGalleryUpload({ invitationResult, galleryResult } = {}) {
+  const calls = { storageWrites: 0, inserts: 0 };
+  const supabase = {
+    from(table) {
+      if (table === "invitations") {
+        return {
+          select: () => ({
+            eq: () => ({
+              single: async () => invitationResult ?? { data: { package_key: "intimate" }, error: null },
+            }),
+          }),
+        };
+      }
+      if (table === "gallery_items") {
+        return {
+          select: () => ({
+            eq: async () => galleryResult ?? { count: 6, error: null },
+          }),
+          insert: async () => {
+            calls.inserts += 1;
+            return { error: null };
+          },
+        };
+      }
+      throw new Error(`Unexpected table: ${table}`);
+    },
+    storage: {
+      from: () => ({
+        upload: async () => {
+          calls.storageWrites += 1;
+          return { error: null };
+        },
+      }),
+    },
+  };
+
+  const source = ts.transpileModule(
+    readFileSync(new URL("../src/server/media/upload.ts", import.meta.url), "utf8"),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+  ).outputText;
+  const exports = {};
+  vm.runInNewContext(source, {
+    exports,
+    module: { exports },
+    require(name) {
+      if (name === "node:crypto") return { randomUUID: () => "test-upload" };
+      if (name === "@/lib/supabase/storage") return { INVITATION_MEDIA_BUCKET: "invitation-media" };
+      if (name === "@/lib/supabase/server") {
+        return { createSupabaseServerClient: async () => supabase };
+      }
+      if (name === "@/lib/validation/media") {
+        return { validateMediaFile: () => ({ ok: true }) };
+      }
+      if (name === "@/lib/packages/entitlements") return loadEntitlements();
+      throw new Error(`Unexpected upload import: ${name}`);
+    },
+  });
+  return { uploadGalleryItems: exports.uploadGalleryItems, calls };
+}
+
+function loadGalleryPage(galleryCount) {
+  const source = ts.transpileModule(
+    readFileSync(
+      new URL("../src/app/admin/(protected)/invitations/[id]/gallery/page.tsx", import.meta.url),
+      "utf8",
+    ),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } },
+  ).outputText;
+  const exports = {};
+  vm.runInNewContext(source, {
+    exports,
+    module: { exports },
+    require(name) {
+      if (name === "react/jsx-runtime") return nodeRequire("react/jsx-runtime");
+      if (name === "next/navigation") {
+        return { notFound: () => { throw new Error("Unexpected notFound"); } };
+      }
+      if (name === "@/components/admin/empty-state") return { EmptyState: "empty-state" };
+      if (name === "@/components/admin/submit-button") return { SubmitButton: "submit-button" };
+      if (name === "@/components/ui/input") return { Input: "input" };
+      if (name === "@/components/ui/label") return { Label: "label" };
+      if (name === "@/lib/packages/entitlements") return loadEntitlements();
+      if (name === "@/lib/supabase/storage") {
+        return { getMediaPublicUrl: (path) => `/media/${path}` };
+      }
+      if (name === "@/server/invitations/queries") {
+        return {
+          getInvitationDetail: async () => ({
+            invitation: { id: "invitation-id", package_key: "intimate" },
+            gallery: Array.from({ length: galleryCount }, (_, index) => ({
+              id: `photo-${index}`,
+              image_path: `photo-${index}.webp`,
+              caption: null,
+              alt_text: null,
+              aspect_ratio: "auto",
+            })),
+          }),
+        };
+      }
+      if (name === "./actions") return { uploadGalleryItemsAction: () => {} };
+      if (name === "./GalleryGrid") return { GalleryGrid: "gallery-grid" };
+      throw new Error(`Unexpected gallery page import: ${name}`);
+    },
+  });
+  return exports.default;
+}
+
 test("defines stable package limits and ordering", () => {
   const { PACKAGE_KEYS, PACKAGE_DEFINITIONS, isPackageUpgrade, isPackageDowngrade } =
     loadEntitlements();
@@ -280,6 +387,76 @@ test("rejects additions beyond event and gallery limits", () => {
     validatePackageCapacity("signature", "gallery", 19, 2).code,
     "PACKAGE_GALLERY_LIMIT_REACHED",
   );
+});
+
+test("checks the whole gallery batch before upload", () => {
+  const { validatePackageCapacity } = loadEntitlements();
+  assert.equal(validatePackageCapacity("intimate", "gallery", 6, 2), null);
+  const error = validatePackageCapacity("intimate", "gallery", 6, 3);
+  assert.equal(error.code, "PACKAGE_GALLERY_LIMIT_REACHED");
+  assert.equal(error.current, 6);
+  assert.equal(error.limit, 8);
+});
+
+test("rejects an over-limit gallery batch before any storage write", async () => {
+  const { uploadGalleryItems, calls } = loadGalleryUpload();
+  const files = ["one.webp", "two.webp", "three.webp"].map((name) => ({
+    name,
+    type: "image/webp",
+  }));
+
+  const result = await uploadGalleryItems("invitation-id", files);
+
+  assert.equal(result?.error, "Paket Intimate mendukung maksimal 8 foto galeri.");
+  assert.equal(calls.storageWrites, 0);
+  assert.equal(calls.inserts, 0);
+});
+
+test("returns gallery lookup errors before writing to storage", async () => {
+  const files = [{ name: "photo.webp", type: "image/webp" }];
+  for (const setup of [
+    { invitationResult: { data: null, error: { message: "Invitation query failed" } }, expected: "Invitation query failed" },
+    { galleryResult: { count: null, error: { message: "Gallery count failed" } }, expected: "Gallery count failed" },
+  ]) {
+    const { uploadGalleryItems, calls } = loadGalleryUpload(setup);
+    const result = await uploadGalleryItems("invitation-id", files);
+    assert.equal(result?.error, setup.expected);
+    assert.equal(calls.storageWrites, 0);
+    assert.equal(calls.inserts, 0);
+  }
+});
+
+test("shows package usage and disables only new uploads when gallery is full", async () => {
+  const { renderToStaticMarkup } = nodeRequire("react-dom/server");
+  const GalleryPage = loadGalleryPage(8);
+  const html = renderToStaticMarkup(await GalleryPage({ params: Promise.resolve({ id: "invitation-id" }) }));
+
+  assert.match(html, /8 dari 8 foto · Paket Intimate · drag foto untuk mengubah urutan/);
+  assert.match(html, /Batas galeri paket tercapai\. Hapus foto atau upgrade paket\./);
+  assert.match(html, /<gallery-grid/);
+  assert.match(html, /<fieldset disabled=""/);
+  assert.doesNotMatch(html, /<form[^>]*disabled/);
+});
+
+test("keeps new uploads available below gallery capacity", async () => {
+  const { renderToStaticMarkup } = nodeRequire("react-dom/server");
+  const GalleryPage = loadGalleryPage(7);
+  const html = renderToStaticMarkup(await GalleryPage({ params: Promise.resolve({ id: "invitation-id" }) }));
+
+  assert.match(html, /7 dari 8 foto · Paket Intimate/);
+  assert.match(html, /<fieldset class=/);
+  assert.doesNotMatch(html, /Batas galeri paket tercapai/);
+});
+
+test("shows upload errors returned through the gallery action", async () => {
+  const { renderToStaticMarkup } = nodeRequire("react-dom/server");
+  const GalleryPage = loadGalleryPage(7);
+  const html = renderToStaticMarkup(await GalleryPage({
+    params: Promise.resolve({ id: "invitation-id" }),
+    searchParams: Promise.resolve({ error: "Paket Intimate mendukung maksimal 8 foto galeri." }),
+  }));
+
+  assert.match(html, /Paket Intimate mendukung maksimal 8 foto galeri\./);
 });
 
 test("allows event edits conceptually without consuming capacity", () => {

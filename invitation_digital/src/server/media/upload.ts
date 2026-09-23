@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import { validatePackageCapacity, type PackageKey } from "@/lib/packages/entitlements";
 import { INVITATION_MEDIA_BUCKET } from "@/lib/supabase/storage";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { type MediaKind, validateMediaFile } from "@/lib/validation/media";
@@ -123,10 +124,26 @@ export async function uploadGalleryItems(
 ): Promise<{ error: string } | null> {
   const supabase = await createSupabaseServerClient();
 
-  const { count } = await supabase
-    .from("gallery_items")
-    .select("id", { count: "exact", head: true })
-    .eq("invitation_id", invitationId);
+  const [{ data: invitation, error: invitationError }, { count, error: countError }] =
+    await Promise.all([
+      supabase.from("invitations").select("package_key").eq("id", invitationId).single(),
+      supabase
+        .from("gallery_items")
+        .select("id", { count: "exact", head: true })
+        .eq("invitation_id", invitationId),
+    ]);
+
+  if (invitationError) return { error: invitationError.message };
+  if (countError) return { error: countError.message };
+  if (!invitation) return { error: "Undangan tidak ditemukan." };
+
+  const capacityError = validatePackageCapacity(
+    invitation.package_key as PackageKey,
+    "gallery",
+    count ?? 0,
+    files.length,
+  );
+  if (capacityError) return { error: capacityError.message };
 
   let nextSortOrder = count ?? 0;
 
