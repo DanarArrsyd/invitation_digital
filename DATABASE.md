@@ -86,6 +86,7 @@ invitations
 - title text NOT NULL
 - slug text UNIQUE NOT NULL
 - theme_id uuid FK themes(id)
+- package_key text NOT NULL DEFAULT 'intimate'
 - status text NOT NULL DEFAULT 'draft'
 - event_date date
 - venue_summary text
@@ -116,6 +117,14 @@ Recommended initial types:
 ```text
 wedding
 ```
+
+Allowed `package_key` values are `intimate`, `signature`, and `grand`, enforced
+by `invitations_package_key_check`. The package migration backfills every
+pre-existing invitation to `grand` before setting the `intimate` default for
+new rows. Admin creation requires an explicit selection; the database default
+is a fallback. Package definitions and limits live in application code, not a
+separate `packages` table. The package migration is present locally but has
+not yet been applied to the linked remote project.
 
 Future:
 
@@ -520,6 +529,7 @@ Invitation:
   type: wedding
   title: The Wedding of Rayhana & Febri
   slug: rayhana-febri
+  package_key: grand (existing-row migration backfill)
   status: draft
   event_date: 2026-10-20
   venue_summary: Puri Nirwaran Residence

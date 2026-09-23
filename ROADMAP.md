@@ -124,6 +124,27 @@ Acceptance:
 
 # Phase 2 — Invitation Admin MVP
 
+## Package Entitlements Foundation
+
+Status: Implemented locally; remote migration and production rollout pending
+review. This is managed-service infrastructure, not customer self-service.
+
+- Invitations persist an Intimate, Signature, or Grand package key. The
+  migration preserves existing invitations as Grand and defaults future
+  database rows to Intimate; the admin requires explicit package selection.
+- One typed registry defines package limits and available features. Admin
+  creation and editing, server mutations, and public normalization use it.
+- Event and gallery limits, locked feature controls, safe downgrade conflicts,
+  and public feature filtering are implemented. Existing content is preserved
+  when an incompatible downgrade is rejected.
+- Sponsorship, video gallery, advanced RSVP, analytics dashboards, and style
+  presets are entitlement placeholders; their product features are future work.
+
+Payments, checkout, package activation, and customer self-service remain in
+future phases below.
+
+---
+
 ## 1. Invitation List
 
 Features:
