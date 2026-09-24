@@ -61,10 +61,11 @@ A shared, typed theme-section contract is the canonical list of public capabilit
 - wishes or guestbook;
 - digital gifts;
 - Instagram links;
-- sponsorship presentation;
 - closing.
 
 Adding a new public section requires all registered themes to provide its renderer or explicitly use an approved shared fallback. Silent omission is not allowed.
+
+Sponsorship is currently an entitlement reserved for future implementation, not a public invitation data feature. This theme project does not invent its data model or UI. When sponsorship becomes a concrete public feature, it must be added to the shared section contract and implemented for every registered theme in the same change.
 
 Package availability remains upstream of themes. Intimate, Signature, and Grand determine which normalized capabilities are enabled; the selected theme determines only how enabled capabilities look.
 
@@ -167,7 +168,7 @@ Use an organic editorial collage that supports the package gallery limits. Keep 
 
 ### 7. Interaction chapter
 
-RSVP, wishes, digital gifts, sponsorship content, and livestream actions use Terra's flat editorial controls and underline fields. Shared validation, Turnstile, submission logic, and error messages remain outside the theme-specific presentation layer.
+RSVP, wishes, digital gifts, and livestream actions use Terra's flat editorial controls and underline fields. Shared validation, Turnstile, submission logic, and error messages remain outside the theme-specific presentation layer.
 
 ### 8. Closing
 
@@ -236,7 +237,7 @@ Themes may define their own order from the common section set. Terra's default o
 11. Livestream
 12. RSVP
 13. Wishes
-14. Digital gifts and sponsorship
+14. Digital gifts
 15. Closing
 
 Grouping may combine adjacent capabilities visually, but each enabled capability remains testable and addressable.
