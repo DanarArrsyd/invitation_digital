@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-
-import { trackCoverOpenedAction } from "@/app/(public)/[slug]/actions";
+import { AnimatePresence, motion } from "motion/react";
 
 import { getCoupleInitials } from "@/lib/utils/coupleName";
+import { useInvitationCover } from "@/themes/shared/use-invitation-cover";
 
 import { FloralCorner, MonogramBadge } from "./components/Botanical";
 import { FloatingNav, type NavItem } from "./components/FloatingNav";
@@ -51,40 +49,12 @@ export function CoverGate({
   navItems: NavItem[];
   children: React.ReactNode;
 }) {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [opened, setOpened] = useState(false);
-  const [playing, setPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const reduced = useReducedMotion() ?? false;
-
-  useEffect(() => {
-    if (opened) contentRef.current?.focus({ preventScroll: true });
-  }, [opened]);
-
-  const canPlayMusic = musicEnabled && Boolean(musicUrl);
+  const {
+    opened, playing, canPlayMusic, reducedMotion: reduced,
+    audioRef, contentRef, openInvitation, toggleMusic,
+  } = useInvitationCover({ invitationId, guestToken, musicEnabled, musicUrl });
   const couple = splitCoupleName(displayName);
   const initials = getCoupleInitials(displayName);
-
-  function handleOpen() {
-    setOpened(true);
-    if (canPlayMusic && audioRef.current) {
-      audioRef.current.play().catch(() => undefined);
-      setPlaying(true);
-    }
-    // Fire-and-forget — never delays the reveal above.
-    trackCoverOpenedAction(invitationId, guestToken).catch(() => undefined);
-  }
-
-  function togglePlay() {
-    if (!audioRef.current) return;
-    if (playing) {
-      audioRef.current.pause();
-      setPlaying(false);
-    } else {
-      audioRef.current.play().catch(() => undefined);
-      setPlaying(true);
-    }
-  }
 
   return (
     <>
@@ -200,7 +170,7 @@ export function CoverGate({
                   <div key="cta" className="mt-11">
                     <button
                       type="button"
-                      onClick={handleOpen}
+                      onClick={openInvitation}
                       className="group relative inline-flex min-h-[48px] items-center gap-3 overflow-hidden border px-9 py-3.5 text-[0.72rem] tracking-[0.3em] uppercase transition-colors duration-500"
                       style={{ borderColor: "var(--ni-gold)", color: "var(--ni-brown)" }}
                     >
@@ -262,7 +232,7 @@ export function CoverGate({
       {opened && canPlayMusic ? (
         <button
               type="button"
-              onClick={togglePlay}
+              onClick={toggleMusic}
               aria-label={playing ? "Jeda musik" : "Putar musik"}
               className="fixed right-5 z-40 flex size-12 items-center justify-center rounded-full border backdrop-blur transition-colors"
               style={{

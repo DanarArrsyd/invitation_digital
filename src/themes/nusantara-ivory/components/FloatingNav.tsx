@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { useActiveSection } from "@/themes/shared/use-active-section";
 
 export type NavIcon = "home" | "heart" | "calendar" | "gallery" | "book" | "gift" | "message" | "sparkle";
 
@@ -66,63 +66,6 @@ function NavGlyph({ icon }: { icon: NavIcon }) {
       {ICONS[icon]}
     </svg>
   );
-}
-
-/**
- * Scrollspy with a manual fallback: IntersectionObserver alone can be skipped
- * or delayed in throttled/hidden environments (same issue documented for
- * Reveal), so a passive scroll listener double-checks which section's band
- * currently sits closest to the viewport's upper third.
- */
-function useActiveSection(ids: string[]) {
-  const [active, setActive] = useState(ids[0] ?? "");
-  const tickingRef = useRef(false);
-
-  useEffect(() => {
-    if (ids.length === 0) return;
-
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
-    if (elements.length === 0) return;
-
-    const pickByGeometry = () => {
-      const line = window.innerHeight * 0.32;
-      let current = elements[0].id;
-      for (const el of elements) {
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= line) current = el.id;
-      }
-      setActive(current);
-    };
-
-    const onScroll = () => {
-      if (tickingRef.current) return;
-      tickingRef.current = true;
-      requestAnimationFrame(() => {
-        pickByGeometry();
-        tickingRef.current = false;
-      });
-    };
-
-    pickByGeometry();
-
-    const observer = new IntersectionObserver(
-      () => pickByGeometry(),
-      { rootMargin: "-32% 0px -55% 0px", threshold: [0, 1] },
-    );
-    elements.forEach((el) => observer.observe(el));
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [ids]);
-
-  return active;
 }
 
 export function FloatingNav({ items }: { items: NavItem[] }) {

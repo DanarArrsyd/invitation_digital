@@ -2,17 +2,14 @@
 
 import { FloralCorner, BotanicalDivider } from "../components/Botanical";
 
-import { useActionState, useState } from "react";
-
-import { submitWishAction, type WishFormState } from "@/app/(public)/[slug]/actions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { useWishForm, useWishPagination } from "@/themes/shared/use-public-forms";
 import type { Wish } from "@/types/invitation";
 
 import { Reveal } from "../components/Reveal";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 
-const initialState: WishFormState = { status: "idle" };
 const PAGE_SIZE = 5;
 
 function formatWishDate(iso: string): string {
@@ -34,8 +31,8 @@ export function WishesSection({
   guestName: string | null;
   wishes: Wish[];
 }) {
-  const [state, formAction, isPending] = useActionState(submitWishAction, initialState);
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const { state, formAction, isPending } = useWishForm();
+  const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
 
   return (
     <Section id="ni-ucapan" tone="ivory" floral>
@@ -139,7 +136,7 @@ export function WishesSection({
             {visibleCount < wishes.length ? (
               <button
                 type="button"
-                onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+                onClick={showMore}
                 className="mt-9 min-h-[48px] border px-7 text-[0.68rem] tracking-[0.28em] uppercase transition-colors duration-300 hover:bg-[var(--ni-gold)] hover:text-white"
                 style={{ borderColor: "var(--ni-gold)", color: "var(--ni-brown)" }}
               >

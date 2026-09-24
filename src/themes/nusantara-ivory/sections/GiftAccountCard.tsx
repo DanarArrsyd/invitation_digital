@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
-
+import { useCopyFeedback } from "@/themes/shared/use-copy-feedback";
 import type { GiftAccount } from "@/types/invitation";
 
 export function GiftAccountCard({ gift }: { gift: GiftAccount }) {
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopyFeedback();
 
   return (
     <div
@@ -32,11 +31,7 @@ export function GiftAccountCard({ gift }: { gift: GiftAccount }) {
 
       <button
         type="button"
-        onClick={async () => {
-          await navigator.clipboard.writeText(gift.accountNumber);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1500);
-        }}
+        onClick={() => void copy(gift.accountNumber)}
         className="min-h-[48px] w-full border text-[0.68rem] tracking-[0.28em] uppercase transition-colors duration-300"
         style={{
           borderColor: copied ? "var(--ni-gold)" : "rgba(199,174,133,0.5)",
