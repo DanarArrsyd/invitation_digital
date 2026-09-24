@@ -1,16 +1,12 @@
 "use client";
 
-import { useActionState, useState } from "react";
-
-import { submitRsvpAction, type RsvpFormState } from "@/app/(public)/[slug]/actions";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { useRsvpForm } from "@/themes/shared/use-public-forms";
 
 import { OrnamentCorner, OrnamentDivider } from "../components/Ornament";
 import { Reveal } from "../components/Reveal";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
-
-const initialState: RsvpFormState = { status: "idle" };
 
 export function RsvpSection({
   invitationId,
@@ -23,8 +19,7 @@ export function RsvpSection({
   guestToken: string | null;
   guestName: string | null;
 }) {
-  const [state, formAction, isPending] = useActionState(submitRsvpAction, initialState);
-  const [attendance, setAttendance] = useState<"attending" | "not_attending" | null>(null);
+  const { state, formAction, isPending, attendance, setAttendance } = useRsvpForm();
 
   return (
     <Section id="ni-rsvp" className="ni-rsvp" tone="cream" floral>
