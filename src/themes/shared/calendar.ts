@@ -33,9 +33,9 @@ function escapeIcsText(value: string): string {
   return value.replace(/\\/g, "\\\\").replace(/,/g, "\\,").replace(/;/g, "\\;").replace(/\n/g, "\\n");
 }
 
-export function buildIcsCalendar(event: CalendarEventInput, uid: string): string {
+export function buildIcsCalendar(event: CalendarEventInput, uid: string, timestamp: Date): string {
   const { start, end } = buildTimes(event);
-  const now = formatUtcStamp(new Date());
+  const now = formatUtcStamp(timestamp);
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",

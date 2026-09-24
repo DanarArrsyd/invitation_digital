@@ -139,7 +139,7 @@ test("calendar builders preserve punctuation, line breaks, and long venue names"
   assert.equal(googleUrl.searchParams.get("details"), event.description);
   assert.equal(googleUrl.searchParams.get("dates"), "20261020T023000Z/20261020T043000Z");
 
-  const ics = calendar.buildIcsCalendar(event, "event@invitation.digital");
+  const ics = calendar.buildIcsCalendar(event, "event@invitation.digital", new Date("2026-09-24T13:14:15.000Z"));
   assert.match(ics, /\r\nDTSTART:20261020T023000Z\r\nDTEND:20261020T043000Z\r\n/);
   assert.ok(ics.includes("SUMMARY:Raya\\, Febri\\; Celebration"));
   assert.ok(ics.includes(`LOCATION:Grand Hall\\, Wing A\\; ${"Very Long Venue Name ".repeat(12).trim()}`));
@@ -153,8 +153,35 @@ test("calendar builders use the existing morning and two-hour defaults", () => {
   assert.equal(googleUrl.searchParams.get("dates"), "20261020T020000Z/20261020T040000Z");
   assert.equal(googleUrl.searchParams.has("location"), false);
   assert.equal(googleUrl.searchParams.has("details"), false);
-  const ics = calendar.buildIcsCalendar(event, "gathering@invitation.digital");
+  const ics = calendar.buildIcsCalendar(event, "gathering@invitation.digital", new Date("2026-09-24T13:14:15.000Z"));
   assert.ok(ics.includes("DTSTART:20261020T020000Z"));
   assert.ok(ics.includes("DTEND:20261020T040000Z"));
   assert.equal(ics.includes("LOCATION:"), false);
+});
+
+test("ICS output is exact and repeatable for a caller-provided timestamp", () => {
+  const event = {
+    title: "Akad", date: "2026-10-20", startTime: "09:30", endTime: "11:30",
+    location: "Puri Nirwaran", description: "Undangan Raya & Febri",
+  };
+  const timestamp = new Date("2026-09-24T13:14:15.000Z");
+  const expected = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Invitation Digital//ID",
+    "CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    "UID:akad@invitation.digital",
+    "DTSTAMP:20260924T131415Z",
+    "DTSTART:20261020T023000Z",
+    "DTEND:20261020T043000Z",
+    "SUMMARY:Akad",
+    "LOCATION:Puri Nirwaran",
+    "DESCRIPTION:Undangan Raya & Febri",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+
+  assert.equal(calendar.buildIcsCalendar(event, "akad@invitation.digital", timestamp), expected);
+  assert.equal(calendar.buildIcsCalendar(event, "akad@invitation.digital", timestamp), expected);
 });

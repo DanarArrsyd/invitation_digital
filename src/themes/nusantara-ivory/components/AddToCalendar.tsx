@@ -86,7 +86,7 @@ export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: 
   }, [open]);
 
   function downloadIcs() {
-    const ics = buildIcsCalendar(event, uid);
+    const ics = buildIcsCalendar(event, uid, new Date());
     const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
