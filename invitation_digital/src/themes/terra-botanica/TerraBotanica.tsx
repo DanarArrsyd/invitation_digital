@@ -6,6 +6,12 @@ import { CoverGate } from "./CoverGate";
 import type { NavItem } from "./components/FloatingNav";
 import { ThemeStyles } from "./ThemeStyles";
 import { bodySans, displaySerif } from "./fonts";
+import { HeroSection } from "./sections/HeroSection";
+import { QuoteSection } from "./sections/QuoteSection";
+import { CoupleSection } from "./sections/CoupleSection";
+import { StorySection } from "./sections/StorySection";
+import { GallerySection } from "./sections/GallerySection";
+import { ClosingSection } from "./sections/ClosingSection";
 
 export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
   const { features } = invitation;
@@ -23,9 +29,9 @@ export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
 }
 
 export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
-  const { coupleDisplayName, guestDisplayName, primaryEvent } = buildThemeViewModel(invitation, guest);
+  const { coupleDisplayName, guestDisplayName, primaryEvent, heroImageUrl, closingImageUrl } = buildThemeViewModel(invitation, guest);
   // Expand alongside the actual sections in subsequent tasks, never ahead of them.
-  const navItems = buildTerraNavItems(invitation).filter((item) => item.section === "hero");
+  const navItems = buildTerraNavItems(invitation).filter((item) => ["hero", "couple", "story", "gallery"].includes(item.section));
 
   return (
     <div className={`tb-theme ${displaySerif.variable} ${bodySans.variable}`}>
@@ -41,9 +47,12 @@ export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
         musicUrl={invitation.media.musicUrl}
         navItems={navItems}
       >
-        <header id="tb-beranda" className="tb-shell-heading">
-          <h2>{coupleDisplayName}</h2>
-        </header>
+        <HeroSection displayName={coupleDisplayName} imageUrl={heroImageUrl} message={invitation.content.openingMessage} />
+        <QuoteSection quote={invitation.content.openingQuote} />
+        <CoupleSection people={invitation.people} settings={invitation.theme.settings} invitationType={invitation.type} />
+        {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
+        {invitation.features.gallery ? <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} /> : null}
+        <ClosingSection displayName={coupleDisplayName} message={invitation.content.closingMessage} imageUrl={closingImageUrl} imageAlt={invitation.gallery.at(-1)?.altText ?? null} />
       </CoverGate>
     </div>
   );
