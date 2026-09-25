@@ -28,7 +28,7 @@ function loadTheme({ reducedMotion = false, track = async () => {} } = {}) {
       compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
     }).outputText;
     vm.runInNewContext(output, {
-      exports, module: { exports }, console, Date, Intl, setTimeout, clearTimeout,
+      exports, module: { exports }, console, Date, Intl, URL, setTimeout, clearTimeout,
       get window() { return globalThis.window; },
       get document() { return globalThis.document; },
       get IntersectionObserver() { return globalThis.IntersectionObserver; },
@@ -97,7 +97,7 @@ test("shell renders personalized journal cover from normalized data", () => {
 
 // Catches accidental photo dependency, invented dates, and personalization leaks.
 test("cover works without photo, date, people, or guest and respects disabled personalization", () => {
-  const sparse = fixture({ people: [], events: [], eventDate: null, media: { coverImageUrl: null, musicUrl: null } });
+  const sparse = fixture({ people: [], events: [], stories: [], gallery: [], eventDate: null, media: { coverImageUrl: null, musicUrl: null } });
   const document = new JSDOM(renderShell(sparse, null)).window.document;
   assert.match(document.querySelector("h1").textContent, /Alya & Bima/);
   assert.match(document.body.textContent, /Bapak\/Ibu\/Saudara\/i/);
@@ -133,7 +133,7 @@ test("shell navigation candidates require enabled features and available content
 });
 
 async function mountShell(options = {}, invitation = fixture(), hydrate = false) {
-  const dom = new JSDOM("<div id='root'></div>", { pretendToBeVisual: true });
+  const dom = new JSDOM("<div id='root'></div>", { pretendToBeVisual: true, url: "https://invitation.test/" });
   const keys = ["window", "document", "HTMLElement", "IntersectionObserver", "requestAnimationFrame", "IS_REACT_ACT_ENVIRONMENT"];
   const previous = Object.fromEntries(keys.map((key) => [key, globalThis[key]]));
   Object.assign(globalThis, {
@@ -175,6 +175,10 @@ test("cover open reveals and focuses content, tracks opening, and keeps rejected
     assert.equal(content.hidden, true);
     assert.equal(attempts, 0);
     assert.equal(document.querySelector("nav"), null);
+    // jsdom has no layout; give scrollspy the section geometry a browser supplies.
+    for (const [index, section] of [...content.querySelectorAll("section")].entries()) {
+      section.getBoundingClientRect = () => ({ top: index * 1000 });
+    }
     await act(async () => document.querySelector("button").click());
     assert.equal(content.hidden, false);
     assert.equal(document.activeElement, content);
@@ -234,4 +238,143 @@ test("shell section primitives preserve an accessible heading and visible long c
   assert.equal(document.querySelector("h2").textContent, "Pertemuan keluarga");
   assert.match(document.body.textContent, /Nama Keluarga Yang Sangat Panjang/);
   assert.equal(document.querySelector("[hidden]"), null);
+});
+
+function narrativeFixture(overrides = {}) {
+  const base = fixture();
+  return fixture({
+    theme: { ...base.theme, settings: { personSocials: { a: { instagram: "https://www.instagram.com/nara/" }, b: { instagram: "javascript:alert(1)" } } } },
+    people: base.people.map((person, index) => ({ ...person,
+      fullName: index ? "Bima Pradipta" : "Nara Kusuma", nickname: index ? "Bima" : "Nara",
+      fatherName: `Bapak Nama Ayah Yang Sangat Panjang ${index}`,
+      motherName: `Ibu Nama Ibu Yang Sangat Panjang ${index}`,
+      photoUrl: `/person-${index}.jpg`, bio: `Keterangan mempelai ${index}`,
+    })),
+    stories: [{ id: "text-story", title: "Pertemuan di taman", yearLabel: "2021", storyDate: null, description: "Kami berjumpa di antara pohon-pohon.", imageUrl: null, sortOrder: 0 }],
+    gallery: [
+      { id: "first", imageUrl: "/gallery-1.jpg", caption: "Sore di kebun", altText: "Nara dan Bima berjalan di kebun", aspectRatio: "landscape_16_9", sortOrder: 0 },
+      { id: "second", imageUrl: "/gallery-2.jpg", caption: "Di bawah pohon", altText: null, aspectRatio: "portrait_3_4", sortOrder: 1 },
+      { id: "third", imageUrl: "/gallery-3.jpg", caption: null, altText: null, aspectRatio: "square_1_1", sortOrder: 2 },
+    ],
+    content: { openingQuote: "Bertumbuh bersama, setiap hari.", openingMessage: "Kami mengundang Anda untuk berbagi kebahagiaan.", closingMessage: "Terima kasih telah menjadi bagian cerita kami." },
+    ...overrides,
+  });
+}
+
+// Catches missing/duplicated sections, dropped long family data, and unsafe social URLs.
+test("narrative renders one accessible chapter per section with parents and safe Instagram", () => {
+  const document = new JSDOM(renderShell(narrativeFixture())).window.document;
+  for (const id of ["tb-beranda", "tb-mempelai", "tb-cerita", "tb-galeri", "tb-penutup"]) {
+    assert.equal(document.querySelectorAll(`#${id}`).length, 1, id);
+    const section = document.getElementById(id);
+    assert.ok(document.getElementById(section.getAttribute("aria-labelledby")), `${id} has a heading`);
+  }
+  assert.match(document.getElementById("tb-beranda").textContent, /Kami mengundang Anda/);
+  assert.equal(document.querySelector("blockquote").textContent.trim(), "Bertumbuh bersama, setiap hari.");
+  const couple = document.getElementById("tb-mempelai");
+  assert.match(couple.textContent, /Nara Kusuma/);
+  assert.match(couple.textContent, /Bima Pradipta/);
+  for (const person of narrativeFixture().people) {
+    assert.ok(couple.textContent.includes(person.fatherName));
+    assert.ok(couple.textContent.includes(person.motherName));
+    assert.ok(couple.textContent.includes(person.bio));
+  }
+  const instagram = couple.querySelector("a");
+  assert.equal(instagram.href, "https://www.instagram.com/nara/");
+  assert.equal(instagram.target, "_blank");
+  assert.match(instagram.rel, /noopener/);
+  assert.match(instagram.getAttribute("aria-label"), /Nara Kusuma/);
+  assert.equal(couple.querySelectorAll("a").length, 1);
+  assert.match(document.getElementById("tb-penutup").textContent, /Terima kasih telah menjadi bagian cerita kami/);
+});
+
+test("sparse narrative omits absent or disabled chapters and supports text-only stories", () => {
+  const textOnly = new JSDOM(renderShell(narrativeFixture())).window.document.getElementById("tb-cerita");
+  assert.ok(textOnly, "the supplied story must render");
+  assert.match(textOnly.textContent, /2021/);
+  assert.match(textOnly.textContent, /Kami berjumpa di antara pohon-pohon/);
+  assert.equal(textOnly.querySelector("img"), null);
+  const sparse = new JSDOM(renderShell(narrativeFixture({
+    people: [], stories: [], gallery: [], content: { openingQuote: null, openingMessage: null, closingMessage: null },
+    media: { coverImageUrl: null, musicUrl: null },
+  }))).window.document;
+  for (const id of ["tb-mempelai", "tb-cerita", "tb-galeri", "tb-kutipan"]) assert.equal(sparse.getElementById(id), null);
+  assert.equal(sparse.querySelector("img"), null);
+  assert.match(sparse.getElementById("tb-penutup").className, /tb-surface-moss/);
+  const disabled = new JSDOM(renderShell(narrativeFixture({ features: { ...features, story: false, gallery: false } }))).window.document;
+  assert.equal(disabled.getElementById("tb-cerita"), null);
+  assert.equal(disabled.getElementById("tb-galeri"), null);
+});
+
+// Catches accidental ordering, truncation, orphan final tiles, or lost saved crop ratios.
+test("gallery preserves normalized order, captions, crops and balanced rows for 1 through 40 photos", () => {
+  for (let length = 1; length <= 40; length++) {
+    const gallery = Array.from({ length }, (_, i) => ({ ...narrativeFixture().gallery[i % 3], id: `image-${i}`, sortOrder: length - i, caption: `Caption ${i}` }));
+    const document = new JSDOM(renderShell(narrativeFixture({ gallery }))).window.document;
+    const items = [...document.querySelectorAll("#tb-galeri [data-gallery-item]")];
+    assert.equal(items.length, length);
+    let rowSpans = 0;
+    for (const [index, item] of items.entries()) {
+      assert.equal(item.getAttribute("data-gallery-item"), `image-${index}`);
+      assert.equal(item.querySelector("figcaption").textContent, `Caption ${index}`);
+      assert.equal(item.querySelector(".tb-media").style.aspectRatio, ["16 / 9", "3 / 4", "1 / 1"][index % 3]);
+      const span = Number(item.getAttribute("data-gallery-span"));
+      assert.ok([1, 2].includes(span));
+      rowSpans += span;
+      assert.ok(rowSpans <= 2, "items must not leave an unfilled grid row");
+      if (rowSpans === 2) rowSpans = 0;
+    }
+    assert.equal(rowSpans, 0, `complete final row with ${length} photos`);
+  }
+  const empty = renderShell(narrativeFixture({ gallery: [] }));
+  assert.doesNotMatch(empty, /id="tb-galeri"/);
+});
+
+test("narrative images have descriptive alternatives, responsive sizes and stable lazy frames", () => {
+  const invitation = narrativeFixture();
+  invitation.stories[0].imageUrl = "/story.jpg";
+  const document = new JSDOM(renderShell(invitation)).window.document;
+  const images = [...document.querySelectorAll("img")];
+  assert.equal(images.length, 8);
+  for (const image of images) {
+    assert.ok(image.alt.trim().length > 5, "useful image alternative");
+    assert.ok(image.sizes, "explicit responsive sizes");
+    assert.ok(image.srcset, "local photos use responsive delivery");
+    assert.ok(image.closest(".tb-media").style.aspectRatio, "reserved frame before loading");
+    assert.equal(image.getAttribute("loading"), image.closest("#tb-beranda") ? "eager" : "lazy");
+  }
+  assert.equal(document.querySelector("#tb-galeri img").alt, "Nara dan Bima berjalan di kebun");
+  assert.match(images.find(image => image.closest('[data-gallery-item="third"]')).alt, /Nara.*Bima.*3/);
+  assert.match(document.querySelector("#tb-cerita img").alt, /Pertemuan di taman/);
+});
+
+test("sparse closing chooses the last gallery image then cover and renders without either", () => {
+  for (const [overrides, expected] of [
+    [{}, "gallery-3.jpg"],
+    [{ gallery: [] }, "test-cover.jpg"],
+    [{ gallery: [], media: { coverImageUrl: null, musicUrl: null } }, null],
+  ]) {
+    const closing = new JSDOM(renderShell(narrativeFixture(overrides))).window.document.getElementById("tb-penutup");
+    assert.ok(closing);
+    const image = closing.querySelector("img");
+    if (expected) assert.ok(decodeURIComponent(image.getAttribute("src")).includes(expected));
+    else assert.equal(image, null);
+    assert.match(closing.textContent, /Nara.*Bima/);
+  }
+});
+
+test("narrative image failure keeps its frame and readable alternative", async () => {
+  const view = await mountShell({}, narrativeFixture());
+  try {
+    const image = view.document.querySelector("#tb-beranda img");
+    assert.ok(image);
+    const frame = image.closest(".tb-media");
+    const ratio = frame.style.aspectRatio;
+    const alt = image.alt;
+    await act(async () => image.dispatchEvent(new view.document.defaultView.Event("error")));
+    assert.equal(frame.querySelector("img"), null);
+    assert.equal(frame.style.aspectRatio, ratio);
+    assert.equal(frame.querySelector('[role="img"]').getAttribute("aria-label"), alt);
+    assert.match(frame.textContent, /Foto tidak dapat dimuat/);
+  } finally { await view.cleanup(); }
 });
