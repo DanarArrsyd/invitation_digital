@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import { spawnSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
@@ -465,6 +466,22 @@ test("event actions identify their event and malformed times do not create calen
   assert.equal(invalidDocument.querySelector("#tb-acara button"), null);
 });
 
+test("events omit calendar actions without a supplied positive same-day interval", () => {
+  for (const [startTime, endTime] of [
+    [null, null], ["09:30:00", null], [null, "11:00:00"],
+    ["09:30:00", "09:30:00"], ["11:00:00", "09:30:00"], ["23:00:00", "01:00:00"],
+  ]) {
+    const invitation = gatheringFixture();
+    Object.assign(invitation.events[0], { startTime, endTime });
+    const row = new JSDOM(renderShell(invitation)).window.document.querySelector("[data-event-item]");
+    assert.ok(row, "partial event details remain visible");
+    assert.match(row.textContent, /Pertemuan keluarga 1/);
+    assert.match(row.textContent, /Kebun Pertemuan Keluarga/);
+    assert.equal(row.querySelector('a[href^="https://calendar.google.com/"]'), null, `${startTime}–${endTime}`);
+    assert.equal(row.querySelector("button"), null, `${startTime}–${endTime}`);
+  }
+});
+
 test("countdown renders a valid target and omits disabled, missing or invalid targets", () => {
   const present = new JSDOM(renderShell(gatheringFixture())).window.document;
   assert.ok(present.getElementById("tb-countdown"));
@@ -482,7 +499,7 @@ test("countdown renders a valid target and omits disabled, missing or invalid ta
 });
 
 test("countdown reaches zero without negative values and stops its interval", async (t) => {
-  const target = new Date("2030-10-20T09:30:00").getTime();
+  const target = Date.parse("2030-10-20T02:30:00Z");
   t.mock.timers.enable({ apis: ["Date", "setInterval"], now: target - 2000 });
   const scheduled = t.mock.method(globalThis, "setInterval");
   const cleared = t.mock.method(globalThis, "clearInterval");
@@ -510,8 +527,29 @@ test("countdown pairs each visible value with its unit label", () => {
   assert.deepEqual(units.map(unit => unit.querySelector("dt").textContent), ["Hari", "Jam", "Menit", "Detik"]);
 });
 
+if (process.env.TB_TIMEZONE_PROBE) {
+  test("countdown timezone probe", (t) => {
+    t.mock.timers.enable({ apis: ["Date"], now: Date.parse("2030-10-20T02:29:58Z") });
+    const section = new JSDOM(renderShell(gatheringFixture())).window.document.getElementById("tb-countdown");
+    assert.ok(section);
+    assert.deepEqual([...section.querySelectorAll("dd")].map(node => node.textContent), ["00", "00", "00", "02"]);
+  });
+}
+
+test("countdown interprets the event target as the same WIB instant in every viewer timezone", () => {
+  for (const timezone of ["UTC", "Asia/Jakarta", "America/Los_Angeles"]) {
+    const environment = { ...process.env, TZ: timezone, TB_TIMEZONE_PROBE: "1" };
+    for (const key of Object.keys(environment)) if (key.startsWith("NODE_TEST_")) delete environment[key];
+    const result = spawnSync(process.execPath, ["--test", "--test-name-pattern=^countdown timezone probe$", fileURLToPath(import.meta.url)], {
+      env: environment, encoding: "utf8",
+    });
+    assert.match(result.stdout, /✔ countdown timezone probe/, `${timezone}: ${result.stdout}\n${result.stderr}`);
+    assert.equal(result.status, 0, `${timezone}: ${result.stdout}\n${result.stderr}`);
+  }
+});
+
 test("countdown cleans an active timer on unmount and skips timers without a usable target", async (t) => {
-  t.mock.timers.enable({ apis: ["Date", "setInterval"], now: new Date("2030-10-19T09:30:00").getTime() });
+  t.mock.timers.enable({ apis: ["Date", "setInterval"], now: Date.parse("2030-10-19T02:30:00Z") });
   const scheduled = t.mock.method(globalThis, "setInterval");
   const cleared = t.mock.method(globalThis, "clearInterval");
   const view = await mountShell({}, gatheringFixture());

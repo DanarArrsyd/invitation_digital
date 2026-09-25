@@ -137,7 +137,7 @@ export function ThemeStyles() {
     .tb-theme .tb-countdown .tb-section-heading { margin-bottom: 0; }
     .tb-theme .tb-countdown-units { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; margin: 0; }
     .tb-theme .tb-countdown-units > div { display: flex; flex-direction: column; min-width: 0; border-top: 2px solid var(--tb-clay); padding-top: 1rem; }
-    .tb-theme .tb-countdown-units dd { margin: 0; font-family: var(--tb-display); font-size: clamp(1.5rem, 8vw, 5rem); line-height: 1; }
+    .tb-theme .tb-countdown-units dd { margin: 0; font-family: var(--tb-display); font-size: clamp(1.5rem, 4vw, 3.25rem); font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
     .tb-theme .tb-countdown-units dt { order: 2; margin-top: .75rem; font-size: .8125rem; }
     .tb-theme .tb-dress-code > .tb-section-inner { max-width: 960px; }
     .tb-theme .tb-dress-description { max-width: 56ch; }

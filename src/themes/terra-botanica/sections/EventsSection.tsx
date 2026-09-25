@@ -44,7 +44,7 @@ export function EventsSection({ events, mapsEnabled, coupleDisplayName, invitati
           const dateIsValid = validEventDate(event.eventDate);
           const start = eventTime(event.startTime);
           const end = eventTime(event.endTime);
-          const calendarEvent: CalendarEventInput | null = dateIsValid && (!event.startTime || start) && (!event.endTime || end) ? {
+          const calendarEvent: CalendarEventInput | null = dateIsValid && start !== null && end !== null && end > start ? {
             title: `${event.title} — ${coupleDisplayName}`,
             date: event.eventDate,
             startTime: start,

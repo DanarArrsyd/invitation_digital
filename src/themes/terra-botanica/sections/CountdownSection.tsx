@@ -7,9 +7,10 @@ import { SectionHeading } from "../components/SectionHeading";
 
 function validTarget(target: string | null): number | null {
   if (!target || !/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/.test(target)) return null;
-  const date = new Date(target);
-  if (Number.isNaN(date.getTime()) || date.getFullYear() !== Number(target.slice(0, 4)) || date.getMonth() + 1 !== Number(target.slice(5, 7)) || date.getDate() !== Number(target.slice(8, 10))) return null;
-  return date.getTime();
+  const calendarDay = new Date(`${target.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(calendarDay.getTime()) || calendarDay.toISOString().slice(0, 10) !== target.slice(0, 10)) return null;
+  const timestamp = new Date(`${target}+07:00`).getTime();
+  return Number.isNaN(timestamp) ? null : timestamp;
 }
 
 function CountdownClock({ target }: { target: number }) {
