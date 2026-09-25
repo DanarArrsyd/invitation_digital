@@ -1,5 +1,13 @@
 # CLAUDE.md
 
+## Active Implementation Checkpoint
+
+Before continuing the current Terra Botanica work, read
+[`docs/PROJECT_MEMORY.md`](docs/PROJECT_MEMORY.md). It records the durable
+task checkpoint, commit chain, verification state, deferred findings, and the
+required Task 7 → Task 9 execution flow. The linked design spec and
+implementation plan remain authoritative for requirements.
+
 ## Project Overview
 
 This repository contains a reusable digital invitation platform.

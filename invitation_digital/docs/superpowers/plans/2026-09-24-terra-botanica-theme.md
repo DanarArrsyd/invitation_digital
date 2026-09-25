@@ -10,6 +10,25 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-24-terra-botanica-theme-design.md`
 
+## Execution checkpoint — 25 September 2026
+
+| Task | Status | Commits |
+| --- | --- | --- |
+| 1. Typed theme-section contract | Complete | `fbae86ea` |
+| 2. Shared presentation view model and calendar builders | Complete | `3b639f0c`, `2b7cf69e` |
+| 3. Shared client behavior | Complete | `c570bca0` |
+| 4. Terra foundation and cover | Complete | `7b711fa9` |
+| 5. Terra narrative and image-led sections | Complete | `361b3760` |
+| 6. The Gathering event chapter | Complete | `4c792f21`, `2b2b3212` |
+| 7. RSVP, wishes, and digital gifts | **Next** | — |
+| 8. Registration, local migration, and documentation | Pending | — |
+| 9. Responsive, accessibility, performance, and whole-branch validation | Pending | — |
+
+Current verified HEAD is `2b2b3212`. The full suite passes 120/120, lint and
+TypeScript pass, and Task 6 responsive checks pass at 320, 390, 768, and
+1440 px. See `docs/PROJECT_MEMORY.md` for resumable workflow details and
+deferred review notes. Do not re-dispatch Tasks 1–6.
+
 ## Global Constraints
 
 - Themes receive normalized `PublicInvitation` data and never query Supabase directly.
