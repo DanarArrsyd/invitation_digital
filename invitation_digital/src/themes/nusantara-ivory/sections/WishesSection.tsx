@@ -31,7 +31,7 @@ export function WishesSection({
   guestName: string | null;
   wishes: Wish[];
 }) {
-  const { state, formAction, isPending } = useWishForm();
+  const { state, formAction, isPending, formRef, onSubmit } = useWishForm();
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
 
   return (
@@ -46,7 +46,7 @@ export function WishesSection({
                 Terima kasih atas ucapan dan doanya.
               </p>
             ) : (
-              <form action={formAction} className="flex flex-col gap-6">
+              <form ref={formRef} action={formAction} onSubmit={onSubmit} className="flex flex-col gap-6">
                 <input type="hidden" name="invitationId" value={invitationId} />
                 <input type="hidden" name="slug" value={slug} />
                 <input type="hidden" name="guestToken" value={guestToken ?? ""} />

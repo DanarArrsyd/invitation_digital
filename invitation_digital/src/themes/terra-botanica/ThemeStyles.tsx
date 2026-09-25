@@ -150,6 +150,48 @@ export function ThemeStyles() {
     .tb-theme .tb-livestream ul { list-style: none; padding: 0; margin: 0; }
     .tb-theme .tb-livestream li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .5rem 2rem; padding: 1.25rem 0; border-top: 1px solid var(--tb-linen); }
     .tb-theme .tb-livestream a { display: inline-flex; min-width: 0; min-height: 44px; align-items: center; gap: .5rem; overflow-wrap: anywhere; font-family: var(--tb-display); font-size: clamp(1.5rem, 4vw, 2rem); }
+    .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-wishes > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { display: grid; gap: clamp(2.5rem, 6vw, 5rem); min-width: 0; }
+    .tb-theme .tb-interaction-intro, .tb-theme .tb-interaction-body, .tb-theme .tb-wishes-feed, .tb-theme .tb-gift-list { min-width: 0; }
+    .tb-theme .tb-interaction-intro .tb-section-heading { margin-bottom: 0; }
+    .tb-theme .tb-interaction-intro .tb-section-intro { max-width: 36ch; }
+    .tb-theme .tb-rsvp .tb-section-heading h2 { max-width: 10ch; font-size: clamp(2.75rem, 8vw, 5.5rem); }
+    .tb-theme .tb-form { display: grid; gap: 1.75rem; max-width: 36rem; }
+    .tb-theme .tb-form-field { display: grid; gap: .25rem; min-width: 0; font-size: .875rem; font-weight: 600; }
+    .tb-theme .tb-form-field input, .tb-theme .tb-form-field textarea { display: block; width: 100%; min-width: 0; min-height: 48px; padding: .6rem 0; border: 0; border-bottom: 1px solid currentColor; border-radius: 0; background: transparent; color: inherit; font-size: 1rem; font-weight: 400; line-height: 1.6; }
+    .tb-theme .tb-form-field textarea { min-height: 7.5rem; resize: vertical; }
+    .tb-theme .tb-form-field input:focus-visible, .tb-theme .tb-form-field textarea:focus-visible { outline-offset: 3px; }
+    .tb-theme .tb-form-field textarea::placeholder { color: var(--tb-moss); opacity: .8; }
+    .tb-theme .tb-form-recipient { display: grid; gap: .25rem; padding-left: 1rem; border-left: 2px solid var(--tb-clay); min-width: 0; }
+    .tb-theme .tb-form-recipient span { font-size: .875rem; }
+    .tb-theme .tb-form-recipient strong { font-family: var(--tb-display); font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 400; line-height: 1.35; overflow-wrap: anywhere; }
+    .tb-theme .tb-attendance { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .tb-theme .tb-attendance legend { margin-bottom: .6rem; font-size: .875rem; font-weight: 600; }
+    .tb-theme .tb-attendance-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+    .tb-theme .tb-attendance-choices button { display: flex; align-items: center; justify-content: center; min-width: 0; min-height: 64px; padding: .5rem; border: 1px solid var(--tb-bone); border-radius: 0; background: transparent; color: var(--tb-bone); cursor: pointer; font-family: var(--tb-display); font-size: clamp(1.2rem, 5vw, 2rem); line-height: 1.2; text-align: center; }
+    .tb-theme .tb-attendance-choices button[aria-pressed="true"] { background: var(--tb-bone); color: var(--tb-moss); }
+    .tb-theme .tb-attendance-choices button:hover { border-color: var(--tb-sun); }
+    .tb-theme .tb-form-submit { display: inline-flex; width: fit-content; min-width: 48px; min-height: 52px; align-items: center; justify-content: center; padding: .75rem 1.5rem; border: 1px solid currentColor; border-radius: 0; background: transparent; color: inherit; cursor: pointer; font-size: .9375rem; font-weight: 700; }
+    .tb-theme .tb-form-submit:disabled { opacity: .45; cursor: not-allowed; }
+    .tb-theme .tb-form-error { color: #9D3B2F; font-size: .875rem; font-weight: 700; }
+    .tb-theme .tb-rsvp .tb-form-error { color: #FFE2D8; }
+    .tb-theme .tb-form-success { display: grid; gap: .75rem; max-width: 34ch; border-top: 2px solid var(--tb-clay); padding-top: 1.5rem; }
+    .tb-theme .tb-form-success p:first-child { font-family: var(--tb-display); font-size: clamp(1.75rem, 5vw, 2.75rem); line-height: 1.2; }
+    .tb-theme .tb-wishes-feed { align-self: start; }
+    .tb-theme .tb-wishes-empty { max-width: 28ch; padding-top: 1.5rem; border-top: 1px solid var(--tb-clay); font-family: var(--tb-display); font-size: clamp(1.4rem, 4vw, 2rem); line-height: 1.4; }
+    .tb-theme .tb-wishes-list, .tb-theme .tb-gift-list { list-style: none; margin: 0; padding: 0; }
+    .tb-theme .tb-wishes-list li { min-width: 0; padding: 1.75rem 0; border-top: 1px solid rgba(69, 55, 44, .3); }
+    .tb-theme .tb-wish-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem 1rem; align-items: baseline; }
+    .tb-theme .tb-wish-meta strong { font-family: var(--tb-display); font-size: 1.35rem; font-weight: 400; line-height: 1.35; }
+    .tb-theme .tb-wish-meta time { color: var(--tb-moss); font-size: .8125rem; white-space: nowrap; }
+    .tb-theme .tb-wishes-list li > p { margin-top: .75rem; white-space: pre-line; overflow-wrap: anywhere; }
+    .tb-theme .tb-more-wishes { min-width: 48px; min-height: 48px; padding: .5rem 0; border: 0; border-bottom: 1px solid var(--tb-moss); background: transparent; color: var(--tb-moss); cursor: pointer; font-weight: 700; }
+    .tb-theme .tb-gift-account { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1.5rem; min-width: 0; padding: 1.5rem 0; border-top: 1px solid rgba(69, 55, 44, .35); }
+    .tb-theme .tb-gift-account > div { min-width: 0; }
+    .tb-theme .tb-gift-provider { font-size: .875rem; font-weight: 700; }
+    .tb-theme .tb-gift-number { margin-top: .4rem; font-family: var(--tb-display); font-size: clamp(1.75rem, 5vw, 2.8rem); line-height: 1.2; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .tb-theme .tb-gift-owner { margin-top: .4rem; font-size: .875rem; }
+    .tb-theme .tb-gift-account button { min-width: 128px; min-height: 48px; padding: .6rem 1rem; border: 1px solid var(--tb-moss); border-radius: 0; background: transparent; color: var(--tb-moss); cursor: pointer; font-weight: 700; }
+    .tb-theme .tb-gift-account button:hover { background: var(--tb-moss); color: var(--tb-bone); }
     .tb-theme .tb-closing > .tb-section-inner { display: grid; gap: 3rem; align-items: center; }
     .tb-theme .tb-closing-copy { min-width: 0; }
     .tb-theme .tb-closing-botanical { width: 60px; margin-bottom: 2rem; color: var(--tb-linen); }
@@ -164,6 +206,9 @@ export function ThemeStyles() {
     .tb-theme .tb-nav a:focus-visible { outline-offset: -3px; }
     .tb-theme .tb-music { position: fixed; z-index: 30; right: max(1rem, env(safe-area-inset-right)); bottom: calc(5.75rem + env(safe-area-inset-bottom)); display: grid; place-items: center; min-width: 48px; min-height: 48px; border: 1px solid var(--tb-moss); background: var(--tb-bone); color: var(--tb-moss); cursor: pointer; }
     @media (min-width: 768px) {
+      .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; }
+      .tb-theme .tb-wishes > .tb-section-inner { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: start; }
+      .tb-theme .tb-wishes-feed { padding-top: clamp(1rem, 7vw, 5rem); }
       .tb-theme .tb-event { grid-template-columns: 3ch minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(1.5rem, 4vw, 4rem); }
       .tb-theme .tb-event-place { grid-column: 3; }
       .tb-theme .tb-countdown > .tb-section-inner { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: end; }

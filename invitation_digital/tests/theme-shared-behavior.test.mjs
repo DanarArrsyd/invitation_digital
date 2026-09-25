@@ -10,7 +10,7 @@ import { JSDOM } from "jsdom";
 
 const nodeRequire = createRequire(import.meta.url);
 
-function loadShared(name) {
+function loadShared(name, actions = {}) {
   const file = new URL(`../src/themes/shared/${name}.ts`, import.meta.url);
   let source;
   try {
@@ -31,17 +31,51 @@ function loadShared(name) {
       if (name === "@/app/(public)/[slug]/actions") {
         return {
           trackCoverOpenedAction: async () => undefined,
-          submitRsvpAction: async () => ({ status: "success" }),
-          submitWishAction: async () => ({ status: "success" }),
+          submitRsvpAction: actions.submitRsvp ?? (async () => ({ status: "success" })),
+          submitWishAction: actions.submitWish ?? (async () => ({ status: "success" })),
         };
       }
       return nodeRequire(name);
     },
     setTimeout,
     clearTimeout,
+    get FormData() { return globalThis.FormData; },
     navigator: globalThis.navigator,
   });
   return exports;
+}
+
+function loadIvorySection(name, actions = {}) {
+  const source = readFileSync(new URL(`../src/themes/nusantara-ivory/sections/${name}.tsx`, import.meta.url), "utf8");
+  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
+  const exports = {};
+  const shared = loadShared("use-public-forms", actions);
+  const passthrough = ({ children, id }) => React.createElement(id ? "section" : "div", id ? { id } : null, children);
+  const inert = () => null;
+  vm.runInNewContext(compiled, {
+    exports, module: { exports }, FormData: globalThis.FormData,
+    require(moduleName) {
+      if (moduleName === "@/themes/shared/use-public-forms") return shared;
+      if (moduleName === "@/components/TurnstileWidget") return { TurnstileWidget: inert };
+      if (moduleName.endsWith("/Reveal")) return { Reveal: passthrough };
+      if (moduleName.endsWith("/Section")) return { Section: passthrough };
+      if (moduleName.endsWith("/SectionHeading")) return { SectionHeading: ({ title }) => React.createElement("h2", null, title) };
+      if (moduleName.endsWith("/Ornament")) return { OrnamentCorner: inert, OrnamentDivider: inert };
+      if (moduleName.endsWith("/Botanical")) return { FloralCorner: inert, BotanicalDivider: inert };
+      return nodeRequire(moduleName);
+    },
+  });
+  return exports[name];
+}
+
+async function mountIvorySection(name, props, actions = {}) {
+  const dom = new JSDOM("<div id='root'></div>", { url: "https://invitation.test/" });
+  const prior = { window: globalThis.window, document: globalThis.document, HTMLElement: globalThis.HTMLElement, FormData: globalThis.FormData, IS_REACT_ACT_ENVIRONMENT: globalThis.IS_REACT_ACT_ENVIRONMENT };
+  Object.assign(globalThis, { window: dom.window, document: dom.window.document, HTMLElement: dom.window.HTMLElement, FormData: dom.window.FormData, IS_REACT_ACT_ENVIRONMENT: true });
+  const Component = loadIvorySection(name, actions);
+  const root = createRoot(document.getElementById("root"));
+  await act(async () => root.render(React.createElement(Component, props)));
+  return { document: dom.window.document, async cleanup() { await act(async () => root.unmount()); Object.assign(globalThis, prior); dom.window.close(); } };
 }
 
 async function renderHook(useHook, render = () => null) {
@@ -186,4 +220,53 @@ test("wish pagination retains the first-page allowance when initially empty", as
   } finally {
     await hook.cleanup();
   }
+});
+
+test("shared RSVP behavior reaches the real Ivory form and retains its entered name on error", async () => {
+  let resolveAction;
+  const calls = [];
+  const view = await mountIvorySection("RsvpSection", { invitationId: "inv-ivory", slug: "ivory", guestToken: null, guestName: null }, {
+    submitRsvp: async (previous, data) => {
+      calls.push(Object.fromEntries(data.entries()));
+      return new Promise(resolve => { resolveAction = resolve; });
+    },
+  });
+  try {
+    const form = view.document.querySelector("#ni-rsvp form");
+    form.elements.namedItem("guestName").value = "Tamu Ivory";
+    await act(async () => [...form.querySelectorAll('button[type="button"]')].find(button => button.textContent.trim() === "Hadir").click());
+    await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
+    assert.deepEqual(calls[0], { invitationId: "inv-ivory", slug: "ivory", guestToken: "", attendance: "attending", guestName: "Tamu Ivory" });
+    assert.match(form.textContent, /Mengirim\.\.\./);
+    await act(async () => resolveAction({ status: "error", message: "Coba lagi." }));
+    assert.equal(form.querySelector('[role="alert"]').textContent, "Coba lagi.");
+    assert.equal(form.elements.namedItem("guestName").value, "Tamu Ivory");
+    assert.equal(form.elements.namedItem("attendance").value, "attending");
+  } finally { await view.cleanup(); }
+});
+
+test("shared wish behavior reaches the real Ivory form and pagination", async () => {
+  let resolveAction;
+  const calls = [];
+  const wishes = Array.from({ length: 6 }, (_, index) => ({ id: `wish-${index}`, guestName: `Tamu ${index}`, message: `Doa ${index}`, createdAt: "2026-09-25T00:00:00Z" }));
+  const view = await mountIvorySection("WishesSection", { invitationId: "inv-ivory", slug: "ivory", guestToken: "ivory-token", guestName: "Tamu Undangan", wishes }, {
+    submitWish: async (previous, data) => {
+      calls.push(Object.fromEntries(data.entries()));
+      return new Promise(resolve => { resolveAction = resolve; });
+    },
+  });
+  try {
+    const section = view.document.getElementById("ni-ucapan");
+    const form = section.querySelector("form");
+    form.elements.namedItem("message").value = "Pesan Ivory";
+    await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
+    assert.deepEqual(calls[0], { invitationId: "inv-ivory", slug: "ivory", guestToken: "ivory-token", message: "Pesan Ivory" });
+    await act(async () => resolveAction({ status: "error", message: "Belum terkirim." }));
+    assert.equal(form.querySelector('[role="alert"]').textContent, "Belum terkirim.");
+    assert.equal(form.elements.namedItem("message").value, "Pesan Ivory");
+    assert.equal(section.textContent.includes("Doa 5"), false);
+    await act(async () => [...section.querySelectorAll("button")].find(button => button.textContent.includes("Muat Lebih Banyak")).click());
+    assert.equal(section.textContent.includes("Doa 5"), true);
+    assert.equal([...section.querySelectorAll("button")].some(button => button.textContent.includes("Muat Lebih Banyak")), false);
+  } finally { await view.cleanup(); }
 });

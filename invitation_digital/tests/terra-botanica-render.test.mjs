@@ -17,7 +17,7 @@ const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
 
 // Execute real theme components and shared hooks. Only build-time font loading,
 // the server analytics boundary, and browser motion preference are substituted.
-function loadTheme({ reducedMotion = false, track = async () => {} } = {}) {
+function loadTheme({ reducedMotion = false, track = async () => {}, submitRsvp, submitWish } = {}) {
   const cache = new Map();
   function load(file) {
     const path = [file, `${file}.tsx`, `${file}.ts`, `${file}/index.ts`].find(existsSync);
@@ -29,10 +29,12 @@ function loadTheme({ reducedMotion = false, track = async () => {} } = {}) {
       compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
     }).outputText;
     vm.runInNewContext(output, {
-      exports, module: { exports }, console, Date, Intl, URL, URLSearchParams, Blob,
+      exports, module: { exports }, console, Date, Intl, URL, URLSearchParams, Blob, process,
       setTimeout, clearTimeout, setInterval, clearInterval,
       get window() { return globalThis.window; },
       get document() { return globalThis.document; },
+      get FormData() { return globalThis.FormData; },
+      get navigator() { return globalThis.window?.navigator; },
       get IntersectionObserver() { return globalThis.IntersectionObserver; },
       get requestAnimationFrame() { return globalThis.requestAnimationFrame; },
       require(name) {
@@ -41,7 +43,12 @@ function loadTheme({ reducedMotion = false, track = async () => {} } = {}) {
           Manrope: () => ({ variable: "tb-manrope" }),
         };
         if (name === "motion/react") return { useReducedMotion: () => reducedMotion };
-        if (name === "@/app/(public)/[slug]/actions") return { trackCoverOpenedAction: track };
+        if (name === "next/script") return { __esModule: true, default: () => null };
+        if (name === "@/app/(public)/[slug]/actions") return {
+          trackCoverOpenedAction: track,
+          submitRsvpAction: submitRsvp ?? (async () => ({ status: "success" })),
+          submitWishAction: submitWish ?? (async () => ({ status: "success" })),
+        };
         if (name.startsWith("@/")) return load(resolve(sourceRoot, name.slice(2)));
         if (name.startsWith(".")) return load(resolve(dirname(path), name));
         return nodeRequire(name);
@@ -83,6 +90,12 @@ function renderShell(invitation = fixture(), recipient = guest) {
   return renderToStaticMarkup(React.createElement(TerraBotanica, { invitation, guest: recipient }));
 }
 
+async function enterText(element, value) {
+  const prototype = element.tagName === "TEXTAREA" ? element.ownerDocument.defaultView.HTMLTextAreaElement.prototype : element.ownerDocument.defaultView.HTMLInputElement.prototype;
+  Object.getOwnPropertyDescriptor(prototype, "value").set.call(element, value);
+  await act(async () => element.dispatchEvent(new element.ownerDocument.defaultView.Event("input", { bubbles: true })));
+}
+
 // Catches dropped view-model data, incomplete cover composition, and unsafe null output.
 test("shell renders personalized journal cover from normalized data", () => {
   const html = renderShell();
@@ -94,7 +107,9 @@ test("shell renders personalized journal cover from normalized data", () => {
   assert.match(html, /Alya/);
   assert.match(html, /Bima/);
   assert.match(html, /20 Oktober 2026/);
-  assert.doesNotMatch(html, /undefined|null/);
+  const document = new JSDOM(html).window.document;
+  document.querySelectorAll("style, script").forEach((element) => element.remove());
+  assert.doesNotMatch(document.body.textContent, /undefined|null/);
 });
 
 // Catches accidental photo dependency, invented dates, and personalization leaks.
@@ -134,12 +149,12 @@ test("shell navigation candidates require enabled features and available content
   assert.deepEqual(Array.from(buildTerraNavItems(disabled), (item) => item.id), ["tb-beranda", "tb-mempelai", "tb-acara"]);
 });
 
-async function mountShell(options = {}, invitation = fixture(), hydrate = false) {
+async function mountShell(options = {}, invitation = fixture(), hydrate = false, recipient = guest) {
   const dom = new JSDOM("<div id='root'></div>", { pretendToBeVisual: true, url: "https://invitation.test/" });
-  const keys = ["window", "document", "HTMLElement", "IntersectionObserver", "requestAnimationFrame", "IS_REACT_ACT_ENVIRONMENT"];
+  const keys = ["window", "document", "HTMLElement", "FormData", "IntersectionObserver", "requestAnimationFrame", "IS_REACT_ACT_ENVIRONMENT"];
   const previous = Object.fromEntries(keys.map((key) => [key, globalThis[key]]));
   Object.assign(globalThis, {
-    window: dom.window, document: dom.window.document, HTMLElement: dom.window.HTMLElement,
+    window: dom.window, document: dom.window.document, HTMLElement: dom.window.HTMLElement, FormData: dom.window.FormData,
     IntersectionObserver: class { observe() {} disconnect() {} },
     requestAnimationFrame: dom.window.requestAnimationFrame.bind(dom.window), IS_REACT_ACT_ENVIRONMENT: true,
   });
@@ -148,11 +163,11 @@ async function mountShell(options = {}, invitation = fixture(), hydrate = false)
   const container = document.getElementById("root");
   let root;
   if (hydrate) {
-    container.innerHTML = renderShell(invitation);
-    await act(async () => { root = hydrateRoot(container, React.createElement(TerraBotanica, { invitation, guest })); });
+    container.innerHTML = renderShell(invitation, recipient);
+    await act(async () => { root = hydrateRoot(container, React.createElement(TerraBotanica, { invitation, guest: recipient })); });
   } else {
     root = createRoot(container);
-    await act(async () => root.render(React.createElement(TerraBotanica, { invitation, guest })));
+    await act(async () => root.render(React.createElement(TerraBotanica, { invitation, guest: recipient })));
   }
   return {
     document: dom.window.document,
@@ -479,6 +494,156 @@ test("events omit calendar actions without a supplied positive same-day interval
     assert.match(row.textContent, /Kebun Pertemuan Keluarga/);
     assert.equal(row.querySelector('a[href^="https://calendar.google.com/"]'), null, `${startTime}–${endTime}`);
     assert.equal(row.querySelector("button"), null, `${startTime}–${endTime}`);
+  }
+});
+
+test("RSVP, wish, and gift chapters render personalized fields and omit disabled or empty gifts", () => {
+  const document = new JSDOM(renderShell()).window.document;
+  for (const id of ["tb-rsvp", "tb-ucapan", "tb-kado"]) {
+    const section = document.getElementById(id);
+    assert.ok(section, `${id} renders`);
+    assert.ok(document.getElementById(section.getAttribute("aria-labelledby")), `${id} has a heading`);
+  }
+  for (const id of ["tb-rsvp", "tb-ucapan"]) {
+    const form = document.querySelector(`#${id} form`);
+    assert.equal(form.elements.namedItem("invitationId").value, "terra-test");
+    assert.equal(form.elements.namedItem("slug").value, "terra-test");
+    assert.equal(form.elements.namedItem("guestToken").value, "guest-token");
+    assert.equal(form.elements.namedItem("guestName"), null, "personalized guest name is read-only");
+    assert.match(form.textContent, /Nama Tamu Yang Sangat Panjang/);
+  }
+  assert.equal(document.querySelector('#tb-rsvp [name="attendance"]').value, "");
+  assert.ok(document.querySelector('#tb-ucapan [name="message"][maxlength="500"]'));
+  assert.equal(document.querySelectorAll("#tb-kado button").length, 1);
+  const empty = new JSDOM(renderShell(fixture({ gifts: [] }))).window.document;
+  assert.equal(empty.getElementById("tb-kado"), null);
+  assert.equal(empty.querySelector('a[href="#tb-kado"]'), null);
+  const disabled = new JSDOM(renderShell(fixture({ features: { ...features, rsvp: false, wishes: false, gift: false } }))).window.document;
+  for (const id of ["tb-rsvp", "tb-ucapan", "tb-kado"]) assert.equal(disabled.getElementById(id), null);
+  for (const link of disabled.querySelectorAll("nav a")) assert.ok(disabled.querySelector(link.getAttribute("href")));
+});
+
+test("RSVP submits exact fields, retains the selected attendance on error, and shows pending and success", async () => {
+  let resolveAction;
+  const calls = [];
+  const view = await mountShell({ submitRsvp: async (previous, data) => {
+    calls.push(Object.fromEntries(data.entries()));
+    return new Promise(resolve => { resolveAction = resolve; });
+  } });
+  try {
+    const form = view.document.querySelector("#tb-rsvp form");
+    assert.ok(form);
+    const attending = [...form.querySelectorAll('button[type="button"]')].find(button => button.textContent.trim() === "Hadir");
+    await act(async () => attending.click());
+    assert.equal(attending.getAttribute("aria-pressed"), "true");
+    assert.equal(form.elements.namedItem("attendance").value, "attending");
+    await act(async () => { form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })); });
+    assert.deepEqual(calls[0], { invitationId: "terra-test", slug: "terra-test", guestToken: "guest-token", attendance: "attending" });
+    assert.match(form.textContent, /Mengirim\.\.\./);
+    assert.equal(form.querySelector('button[type="submit"]').disabled, true);
+    await act(async () => resolveAction({ status: "error", message: "Mohon coba lagi." }));
+    assert.equal(view.document.querySelector("#tb-rsvp [role='alert']").textContent, "Mohon coba lagi.");
+    assert.equal(form.elements.namedItem("attendance").value, "attending");
+    await act(async () => { form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })); });
+    await act(async () => resolveAction({ status: "success" }));
+    assert.match(view.document.querySelector("#tb-rsvp").textContent, /Konfirmasi kehadiran Anda telah kami terima/);
+  } finally { await view.cleanup(); }
+});
+
+test("wish form preserves text on error, shares action fields, and shows Turnstile when configured", async () => {
+  const previousKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "test-site-key";
+  let resolveAction;
+  const calls = [];
+  let view;
+  try {
+    view = await mountShell({ submitWish: async (previous, data) => {
+      calls.push(Object.fromEntries(data.entries()));
+      return new Promise(resolve => { resolveAction = resolve; });
+    } });
+    const form = view.document.querySelector("#tb-ucapan form");
+    assert.equal(form.querySelector(".cf-turnstile").getAttribute("data-sitekey"), "test-site-key");
+    assert.equal(view.document.querySelector("#tb-rsvp .cf-turnstile").getAttribute("data-sitekey"), "test-site-key");
+    const turnstileResponse = view.document.createElement("input");
+    turnstileResponse.type = "hidden";
+    turnstileResponse.name = "cf-turnstile-response";
+    turnstileResponse.value = "turnstile-proof";
+    form.append(turnstileResponse);
+    const message = form.elements.namedItem("message");
+    await enterText(message, "Semoga berbahagia selalu.");
+    assert.equal(message.value, "Semoga berbahagia selalu.", "message entry is reflected before submit");
+    await act(async () => { form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })); });
+    assert.deepEqual(calls[0], { invitationId: "terra-test", slug: "terra-test", guestToken: "guest-token", message: "Semoga berbahagia selalu.", "cf-turnstile-response": "turnstile-proof" });
+    assert.match(form.textContent, /Mengirim\.\.\./);
+    await act(async () => resolveAction({ status: "error", message: "Pesan belum terkirim." }));
+    assert.equal(form.querySelector("[role='alert']").textContent, "Pesan belum terkirim.");
+    assert.equal(message.value, "Semoga berbahagia selalu.");
+    await act(async () => { form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })); });
+    await act(async () => resolveAction({ status: "success" }));
+    assert.match(view.document.querySelector("#tb-ucapan").textContent, /Terima kasih atas ucapan dan doanya/);
+  } finally {
+    if (view) await view.cleanup();
+    if (previousKey === undefined) delete process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+    else process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = previousKey;
+  }
+});
+
+test("unpersonalized RSVP and wish names remain available after submission errors", async () => {
+  const resolvers = {};
+  const view = await mountShell({
+    submitRsvp: async () => new Promise(resolve => { resolvers.rsvp = resolve; }),
+    submitWish: async () => new Promise(resolve => { resolvers.wish = resolve; }),
+  }, fixture(), false, null);
+  try {
+    for (const [id, key] of [["tb-rsvp", "rsvp"], ["tb-ucapan", "wish"]]) {
+      const form = view.document.querySelector(`#${id} form`);
+      const name = form.elements.namedItem("guestName");
+      await enterText(name, "Tamu Tanpa Token");
+      assert.equal(name.value, "Tamu Tanpa Token", "name entry is reflected before submit");
+      if (key === "rsvp") await act(async () => [...form.querySelectorAll('button[type="button"]')].find(button => button.textContent.trim() === "Tidak Hadir").click());
+      else await enterText(form.elements.namedItem("message"), "Doa yang tetap tersimpan.");
+      await act(async () => { form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })); });
+      await act(async () => resolvers[key]({ status: "error", message: "Coba lagi." }));
+      assert.equal(name.value, "Tamu Tanpa Token");
+      if (key === "wish") assert.equal(form.elements.namedItem("message").value, "Doa yang tetap tersimpan.");
+      else assert.equal(form.elements.namedItem("attendance").value, "not_attending");
+    }
+  } finally { await view.cleanup(); }
+});
+
+test("wishes show an empty invitation then paginate six entries without duplicates", async () => {
+  const empty = new JSDOM(renderShell()).window.document.getElementById("tb-ucapan");
+  assert.match(empty.textContent, /Jadilah yang pertama/);
+  assert.equal(empty.querySelector("[data-wish-id]"), null);
+  const wishes = Array.from({ length: 6 }, (_, index) => ({ id: `wish-${index}`, guestName: `Tamu ${index}`, message: `Doa ${index}`, createdAt: "2026-09-25T00:00:00Z" }));
+  const view = await mountShell({}, fixture({ wishes }));
+  try {
+    const section = view.document.getElementById("tb-ucapan");
+    assert.deepEqual([...section.querySelectorAll("[data-wish-id]")].map(row => row.getAttribute("data-wish-id")), wishes.slice(0, 5).map(wish => wish.id));
+    await act(async () => [...section.querySelectorAll("button")].find(button => button.textContent.includes("Muat Lebih Banyak")).click());
+    assert.deepEqual([...section.querySelectorAll("[data-wish-id]")].map(row => row.getAttribute("data-wish-id")), wishes.map(wish => wish.id));
+    assert.equal([...section.querySelectorAll("button")].some(button => button.textContent.includes("Muat Lebih Banyak")), false);
+  } finally { await view.cleanup(); }
+});
+
+test("gift copy announces success only after clipboard acceptance", async () => {
+  const view = await mountShell();
+  const browserNavigator = view.document.defaultView.navigator;
+  const descriptor = Object.getOwnPropertyDescriptor(browserNavigator, "clipboard");
+  try {
+    const button = view.document.querySelector("#tb-kado button");
+    Object.defineProperty(browserNavigator, "clipboard", { configurable: true, value: { writeText: async () => { throw new Error("denied"); } } });
+    await act(async () => button.click());
+    assert.doesNotMatch(button.textContent, /Tersalin/);
+    const copied = [];
+    Object.defineProperty(browserNavigator, "clipboard", { configurable: true, value: { writeText: async value => { copied.push(value); } } });
+    await act(async () => button.click());
+    assert.deepEqual(copied, ["123"]);
+    assert.match(button.textContent, /Tersalin/);
+  } finally {
+    await view.cleanup();
+    if (descriptor) Object.defineProperty(browserNavigator, "clipboard", descriptor);
+    else delete browserNavigator.clipboard;
   }
 });
 

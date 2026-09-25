@@ -19,7 +19,7 @@ export function RsvpSection({
   guestToken: string | null;
   guestName: string | null;
 }) {
-  const { state, formAction, isPending, attendance, setAttendance } = useRsvpForm();
+  const { state, formAction, isPending, attendance, setAttendance, formRef, onSubmit } = useRsvpForm();
 
   return (
     <Section id="ni-rsvp" className="ni-rsvp" tone="cream" floral>
@@ -53,7 +53,7 @@ export function RsvpSection({
                 </p>
               </div>
             ) : (
-              <form action={formAction} className="flex flex-col gap-7">
+              <form ref={formRef} action={formAction} onSubmit={onSubmit} className="flex flex-col gap-7">
                 <input type="hidden" name="invitationId" value={invitationId} />
                 <input type="hidden" name="slug" value={slug} />
                 <input type="hidden" name="guestToken" value={guestToken ?? ""} />

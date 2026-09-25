@@ -16,6 +16,9 @@ import { EventsSection } from "./sections/EventsSection";
 import { CountdownSection } from "./sections/CountdownSection";
 import { DressCodeSection } from "./sections/DressCodeSection";
 import { LivestreamSection } from "./sections/LivestreamSection";
+import { RsvpSection } from "./sections/RsvpSection";
+import { WishesSection } from "./sections/WishesSection";
+import { GiftSection } from "./sections/GiftSection";
 
 export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
   const { features } = invitation;
@@ -34,8 +37,7 @@ export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
 
 export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
   const { coupleDisplayName, guestDisplayName, primaryEvent, countdownTarget, dressCode, heroImageUrl, closingImageUrl } = buildThemeViewModel(invitation, guest);
-  // Expand alongside the actual sections in subsequent tasks, never ahead of them.
-  const navItems = buildTerraNavItems(invitation).filter((item) => ["hero", "couple", "events", "story", "gallery"].includes(item.section));
+  const navItems = buildTerraNavItems(invitation);
 
   return (
     <div className={`tb-theme ${displaySerif.variable} ${bodySans.variable}`}>
@@ -60,6 +62,9 @@ export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
         {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
         {invitation.features.gallery ? <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} /> : null}
         <LivestreamSection events={invitation.events} enabled={invitation.features.livestream} />
+        {invitation.features.rsvp ? <RsvpSection invitationId={invitation.id} slug={invitation.slug} guestToken={guest?.token ?? null} guestName={guestDisplayName} /> : null}
+        {invitation.features.wishes ? <WishesSection invitationId={invitation.id} slug={invitation.slug} guestToken={guest?.token ?? null} guestName={guestDisplayName} wishes={invitation.wishes} /> : null}
+        {invitation.features.gift ? <GiftSection gifts={invitation.gifts} /> : null}
         <ClosingSection displayName={coupleDisplayName} message={invitation.content.closingMessage} imageUrl={closingImageUrl} imageAlt={invitation.gallery.at(-1)?.altText ?? null} />
       </CoverGate>
     </div>
