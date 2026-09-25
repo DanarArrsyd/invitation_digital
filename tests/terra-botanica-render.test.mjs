@@ -28,7 +28,8 @@ function loadTheme({ reducedMotion = false, track = async () => {} } = {}) {
       compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
     }).outputText;
     vm.runInNewContext(output, {
-      exports, module: { exports }, console, Date, Intl, URL, setTimeout, clearTimeout,
+      exports, module: { exports }, console, Date, Intl, URL, URLSearchParams, Blob,
+      setTimeout, clearTimeout, setInterval, clearInterval,
       get window() { return globalThis.window; },
       get document() { return globalThis.document; },
       get IntersectionObserver() { return globalThis.IntersectionObserver; },
@@ -216,7 +217,7 @@ test("cover hydrates without mismatch when the browser prefers reduced motion", 
   let view;
   try {
     view = await mountShell({ reducedMotion: true }, fixture(), true);
-    assert.equal(errors.length, 0, "server and initial browser markup must agree regardless of motion preference");
+    assert.equal(errors.length, 0, `server and initial browser markup must agree regardless of motion preference: ${errors.map(args => args.map(String).join(" ")).join(" | ")}`);
   } finally {
     if (view) await view.cleanup();
     console.error = originalError;
@@ -376,5 +377,236 @@ test("narrative image failure keeps its frame and readable alternative", async (
     assert.equal(frame.style.aspectRatio, ratio);
     assert.equal(frame.querySelector('[role="img"]').getAttribute("aria-label"), alt);
     assert.match(frame.textContent, /Foto tidak dapat dimuat/);
+  } finally { await view.cleanup(); }
+});
+
+function gatheringFixture(count = 1, overrides = {}) {
+  const base = fixture();
+  return fixture({
+    events: Array.from({ length: count }, (_, index) => ({ ...base.events[0],
+      id: `gathering-${index}`, title: `Pertemuan keluarga ${index + 1}`,
+      eventDate: `2030-10-${String(20 + index).padStart(2, "0")}`, startTime: "09:30:00", endTime: "11:00:00",
+      venueName: "Kebun Pertemuan Keluarga di Tengah Pepohonan yang Teduh ".repeat(3),
+      address: "Jalan Pengujian dengan Alamat Sangat Panjang Blok Seratus Dua Puluh ".repeat(4),
+    })),
+    ...overrides,
+  });
+}
+
+// Catches lost event rows, clipped content in markup, wrong calendar input, and duplicate targets.
+test("events render one and five individually actionable entries with long venues and addresses", () => {
+  for (const count of [1, 5]) {
+    const invitation = gatheringFixture(count);
+    const document = new JSDOM(renderShell(invitation)).window.document;
+    const section = document.getElementById("tb-acara");
+    assert.ok(section, "event chapter renders");
+    assert.match(section.textContent, /The Gathering/);
+    const rows = [...section.querySelectorAll("[data-event-item]")];
+    assert.equal(rows.length, count);
+    for (const [index, row] of rows.entries()) {
+      const event = invitation.events[index];
+      assert.ok(row.textContent.includes(event.title));
+      assert.ok(row.textContent.includes(event.venueName));
+      assert.ok(row.textContent.includes(event.address));
+      assert.match(row.textContent, /09:30.*11:00.*WIB/);
+      assert.equal(row.querySelector("time").dateTime, event.eventDate);
+      assert.ok(row.querySelector('a[href="https://maps.google.com/"]'));
+      const calendar = new URL(row.querySelector('a[href^="https://calendar.google.com/"]').href);
+      assert.equal(calendar.searchParams.get("dates"), `203010${20 + index}T023000Z/203010${20 + index}T040000Z`);
+      assert.ok(calendar.searchParams.get("text").includes(event.title));
+      assert.ok(calendar.searchParams.get("location").includes(event.venueName));
+    }
+    const ids = [...document.querySelectorAll("[id]")].map(element => element.id);
+    assert.equal(new Set(ids).size, ids.length, "all addressable targets are unique");
+    for (const link of section.querySelectorAll('a[target="_blank"]')) {
+      assert.match(link.rel, /noopener/);
+      assert.match(link.rel, /noreferrer/);
+    }
+  }
+});
+
+test("events omit missing or unsafe map actions and respect disabled maps", () => {
+  for (const mapsUrl of [null, "", " ", "not-a-url", "javascript:alert(1)", "data:text/html,hello", "/relative"]) {
+    const invitation = gatheringFixture();
+    invitation.events[0].mapsUrl = mapsUrl;
+    const document = new JSDOM(renderShell(invitation)).window.document;
+    assert.ok(document.getElementById("tb-acara"), "event details survive missing maps");
+    assert.equal([...document.querySelectorAll("#tb-acara a")].some(link => /maps/i.test(link.textContent)), false);
+    assert.equal(document.querySelector('a:not([href]), a[href=""], a[href="#"]'), null);
+  }
+  const document = new JSDOM(renderShell(gatheringFixture(1, { features: { ...features, maps: false } }))).window.document;
+  assert.equal(document.querySelector('a[href="https://maps.google.com/"]'), null);
+  assert.ok(document.querySelector('a[href^="https://calendar.google.com/"]'), "calendar remains independent of maps");
+});
+
+test("events preserve partial details but omit invalid calendar dates and an empty chapter", () => {
+  const invitation = gatheringFixture();
+  invitation.events[0].eventDate = "invalid";
+  const document = new JSDOM(renderShell(invitation)).window.document;
+  assert.ok(document.getElementById("tb-acara"));
+  assert.ok(document.body.textContent.includes(invitation.events[0].venueName));
+  assert.equal(document.querySelector('#tb-acara a[href^="https://calendar.google.com/"]'), null);
+  assert.equal(document.querySelector("#tb-acara time"), null);
+  assert.equal(new JSDOM(renderShell(fixture({ events: [], eventDate: null }))).window.document.getElementById("tb-acara"), null);
+});
+
+test("event actions identify their event and malformed times do not create calendar links", () => {
+  const document = new JSDOM(renderShell(gatheringFixture(5))).window.document;
+  for (const [index, row] of [...document.querySelectorAll("[data-event-item]")].entries()) {
+    const title = `Pertemuan keluarga ${index + 1}`;
+    for (const action of row.querySelectorAll("a, button")) {
+      assert.match(action.getAttribute("aria-label"), new RegExp(title));
+    }
+  }
+  const invalid = gatheringFixture();
+  invalid.events[0].startTime = "not-a-time";
+  const invalidDocument = new JSDOM(renderShell(invalid)).window.document;
+  assert.equal(invalidDocument.querySelector('#tb-acara a[href^="https://calendar.google.com/"]'), null);
+  assert.equal(invalidDocument.querySelector("#tb-acara button"), null);
+});
+
+test("countdown renders a valid target and omits disabled, missing or invalid targets", () => {
+  const present = new JSDOM(renderShell(gatheringFixture())).window.document;
+  assert.ok(present.getElementById("tb-countdown"));
+  for (const unit of ["Hari", "Jam", "Menit", "Detik"]) assert.ok(present.getElementById("tb-countdown").textContent.includes(unit));
+  for (const invitation of [
+    gatheringFixture(1, { features: { ...features, countdown: false } }),
+    gatheringFixture(0, { eventDate: null }),
+    gatheringFixture(0, { eventDate: "invalid" }),
+  ]) {
+    const document = new JSDOM(renderShell(invitation)).window.document;
+    assert.equal(document.getElementById("tb-countdown"), null);
+  }
+  const withoutCountdown = new JSDOM(renderShell(gatheringFixture(1, { features: { ...features, countdown: false } }))).window.document;
+  assert.ok(withoutCountdown.querySelector('#tb-acara a[href^="https://calendar.google.com/"]'), "calendar works when countdown is off");
+});
+
+test("countdown reaches zero without negative values and stops its interval", async (t) => {
+  const target = new Date("2030-10-20T09:30:00").getTime();
+  t.mock.timers.enable({ apis: ["Date", "setInterval"], now: target - 2000 });
+  const scheduled = t.mock.method(globalThis, "setInterval");
+  const cleared = t.mock.method(globalThis, "clearInterval");
+  const view = await mountShell({}, gatheringFixture());
+  try {
+    const section = view.document.getElementById("tb-countdown");
+    assert.ok(section);
+    assert.equal(section.querySelector('dd[data-unit="seconds"]').textContent, "02");
+    assert.equal(scheduled.mock.callCount(), 1);
+    await act(async () => t.mock.timers.tick(2000));
+    assert.deepEqual([...section.querySelectorAll("dd")].map(node => node.textContent), ["00", "00", "00", "00"]);
+    assert.equal(cleared.mock.callCount(), 1, "interval is cleared at zero");
+    await act(async () => t.mock.timers.tick(60000));
+    assert.equal(scheduled.mock.callCount(), 1);
+    assert.equal(cleared.mock.callCount(), 1);
+  } finally { await view.cleanup(); }
+});
+
+test("countdown pairs each visible value with its unit label", () => {
+  const section = new JSDOM(renderShell(gatheringFixture())).window.document.getElementById("tb-countdown");
+  const units = [...section.querySelectorAll("dl > div")];
+  assert.deepEqual(units.map(unit => [...unit.children].map(child => child.tagName)), [
+    ["DT", "DD"], ["DT", "DD"], ["DT", "DD"], ["DT", "DD"],
+  ]);
+  assert.deepEqual(units.map(unit => unit.querySelector("dt").textContent), ["Hari", "Jam", "Menit", "Detik"]);
+});
+
+test("countdown cleans an active timer on unmount and skips timers without a usable target", async (t) => {
+  t.mock.timers.enable({ apis: ["Date", "setInterval"], now: new Date("2030-10-19T09:30:00").getTime() });
+  const scheduled = t.mock.method(globalThis, "setInterval");
+  const cleared = t.mock.method(globalThis, "clearInterval");
+  const view = await mountShell({}, gatheringFixture());
+  assert.ok(view.document.getElementById("tb-countdown"));
+  assert.equal(scheduled.mock.callCount(), 1);
+  const countdownTimer = scheduled.mock.calls[0].result;
+  await view.cleanup();
+  assert.ok(cleared.mock.calls.some(call => call.arguments[0] === countdownTimer), "the countdown timer is cleared on unmount");
+  for (const invitation of [gatheringFixture(0, { eventDate: null }), gatheringFixture(0, { eventDate: "bad" }), gatheringFixture(1, { features: { ...features, countdown: false } })]) {
+    const empty = await mountShell({}, invitation);
+    await empty.cleanup();
+  }
+  assert.equal(scheduled.mock.callCount(), 1);
+});
+
+test("dress code retains visible swatch labels and omits absent or disabled content", () => {
+  const invitation = gatheringFixture(1, { theme: { slug: "terra-botanica", settings: { dressCode: {
+    description: "Busana nyaman untuk kebun", groups: [{ label: "Keluarga", colors: ["#53634E", "#B6634B"] }],
+  } } } });
+  const document = new JSDOM(renderShell(invitation)).window.document;
+  const section = document.getElementById("tb-dress-code");
+  assert.ok(section);
+  assert.match(section.textContent, /Busana nyaman untuk kebun/);
+  assert.match(section.textContent, /Keluarga/);
+  for (const label of ["#53634E", "#B6634B"]) {
+    const swatch = [...section.querySelectorAll("li")].find(node => node.textContent.includes(label));
+    assert.ok(swatch, `${label} is a visible label`);
+    assert.equal(swatch.querySelector('[aria-hidden="true"]').style.backgroundColor.length > 0, true);
+  }
+  for (const input of [
+    gatheringFixture(1, { theme: { slug: "terra-botanica", settings: {} } }),
+    gatheringFixture(1, { theme: { slug: "terra-botanica", settings: { dressCode: { description: " ", groups: [] } } } }),
+    { ...invitation, features: { ...features, dressCode: false } },
+  ]) assert.equal(new JSDOM(renderShell(input)).window.document.getElementById("tb-dress-code"), null);
+});
+
+test("livestream renders usable event links only while enabled", () => {
+  const invitation = gatheringFixture(5);
+  invitation.events[1].livestreamUrl = null;
+  invitation.events[2].livestreamUrl = "javascript:alert(1)";
+  invitation.events[3].livestreamUrl = "not-a-url";
+  invitation.events[4].livestreamUrl = "https://example.test/second";
+  const document = new JSDOM(renderShell(invitation)).window.document;
+  const section = document.getElementById("tb-livestream");
+  assert.ok(section);
+  const links = [...section.querySelectorAll("a")];
+  assert.equal(links.length, 2);
+  assert.deepEqual(links.map(link => link.href), ["https://example.test/live", "https://example.test/second"]);
+  for (const link of links) {
+    assert.equal(link.target, "_blank");
+    assert.match(link.rel, /noopener/);
+    assert.match(link.rel, /noreferrer/);
+    assert.match(link.textContent, /Pertemuan keluarga/);
+  }
+  for (const livestreamUrl of [null, "", "bad", "javascript:alert(1)", "/relative"]) {
+    const input = gatheringFixture();
+    input.events[0].livestreamUrl = livestreamUrl;
+    assert.equal(new JSDOM(renderShell(input)).window.document.getElementById("tb-livestream"), null);
+  }
+  assert.equal(new JSDOM(renderShell({ ...invitation, features: { ...features, livestream: false } })).window.document.getElementById("tb-livestream"), null);
+});
+
+test("event navigation destinations exist once and empty optional chapters leave no anchors", async () => {
+  const view = await mountShell({}, gatheringFixture(5, { features: { ...features, music: false } }));
+  try {
+    await act(async () => view.document.querySelector("button").click());
+    assert.ok(view.document.querySelector('nav a[href="#tb-acara"]'));
+    for (const link of view.document.querySelectorAll('a[href^="#"]')) assert.equal(view.document.querySelectorAll(link.getAttribute("href")).length, 1);
+    for (const id of ["tb-acara", "tb-countdown", "tb-dress-code", "tb-livestream"]) {
+      const section = view.document.getElementById(id);
+      assert.ok(section);
+      assert.ok(view.document.getElementById(section.getAttribute("aria-labelledby")));
+    }
+  } finally { await view.cleanup(); }
+});
+
+test("event calendar download uses shared WIB times and a fresh UI timestamp", async (t) => {
+  t.mock.timers.enable({ apis: ["Date"], now: Date.parse("2029-09-12T00:00:00Z") });
+  const view = await mountShell({}, gatheringFixture());
+  try {
+    let downloaded;
+    const create = t.mock.method(URL, "createObjectURL", blob => { downloaded = blob; return "blob:test-calendar"; });
+    const revoke = t.mock.method(URL, "revokeObjectURL", () => {});
+    const click = t.mock.method(view.document.defaultView.HTMLAnchorElement.prototype, "click", function () { assert.match(this.download, /\.ics$/); });
+    const button = [...view.document.querySelectorAll("#tb-acara button")].find(node => /\.ics/.test(node.textContent));
+    assert.ok(button);
+    await act(async () => button.click());
+    assert.equal(create.mock.callCount(), 1);
+    assert.equal(click.mock.callCount(), 1);
+    assert.equal(revoke.mock.calls[0].arguments[0], "blob:test-calendar");
+    const text = await downloaded.text();
+    assert.match(text, /DTSTAMP:20290912T000000Z/);
+    assert.match(text, /DTSTART:20301020T023000Z/);
+    assert.match(text, /DTEND:20301020T040000Z/);
+    assert.match(text, /UID:terra-test-gathering-0/);
+    assert.match(text, /SUMMARY:Pertemuan keluarga 1/);
   } finally { await view.cleanup(); }
 });
