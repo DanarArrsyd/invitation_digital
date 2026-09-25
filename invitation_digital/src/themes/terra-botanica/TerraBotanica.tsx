@@ -12,6 +12,10 @@ import { CoupleSection } from "./sections/CoupleSection";
 import { StorySection } from "./sections/StorySection";
 import { GallerySection } from "./sections/GallerySection";
 import { ClosingSection } from "./sections/ClosingSection";
+import { EventsSection } from "./sections/EventsSection";
+import { CountdownSection } from "./sections/CountdownSection";
+import { DressCodeSection } from "./sections/DressCodeSection";
+import { LivestreamSection } from "./sections/LivestreamSection";
 
 export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
   const { features } = invitation;
@@ -29,9 +33,9 @@ export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
 }
 
 export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
-  const { coupleDisplayName, guestDisplayName, primaryEvent, heroImageUrl, closingImageUrl } = buildThemeViewModel(invitation, guest);
+  const { coupleDisplayName, guestDisplayName, primaryEvent, countdownTarget, dressCode, heroImageUrl, closingImageUrl } = buildThemeViewModel(invitation, guest);
   // Expand alongside the actual sections in subsequent tasks, never ahead of them.
-  const navItems = buildTerraNavItems(invitation).filter((item) => ["hero", "couple", "story", "gallery"].includes(item.section));
+  const navItems = buildTerraNavItems(invitation).filter((item) => ["hero", "couple", "events", "story", "gallery"].includes(item.section));
 
   return (
     <div className={`tb-theme ${displaySerif.variable} ${bodySans.variable}`}>
@@ -50,8 +54,12 @@ export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
         <HeroSection displayName={coupleDisplayName} imageUrl={heroImageUrl} message={invitation.content.openingMessage} />
         <QuoteSection quote={invitation.content.openingQuote} />
         <CoupleSection people={invitation.people} settings={invitation.theme.settings} invitationType={invitation.type} />
+        <EventsSection events={invitation.events} mapsEnabled={invitation.features.maps} coupleDisplayName={coupleDisplayName} invitationId={invitation.id} />
+        <CountdownSection target={countdownTarget} />
+        <DressCodeSection dressCode={dressCode} />
         {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
         {invitation.features.gallery ? <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} /> : null}
+        <LivestreamSection events={invitation.events} enabled={invitation.features.livestream} />
         <ClosingSection displayName={coupleDisplayName} message={invitation.content.closingMessage} imageUrl={closingImageUrl} imageAlt={invitation.gallery.at(-1)?.altText ?? null} />
       </CoverGate>
     </div>
