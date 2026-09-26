@@ -32,6 +32,7 @@ function loadThemeContract() {
   const contract = loadTs("themes/section-contract.ts");
   const { themeRegistry } = loadTs("themes/registry.ts", {
     "./nusantara-ivory": { NusantaraIvory: () => null },
+    "./terra-botanica": { TerraBotanica: () => null },
     "./section-contract": contract,
   });
   return { ...contract, themeRegistry };

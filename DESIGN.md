@@ -536,3 +536,35 @@ Also test:
 - music disabled;
 - gift disabled;
 - livestream disabled.
+
+---
+
+## 25. Terra Botanica — Theme #002
+
+Terra Botanica is an organic editorial garden wedding invitation: warm,
+tactile, asymmetrical, and composed like a destination wedding travel journal.
+It must be visually distinct from Nusantara Ivory while presenting the same
+enabled public capabilities. The primary mobile range is 320–430px; desktop
+uses deliberate editorial spreads rather than a stretched mobile column.
+
+Palette: Linen `#F2E7D8` (light base), Clay `#B6634B` (warm chapter accent),
+Moss `#53634E` (deep botanical surface and actions), Cacao `#45372C` (text),
+Sun `#D6A663` (small highlights), and Bone `#FBF7F0` (reading surface).
+Maintain readable foreground contrast on Clay and Moss. Fraunces is the
+display face for names, headings, dates, and pull quotes; Manrope is the
+supporting face for body text, details, forms, and controls.
+
+Storyboard: a photo-optional Linen cover with restrained Moss and Clay
+silhouettes and guest greeting; a photographic hero; an editorial couple and
+parents spread; a gathering chapter for events, countdown, maps, calendar,
+dress code, and livestream; a travel-journal story; an organic gallery collage;
+flat editorial RSVP, wishes, and gift controls; and an intimate Moss closing.
+Use lightweight custom botanical line art, asymmetrical frames, and subtle
+paper grain. Avoid generic floral corners, heavy greenery, rustic craft styling,
+and SaaS cards. Missing optional content should leave a deliberate sparse
+composition without invented customer details.
+
+Motion uses selected 600–900ms reveals, roughly 2–6px botanical drift, and
+occasional organic image masks. Avoid continuous costly animation and scroll
+jacking; disable nonessential motion under `prefers-reduced-motion`. Keep
+forms, focus states, imagery, and long text usable at 320px through desktop.
