@@ -15,16 +15,7 @@ export function useRsvpForm() {
     { status: "idle" } as RsvpFormState,
   );
   const [attendance, setAttendance] = useState<"attending" | "not_attending" | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const submittedData = useRef<FormData | null>(null);
-  useEffect(() => {
-    if (state.status === "error" && formRef.current && submittedData.current) {
-      restoreTextFields(formRef.current, submittedData.current);
-    }
-  }, [state]);
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
-    submittedData.current = new FormData(event.currentTarget);
-  }
+  const { formRef, onSubmit } = useRecoverableTextFields(state);
   return { state, formAction, isPending, attendance, setAttendance, formRef, onSubmit };
 }
 
@@ -33,8 +24,25 @@ export function useWishForm() {
     submitWishAction,
     { status: "idle" } as WishFormState,
   );
+  const { formRef, onSubmit } = useRecoverableTextFields(state);
+  return { state, formAction, isPending, formRef, onSubmit };
+}
+
+function useRecoverableTextFields(state: RsvpFormState | WishFormState) {
   const formRef = useRef<HTMLFormElement>(null);
   const submittedData = useRef<FormData | null>(null);
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form) return;
+    function captureEdit(event: Event) {
+      const control = event.target as HTMLInputElement | HTMLTextAreaElement;
+      if ((control.name === "guestName" || control.name === "message") && submittedData.current) {
+        submittedData.current.set(control.name, control.value);
+      }
+    }
+    form.addEventListener("input", captureEdit);
+    return () => form.removeEventListener("input", captureEdit);
+  }, []);
   useEffect(() => {
     if (state.status === "error" && formRef.current && submittedData.current) {
       restoreTextFields(formRef.current, submittedData.current);
@@ -43,7 +51,7 @@ export function useWishForm() {
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     submittedData.current = new FormData(event.currentTarget);
   }
-  return { state, formAction, isPending, formRef, onSubmit };
+  return { formRef, onSubmit };
 }
 
 function restoreTextFields(form: HTMLFormElement, data: FormData) {
