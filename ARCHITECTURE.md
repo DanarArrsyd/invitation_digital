@@ -302,16 +302,10 @@ reference. For rollback, deactivate Terra first, inspect and reassign any
 invitations referencing it under separate authorization, then roll back
 application code. There is no destructive down migration.
 
-Example:
-
-```ts
-export const themeRegistry = {
-  "nusantara-ivory": {
-    component: NusantaraIvory,
-    category: "wedding",
-  },
-} as const
-```
+The current registry has explicit `nusantara-ivory` and `terra-botanica`
+definitions. Each includes its component, wedding category, preview metadata,
+and complete 18-section manifest; see `src/themes/registry.ts` for the typed
+implementation.
 
 Theme renderer:
 
