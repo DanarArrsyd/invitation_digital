@@ -277,6 +277,31 @@ implemented. Customer self-service and payments remain outside this foundation.
 
 Use a registry rather than conditional logic scattered around routes.
 
+`src/themes/registry.ts` registers Nusantara Ivory and Terra Botanica under
+`nusantara-ivory` and `terra-botanica`. Each definition has preview metadata
+and an explicit manifest covering every key in the typed 18-section contract
+(`src/themes/section-contract.ts`). Every public feature or layout added to one
+registered template must be represented in all registered templates in the
+same change. Themes may group or order sections differently, but cannot omit
+an enabled capability. Sponsorship is only a reserved package entitlement,
+not a public section yet.
+
+`ThemeRenderer` resolves the normalized invitation's theme slug to its
+component. Package entitlement checks, invitation loading, publication and
+expiration checks, and guest resolution happen upstream. Shared hooks and
+helpers own interactive behavior (cover, audio, navigation, calendar, forms,
+and clipboard); each theme owns its markup and visual composition. Themes do
+not query Supabase or make package decisions.
+
+The admin theme selector reads active rows through `listActiveThemes()`, not
+the component registry. The registry and database row must therefore agree on
+the slug. Deploy registry support before applying the Terra seed migration;
+only then should the active row make Terra selectable. The seed upserts by the
+unique `themes.slug` without changing an existing theme ID or invitation
+reference. For rollback, deactivate Terra first, inspect and reassign any
+invitations referencing it under separate authorization, then roll back
+application code. There is no destructive down migration.
+
 Example:
 
 ```ts
