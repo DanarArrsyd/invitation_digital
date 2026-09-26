@@ -21,13 +21,14 @@
 | 5. Terra narrative and image-led sections | Complete | `361b3760` |
 | 6. The Gathering event chapter | Complete | `4c792f21`, `2b2b3212` |
 | 7. RSVP, wishes, and digital gifts | Complete | `a94d9139`, `d964bfaa` |
-| 8. Registration, local migration, and documentation | **Next** | — |
-| 9. Responsive, accessibility, performance, and whole-branch validation | Pending | — |
+| 8. Registration, local migration, and documentation | Complete | `5534560b`, `c319d915`, `8d301dfa` |
+| 9. Responsive, accessibility, performance, and whole-branch validation | **Next** | — |
 
-Current verified implementation HEAD is `d964bfaa`. The full suite passes
-132/132, lint and TypeScript pass, and Task 7 interaction/viewport checks pass
-at 320, 390, 768, and 1440 px. See `docs/PROJECT_MEMORY.md` for resumable
-workflow details and deferred review notes. Do not re-dispatch Tasks 1–7.
+Current verified implementation HEAD is `8d301dfa`. The full suite passes
+139/139; lint, TypeScript, diff checks, and the production build pass. Terra is
+registered in application code, but its migration remains local and has not
+been applied to Supabase. See `docs/PROJECT_MEMORY.md` for resumable workflow
+details and deferred review notes. Do not re-dispatch Tasks 1–8.
 
 ## Global Constraints
 
