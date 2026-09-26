@@ -42,7 +42,7 @@ another worktree or move implementation back to the dirty original checkout.
 The untracked `supabase/.temp/` directory predates this work; never stage,
 delete, or modify it.
 
-Current verified HEAD before this memory checkpoint: `2b2b3212`.
+Current verified implementation HEAD before this memory checkpoint: `d964bfaa`.
 
 ## Completed Terra task history
 
@@ -54,17 +54,15 @@ Current verified HEAD before this memory checkpoint: `2b2b3212`.
 | 4 | Added the unregistered Terra foundation, cover, fonts, tokens, navigation, ornaments, focus and reduced-motion behavior. | `7b711fa9` | 100/100 tests; 320/390/768/1440 checks; review clean. |
 | 5 | Added Terra hero, quote, couple/parents, story, gallery, closing, image fallbacks, and sparse states. | `361b3760` | 106/106 tests; four viewport checks; no Critical/Important findings. |
 | 6 | Added The Gathering: event details, maps, calendar, countdown, dress code, and livestream. Follow-up fixed invalid calendar intervals, WIB countdown semantics, and four-digit day wrapping. | `4c792f21`, `2b2b3212` | 120/120 tests; focused 15/15; UTC checks 5/5; lint/types and four viewports pass; re-review clean. |
+| 7 | Added Terra RSVP, wishes, and digital gifts using shared public-form and clipboard behavior. Follow-up fixed pending-request error recovery so newer edits are never overwritten by a stale submission snapshot. | `a94d9139`, `d964bfaa` | 132/132 tests; task gate 60/60; four viewport/interaction checks; Important race fixed and re-review clean. |
 
 Terra remains intentionally unregistered until Task 8.
 
 ## Deferred non-blocking review notes
 
-- Task 3: shared-behavior tests do not explicitly pin every Ivory form
-  component to its shared hook. Task 7 cross-theme interaction coverage should
-  supersede or close this gap; triage again during final review.
 - Task 5: the Terra Instagram link's accessible label should include the
   visible `@username` for stronger voice-control targeting. Keep this as a
-  narrow final cleanup unless Task 7 naturally touches the same component.
+  narrow final cleanup for Task 9/final review.
 - Remote Supabase images intentionally retain existing `unoptimized` delivery
   because `next.config.ts` has no narrow remote allowlist. Stable ratios,
   explicit sizes, lazy loading, and error fallbacks are already implemented.
@@ -92,26 +90,14 @@ The ignored execution ledger is at:
 
 `/Users/ekadanararrasyid/.codex/worktrees/package-entitlements/VS Code/.superpowers/sdd/2026-09-24-terra-botanica-theme/progress.md`
 
-## Next task — Task 7
+## Resolved review notes
 
-Build Terra RSVP, wishes, and digital-gift sections.
+- Task 3's deferred cross-theme hook-integration gap is closed. Task 7 mounts
+  the real Terra and Ivory RSVP/wish components through the shared hooks and
+  verifies action payloads, pagination, state feedback, input recovery, and
+  pending-edit concurrency behavior.
 
-- Create Terra-specific editorial presentation while reusing shared public-form
-  and clipboard behavior, existing Turnstile, normalized wishes/gifts, and the
-  exact existing server-action field names.
-- Produce `tb-rsvp`, `tb-ucapan`, and `tb-kado`.
-- Cover no/one gift, empty and paginated wishes, guest personalization,
-  pending/error/success states, Turnstile, copy failure, 48 px controls,
-  visible labels, `aria-pressed`, and `role="alert"`.
-- Add cross-theme behavioral coverage strong enough to reassess the deferred
-  Task 3 test gap.
-- Do not add sponsorship UI.
-- Planned commit: `feat(theme): add terra guest interactions`.
-- Stop for user confirmation after independent review passes.
-
-## Following tasks
-
-### Task 8 — registration and admin discovery
+## Next task — Task 8
 
 - Register `terra-botanica` with an explicit full section manifest and preview
   palette.
@@ -123,7 +109,7 @@ Build Terra RSVP, wishes, and digital-gift sections.
 - Planned commit: `feat(theme): register terra botanica`.
 - Stop for user confirmation after independent review passes.
 
-### Task 9 — final quality and completion gate
+## Following task — Task 9
 
 - Add Terra quality-contract tests and fix only evidenced defects.
 - Validate 320×568, 390×844, 768×1024, and 1440×900 for both themes,

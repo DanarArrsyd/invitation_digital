@@ -20,14 +20,14 @@
 | 4. Terra foundation and cover | Complete | `7b711fa9` |
 | 5. Terra narrative and image-led sections | Complete | `361b3760` |
 | 6. The Gathering event chapter | Complete | `4c792f21`, `2b2b3212` |
-| 7. RSVP, wishes, and digital gifts | **Next** | — |
-| 8. Registration, local migration, and documentation | Pending | — |
+| 7. RSVP, wishes, and digital gifts | Complete | `a94d9139`, `d964bfaa` |
+| 8. Registration, local migration, and documentation | **Next** | — |
 | 9. Responsive, accessibility, performance, and whole-branch validation | Pending | — |
 
-Current verified HEAD is `2b2b3212`. The full suite passes 120/120, lint and
-TypeScript pass, and Task 6 responsive checks pass at 320, 390, 768, and
-1440 px. See `docs/PROJECT_MEMORY.md` for resumable workflow details and
-deferred review notes. Do not re-dispatch Tasks 1–6.
+Current verified implementation HEAD is `d964bfaa`. The full suite passes
+132/132, lint and TypeScript pass, and Task 7 interaction/viewport checks pass
+at 320, 390, 768, and 1440 px. See `docs/PROJECT_MEMORY.md` for resumable
+workflow details and deferred review notes. Do not re-dispatch Tasks 1–7.
 
 ## Global Constraints
 
