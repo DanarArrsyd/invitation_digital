@@ -29,7 +29,7 @@ export function CoupleSection({ people, settings, invitationType }: {
                   </div>
                 ) : null}
                 {person.bio?.trim() ? <p className="tb-person-bio">{person.bio}</p> : null}
-                {instagram ? <a className="tb-instagram" href={instagram.url} target="_blank" rel="noopener noreferrer" aria-label={`Instagram ${person.fullName}`}>@{instagram.username}</a> : null}
+                {instagram ? <a className="tb-instagram" href={instagram.url} target="_blank" rel="noopener noreferrer" aria-label={`Instagram ${person.fullName} @${instagram.username}`}>@{instagram.username}</a> : null}
               </div>
             </article>
           );
