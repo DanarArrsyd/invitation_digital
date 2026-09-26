@@ -79,6 +79,7 @@ const themesSchema = readFileSync(new URL("../supabase/migrations/20260913000003
 const invitationsSchema = readFileSync(new URL("../supabase/migrations/20260913000004_invitations.sql", import.meta.url), "utf8");
 
 function assertMigrationContract(sql, schema, invitationSchema) {
+  assert.doesNotMatch(sql, /--|\/\*/, "this fixed seed migration must not contain SQL comments");
   const statements = sql.split(";").map((statement) => statement.trim()).filter(Boolean);
   assert.equal(statements.length, 1, "migration must have exactly one statement");
   assert.match(sql.trim(), /^insert\s+into\s+public\.themes\b[\s\S]*;$/i);
@@ -107,6 +108,25 @@ test("migration contract rejects an extra plain theme insert", () => {
   assert.throws(() => assertMigrationContract(unsafeSql, themesSchema, invitationsSchema));
 });
 
+test("migration contract rejects an upsert hidden in SQL comments", () => {
+  const unsafeSql = `insert into public.themes (name, slug, category, description, is_active)
+values (
+  'Terra Botanica',
+  'terra-botanica',
+  'wedding',
+  'Organic editorial garden wedding theme.',
+  true
+)
+-- on conflict (slug) do update
+-- set name = excluded.name,
+--     category = excluded.category,
+--     description = excluded.description,
+--     is_active = true,
+--     updated_at = now()
+;`;
+  assert.throws(() => assertMigrationContract(unsafeSql, themesSchema, invitationsSchema));
+});
+
 test("migration contract rejects additional destructive theme writes", () => {
   for (const additionalWrite of [
     "delete from public.themes where slug = 'terra-botanica';",
@@ -124,6 +144,12 @@ test("migration contract requires the invitation theme foreign key", () => {
   );
   assert.notEqual(withoutForeignKey, invitationsSchema);
   assert.throws(() => assertMigrationContract(terraSql, themesSchema, withoutForeignKey));
+  const cascadingForeignKey = invitationsSchema.replace(
+    "theme_id uuid not null references public.themes (id) on delete restrict",
+    "theme_id uuid not null references public.themes (id) on delete cascade",
+  );
+  assert.notEqual(cascadingForeignKey, invitationsSchema);
+  assert.throws(() => assertMigrationContract(terraSql, themesSchema, cascadingForeignKey));
 });
 
 function loadNormalizer() {
