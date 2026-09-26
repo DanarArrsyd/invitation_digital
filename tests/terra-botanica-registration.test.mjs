@@ -74,11 +74,18 @@ test("both registered theme slugs resolve through the real public renderer", () 
   }
 });
 
-test("Terra migration activates an existing slug in place on every retry", () => {
-  const sql = readFileSync(new URL("../supabase/migrations/20260924000001_terra_botanica_theme.sql", import.meta.url), "utf8");
-  const schema = readFileSync(new URL("../supabase/migrations/20260913000003_themes.sql", import.meta.url), "utf8");
+const terraSql = readFileSync(new URL("../supabase/migrations/20260924000001_terra_botanica_theme.sql", import.meta.url), "utf8");
+const themesSchema = readFileSync(new URL("../supabase/migrations/20260913000003_themes.sql", import.meta.url), "utf8");
+const invitationsSchema = readFileSync(new URL("../supabase/migrations/20260913000004_invitations.sql", import.meta.url), "utf8");
+
+function assertMigrationContract(sql, schema, invitationSchema) {
+  const statements = sql.split(";").map((statement) => statement.trim()).filter(Boolean);
+  assert.equal(statements.length, 1, "migration must have exactly one statement");
+  assert.match(sql.trim(), /^insert\s+into\s+public\.themes\b[\s\S]*;$/i);
+  assert.match(schema, /id uuid primary key/i);
   assert.match(schema, /slug text not null unique/i);
   assert.match(schema, /create trigger set_themes_updated_at/i);
+  assert.match(invitationSchema, /theme_id\s+uuid\s+not null\s+references\s+public\.themes\s*\(\s*id\s*\)\s+on\s+delete\s+restrict\b/i);
   assert.match(sql, /insert into public\.themes\s*\(name, slug, category, description, is_active\)/i);
   assert.match(sql, /'Terra Botanica',\s*'terra-botanica',\s*'wedding'/i);
   assert.match(sql, /on conflict \(slug\) do update/i);
@@ -89,6 +96,34 @@ test("Terra migration activates an existing slug in place on every retry", () =>
   assert.match(sql, /updated_at\s*=\s*now\(\)/i);
   assert.doesNotMatch(sql, /\b(delete|truncate|drop|update\s+public\.invitations)\b/i);
   assert.doesNotMatch(sql, /\bid\s*=/i);
+}
+
+test("Terra migration activates an existing slug in place on every retry", () => {
+  assertMigrationContract(terraSql, themesSchema, invitationsSchema);
+});
+
+test("migration contract rejects an extra plain theme insert", () => {
+  const unsafeSql = `${terraSql}\ninsert into public.themes (name, slug, category) values ('Duplicate', 'terra-botanica', 'wedding');`;
+  assert.throws(() => assertMigrationContract(unsafeSql, themesSchema, invitationsSchema));
+});
+
+test("migration contract rejects additional destructive theme writes", () => {
+  for (const additionalWrite of [
+    "delete from public.themes where slug = 'terra-botanica';",
+    "update public.themes set is_active = false where slug = 'nusantara-ivory';",
+    "drop table public.themes;",
+  ]) {
+    assert.throws(() => assertMigrationContract(`${terraSql}\n${additionalWrite}`, themesSchema, invitationsSchema));
+  }
+});
+
+test("migration contract requires the invitation theme foreign key", () => {
+  const withoutForeignKey = invitationsSchema.replace(
+    "theme_id uuid not null references public.themes (id) on delete restrict",
+    "theme_id uuid not null",
+  );
+  assert.notEqual(withoutForeignKey, invitationsSchema);
+  assert.throws(() => assertMigrationContract(terraSql, themesSchema, withoutForeignKey));
 });
 
 function loadNormalizer() {
