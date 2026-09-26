@@ -45,8 +45,9 @@ function loadShared(name, actions = {}) {
   return exports;
 }
 
-function loadIvorySection(name, actions = {}) {
-  const source = readFileSync(new URL(`../src/themes/nusantara-ivory/sections/${name}.tsx`, import.meta.url), "utf8");
+function loadSection(theme, name, actions = {}) {
+  const directory = theme === "ivory" ? "nusantara-ivory" : "terra-botanica";
+  const source = readFileSync(new URL(`../src/themes/${directory}/sections/${name}.tsx`, import.meta.url), "utf8");
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
   const exports = {};
   const shared = loadShared("use-public-forms", actions);
@@ -68,14 +69,25 @@ function loadIvorySection(name, actions = {}) {
   return exports[name];
 }
 
-async function mountIvorySection(name, props, actions = {}) {
+async function mountSection(theme, name, props, actions = {}) {
   const dom = new JSDOM("<div id='root'></div>", { url: "https://invitation.test/" });
   const prior = { window: globalThis.window, document: globalThis.document, HTMLElement: globalThis.HTMLElement, FormData: globalThis.FormData, IS_REACT_ACT_ENVIRONMENT: globalThis.IS_REACT_ACT_ENVIRONMENT };
   Object.assign(globalThis, { window: dom.window, document: dom.window.document, HTMLElement: dom.window.HTMLElement, FormData: dom.window.FormData, IS_REACT_ACT_ENVIRONMENT: true });
-  const Component = loadIvorySection(name, actions);
+  const Component = loadSection(theme, name, actions);
   const root = createRoot(document.getElementById("root"));
   await act(async () => root.render(React.createElement(Component, props)));
   return { document: dom.window.document, async cleanup() { await act(async () => root.unmount()); Object.assign(globalThis, prior); dom.window.close(); } };
+}
+
+async function mountIvorySection(name, props, actions = {}) {
+  return mountSection("ivory", name, props, actions);
+}
+
+async function typeInto(element, value) {
+  const browser = element.ownerDocument.defaultView;
+  const prototype = element.tagName === "TEXTAREA" ? browser.HTMLTextAreaElement.prototype : browser.HTMLInputElement.prototype;
+  Object.getOwnPropertyDescriptor(prototype, "value").set.call(element, value);
+  await act(async () => element.dispatchEvent(new browser.Event("input", { bubbles: true })));
 }
 
 async function renderHook(useHook, render = () => null) {
@@ -270,3 +282,69 @@ test("shared wish behavior reaches the real Ivory form and pagination", async ()
     assert.equal([...section.querySelectorAll("button")].some(button => button.textContent.includes("Muat Lebih Banyak")), false);
   } finally { await view.cleanup(); }
 });
+
+for (const theme of ["ivory", "terra"]) {
+  test(`${theme} shared RSVP keeps newer guest-name edits made while pending`, async () => {
+    const id = theme === "ivory" ? "ni-rsvp" : "tb-rsvp";
+    const submissions = [];
+    const resolvers = [];
+    const view = await mountSection(theme, "RsvpSection", { invitationId: "invitation", slug: "sample", guestToken: null, guestName: null }, {
+      submitRsvp: async (previous, data) => {
+        submissions.push(Object.fromEntries(data.entries()));
+        return new Promise(resolve => resolvers.push(resolve));
+      },
+    });
+    try {
+      const form = view.document.querySelector(`#${id} form`);
+      const name = form.elements.namedItem("guestName");
+      await typeInto(name, "Original RSVP");
+      await act(async () => [...form.querySelectorAll('button[type="button"]')].find(button => button.textContent.trim() === "Hadir").click());
+      await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
+      assert.equal(submissions[0].guestName, "Original RSVP");
+      await typeInto(name, "Newer RSVP");
+      assert.equal(name.value, "Newer RSVP");
+      await act(async () => resolvers.shift()({ status: "error", message: "Coba lagi." }));
+      assert.equal(name.value, "Newer RSVP", "the later edit must survive the error");
+      await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
+      assert.equal(submissions[1].guestName, "Newer RSVP");
+      await act(async () => resolvers.shift()({ status: "error", message: "Coba lagi." }));
+      assert.equal(name.value, "Newer RSVP", "no-new-edit retry keeps the submitted value");
+    } finally { await view.cleanup(); }
+  });
+
+  test(`${theme} shared wishes keep newer name and message edits made while pending`, async () => {
+    const id = theme === "ivory" ? "ni-ucapan" : "tb-ucapan";
+    const submissions = [];
+    const resolvers = [];
+    const view = await mountSection(theme, "WishesSection", { invitationId: "invitation", slug: "sample", guestToken: null, guestName: null, wishes: [] }, {
+      submitWish: async (previous, data) => {
+        submissions.push(Object.fromEntries(data.entries()));
+        return new Promise(resolve => resolvers.push(resolve));
+      },
+    });
+    try {
+      const form = view.document.querySelector(`#${id} form`);
+      const name = form.elements.namedItem("guestName");
+      const message = form.elements.namedItem("message");
+      await typeInto(name, "Original Name");
+      await typeInto(message, "Original Message");
+      await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
+      assert.equal(submissions[0].guestName, "Original Name");
+      assert.equal(submissions[0].message, "Original Message");
+      await typeInto(name, "Newer Name");
+      await typeInto(message, "Newer Message");
+      await act(async () => resolvers.shift()({ status: "error", message: "Coba lagi." }));
+      assert.deepEqual(
+        { guestName: name.value, message: message.value },
+        { guestName: "Newer Name", message: "Newer Message" },
+        "later name and wish edits must survive",
+      );
+      await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
+      assert.equal(submissions[1].guestName, "Newer Name");
+      assert.equal(submissions[1].message, "Newer Message");
+      await act(async () => resolvers.shift()({ status: "error", message: "Coba lagi." }));
+      assert.equal(name.value, "Newer Name", "no-new-edit retry keeps the submitted name");
+      assert.equal(message.value, "Newer Message", "no-new-edit retry keeps the submitted wish");
+    } finally { await view.cleanup(); }
+  });
+}
