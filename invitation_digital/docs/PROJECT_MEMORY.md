@@ -42,7 +42,7 @@ another worktree or move implementation back to the dirty original checkout.
 The untracked `supabase/.temp/` directory predates this work; never stage,
 delete, or modify it.
 
-Current verified implementation HEAD before this memory checkpoint: `d964bfaa`.
+Current verified implementation HEAD before this memory checkpoint: `8d301dfa`.
 
 ## Completed Terra task history
 
@@ -55,14 +55,21 @@ Current verified implementation HEAD before this memory checkpoint: `d964bfaa`.
 | 5 | Added Terra hero, quote, couple/parents, story, gallery, closing, image fallbacks, and sparse states. | `361b3760` | 106/106 tests; four viewport checks; no Critical/Important findings. |
 | 6 | Added The Gathering: event details, maps, calendar, countdown, dress code, and livestream. Follow-up fixed invalid calendar intervals, WIB countdown semantics, and four-digit day wrapping. | `4c792f21`, `2b2b3212` | 120/120 tests; focused 15/15; UTC checks 5/5; lint/types and four viewports pass; re-review clean. |
 | 7 | Added Terra RSVP, wishes, and digital gifts using shared public-form and clipboard behavior. Follow-up fixed pending-request error recovery so newer edits are never overwritten by a stale submission snapshot. | `a94d9139`, `d964bfaa` | 132/132 tests; task gate 60/60; four viewport/interaction checks; Important race fixed and re-review clean. |
+| 8 | Registered Terra in application code, added the idempotent local active-theme upsert, verified all package/theme combinations, and documented parity plus safe rollout/rollback. Two test-only follow-ups hardened exact-write, FK-preservation, and comment-bypass contracts. | `5534560b`, `c319d915`, `8d301dfa` | 139/139 tests; task gate 14/14; lint/types/diff/build pass; Important test gap closed after two scoped re-reviews. |
 
-Terra remains intentionally unregistered until Task 8.
+Terra is now registered in application code. The migration file is committed
+but has not been applied to Supabase; therefore live admin discovery is not yet
+active or verified.
 
 ## Deferred non-blocking review notes
 
 - Task 5: the Terra Instagram link's accessible label should include the
   visible `@username` for stronger voice-control targeting. Keep this as a
   narrow final cleanup for Task 9/final review.
+- Task 8: `ARCHITECTURE.md` documents both themes and then shows an older
+  abbreviated registry example containing only Ivory and omitting required
+  preview/section fields. Task 9 should update it or label it clearly as an
+  abbreviated example.
 - Remote Supabase images intentionally retain existing `unoptimized` delivery
   because `next.config.ts` has no narrow remote allowlist. Stable ratios,
   explicit sizes, lazy loading, and error fallbacks are already implemented.
@@ -97,19 +104,7 @@ The ignored execution ledger is at:
   verifies action payloads, pagination, state feedback, input recovery, and
   pending-edit concurrency behavior.
 
-## Next task — Task 8
-
-- Register `terra-botanica` with an explicit full section manifest and preview
-  palette.
-- Add the idempotent local migration that inserts/updates the active theme row.
-- Verify Intimate, Signature, and Grand normalize to identical effective
-  features across Ivory and Terra.
-- Update `ARCHITECTURE.md` and `DESIGN.md`.
-- Do **not** apply the migration remotely or deploy.
-- Planned commit: `feat(theme): register terra botanica`.
-- Stop for user confirmation after independent review passes.
-
-## Following task — Task 9
+## Next task — Task 9
 
 - Add Terra quality-contract tests and fix only evidenced defects.
 - Validate 320×568, 390×844, 768×1024, and 1440×900 for both themes,
