@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 25 September 2026 (Asia/Jakarta)
+Last updated: 26 September 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -42,7 +42,172 @@ another worktree or move implementation back to the dirty original checkout.
 The untracked `supabase/.temp/` directory predates this work; never stage,
 delete, or modify it.
 
-Current verified implementation HEAD before this memory checkpoint: `8d301dfa`.
+Current verified implementation HEAD: `8d301dfa`. The latest documentation
+checkpoint before this memory update is `29f3a5fb`.
+
+## Current architecture and data flow
+
+Keep the following ownership chain intact:
+
+```text
+public route
+  → resolve invitation publication/expiration and guest
+  → normalize public invitation data
+  → apply Intimate/Signature/Grand entitlements upstream
+  → ThemeRenderer resolves invitation.theme.slug
+  → registered theme receives PublicInvitation + Guest
+  → buildThemeViewModel derives shared presentation values
+  → theme composes its own markup and visual language
+  → shared hooks own reusable browser/action behavior
+  → existing server actions validate, verify Turnstile, and write data
+```
+
+Key boundaries:
+
+- `src/themes/section-contract.ts` owns the canonical 18 public capabilities.
+  Every registered theme lists every key explicitly; never generate a manifest
+  from the canonical list.
+- `src/themes/registry.ts` maps a normalized theme slug to its component,
+  preview metadata, category, and explicit manifest.
+- `src/themes/ThemeRenderer.tsx` is the only public theme resolver. Unsupported
+  slugs retain the existing safe fallback.
+- `src/themes/shared/view-model.ts` owns shared derived presentation data such
+  as couple name, guest name, primary event, countdown target, calendar event,
+  dress code, and hero/closing images.
+- `src/themes/shared/calendar.ts` owns pure Google Calendar and ICS generation.
+- Shared hooks own cover/audio/focus/analytics, active-section navigation,
+  RSVP/wish action state and pagination, pending-error input recovery, and
+  clipboard feedback.
+- Theme directories own markup, spacing, typography, ornaments, responsive
+  composition, and visual feedback only. They do not query Supabase or
+  duplicate package, validation, calendar, or server-action logic.
+- `listActiveThemes()` remains the admin theme source. The registry is not an
+  admin catalogue and no second theme list should be introduced.
+
+## Cross-template feature workflow
+
+When adding a feature or layout capability to any template, follow this order:
+
+1. Decide whether it is a new public capability or a new presentation of an
+   existing capability. If new, add one canonical key to the section contract.
+2. Update the explicit manifest for **every** registered theme. TypeScript must
+   fail until no theme is missing the key.
+3. Add/normalize the data and package entitlement upstream. Themes must not
+   contain package names, database queries, or customer-specific defaults.
+4. Put reusable calculations and interaction state in `src/themes/shared/`.
+   Keep only theme-specific DOM/CSS/ornaments inside each theme package.
+5. Implement the user outcome in Ivory, Terra, and every future registered
+   theme. Layouts may express different art directions, but no template may
+   silently lose the feature.
+6. Add cross-theme behavioral tests for feature gating, empty/error states,
+   payloads, accessibility, and package parity. Source-text assertions alone
+   never prove parity.
+7. Run focused RED/GREEN, the full suite, lint, TypeScript, production build,
+   and representative visual checks before review.
+8. Update architecture/design documentation and, for a brand-new theme, add an
+   idempotent database catalogue migration with an explicit rollout/rollback
+   sequence.
+
+Never solve parity by copying shared business logic between theme folders.
+
+## Terra Botanica construction map
+
+`TerraBotanica.tsx` consumes `buildThemeViewModel()` once, builds navigation
+from actual enabled content, and composes the invitation in this order:
+
+```text
+CoverGate — photo-free opening, guest personalization, music and focus handoff
+  ├─ tb-beranda      Hero — image-led journal opening or botanical sparse state
+  ├─ Quote           Optional opening quote; no empty section
+  ├─ tb-mempelai     Couple + parents + optional Instagram
+  ├─ tb-acara        The Gathering — all readable event rows
+  │    ├─ maps       Valid HTTP(S) URL and enabled feature only
+  │    └─ calendar   Valid supplied positive same-day interval only
+  ├─ tb-countdown    WIB countdown; clamps/stops at zero
+  ├─ tb-dress-code   Text-labelled swatches; color is never the only signal
+  ├─ tb-cerita       Travel-journal stories, including text-only entries
+  ├─ tb-galeri       Organic collage for sparse or package-capacity galleries
+  ├─ tb-livestream   Enabled feature plus usable event URL only
+  ├─ tb-rsvp         Shared action state + Turnstile, Terra presentation
+  ├─ tb-ucapan       Shared action/pagination, latest edits survive errors
+  ├─ tb-kado         Shared clipboard feedback; no false “Tersalin” state
+  └─ tb-penutup      Conclusive Moss closing with image fallback chain
+```
+
+Capabilities such as parents, maps, calendar, and Instagram may be visually
+grouped with an adjacent chapter, but remain independently represented by the
+canonical manifest and feature tests. Disabled or empty optional capabilities
+must produce no dead navigation target and no decorative gap.
+
+## Terra Botanica design grammar
+
+### Visual identity
+
+- Direction: **Editorial Garden** — intimate field journal, contemporary and
+  organic, not rustic-boho and not a recolored Ivory clone.
+- Display type: Fraunces for names, chapter headings, quotes, expressive dates,
+  and the primary interaction moment.
+- Supporting type: Manrope for body copy, metadata, controls, inputs, labels,
+  countdown units, and accessibility-critical text.
+- Palette: Linen `#F2E7D8`, Clay `#B6634B`, Moss `#53634E`, Cacao `#45372C`,
+  Sun `#D6A663`, and Bone `#FBF7F0`.
+- Composition: asymmetrical editorial spreads, alternating portrait/text
+  rhythm, deliberate whitespace, stable image crops, and restrained custom SVG
+  botanical silhouettes.
+- Memorable interaction: the cover opening and oversized RSVP attendance
+  choice. Everything else stays quieter and supports reading.
+
+### Section language
+
+- Cover: photo-free, sculptural botanical forms, one intentional opening motion.
+- Hero: the first photography-led spread after the cover.
+- Couple: alternating portraits and text; never profile cards.
+- Gathering: Clay surround with a Bone reading sheet and flat editorial rows.
+- Story: travel-journal rhythm with graceful text-only entries.
+- Gallery: one anchor image plus staggered pairs; balance every allowed count.
+- RSVP/wishes: flat underline fields, visible labels, 48 px controls, direct
+  Indonesian success/error copy, and no dashboard styling.
+- Gifts: rule-separated account rows, not repeated cards.
+- Closing: deep Moss, restrained typography, intimate and conclusive.
+
+### Avoid
+
+- generic SaaS cards, repeated rounded containers, soft grey shadows, gradients;
+- repeated tracked all-caps eyebrow labels or decorative `01/02/03` numbering;
+- an animation on every section or generic fade-and-slide entrances;
+- admin/shadcn components in the public invitation;
+- invented customer copy, photos, dates, accounts, addresses, or links;
+- visual changes to Ivory while implementing Terra.
+
+### Required absence and failure behavior
+
+- Missing content uses a composition designed for absence, never fake data.
+- Failed images retain their aspect ratio and render an accessible botanical
+  fallback; below-hero images lazy-load.
+- Remote Supabase images currently remain `unoptimized` because no safe narrow
+  allowlist exists; do not broaden configuration without integration evidence.
+- Forms retain the newest user edits through pending/error transitions,
+  preserve understandable `role="alert"` feedback, and keep Turnstile visible.
+- External Maps, Instagram, calendar, and livestream actions render only from
+  usable normalized values and use safe external-link behavior.
+- All interactive controls require visible keyboard focus and useful accessible
+  names. Non-essential motion must honor `prefers-reduced-motion`.
+
+## How agents should validate a design change
+
+For every changed public section:
+
+1. Test actual rendered/mounted behavior and name the regression being caught.
+2. Verify disabled, empty, malformed, error, pending, and success states that
+   apply to the section.
+3. Check long unbroken and natural text without clipping or horizontal scroll.
+4. Check 320×568, 390×844, 768×1024, and 1440×900.
+5. Check fewer-than-default and package-capacity collections.
+6. Check keyboard focus, labels, contrast, reduced motion, and stable media
+   dimensions/slow-loading behavior.
+7. Compare Ivory before/after whenever shared code changes.
+8. Require an independent task review; fix every Critical/Important finding and
+   request a scoped re-review before marking the task complete.
 
 ## Completed Terra task history
 
