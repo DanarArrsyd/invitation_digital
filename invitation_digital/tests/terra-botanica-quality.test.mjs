@@ -90,6 +90,24 @@ test("feature-controlled sections render once when enabled and disappear when di
   assert.equal(disabled.querySelector("#tb-acara a[href*='maps']"), null);
 });
 
+test("each disabled feature removes only its own section", () => {
+  const sections = new Map([
+    ["countdown", "tb-countdown"], ["dressCode", "tb-dress-code"],
+    ["story", "tb-cerita"], ["gallery", "tb-galeri"],
+    ["livestream", "tb-livestream"], ["rsvp", "tb-rsvp"],
+    ["wishes", "tb-ucapan"], ["gift", "tb-kado"],
+  ]);
+  for (const [disabledFeature, disabledId] of sections) {
+    const document = render(fixture({ ...allFeatures, [disabledFeature]: false }));
+    assert.equal(document.querySelectorAll(`#${disabledId}`).length, 0, `${disabledFeature} removes ${disabledId}`);
+    for (const [otherFeature, otherId] of sections) {
+      if (otherFeature === disabledFeature) continue;
+      assert.equal(document.querySelectorAll(`#${otherId}`).length, 1,
+        `${disabledFeature} leaves ${otherFeature} visible exactly once`);
+    }
+  }
+});
+
 // Removing these rules would expose motion, clipped mobile content, or cramped focus/controls.
 test("rendered Terra styles reserve media space and enforce motion, focus, and mobile bounds", () => {
   const document = render(fixture());
