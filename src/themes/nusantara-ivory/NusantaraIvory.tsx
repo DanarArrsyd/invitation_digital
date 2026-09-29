@@ -1,9 +1,7 @@
-import { getCoupleDisplayName } from "@/lib/utils/coupleName";
-import { getDressCode } from "@/lib/utils/dressCode";
+import { buildThemeViewModel } from "@/themes/shared/view-model";
 import type { ThemeComponentProps } from "@/types/theme";
 
 import { CoverGate } from "./CoverGate";
-import type { CalendarEventInput } from "./components/AddToCalendar";
 import type { NavItem } from "./components/FloatingNav";
 import { ThemeStyles } from "./ThemeStyles";
 import { bodySans, displaySerif } from "./fonts";
@@ -21,52 +19,19 @@ import { RsvpSection } from "./sections/RsvpSection";
 import { StorySection } from "./sections/StorySection";
 import { WishesSection } from "./sections/WishesSection";
 
-function earliestEvent<T extends { eventDate: string }>(events: T[]): T | null {
-  if (events.length === 0) return null;
-  return [...events].sort((a, b) => a.eventDate.localeCompare(b.eventDate))[0];
-}
-
-function countdownTargetIso(
-  event: { eventDate: string; startTime: string | null } | null,
-  fallbackDate: string | null,
-): string | null {
-  const eventDate = event?.eventDate ?? fallbackDate;
-  if (!eventDate) return null;
-  const startTime = event?.startTime ?? null;
-  return startTime ? `${eventDate}T${startTime}` : `${eventDate}T00:00:00`;
-}
-
 export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
   const { features } = invitation;
-  const primaryEvent = earliestEvent(invitation.events);
-  const countdownTarget = features.countdown
-    ? countdownTargetIso(primaryEvent, invitation.eventDate)
-    : null;
-
-  const guestDisplayName =
-    features.guestPersonalization && guest ? guest.displayName : null;
-
-  const coupleDisplayName = getCoupleDisplayName(invitation.people, invitation.title);
+  const {
+    primaryEvent,
+    countdownTarget,
+    guestDisplayName,
+    coupleDisplayName,
+    calendarEvent,
+    dressCode,
+    heroImageUrl,
+    closingImageUrl,
+  } = buildThemeViewModel(invitation, guest);
   const eyebrow = invitation.type === "wedding" ? "The Wedding Of" : null;
-
-  const calendarDate = primaryEvent?.eventDate ?? invitation.eventDate;
-  const calendarEvent: CalendarEventInput | null =
-    countdownTarget && calendarDate
-      ? {
-          title: primaryEvent ? `${primaryEvent.title} — ${coupleDisplayName}` : coupleDisplayName,
-          date: calendarDate,
-          startTime: primaryEvent?.startTime ?? null,
-          endTime: primaryEvent?.endTime ?? null,
-          location: primaryEvent?.venueName ?? invitation.venueSummary ?? null,
-          description: `Undangan pernikahan ${coupleDisplayName}`,
-        }
-      : null;
-
-  const dressCode = features.dressCode ? getDressCode(invitation.theme.settings) : null;
-
-  const heroImageUrl = invitation.media.coverImageUrl;
-  const closingImageUrl =
-    invitation.gallery.at(-1)?.imageUrl ?? invitation.media.coverImageUrl ?? null;
 
   const navCandidates: (NavItem | null)[] = [
     { id: "ni-beranda", label: "Beranda", icon: "home" },
@@ -120,9 +85,9 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
           showMaps={features.maps}
         />
 
-        {countdownTarget ? (
+        {countdownTarget !== null || calendarEvent ? (
           <CountdownSection
-            targetIso={countdownTarget}
+            target={countdownTarget}
             calendarEvent={calendarEvent}
             calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
           />

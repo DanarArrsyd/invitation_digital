@@ -13,11 +13,12 @@ Agents are expected to produce production-quality code while preserving the prod
 Before major work, read:
 
 1. `CLAUDE.md`
-2. `ARCHITECTURE.md`
-3. `DATABASE.md`
-4. `DESIGN.md`
-5. `ROADMAP.md`
-6. `SKILL.md`
+2. `docs/PROJECT_MEMORY.md`
+3. `ARCHITECTURE.md`
+4. `DATABASE.md`
+5. `DESIGN.md`
+6. `ROADMAP.md`
+7. `SKILL.md`
 
 For small scoped changes, read the files relevant to the change.
 
@@ -77,6 +78,10 @@ Responsible for:
 - gallery;
 - cover interaction;
 - public forms.
+
+Any public feature or layout capability added to one registered theme must be
+implemented and tested in every registered theme. The visual composition may
+differ, but the normalized capability and user outcome must remain equivalent.
 
 Must not make the public invitation resemble a SaaS dashboard.
 
