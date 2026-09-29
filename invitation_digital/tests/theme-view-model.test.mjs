@@ -82,7 +82,7 @@ test("view model selects the earliest event without mutating input", () => {
   const original = structuredClone(invitation);
   const result = viewModel.buildThemeViewModel(invitation, guest);
   assert.equal(result.primaryEvent.id, "early");
-  assert.equal(result.countdownTarget, "2026-10-20T09:30");
+  assert.equal(result.countdownTarget, Date.parse("2026-10-20T02:30:00Z"));
   assert.equal(result.calendarEvent.title, "Akad — Raya & Febri");
   assert.equal(result.calendarEvent.location, "Puri Nirwaran");
   assert.equal(result.guestDisplayName, "Tamu Keluarga");
@@ -107,7 +107,7 @@ test("view model honors normalized package feature flags", () => {
     features: { ...features, countdown: false, dressCode: false, guestPersonalization: false },
   }), guest);
   assert.equal(result.countdownTarget, null);
-  assert.equal(result.calendarEvent, null);
+  assert.equal(result.calendarEvent.date, "2026-10-20");
   assert.equal(result.dressCode, null);
   assert.equal(result.guestDisplayName, null);
   assert.equal(result.coupleDisplayName, "Raya & Febri");
@@ -117,13 +117,36 @@ test("view model uses fallback date and closing gallery image with sparse events
   const result = viewModel.buildThemeViewModel(fixture({
     events: [], gallery: [{ id: "photo", imageUrl: "https://example.test/last.jpg", caption: null, altText: null, aspectRatio: "square_1_1", sortOrder: 0 }],
   }), null);
-  assert.equal(result.countdownTarget, "2026-10-22T00:00:00");
-  assert.equal(result.calendarEvent.date, "2026-10-22");
-  assert.equal(result.calendarEvent.title, "Raya & Febri");
-  assert.equal(result.calendarEvent.location, "Venue cadangan");
+  assert.equal(result.countdownTarget, Date.parse("2026-10-21T17:00:00Z"));
+  assert.equal(result.calendarEvent, null, "a fallback invitation date is not a supplied event interval");
   assert.equal(result.heroImageUrl, "https://example.test/cover.jpg");
   assert.equal(result.closingImageUrl, "https://example.test/last.jpg");
   assert.equal(result.dressCode.description, "Earth tones");
+});
+
+test("calendar eligibility requires a valid supplied positive same-day interval, independently of countdown", () => {
+  for (const [eventDate, startTime, endTime] of [
+    ["2026-02-30", "09:30", "11:00"], ["2026-10-20", null, "11:00"],
+    ["2026-10-20", "09:30", null], ["2026-10-20", "09:30", "09:30"],
+    ["2026-10-20", "11:00", "09:30"], ["2026-10-20", "bad", "11:00"],
+  ]) {
+    const result = viewModel.buildThemeViewModel(fixture({
+      events: [{ ...earlyEvent, eventDate, startTime, endTime }],
+      features: { ...features, countdown: false },
+    }), null);
+    assert.equal(result.calendarEvent, null, `${eventDate} ${startTime}–${endTime}`);
+  }
+  const valid = viewModel.buildThemeViewModel(fixture({ features: { ...features, countdown: false } }), null);
+  assert.equal(valid.calendarEvent.date, "2026-10-20");
+  assert.equal(valid.calendarEvent.startTime, "09:30");
+  assert.equal(valid.calendarEvent.endTime, "11:30");
+});
+
+test("invalid event dates or times never become countdown timestamps", () => {
+  for (const [eventDate, startTime] of [["2026-02-30", "09:30"], ["2026-10-20", "25:00"]]) {
+    const result = viewModel.buildThemeViewModel(fixture({ events: [{ ...earlyEvent, eventDate, startTime }] }), null);
+    assert.equal(result.countdownTarget, null);
+  }
 });
 
 test("calendar builders preserve punctuation, line breaks, and long venue names", () => {

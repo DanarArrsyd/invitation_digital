@@ -23,24 +23,24 @@ const UNITS = [
 ] as const;
 
 export function CountdownSection({
-  targetIso,
+  target,
   calendarEvent,
   calendarUid,
 }: {
-  targetIso: string | null;
+  target: number | null;
   calendarEvent: CalendarEventInput | null;
   calendarUid: string;
 }) {
-  const target = targetIso ? new Date(targetIso).getTime() : null;
-  const [timeLeft, setTimeLeft] = useState(() => (target ? getTimeLeft(target) : null));
+  const [timeLeft, setTimeLeft] = useState(() => (target !== null ? getTimeLeft(target) : null));
 
   useEffect(() => {
-    if (!target) return;
+    if (target === null) return;
     const interval = setInterval(() => setTimeLeft(getTimeLeft(target)), 1000);
     return () => clearInterval(interval);
   }, [target]);
 
-  if (!target || !timeLeft || timeLeft.done) return null;
+  const showCountdown = target !== null && timeLeft !== null && !timeLeft.done;
+  if (!showCountdown && !calendarEvent) return null;
 
   return (
     <section
@@ -53,14 +53,14 @@ export function CountdownSection({
         className="relative mx-auto flex max-w-[1180px] flex-col items-center gap-10 text-center"
         style={{ paddingInline: "var(--ni-gutter)" }}
       >
-        <Reveal variant="fade" className="flex flex-col items-center gap-4">
+        {showCountdown ? <Reveal variant="fade" className="flex flex-col items-center gap-4">
           <p className="ni-eyebrow" style={{ color: "var(--ni-gold-soft)" }}>
             Menghitung Hari
           </p>
           <BotanicalDivider className="text-[var(--ni-gold-soft)]" />
-        </Reveal>
+        </Reveal> : null}
 
-        <Stagger className="grid w-full grid-cols-4 items-start gap-x-1 gap-y-3 sm:gap-x-6" gap={0.08}>
+        {showCountdown ? <Stagger className="grid w-full grid-cols-4 items-start gap-x-1 gap-y-3 sm:gap-x-6" gap={0.08}>
           {UNITS.map((unit, index) => (
             <StaggerItem
               key={unit.key}
@@ -84,7 +84,7 @@ export function CountdownSection({
               </span>
             </StaggerItem>
           ))}
-        </Stagger>
+        </Stagger> : null}
 
         {calendarEvent ? (
           <Reveal variant="fade" delay={0.15}>

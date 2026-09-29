@@ -5,14 +5,6 @@ import { useEffect, useState } from "react";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 
-function validTarget(target: string | null): number | null {
-  if (!target || !/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/.test(target)) return null;
-  const calendarDay = new Date(`${target.slice(0, 10)}T00:00:00Z`);
-  if (Number.isNaN(calendarDay.getTime()) || calendarDay.toISOString().slice(0, 10) !== target.slice(0, 10)) return null;
-  const timestamp = new Date(`${target}+07:00`).getTime();
-  return Number.isNaN(timestamp) ? null : timestamp;
-}
-
 function CountdownClock({ target }: { target: number }) {
   const [remaining, setRemaining] = useState(() => Math.max(0, target - Date.now()));
 
@@ -50,14 +42,13 @@ function CountdownClock({ target }: { target: number }) {
   );
 }
 
-export function CountdownSection({ target }: { target: string | null }) {
-  const timestamp = validTarget(target);
-  if (timestamp === null) return null;
+export function CountdownSection({ target }: { target: number | null }) {
+  if (target === null) return null;
 
   return (
     <Section id="tb-countdown" labelledBy="tb-countdown-heading" tone="bone" className="tb-countdown">
       <SectionHeading id="tb-countdown-heading" title="Menuju hari itu" />
-      <CountdownClock target={timestamp} />
+      <CountdownClock target={target} />
     </Section>
   );
 }

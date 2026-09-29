@@ -85,9 +85,9 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
           showMaps={features.maps}
         />
 
-        {countdownTarget ? (
+        {countdownTarget !== null || calendarEvent ? (
           <CountdownSection
-            targetIso={countdownTarget}
+            target={countdownTarget}
             calendarEvent={calendarEvent}
             calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
           />

@@ -1,3 +1,5 @@
+import type { InvitationEvent } from "@/types/invitation";
+
 export type CalendarEventInput = {
   title: string;
   date: string;
@@ -9,6 +11,39 @@ export type CalendarEventInput = {
 
 /** Wedding venues in this platform are Indonesian; times are entered in WIB. */
 const WIB_OFFSET_HOURS = 7;
+
+export function validEventDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+export function normalizedEventTime(value: string | null): string | null {
+  if (!value || !/^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/.test(value)) return null;
+  return value.slice(0, 5);
+}
+
+/** A date and optional wall-clock time entered in WIB, independent of the viewer's timezone. */
+export function toWibTimestamp(date: string | null, time: string | null): number | null {
+  if (!date || !validEventDate(date)) return null;
+  if (time !== null && normalizedEventTime(time) === null) return null;
+  const timestamp = Date.parse(`${date}T${time ?? "00:00:00"}+07:00`);
+  return Number.isFinite(timestamp) ? timestamp : null;
+}
+
+export function calendarEventForEvent(event: InvitationEvent, coupleDisplayName: string): CalendarEventInput | null {
+  const startTime = normalizedEventTime(event.startTime);
+  const endTime = normalizedEventTime(event.endTime);
+  if (!validEventDate(event.eventDate) || !startTime || !endTime || endTime <= startTime) return null;
+  return {
+    title: `${event.title} — ${coupleDisplayName}`,
+    date: event.eventDate,
+    startTime,
+    endTime,
+    location: event.venueName,
+    description: `Undangan ${coupleDisplayName}`,
+  };
+}
 
 function toUtcDate(date: string, time: string | null, fallbackHour: number): Date {
   const [h, m] = (time ?? `${String(fallbackHour).padStart(2, "0")}:00`).split(":").map(Number);
