@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-24-terra-botanica-theme-design.md`
 
-## Execution checkpoint — 25 September 2026
+## Execution checkpoint — 29 September 2026
 
 | Task | Status | Commits |
 | --- | --- | --- |
@@ -22,13 +22,16 @@
 | 6. The Gathering event chapter | Complete | `4c792f21`, `2b2b3212` |
 | 7. RSVP, wishes, and digital gifts | Complete | `a94d9139`, `d964bfaa` |
 | 8. Registration, local migration, and documentation | Complete | `5534560b`, `c319d915`, `8d301dfa` |
-| 9. Responsive, accessibility, performance, and whole-branch validation | **Next** | — |
+| 9. Responsive, accessibility, performance, and whole-branch validation | Complete | `0a6d5cdf`, `16f45366` |
+| Final countdown/calendar parity fix | Complete | `3abb1e3c` |
 
-Current verified implementation HEAD is `8d301dfa`. The full suite passes
-139/139; lint, TypeScript, diff checks, and the production build pass. Terra is
-registered in application code, but its migration remains local and has not
-been applied to Supabase. See `docs/PROJECT_MEMORY.md` for resumable workflow
-details and deferred review notes. Do not re-dispatch Tasks 1–8.
+Current verified behavior commit is `3abb1e3c`. The full suite passes 150/150;
+lint, TypeScript, diff checks, and the production build pass. The final fix
+centralizes WIB countdown instants and valid calendar intervals so both themes
+offer equivalent outcomes. Terra is registered in application code, but its
+migration remains local and has not been applied to Supabase. Push and
+deployment have not occurred. See `docs/PROJECT_MEMORY.md` and the final-fix
+report for verification details. Do not re-dispatch Tasks 1–9.
 
 ## Global Constraints
 
