@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 26 September 2026 (Asia/Jakarta)
+Last updated: 29 September 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -42,8 +42,10 @@ another worktree or move implementation back to the dirty original checkout.
 The untracked `supabase/.temp/` directory predates this work; never stage,
 delete, or modify it.
 
-Current verified implementation HEAD: `8d301dfa`. The latest documentation
-checkpoint before this memory update is `29f3a5fb`.
+Current verified behavior commit: `3abb1e3c` (final countdown/calendar parity
+fix). Task 9 was completed in `0a6d5cdf` and `16f45366`. The full suite passes
+150/150; lint, TypeScript, diff checks, and the production build pass. The
+exact final documentation commit is recorded in the final-fix report.
 
 ## Current architecture and data flow
 
@@ -72,9 +74,10 @@ Key boundaries:
 - `src/themes/ThemeRenderer.tsx` is the only public theme resolver. Unsupported
   slugs retain the existing safe fallback.
 - `src/themes/shared/view-model.ts` owns shared derived presentation data such
-  as couple name, guest name, primary event, countdown target, calendar event,
-  dress code, and hero/closing images.
-- `src/themes/shared/calendar.ts` owns pure Google Calendar and ICS generation.
+  as couple name, guest name, primary event, a validated WIB countdown instant,
+  calendar event, dress code, and hero/closing images.
+- `src/themes/shared/calendar.ts` owns event date/time validation, calendar
+  eligibility, WIB timestamp conversion, and pure Google Calendar/ICS generation.
 - Shared hooks own cover/audio/focus/analytics, active-section navigation,
   RSVP/wish action state and pagination, pending-error input recovery, and
   clipboard feedback.
@@ -221,20 +224,18 @@ For every changed public section:
 | 6 | Added The Gathering: event details, maps, calendar, countdown, dress code, and livestream. Follow-up fixed invalid calendar intervals, WIB countdown semantics, and four-digit day wrapping. | `4c792f21`, `2b2b3212` | 120/120 tests; focused 15/15; UTC checks 5/5; lint/types and four viewports pass; re-review clean. |
 | 7 | Added Terra RSVP, wishes, and digital gifts using shared public-form and clipboard behavior. Follow-up fixed pending-request error recovery so newer edits are never overwritten by a stale submission snapshot. | `a94d9139`, `d964bfaa` | 132/132 tests; task gate 60/60; four viewport/interaction checks; Important race fixed and re-review clean. |
 | 8 | Registered Terra in application code, added the idempotent local active-theme upsert, verified all package/theme combinations, and documented parity plus safe rollout/rollback. Two test-only follow-ups hardened exact-write, FK-preservation, and comment-bypass contracts. | `5534560b`, `c319d915`, `8d301dfa` | 139/139 tests; task gate 14/14; lint/types/diff/build pass; Important test gap closed after two scoped re-reviews. |
+| 9 | Verified responsive, accessibility, performance, and hydrated browser behavior for both themes; isolated Terra feature flags. | `0a6d5cdf`, `16f45366` | 145/145 tests; 24 hydrated theme/viewport/fixture cases plus slow-image and expired-state checks; lint/types/diff/build pass. |
+| Final parity fix | Centralized WIB countdown interpretation and valid supplied event intervals; decoupled Ivory calendar availability from countdown while preserving its visual treatment. | `3abb1e3c` | 150/150 tests; cross-theme timezone/calendar regression tests; focused Ivory browser checks at 320 and 1440 px; lint/types/diff/build pass. |
 
 Terra is now registered in application code. The migration file is committed
 but has not been applied to Supabase; therefore live admin discovery is not yet
 active or verified.
 
-## Deferred non-blocking review notes
+## Remaining rollout notes
 
-- Task 5: the Terra Instagram link's accessible label should include the
-  visible `@username` for stronger voice-control targeting. Keep this as a
-  narrow final cleanup for Task 9/final review.
-- Task 8: `ARCHITECTURE.md` documents both themes and then shows an older
-  abbreviated registry example containing only Ivory and omitting required
-  preview/section fields. Task 9 should update it or label it clearly as an
-  abbreviated example.
+- The Task 5 Instagram accessible-name note and Task 8 registry-example note
+  were resolved during Task 9. The typed registry and runtime tests now cover
+  the current two-theme contract.
 - Remote Supabase images intentionally retain existing `unoptimized` delivery
   because `next.config.ts` has no narrow remote allowlist. Stable ratios,
   explicit sizes, lazy loading, and error fallbacks are already implemented.
@@ -269,16 +270,9 @@ The ignored execution ledger is at:
   verifies action payloads, pagination, state feedback, input recovery, and
   pending-edit concurrency behavior.
 
-## Next task — Task 9
+## Next step — remote rollout requires user authorization
 
-- Add Terra quality-contract tests and fix only evidenced defects.
-- Validate 320×568, 390×844, 768×1024, and 1440×900 for both themes,
-  including long text, one/maximum events, sparse/full gallery, disabled
-  features/music, reduced motion, expired routing, and slow images.
-- Confirm Ivory remains visually unchanged.
-- Run `git diff --check`, full tests, lint, TypeScript, and production build.
-- Request a whole-branch review against the plan/spec, resolve all Critical and
-  Important findings, and report the exact commit range and counts.
-- Planned commit: `test(theme): verify terra responsive quality`.
-- After final approval, use the branch-finishing workflow. Push, migration, and
-  deployment still require explicit user authorization.
+The local implementation and Task 9 quality gate are complete. Do not push,
+apply the Terra migration to remote Supabase, or deploy until the user explicitly
+authorizes those actions. The committed migration has not been applied remotely;
+live admin theme discovery and customer data integration remain unverified.
