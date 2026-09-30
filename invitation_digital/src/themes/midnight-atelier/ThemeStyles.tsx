@@ -279,6 +279,97 @@ export function ThemeStyles() {
         font-size: clamp(7rem, 28vw, 16rem);
         line-height: .65;
       }
+      .ma-events > .ma-section-inner { display: grid; align-content: start; gap: clamp(3rem, 9vw, 6rem); }
+      .ma-chapter-heading-dark { border-color: var(--ma-champagne); }
+      .ma-chapter-heading-dark p { color: var(--ma-champagne); }
+      .ma-event-list { display: grid; margin: 0; padding: 0; list-style: none; }
+      .ma-event {
+        display: grid;
+        min-width: 0;
+        gap: 1.5rem;
+        border-top: 1px solid color-mix(in srgb, var(--ma-champagne) 58%, transparent);
+        padding-block: clamp(2rem, 6vw, 4rem);
+        overflow-wrap: anywhere;
+      }
+      .ma-event:last-child { border-bottom: 1px solid color-mix(in srgb, var(--ma-champagne) 58%, transparent); }
+      .ma-event-index { color: var(--ma-champagne); font-family: var(--font-ma-display), serif; font-size: 1.3rem; }
+      .ma-event-main, .ma-event-place { min-width: 0; }
+      .ma-event-type { margin: 0 0 .75rem; color: var(--ma-champagne); font-size: .75rem; letter-spacing: .08em; }
+      .ma-event-main h3 {
+        max-width: 15ch;
+        margin: 0;
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(2.4rem, 8vw, 5rem);
+        font-weight: 500;
+        letter-spacing: -.04em;
+        line-height: .9;
+      }
+      .ma-event-main time { display: block; margin-top: 1.5rem; color: var(--ma-smoke); line-height: 1.55; }
+      .ma-event-time { margin: .35rem 0 0; color: var(--ma-smoke); font-variant-numeric: tabular-nums; }
+      .ma-event-venue { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.15; }
+      .ma-event-address { max-width: 42ch; margin: .8rem 0 0; color: var(--ma-smoke); line-height: 1.65; }
+      .ma-event-actions {
+        display: flex;
+        min-height: 48px;
+        flex-wrap: wrap;
+        gap: .75rem 1.25rem;
+        margin-top: 1.5rem;
+      }
+      .ma-event-actions > a, .ma-calendar-actions :is(a, button) {
+        display: inline-flex;
+        min-height: 48px;
+        align-items: center;
+        gap: .7rem;
+        border: 0;
+        border-bottom: 1px solid var(--ma-champagne);
+        border-radius: 0;
+        background: transparent;
+        color: var(--ma-pearl);
+        cursor: pointer;
+        font: inherit;
+        font-size: .78rem;
+        text-decoration: none;
+      }
+      .ma-calendar-actions { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; }
+      .ma-countdown > .ma-section-inner {
+        display: grid;
+        align-content: center;
+        gap: clamp(3.5rem, 10vw, 7rem);
+      }
+      .ma-countdown-intro { min-width: 0; }
+      .ma-countdown-intro p { margin: 0 0 .7rem; color: var(--ma-champagne); font-size: .78rem; letter-spacing: .08em; }
+      .ma-countdown-intro h2 {
+        max-width: 9ch;
+        margin: 0;
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(3.2rem, 11vw, 8rem);
+        font-weight: 500;
+        letter-spacing: -.05em;
+        line-height: .85;
+        overflow-wrap: anywhere;
+      }
+      .ma-countdown-units { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border-top: 1px solid var(--ma-champagne); }
+      .ma-countdown-units > div { min-width: 0; border-bottom: 1px solid var(--ma-champagne); padding: 1.25rem 0; }
+      .ma-countdown-units > div:nth-child(odd) { border-right: 1px solid var(--ma-champagne); padding-right: 1rem; }
+      .ma-countdown-units > div:nth-child(even) { padding-left: 1rem; }
+      .ma-countdown-units dd { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(2.8rem, 12vw, 6rem); line-height: .8; font-variant-numeric: tabular-nums; }
+      .ma-countdown-units dt { margin-top: .75rem; color: var(--ma-champagne); font-size: .72rem; }
+      .ma-dress-code > .ma-section-inner { display: grid; align-content: start; gap: clamp(3rem, 8vw, 6rem); }
+      .ma-dress-description { max-width: 25ch; margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 5vw, 3.5rem); line-height: 1.12; overflow-wrap: anywhere; }
+      .ma-dress-groups { display: grid; gap: 2.5rem; }
+      .ma-dress-group { border-top: 1px solid var(--ma-oxblood); padding-top: 1rem; }
+      .ma-dress-group h3 { margin: 0 0 1.5rem; color: var(--ma-oxblood); font-size: .82rem; font-weight: 500; }
+      .ma-dress-group ul { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+      .ma-dress-group li { display: flex; min-width: 0; align-items: center; gap: 1rem; font-size: .8rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+      .ma-dress-swatch { flex: 0 0 auto; width: 48px; height: 48px; border: 1px solid color-mix(in srgb, var(--ma-ink) 35%, transparent); }
+      .ma-livestream > .ma-section-inner { display: grid; align-content: center; gap: clamp(3rem, 9vw, 7rem); }
+      .ma-livestream-copy { min-width: 0; }
+      .ma-livestream-copy > p { margin: 0 0 .7rem; color: var(--ma-champagne); font-size: .78rem; letter-spacing: .08em; }
+      .ma-livestream-copy h2 { max-width: 9ch; margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(3.2rem, 11vw, 8rem); font-weight: 500; letter-spacing: -.05em; line-height: .85; overflow-wrap: anywhere; }
+      .ma-livestream-copy > span { display: block; max-width: 36ch; margin-top: 1.5rem; color: var(--ma-smoke); line-height: 1.7; }
+      .ma-livestream ul { margin: 0; padding: 0; border-top: 1px solid var(--ma-champagne); list-style: none; }
+      .ma-livestream li { border-bottom: 1px solid var(--ma-champagne); }
+      .ma-livestream a { display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 2rem; color: var(--ma-pearl); text-decoration: none; overflow-wrap: anywhere; }
       .ma-closing > .ma-section-inner { display: grid; align-items: center; gap: clamp(3rem, 8vw, 7rem); }
       .ma-closing-copy { min-width: 0; overflow-wrap: anywhere; }
       .ma-closing-copy h2 {
@@ -395,6 +486,16 @@ export function ThemeStyles() {
         .ma-people { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: clamp(2.5rem, 6vw, 6rem); }
         .ma-person[data-position="right"] { margin-top: clamp(5rem, 11vw, 10rem); }
         .ma-person-text-only { min-height: 30rem; align-content: space-between; }
+        .ma-events > .ma-section-inner { padding-right: clamp(8rem, 13vw, 12rem); }
+        .ma-event { grid-template-columns: 3rem minmax(0, 1fr) minmax(15rem, .75fr); gap: clamp(1.5rem, 4vw, 4rem); }
+        .ma-event-place { padding-top: 2rem; }
+        .ma-countdown > .ma-section-inner { grid-template-columns: minmax(0, 1fr) minmax(24rem, 1fr); }
+        .ma-countdown-units { grid-template-columns: repeat(4, minmax(0, 1fr)); align-self: end; }
+        .ma-countdown-units > div { border-right: 1px solid var(--ma-champagne); padding: 1.25rem; }
+        .ma-countdown-units > div:first-child { padding-left: 0; }
+        .ma-countdown-units > div:last-child { border-right: 0; padding-right: 0; }
+        .ma-dress-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .ma-livestream > .ma-section-inner { grid-template-columns: minmax(0, 1fr) minmax(20rem, .8fr); }
         .ma-closing > .ma-section-inner { grid-template-columns: minmax(0, 1.1fr) minmax(18rem, .9fr); }
       }
       @media (min-width: 1100px) {
