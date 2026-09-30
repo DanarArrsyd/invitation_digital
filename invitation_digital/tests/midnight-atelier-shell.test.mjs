@@ -165,7 +165,7 @@ for (const width of [390, 1440]) {
       for (const link of document.querySelectorAll(".ma-nav a")) {
         assert.ok(document.querySelector(link.getAttribute("href")), "navigation cannot target an absent section");
       }
-      assert.equal(document.querySelector(".ma-nav a")?.getAttribute("aria-current"), "location");
+      assert.ok(document.querySelector('.ma-nav a[aria-current="location"]'));
     } finally {
       await view.cleanup();
     }

@@ -162,27 +162,137 @@ export function ThemeStyles() {
         letter-spacing: -0.045em;
         line-height: 0.86;
       }
-      .ma-foundation-layout {
-        display: grid;
-        min-height: calc(100svh - clamp(9rem, 24vw, 18rem));
-        align-content: space-between;
-        gap: 4rem;
-        border-block: 1px solid color-mix(in srgb, var(--ma-champagne) 60%, transparent);
-        padding-block: clamp(2rem, 7vw, 5rem);
-      }
-      .ma-eyebrow, .ma-guest {
-        margin: 0;
-        color: var(--ma-smoke);
-        font-size: 0.78rem;
-        font-weight: 500;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-      }
-      .ma-guest { color: var(--ma-champagne); }
       .ma-mark { display: inline-grid; width: 4rem; color: var(--ma-champagne); }
       .ma-mark svg { display: block; width: 100%; stroke: currentColor; stroke-width: 1; }
       .ma-media { position: relative; overflow: hidden; background: var(--ma-lacquer); }
       .ma-media img { object-fit: cover; }
+      .ma-hero > .ma-section-inner { display: grid; width: 100%; max-width: none; padding: 0; align-content: start; }
+      .ma-hero-image { width: 100%; aspect-ratio: 16 / 10; min-height: 18rem; align-self: start; }
+      .ma-hero-copy {
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+        padding: clamp(2rem, 8vw, 6rem) clamp(1.25rem, 7vw, 6rem);
+        background: var(--ma-oxblood);
+      }
+      .ma-hero-copy h2 {
+        max-width: 9ch;
+        margin: 0;
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(3.6rem, 13vw, 10rem);
+        font-weight: 500;
+        letter-spacing: -.055em;
+        line-height: .82;
+        overflow-wrap: anywhere;
+      }
+      .ma-hero-copy p {
+        max-width: 44ch;
+        margin: clamp(2rem, 6vw, 4rem) 0 0;
+        color: var(--ma-pearl);
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        line-height: 1.7;
+        white-space: pre-line;
+      }
+      .ma-hero-text-only > .ma-section-inner {
+        align-content: center;
+        gap: clamp(3rem, 10vw, 7rem);
+        padding: clamp(5rem, 14vw, 10rem) clamp(1.25rem, 8vw, 8rem);
+      }
+      .ma-hero-text-only .ma-hero-copy { padding: 0; background: transparent; }
+      .ma-hero-text-only .ma-hero-mark { width: clamp(4rem, 10vw, 7rem); }
+      .ma-quote { background: var(--ma-pearl); color: var(--ma-oxblood); }
+      .ma-quote-inner {
+        display: grid;
+        width: min(100%, 76rem);
+        margin-inline: auto;
+        padding: clamp(5rem, 14vw, 10rem) clamp(1.25rem, 8vw, 8rem);
+        gap: clamp(2rem, 7vw, 5rem);
+        align-items: start;
+      }
+      .ma-quote .ma-mark { color: var(--ma-oxblood); }
+      .ma-quote blockquote {
+        max-width: 19ch;
+        margin: 0;
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(2.4rem, 8vw, 6rem);
+        font-weight: 500;
+        letter-spacing: -.035em;
+        line-height: 1.02;
+        overflow-wrap: anywhere;
+      }
+      .ma-couple > .ma-section-inner { display: grid; align-content: start; gap: clamp(4rem, 10vw, 8rem); }
+      .ma-chapter-heading {
+        display: grid;
+        gap: .5rem;
+        border-bottom: 1px solid var(--ma-oxblood);
+        padding-bottom: 1.25rem;
+      }
+      .ma-chapter-heading p { margin: 0; color: var(--ma-oxblood); font-size: .78rem; letter-spacing: .08em; }
+      .ma-chapter-heading h2 {
+        margin: 0;
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(3.25rem, 10vw, 7.5rem);
+        font-weight: 500;
+        letter-spacing: -.045em;
+        line-height: .9;
+      }
+      .ma-people { display: grid; gap: clamp(5rem, 14vw, 10rem); min-width: 0; }
+      .ma-person { display: grid; align-content: start; gap: clamp(1.75rem, 5vw, 3.5rem); min-width: 0; }
+      .ma-person-portrait { width: 100%; }
+      .ma-person-copy { min-width: 0; overflow-wrap: anywhere; }
+      .ma-person-copy h3 {
+        max-width: 11ch;
+        margin: 0;
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(2.5rem, 8vw, 5rem);
+        font-weight: 500;
+        letter-spacing: -.04em;
+        line-height: .92;
+      }
+      .ma-parents {
+        display: grid;
+        gap: .45rem;
+        max-width: 36rem;
+        margin-top: 1.75rem;
+        border-left: 2px solid var(--ma-oxblood);
+        padding-left: 1rem;
+      }
+      .ma-parents p { margin: 0; }
+      .ma-parents p:first-child { color: var(--ma-oxblood); font-size: .78rem; }
+      .ma-parents p:last-child { font-family: var(--font-ma-display), serif; font-size: 1.25rem; line-height: 1.4; }
+      .ma-parent-join { color: var(--ma-oxblood); }
+      .ma-person-bio { max-width: 52ch; margin: 1.75rem 0 0; line-height: 1.75; white-space: pre-line; }
+      .ma-instagram {
+        display: inline-flex;
+        width: fit-content;
+        align-items: center;
+        margin-top: 1.25rem;
+        border-bottom: 1px solid currentColor;
+        color: var(--ma-oxblood);
+        font-size: .86rem;
+        text-decoration: none;
+      }
+      .ma-person-text-only { border-top: 1px solid var(--ma-oxblood); padding-top: clamp(2rem, 6vw, 4rem); }
+      .ma-person-monogram {
+        color: var(--ma-oxblood);
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(7rem, 28vw, 16rem);
+        line-height: .65;
+      }
+      .ma-closing > .ma-section-inner { display: grid; align-items: center; gap: clamp(3rem, 8vw, 7rem); }
+      .ma-closing-copy { min-width: 0; overflow-wrap: anywhere; }
+      .ma-closing-copy h2 {
+        max-width: 10ch;
+        margin: clamp(2rem, 6vw, 4rem) 0 0;
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(3.4rem, 11vw, 8rem);
+        font-weight: 500;
+        letter-spacing: -.05em;
+        line-height: .85;
+      }
+      .ma-closing-copy p { max-width: 46ch; margin: 2rem 0 0; color: var(--ma-smoke); line-height: 1.75; white-space: pre-line; }
+      .ma-closing-image { width: min(100%, 34rem); justify-self: end; }
+      .ma-closing-text-only > .ma-section-inner { grid-template-columns: minmax(0, 1fr); }
       .ma-image-fallback {
         display: grid;
         width: 100%;
@@ -257,7 +367,7 @@ export function ThemeStyles() {
         .ma-cover-frame { grid-template-rows: auto 1fr auto; gap: 2rem; }
         .ma-cover-masthead span:last-child { display: none; }
         .ma-cover-names { font-size: clamp(3.5rem, 20vw, 6.25rem); }
-        .ma-foundation-layout { min-height: calc(100svh - 8rem); }
+        .ma-hero-copy { min-height: calc(100svh - 62.5vw); margin-top: -1px; align-content: center; }
       }
       @media (min-width: 768px) {
         .ma-cover-frame {
@@ -281,9 +391,19 @@ export function ThemeStyles() {
         .ma-nav ul { max-height: min(76vh, 38rem); flex-direction: column; overflow-x: hidden; overflow-y: auto; }
         .ma-nav a { grid-template-columns: 1.5rem minmax(0, 1fr); min-width: 8.5rem; justify-items: start; text-align: left; }
         .ma-music { top: max(1.25rem, env(safe-area-inset-top)); bottom: auto; }
-        .ma-foundation-layout { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
-        .ma-foundation-copy { align-self: center; }
-        .ma-guest { justify-self: end; writing-mode: vertical-rl; }
+        .ma-quote-inner { grid-template-columns: 5rem minmax(0, 1fr); }
+        .ma-people { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: clamp(2.5rem, 6vw, 6rem); }
+        .ma-person[data-position="right"] { margin-top: clamp(5rem, 11vw, 10rem); }
+        .ma-person-text-only { min-height: 30rem; align-content: space-between; }
+        .ma-closing > .ma-section-inner { grid-template-columns: minmax(0, 1.1fr) minmax(18rem, .9fr); }
+      }
+      @media (min-width: 1100px) {
+        .ma-hero > .ma-section-inner { grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: end; }
+        .ma-hero-image { grid-column: 1 / 10; grid-row: 1; min-height: 42rem; }
+        .ma-hero-copy { grid-column: 8 / -1; grid-row: 1; margin-bottom: clamp(3rem, 7vw, 7rem); padding: clamp(3rem, 5vw, 5.5rem); }
+        .ma-hero-text-only > .ma-section-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(24rem, .65fr); align-items: end; }
+        .ma-hero-text-only .ma-hero-mark { align-self: start; }
+        .ma-hero-text-only .ma-hero-copy { grid-column: 2; }
       }
       .ma-gate[data-reduced-motion="true"] .ma-cover,
       .ma-gate[data-reduced-motion="true"] .ma-curtain-panel,
