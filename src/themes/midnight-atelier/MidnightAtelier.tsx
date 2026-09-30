@@ -6,8 +6,12 @@ import type { NavItem } from "./components/FloatingNav";
 import { CoverGate } from "./CoverGate";
 import { bodyCondensed, displaySerif } from "./fonts";
 import { ClosingSection } from "./sections/ClosingSection";
+import { CountdownSection } from "./sections/CountdownSection";
 import { CoupleSection } from "./sections/CoupleSection";
+import { DressCodeSection } from "./sections/DressCodeSection";
+import { EventsSection } from "./sections/EventsSection";
 import { HeroSection } from "./sections/HeroSection";
+import { LivestreamSection } from "./sections/LivestreamSection";
 import { QuoteSection } from "./sections/QuoteSection";
 import { ThemeStyles } from "./ThemeStyles";
 
@@ -33,6 +37,8 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
     primaryEvent,
     heroImageUrl,
     closingImageUrl,
+    countdownTarget,
+    dressCode,
   } = buildThemeViewModel(invitation, guest);
   const navItems = buildMidnightNavItems(invitation);
 
@@ -65,6 +71,15 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
             settings={invitation.theme.settings}
             invitationType={invitation.type}
           />
+          <EventsSection
+            events={invitation.events}
+            mapsEnabled={invitation.features.maps}
+            coupleDisplayName={coupleDisplayName}
+            invitationId={invitation.id}
+          />
+          <CountdownSection target={countdownTarget} />
+          <DressCodeSection dressCode={dressCode} />
+          <LivestreamSection events={invitation.events} enabled={invitation.features.livestream} />
           <ClosingSection
             displayName={coupleDisplayName}
             message={invitation.content.closingMessage}
