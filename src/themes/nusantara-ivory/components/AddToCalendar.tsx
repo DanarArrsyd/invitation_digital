@@ -3,68 +3,18 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import {
+  buildGoogleCalendarUrl,
+  buildIcsCalendar,
+  type CalendarEventInput,
+} from "@/themes/shared/calendar";
+export type { CalendarEventInput } from "@/themes/shared/calendar";
 
 import { bodySans } from "../fonts";
-
-export type CalendarEventInput = {
-  title: string;
-  date: string;
-  startTime: string | null;
-  endTime: string | null;
-  location: string | null;
-  description?: string | null;
-};
-
-/** Wedding venues in this platform are Indonesian; times are entered in WIB. */
-const WIB_OFFSET_HOURS = 7;
 
 /** Matches the CSS min-width so the portaled menu can be edge-clamped without a measure pass. */
 const MENU_WIDTH = 208;
 
-function toUtcDate(date: string, time: string | null, fallbackHour: number): Date {
-  const [h, m] = (time ?? `${String(fallbackHour).padStart(2, "0")}:00`).split(":").map(Number);
-  const d = new Date(`${date}T00:00:00Z`);
-  d.setUTCHours(h - WIB_OFFSET_HOURS, m || 0, 0, 0);
-  return d;
-}
-
-function formatUtcStamp(d: Date): string {
-  return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-}
-
-function buildTimes(event: CalendarEventInput) {
-  const startDate = toUtcDate(event.date, event.startTime, 9);
-  const endDate = event.endTime
-    ? toUtcDate(event.date, event.endTime, 11)
-    : new Date(startDate.getTime() + 2 * 3_600_000);
-  return { start: formatUtcStamp(startDate), end: formatUtcStamp(endDate) };
-}
-
-function escapeIcsText(value: string): string {
-  return value.replace(/\\/g, "\\\\").replace(/,/g, "\\,").replace(/;/g, "\\;").replace(/\n/g, "\\n");
-}
-
-function buildIcs(event: CalendarEventInput, uid: string): string {
-  const { start, end } = buildTimes(event);
-  const now = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-  const lines = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Invitation Digital//ID",
-    "CALSCALE:GREGORIAN",
-    "BEGIN:VEVENT",
-    `UID:${uid}`,
-    `DTSTAMP:${now}`,
-    `DTSTART:${start}`,
-    `DTEND:${end}`,
-    `SUMMARY:${escapeIcsText(event.title)}`,
-    event.location ? `LOCATION:${escapeIcsText(event.location)}` : null,
-    event.description ? `DESCRIPTION:${escapeIcsText(event.description)}` : null,
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].filter((line): line is string => line !== null);
-  return lines.join("\r\n");
-}
 
 /** Brand mark — kept in Google's own four colors regardless of theme, per brand convention. */
 function GoogleGlyph() {
@@ -85,18 +35,6 @@ function AppleGlyph() {
       <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141 0 184.8 0 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-57.7-90-57.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
     </svg>
   );
-}
-
-function buildGoogleUrl(event: CalendarEventInput): string {
-  const { start, end } = buildTimes(event);
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: event.title,
-    dates: `${start}/${end}`,
-  });
-  if (event.location) params.set("location", event.location);
-  if (event.description) params.set("details", event.description);
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
 export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: string }) {
@@ -148,7 +86,7 @@ export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: 
   }, [open]);
 
   function downloadIcs() {
-    const ics = buildIcs(event, uid);
+    const ics = buildIcsCalendar(event, uid, new Date());
     const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -194,7 +132,7 @@ export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: 
                 >
                   <a
                     role="menuitem"
-                    href={buildGoogleUrl(event)}
+                    href={buildGoogleCalendarUrl(event)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="ni-addcal-item"
