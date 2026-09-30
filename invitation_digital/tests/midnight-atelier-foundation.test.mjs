@@ -128,9 +128,9 @@ test("Midnight foundation renders normalized names with semantic structural prim
   const document = new JSDOM(html).window.document;
 
   assert.equal(document.querySelector(".ma-theme")?.getAttribute("data-theme"), "midnight-atelier");
-  assert.equal(document.querySelector("#ma-foundation")?.getAttribute("aria-labelledby"), "ma-foundation-title");
-  assert.equal(document.querySelector("#ma-foundation-title")?.textContent, "Nadia & Arka");
-  assert.equal(document.querySelector(".ma-guest")?.textContent, "Keluarga Adinata");
+  assert.equal(document.querySelector("#ma-beranda")?.getAttribute("aria-labelledby"), "ma-beranda-title");
+  assert.equal(document.querySelector("#ma-beranda-title")?.textContent, "Nadia & Arka");
+  assert.equal(document.querySelector(".ma-cover-guest-name")?.textContent, "Keluarga Adinata");
   assert.equal(document.querySelector(".ma-mark svg")?.getAttribute("aria-hidden"), "true");
 });
 
