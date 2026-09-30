@@ -83,6 +83,22 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+.ni-font-display {
+  --font-nusantara-serif: "Cormorant Garamond Variable";
+}
+
+.ni-font-body {
+  --font-nusantara-sans: "Jost Variable";
+}
+
+.tb-font-display {
+  --font-tb-display: "Fraunces Variable";
+}
+
+.tb-font-body {
+  --font-tb-body: "Manrope Variable";
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

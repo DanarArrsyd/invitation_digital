@@ -1,13 +1,3 @@
-import { Fraunces, Manrope } from "next/font/google";
+export const displaySerif = { variable: "tb-font-display" } as const;
 
-export const displaySerif = Fraunces({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-tb-display",
-});
-
-export const bodySans = Manrope({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-tb-body",
-});
+export const bodySans = { variable: "tb-font-body" } as const;
