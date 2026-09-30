@@ -168,13 +168,13 @@ test("hero, portrait, and closing image failures retain stable accessible frames
   try {
     await act(async () => root.render(React.createElement(MidnightAtelier, { invitation: fixture(), guest })));
     await act(async () => document.querySelector(".ma-cover-open").click());
-    const images = [...document.querySelectorAll("#ma-content img")];
+    const images = [...document.querySelectorAll("#ma-beranda img, #ma-mempelai img, #ma-penutup img")];
     assert.equal(images.length, 3);
     for (const image of images) {
       assert.ok(image.closest(".ma-media")?.style.aspectRatio);
       await act(async () => image.dispatchEvent(new dom.window.Event("error")));
     }
-    const fallbacks = [...document.querySelectorAll("#ma-content .ma-image-fallback")];
+    const fallbacks = [...document.querySelectorAll("#ma-beranda .ma-image-fallback, #ma-mempelai .ma-image-fallback, #ma-penutup .ma-image-fallback")];
     assert.equal(fallbacks.length, 3);
     assert.ok(fallbacks.every((fallback) => fallback.getAttribute("role") === "img"));
     assert.ok(fallbacks.every((fallback) => fallback.getAttribute("aria-label")));
