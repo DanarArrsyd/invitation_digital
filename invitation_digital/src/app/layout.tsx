@@ -5,6 +5,10 @@ import "@fontsource-variable/cormorant-garamond/wght-italic.css";
 import "@fontsource-variable/fraunces";
 import "@fontsource-variable/jost";
 import "@fontsource-variable/manrope";
+import "@fontsource-variable/bodoni-moda";
+import "@fontsource/ibm-plex-sans-condensed/400.css";
+import "@fontsource/ibm-plex-sans-condensed/500.css";
+import "@fontsource/ibm-plex-sans-condensed/600.css";
 import "./globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
