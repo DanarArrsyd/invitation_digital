@@ -3,9 +3,12 @@ import type { ThemeComponentProps } from "@/types/theme";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 
 import type { NavItem } from "./components/FloatingNav";
-import { Section } from "./components/Section";
 import { CoverGate } from "./CoverGate";
 import { bodyCondensed, displaySerif } from "./fonts";
+import { ClosingSection } from "./sections/ClosingSection";
+import { CoupleSection } from "./sections/CoupleSection";
+import { HeroSection } from "./sections/HeroSection";
+import { QuoteSection } from "./sections/QuoteSection";
 import { ThemeStyles } from "./ThemeStyles";
 
 export function buildMidnightNavItems(invitation: PublicInvitation): NavItem[] {
@@ -24,7 +27,13 @@ export function buildMidnightNavItems(invitation: PublicInvitation): NavItem[] {
 }
 
 export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
-  const { coupleDisplayName, guestDisplayName, primaryEvent } = buildThemeViewModel(invitation, guest);
+  const {
+    coupleDisplayName,
+    guestDisplayName,
+    primaryEvent,
+    heroImageUrl,
+    closingImageUrl,
+  } = buildThemeViewModel(invitation, guest);
   const navItems = buildMidnightNavItems(invitation);
 
   return (
@@ -45,14 +54,23 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
         navItems={navItems}
       >
         <main>
-          <Section id="ma-beranda" labelledBy="ma-beranda-title">
-            <div className="ma-foundation-layout">
-              <div className="ma-foundation-copy">
-                <p className="ma-eyebrow">Midnight Atelier</p>
-                <h2 id="ma-beranda-title" className="ma-display">{coupleDisplayName}</h2>
-              </div>
-            </div>
-          </Section>
+          <HeroSection
+            displayName={coupleDisplayName}
+            imageUrl={heroImageUrl}
+            message={invitation.content.openingMessage}
+          />
+          <QuoteSection quote={invitation.content.openingQuote} />
+          <CoupleSection
+            people={invitation.people}
+            settings={invitation.theme.settings}
+            invitationType={invitation.type}
+          />
+          <ClosingSection
+            displayName={coupleDisplayName}
+            message={invitation.content.closingMessage}
+            imageUrl={closingImageUrl}
+            imageAlt={invitation.gallery.at(-1)?.altText ?? null}
+          />
         </main>
       </CoverGate>
     </div>
