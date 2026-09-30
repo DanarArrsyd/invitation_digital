@@ -11,10 +11,13 @@ import { CoupleSection } from "./sections/CoupleSection";
 import { DressCodeSection } from "./sections/DressCodeSection";
 import { EventsSection } from "./sections/EventsSection";
 import { GallerySection } from "./sections/GallerySection";
+import { GiftSection } from "./sections/GiftSection";
 import { HeroSection } from "./sections/HeroSection";
 import { LivestreamSection } from "./sections/LivestreamSection";
 import { QuoteSection } from "./sections/QuoteSection";
+import { RsvpSection } from "./sections/RsvpSection";
 import { StorySection } from "./sections/StorySection";
+import { WishesSection } from "./sections/WishesSection";
 import { ThemeStyles } from "./ThemeStyles";
 
 export function buildMidnightNavItems(invitation: PublicInvitation): NavItem[] {
@@ -86,6 +89,24 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
             <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} />
           ) : null}
           <LivestreamSection events={invitation.events} enabled={invitation.features.livestream} />
+          {invitation.features.rsvp ? (
+            <RsvpSection
+              invitationId={invitation.id}
+              slug={invitation.slug}
+              guestToken={guest?.token ?? null}
+              guestName={guestDisplayName}
+            />
+          ) : null}
+          {invitation.features.wishes ? (
+            <WishesSection
+              invitationId={invitation.id}
+              slug={invitation.slug}
+              guestToken={guest?.token ?? null}
+              guestName={guestDisplayName}
+              wishes={invitation.wishes}
+            />
+          ) : null}
+          {invitation.features.gift ? <GiftSection gifts={invitation.gifts} /> : null}
           <ClosingSection
             displayName={coupleDisplayName}
             message={invitation.content.closingMessage}

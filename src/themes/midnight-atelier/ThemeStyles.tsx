@@ -407,6 +407,198 @@ export function ThemeStyles() {
         overflow-wrap: anywhere;
       }
       .ma-gallery-item figcaption span { flex: 0 0 auto; color: var(--ma-champagne); font-variant-numeric: tabular-nums; }
+      .ma-rsvp > .ma-section-inner,
+      .ma-wishes > .ma-section-inner,
+      .ma-gift > .ma-section-inner {
+        display: grid;
+        align-content: start;
+        gap: clamp(3.5rem, 9vw, 7rem);
+      }
+      .ma-interaction-heading { min-width: 0; }
+      .ma-interaction-heading > p {
+        margin: 0 0 .75rem;
+        color: var(--ma-champagne);
+        font-size: .76rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+      .ma-interaction-heading h2 {
+        max-width: 10ch;
+        margin: 0;
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(3.2rem, 10vw, 7.5rem);
+        font-weight: 500;
+        letter-spacing: -.05em;
+        line-height: .86;
+        overflow-wrap: anywhere;
+      }
+      .ma-interaction-heading > span {
+        display: block;
+        max-width: 42ch;
+        margin-top: 1.5rem;
+        color: var(--ma-smoke);
+        line-height: 1.7;
+      }
+      .ma-wishes .ma-interaction-heading > p,
+      .ma-wishes .ma-interaction-heading > span { color: var(--ma-oxblood); }
+      .ma-interaction-panel { min-width: 0; }
+      .ma-form { display: grid; min-width: 0; gap: 2rem; }
+      .ma-form-field { display: grid; min-width: 0; gap: .6rem; }
+      .ma-form-field > span,
+      .ma-attendance legend,
+      .ma-form-recipient > span {
+        color: var(--ma-champagne);
+        font-size: .74rem;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+      .ma-form-control {
+        width: 100%;
+        min-height: 48px;
+        border: 0;
+        border-bottom: 1px solid var(--ma-champagne);
+        border-radius: 0;
+        padding: .75rem 0;
+        background: transparent;
+        color: var(--ma-pearl);
+        font: inherit;
+        line-height: 1.5;
+      }
+      .ma-form-control::placeholder { color: color-mix(in srgb, var(--ma-smoke) 72%, transparent); opacity: 1; }
+      .ma-form-textarea { min-height: 9rem; resize: vertical; }
+      .ma-form-recipient {
+        display: grid;
+        min-width: 0;
+        gap: .65rem;
+        border-bottom: 1px solid var(--ma-champagne);
+        padding-bottom: 1.25rem;
+      }
+      .ma-form-recipient strong {
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(1.7rem, 5vw, 2.6rem);
+        font-weight: 500;
+        line-height: 1.1;
+        overflow-wrap: anywhere;
+      }
+      .ma-attendance { min-width: 0; margin: 0; border: 0; padding: 0; }
+      .ma-attendance legend { margin-bottom: .8rem; padding: 0; }
+      .ma-attendance-choices { display: grid; border-top: 1px solid var(--ma-champagne); }
+      .ma-attendance-choice {
+        display: flex;
+        width: 100%;
+        min-height: 64px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border: 0;
+        border-bottom: 1px solid var(--ma-champagne);
+        border-radius: 0;
+        padding: 1rem 0;
+        background: transparent;
+        color: var(--ma-pearl);
+        cursor: pointer;
+        font: inherit;
+        text-align: left;
+      }
+      .ma-attendance-choice[aria-pressed="true"] { color: var(--ma-champagne); }
+      .ma-attendance-choice::after { content: "○"; flex: 0 0 auto; font-size: .72rem; }
+      .ma-attendance-choice[data-selected="true"]::after { content: "●"; }
+      .ma-form-submit {
+        display: flex;
+        width: 100%;
+        min-height: 52px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border: 1px solid var(--ma-champagne);
+        border-radius: 0;
+        padding: .85rem 1rem;
+        background: var(--ma-pearl);
+        color: var(--ma-ink);
+        cursor: pointer;
+        font: inherit;
+      }
+      .ma-form-submit:disabled { cursor: not-allowed; opacity: .55; }
+      .ma-form-error { margin: -1rem 0 0; color: var(--ma-pearl); line-height: 1.6; }
+      .ma-form-success {
+        min-width: 0;
+        border-block: 1px solid var(--ma-champagne);
+        padding-block: clamp(2rem, 6vw, 4rem);
+        overflow-wrap: anywhere;
+      }
+      .ma-form-success p { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(2.5rem, 8vw, 5rem); line-height: .9; }
+      .ma-form-success span { display: block; margin-top: 1.25rem; color: var(--ma-smoke); line-height: 1.7; }
+      .ma-form-success-dark { color: var(--ma-ink); font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.15; }
+      .ma-form-dark .ma-form-field > span,
+      .ma-form-dark .ma-form-recipient > span { color: var(--ma-oxblood); }
+      .ma-form-dark .ma-form-control,
+      .ma-form-dark .ma-form-recipient { border-color: var(--ma-oxblood); color: var(--ma-ink); }
+      .ma-form-dark .ma-form-control::placeholder { color: color-mix(in srgb, var(--ma-ink) 55%, transparent); }
+      .ma-form-dark .ma-form-submit { background: var(--ma-ink); color: var(--ma-pearl); }
+      .ma-form-dark .ma-form-error { color: var(--ma-oxblood); }
+      .ma-form .cf-turnstile { max-width: 100%; overflow: hidden; }
+      .ma-wishes-compose { display: grid; align-content: start; gap: clamp(2.5rem, 7vw, 4.5rem); min-width: 0; }
+      .ma-wishes-ledger { min-width: 0; }
+      .ma-wishes-empty {
+        margin: 0;
+        border-block: 1px solid var(--ma-oxblood);
+        padding-block: 2rem;
+        font-family: var(--font-ma-display), serif;
+        font-size: clamp(1.6rem, 5vw, 2.8rem);
+        line-height: 1.15;
+      }
+      .ma-wishes-list { margin: 0; padding: 0; border-top: 1px solid var(--ma-oxblood); list-style: none; }
+      .ma-wish-entry {
+        display: grid;
+        min-width: 0;
+        grid-template-columns: 2rem minmax(0, 1fr);
+        gap: 1rem;
+        border-bottom: 1px solid var(--ma-oxblood);
+        padding-block: 1.5rem;
+        overflow-wrap: anywhere;
+      }
+      .ma-wish-index { color: var(--ma-oxblood); font-size: .72rem; font-variant-numeric: tabular-nums; }
+      .ma-wish-meta { display: flex; min-width: 0; flex-wrap: wrap; justify-content: space-between; gap: .35rem 1rem; }
+      .ma-wish-meta strong { font-family: var(--font-ma-display), serif; font-size: 1.25rem; font-weight: 500; }
+      .ma-wish-meta time { color: var(--ma-oxblood); font-size: .72rem; }
+      .ma-wish-entry p { margin: 1rem 0 0; line-height: 1.7; white-space: pre-line; }
+      .ma-more-wishes {
+        width: 100%;
+        min-height: 52px;
+        margin-top: 1.5rem;
+        border: 1px solid var(--ma-oxblood);
+        border-radius: 0;
+        padding: .75rem 1rem;
+        background: transparent;
+        color: var(--ma-ink);
+        cursor: pointer;
+        font: inherit;
+      }
+      .ma-gift-list { margin: 0; padding: 0; border-top: 1px solid var(--ma-champagne); list-style: none; }
+      .ma-gift-ledger {
+        display: grid;
+        min-width: 0;
+        gap: 1.25rem;
+        border-bottom: 1px solid var(--ma-champagne);
+        padding-block: clamp(1.5rem, 5vw, 2.5rem);
+        overflow-wrap: anywhere;
+      }
+      .ma-gift-index { color: var(--ma-champagne); font-size: .72rem; font-variant-numeric: tabular-nums; }
+      .ma-gift-details { min-width: 0; }
+      .ma-gift-provider { margin: 0 0 .75rem; color: var(--ma-smoke); font-size: .76rem; letter-spacing: .08em; }
+      .ma-gift-number { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 6vw, 3.6rem); line-height: 1; }
+      .ma-gift-owner { margin: .8rem 0 0; color: var(--ma-smoke); line-height: 1.6; }
+      .ma-gift-ledger button {
+        min-height: 48px;
+        width: fit-content;
+        border: 1px solid var(--ma-champagne);
+        border-radius: 0;
+        padding: .75rem 1rem;
+        background: transparent;
+        color: var(--ma-pearl);
+        cursor: pointer;
+        font: inherit;
+      }
       .ma-livestream > .ma-section-inner { display: grid; align-content: center; gap: clamp(3rem, 9vw, 7rem); }
       .ma-livestream-copy { min-width: 0; }
       .ma-livestream-copy > p { margin: 0 0 .7rem; color: var(--ma-champagne); font-size: .78rem; letter-spacing: .08em; }
@@ -558,6 +750,10 @@ export function ThemeStyles() {
         .ma-story-text-only .ma-story-copy { max-width: 52rem; }
         .ma-gallery-columns { columns: 2; }
         .ma-livestream > .ma-section-inner { grid-template-columns: minmax(0, 1fr) minmax(20rem, .8fr); }
+        .ma-rsvp > .ma-section-inner { grid-template-columns: minmax(0, 1fr) minmax(22rem, .8fr); align-items: start; }
+        .ma-wishes > .ma-section-inner { grid-template-columns: minmax(20rem, .8fr) minmax(0, 1.2fr); align-items: start; }
+        .ma-gift > .ma-section-inner { padding-right: clamp(8rem, 13vw, 12rem); }
+        .ma-gift-ledger { grid-template-columns: 2.5rem minmax(0, 1fr) auto; align-items: center; gap: clamp(1.25rem, 4vw, 4rem); }
         .ma-closing > .ma-section-inner { grid-template-columns: minmax(0, 1.1fr) minmax(18rem, .9fr); }
       }
       @media (min-width: 1100px) {
