@@ -309,11 +309,12 @@ repair that drift. Audit and reconcile migration history as a separate task.
 | --- | --- | --- | --- |
 | 1 | Approved the sunlit destination editorial direction and defined the guarded task-by-task delivery plan. | `582da847`, current plan commit | Complete. |
 | 2 | Added the unregistered 18-section foundation, bundled Familjen Grotesk and Newsreader, scoped palette and accessible primitives, stable media fallback, and behavioral contract tests. | `f1005fb8` | Complete; 206/206 tests, lint, TypeScript, build, and independent review clean. |
-| 3 | Added the photo-free horizon cover, shared opening/audio/focus/analytics behavior, mounted-target route navigation, and collision-safe music control. | current task commit | Complete; 214/214 tests, lint, TypeScript, build, and independent review clean. |
+| 3 | Added the photo-free horizon cover, shared opening/audio/focus/analytics behavior, mounted-target route navigation, and collision-safe music control. | `0be1400c` | Complete; 214/214 tests, lint, TypeScript, build, and independent review clean. |
+| 4 | Added the panoramic hero and typographic missing-media horizon, optional Newsreader quote, offset couple and parent editorial, safe Instagram credits, and the closing field through the shared media fallback chain. | current task commit | Complete; 219/219 tests, lint, TypeScript, build, diff check, and independent review clean. |
 
-Next step: wait for user confirmation, then execute Cobalt Riviera Task 4 only.
-Add the panoramic hero, quote, couple and parent editorial, Instagram credits,
-and closing field without registering the theme.
+Next step: wait for user confirmation, then execute Cobalt Riviera Task 5 only.
+Add the itinerary and event details, safe Maps and calendar actions, WIB
+countdown, dress code, and livestream without registering the theme.
 
 ## Required execution workflow
 

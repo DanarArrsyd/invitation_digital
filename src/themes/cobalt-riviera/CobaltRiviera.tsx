@@ -2,12 +2,13 @@ import { buildThemeViewModel } from "@/themes/shared/view-model";
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
 
-import { CeramicLine, RouteRule } from "./components/RivieraOrnaments";
-import { Section } from "./components/Section";
-import { SunMark } from "./components/SunMark";
 import type { RivieraRouteItem } from "./components/RouteNavigation";
 import { CoverGate } from "./CoverGate";
 import { rivieraBody, rivieraDisplay } from "./fonts";
+import { ClosingSection } from "./sections/ClosingSection";
+import { CoupleSection } from "./sections/CoupleSection";
+import { HeroSection } from "./sections/HeroSection";
+import { QuoteSection } from "./sections/QuoteSection";
 import { ThemeStyles } from "./ThemeStyles";
 
 export function buildCobaltRouteItems(invitation: PublicInvitation): RivieraRouteItem[] {
@@ -26,8 +27,17 @@ export function buildCobaltRouteItems(invitation: PublicInvitation): RivieraRout
 }
 
 export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
-  const { coupleDisplayName, guestDisplayName, primaryEvent } = buildThemeViewModel(invitation, guest);
+  const {
+    coupleDisplayName,
+    guestDisplayName,
+    primaryEvent,
+    heroImageUrl,
+    closingImageUrl,
+  } = buildThemeViewModel(invitation, guest);
   const routeItems = buildCobaltRouteItems(invitation);
+  const finalGalleryImage = invitation.gallery.at(-1);
+  const closingImage = finalGalleryImage?.imageUrl === closingImageUrl ? finalGalleryImage : null;
+  const closingImageAlt = closingImage?.altText || closingImage?.caption || null;
 
   return (
     <div
@@ -47,23 +57,25 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
         routeItems={routeItems}
       >
         <main>
-          <Section id="cr-foundation" labelledBy="cr-foundation-title" tone="cobalt">
-            <span id="cr-beranda" className="cr-route-anchor" aria-hidden="true" />
-            <div className="cr-foundation-layout">
-              <header className="cr-foundation-header">
-                <p className="cr-kicker">Cobalt Riviera</p>
-                <CeramicLine />
-              </header>
-              <div className="cr-foundation-copy">
-                <h1 id="cr-foundation-title" className="cr-display">{coupleDisplayName}</h1>
-                <RouteRule />
-              </div>
-              <footer className="cr-foundation-footer">
-                <SunMark />
-                {guestDisplayName ? <p className="cr-guest">{guestDisplayName}</p> : null}
-              </footer>
-            </div>
-          </Section>
+          <HeroSection
+            displayName={coupleDisplayName}
+            eventDate={invitation.eventDate ?? primaryEvent?.eventDate ?? null}
+            guestDisplayName={guestDisplayName}
+            imageUrl={heroImageUrl}
+            message={invitation.content.openingMessage}
+          />
+          <QuoteSection quote={invitation.content.openingQuote} />
+          <CoupleSection
+            people={invitation.people}
+            settings={invitation.theme.settings}
+            invitationType={invitation.type}
+          />
+          <ClosingSection
+            displayName={coupleDisplayName}
+            message={invitation.content.closingMessage}
+            imageUrl={closingImageUrl}
+            imageAlt={closingImageAlt}
+          />
         </main>
       </CoverGate>
     </div>

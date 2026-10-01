@@ -172,7 +172,10 @@ for (const width of [320, 1440]) {
       for (const link of document.querySelectorAll(".cr-route-nav a")) {
         assert.ok(document.querySelector(link.getAttribute("href")), "route navigation cannot target an absent section");
       }
-      assert.equal(document.querySelectorAll(".cr-route-nav a").length, 1);
+      assert.deepEqual(
+        Array.from(document.querySelectorAll(".cr-route-nav a"), (link) => link.getAttribute("href")),
+        ["#cr-beranda", "#cr-mempelai"],
+      );
       assert.ok(document.querySelector('.cr-route-nav a[aria-current="location"]'));
     } finally {
       await view.cleanup();
