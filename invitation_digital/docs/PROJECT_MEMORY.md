@@ -12,6 +12,8 @@ implementation plans remain the source of truth:
 - `docs/superpowers/plans/2026-09-24-terra-botanica-theme.md`
 - `docs/superpowers/specs/2026-09-30-midnight-atelier-theme-design.md`
 - `docs/superpowers/plans/2026-09-30-midnight-atelier-theme.md`
+- `docs/superpowers/specs/2026-10-01-cobalt-riviera-theme-design.md`
+- `docs/superpowers/plans/2026-10-01-cobalt-riviera-theme.md`
 
 ## Product decisions that must survive future sessions
 
@@ -29,6 +31,11 @@ implementation plans remain the source of truth:
 - Midnight Atelier uses the approved **dark cinematic couture** direction:
   Bodoni Moda, Barlow Condensed, Ink/Lacquer/Oxblood/Champagne/Pearl/Smoke,
   programme-led editorial composition, and no generic black-and-gold styling.
+- Cobalt Riviera uses the approved **sunlit destination editorial** direction:
+  wide grotesk display type, Newsreader body text, Cobalt/Porcelain/Sea Ink/
+  Tangerine/Citron/Pool, a horizon-shutter cover, panoramic imagery, flat
+  itinerary rows, and ceramic-grid rhythm. Literal beach/travel props and
+  generic travel cards are outside the approved direction.
 - Sponsorship is only a reserved package entitlement. There is no public
   sponsorship data model or UI in this plan.
 - Themes receive normalized data and never query Supabase directly.
@@ -52,6 +59,12 @@ Terra's final verified behavior commit is `3abb1e3c`. Midnight Atelier Tasks
 1–7 end at `7644883d`; Task 8 ends at `a788711d`; Task 9 ends at `17964b00`.
 Its gate passes 201/201 tests plus lint, TypeScript, diff, and production build,
 with hydrated browser coverage recorded below.
+
+Cobalt Riviera Task 1 design specification ends at `582da847`. Its approved
+implementation plan is the active work on branch `codex/cobalt-riviera-theme`.
+The spec is the visual source of truth. Agents may improve composition within
+its upgrade rule but may not introduce a new motif or interaction model without
+updating the spec and receiving user approval.
 
 ## Current architecture and data flow
 
@@ -290,6 +303,16 @@ repair that drift. Audit and reconcile migration history as a separate task.
   explicit sizes, lazy loading, and error fallbacks are already implemented.
   Revisit optimization only during integration QA with evidence.
 
+## Cobalt Riviera task history
+
+| Task | Outcome | Commit | Status |
+| --- | --- | --- | --- |
+| 1 | Approved the sunlit destination editorial direction and defined the guarded task-by-task delivery plan. | `582da847`, current plan commit | Complete. |
+
+Next step: execute Cobalt Riviera Task 2 only. Build the unregistered
+foundation, explicit manifest, bundled fonts, tokens, primitives, and contract
+tests. Stop for user confirmation after its independent review is clean.
+
 ## Required execution workflow
 
 Work one task at a time with subagent-driven development:
@@ -321,9 +344,9 @@ The ignored execution ledger is at:
 
 ## Production rollout — complete
 
-Commit `17964b00` was pushed to `codex/terra-botanica-theme` and deployed to
+Commit `2b7f7065` was pushed to `codex/terra-botanica-theme` and deployed to
 Vercel production on 1 October 2026. Deployment
-`dpl_B2ZC1WooG4bPSkHw3WZdmj4u8PBQ` reached `READY` and owns the
+`dpl_DXPp8K1RntxvJRQBQs7viy8gVL9q` reached `READY` and owns the
 `invitation-digital-delta.vercel.app` alias. The root and admin login route
 returned HTTP 200, and the reviewed Midnight catalogue upsert returned an
 active production row. Authenticated admin selection still requires a manual
