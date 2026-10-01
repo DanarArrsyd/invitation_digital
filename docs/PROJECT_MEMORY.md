@@ -49,8 +49,9 @@ The untracked `supabase/.temp/` directory predates this work; never stage,
 delete, or modify it.
 
 Terra's final verified behavior commit is `3abb1e3c`. Midnight Atelier Tasks
-1–7 end at `7644883d`; Task 8 is implemented in the current branch. The Task 8
-gate passes 195/195 tests plus lint, TypeScript, diff, and production build.
+1–7 end at `7644883d`; Task 8 ends at `a788711d`. Task 9 is implemented in the
+current branch. Its gate passes 201/201 tests plus lint, TypeScript, diff, and
+production build, with hydrated browser coverage recorded below.
 
 ## Current architecture and data flow
 
@@ -86,6 +87,8 @@ Key boundaries:
 - Shared hooks own cover/audio/focus/analytics, active-section navigation,
   RSVP/wish action state and pagination, pending-error input recovery, and
   clipboard feedback.
+- `src/themes/shared/external-url.ts` owns the HTTP(S)-only boundary for Maps
+  and livestream actions across every registered theme.
 - Theme directories own markup, spacing, typography, ornaments, responsive
   composition, and visual feedback only. They do not query Supabase or
   duplicate package, validation, calendar, or server-action logic.
@@ -272,7 +275,8 @@ active or verified.
 | 5 | Added programme, events, maps, calendar, countdown, dress code, and livestream. | `c306b6cc` | Complete. |
 | 6 | Added couture story and contact-sheet gallery with sparse states. | `7e4ce95a` | Complete. |
 | 7 | Added RSVP, wishes, and gift interactions through shared behavior. | `7644883d` | Complete. |
-| 8 | Registered the theme, added a safe catalogue migration, expanded parity tests, and updated durable documentation. | Current task commit | 195/195 tests; lint/types/diff/build pass. |
+| 8 | Registered the theme, added a safe catalogue migration, expanded parity tests, and updated durable documentation. | `a788711d` | 195/195 tests; lint/types/diff/build pass. |
+| 9 | Completed responsive, accessibility, performance, malformed-data, and hydrated browser QA across Midnight, Terra, and Ivory. The discovered Ivory invalid-date crash and unsafe event-link gap were fixed through shared validation boundaries. | Current task commit | 201/201 tests; 48 hydrated theme/viewport/state cases, 3 slow-image cases, and 1 expired-state case; lint/types/diff/build pass. |
 
 ## Remaining rollout notes
 
@@ -313,11 +317,11 @@ The ignored execution ledger is at:
   verifies action payloads, pagination, state feedback, input recovery, and
   pending-edit concurrency behavior.
 
-## Next step — Midnight Task 9, then remote rollout
+## Next step — authorized remote rollout
 
-Run Midnight Atelier Task 9 responsive, accessibility, performance, and real
-browser QA across representative fixtures and all three themes. After Task 9,
-remote rollout still requires explicit user authorization. Do not push, apply
-Terra or Midnight migrations to remote Supabase, or deploy without that request.
-Neither committed catalogue migration should be treated as remotely applied
-without direct evidence; live admin discovery remains unverified.
+Midnight Atelier Task 9 is complete. The next work is the explicit rollout
+sequence from the approved plan, but it still requires direct user
+authorization. Do not push, apply Terra or Midnight migrations to remote
+Supabase, or deploy without that request. Neither committed catalogue migration
+should be treated as remotely applied without direct evidence; live admin
+discovery remains unverified.

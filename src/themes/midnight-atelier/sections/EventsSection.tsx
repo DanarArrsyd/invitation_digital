@@ -4,19 +4,10 @@ import {
   normalizedEventTime,
   validEventDate,
 } from "@/themes/shared/calendar";
+import { usableExternalUrl } from "@/themes/shared/external-url";
 
 import { AddToCalendar } from "../components/AddToCalendar";
 import { Section } from "../components/Section";
-
-export function usableExternalUrl(value: string | null): string | null {
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
-  } catch {
-    return null;
-  }
-}
 
 function eventDate(value: string): string | null {
   if (!validEventDate(value)) return null;
