@@ -1,15 +1,17 @@
 # Project Memory
 
-Last updated: 29 September 2026 (Asia/Jakarta)
+Last updated: 1 October 2026 (Asia/Jakarta)
 
 ## Purpose
 
 This is the durable resume checkpoint for the invitation platform. Read it
-after `CLAUDE.md` and before continuing the active Terra Botanica plan. The
-approved spec and implementation plan remain the source of truth:
+after `CLAUDE.md` and before continuing theme work. Approved specifications and
+implementation plans remain the source of truth:
 
 - `docs/superpowers/specs/2026-09-24-terra-botanica-theme-design.md`
 - `docs/superpowers/plans/2026-09-24-terra-botanica-theme.md`
+- `docs/superpowers/specs/2026-09-30-midnight-atelier-theme-design.md`
+- `docs/superpowers/plans/2026-09-30-midnight-atelier-theme.md`
 
 ## Product decisions that must survive future sessions
 
@@ -19,10 +21,14 @@ approved spec and implementation plan remain the source of truth:
 - Every public feature or layout added to one registered theme must be
   represented in **all registered themes** through the canonical typed section
   contract. Presentation may differ; capability parity may not.
-- `nusantara-ivory` must remain visually unchanged while Terra is built.
+- Existing themes must remain visually unchanged unless shared behavior
+  requires a tested parity fix.
 - Terra Botanica uses the approved **Editorial Garden** direction: Fraunces,
   Manrope, Linen/Clay/Moss/Cacao/Sun/Bone, asymmetrical editorial composition,
   restrained custom botanical marks, and no generic SaaS-card styling.
+- Midnight Atelier uses the approved **dark cinematic couture** direction:
+  Bodoni Moda, Barlow Condensed, Ink/Lacquer/Oxblood/Champagne/Pearl/Smoke,
+  programme-led editorial composition, and no generic black-and-gold styling.
 - Sponsorship is only a reserved package entitlement. There is no public
   sponsorship data model or UI in this plan.
 - Themes receive normalized data and never query Supabase directly.
@@ -42,10 +48,9 @@ another worktree or move implementation back to the dirty original checkout.
 The untracked `supabase/.temp/` directory predates this work; never stage,
 delete, or modify it.
 
-Current verified behavior commit: `3abb1e3c` (final countdown/calendar parity
-fix). Task 9 was completed in `0a6d5cdf` and `16f45366`. The full suite passes
-150/150; lint, TypeScript, diff checks, and the production build pass. The
-exact final documentation commit is recorded in the final-fix report.
+Terra's final verified behavior commit is `3abb1e3c`. Midnight Atelier Tasks
+1–7 end at `7644883d`; Task 8 is implemented in the current branch. The Task 8
+gate passes 195/195 tests plus lint, TypeScript, diff, and production build.
 
 ## Current architecture and data flow
 
@@ -99,9 +104,9 @@ When adding a feature or layout capability to any template, follow this order:
    contain package names, database queries, or customer-specific defaults.
 4. Put reusable calculations and interaction state in `src/themes/shared/`.
    Keep only theme-specific DOM/CSS/ornaments inside each theme package.
-5. Implement the user outcome in Ivory, Terra, and every future registered
-   theme. Layouts may express different art directions, but no template may
-   silently lose the feature.
+5. Implement the user outcome in Ivory, Terra, Midnight, and every future
+   registered theme. Layouts may express different art directions, but no
+   template may silently lose the feature.
 6. Add cross-theme behavioral tests for feature gating, empty/error states,
    payloads, accessibility, and package parity. Source-text assertions alone
    never prove parity.
@@ -112,6 +117,31 @@ When adding a feature or layout capability to any template, follow this order:
    sequence.
 
 Never solve parity by copying shared business logic between theme folders.
+
+## Midnight Atelier construction map
+
+`MidnightAtelier.tsx` consumes the shared normalized data and composes a
+distinct couture programme from the same canonical capabilities:
+
+```text
+CoverGate — curtain seam, guest personalization, music and focus handoff
+  ├─ Hero — cinematic image or intentional dark sparse state
+  ├─ Couple + parents — left-aligned editorial portrait spread
+  ├─ Programme — events, maps, calendar, countdown, dress code, livestream
+  ├─ Story — couture narrative sequence, including text-only entries
+  ├─ Gallery — contact-sheet composition for sparse or full collections
+  ├─ RSVP — Lacquer interaction using shared action state and Turnstile
+  ├─ Wishes — Pearl guestbook using shared action and pagination behavior
+  ├─ Gifts — dark ledger with shared clipboard feedback
+  └─ Closing — restrained cinematic conclusion
+```
+
+Midnight uses Ink `#09090B`, Lacquer `#171216`, Oxblood `#541E2B`, Champagne
+`#C6A15B`, Pearl `#F3EEE6`, and Smoke `#AAA3A4`. Bodoni Moda carries display
+type and Barlow Condensed carries supporting type. Avoid gradients, fake foil,
+stars, repeated ornamental frames, excessive gold, and SaaS cards. Optional
+content must disappear cleanly, and nonessential motion must honor reduced
+motion preferences.
 
 ## Terra Botanica construction map
 
@@ -231,11 +261,24 @@ Terra is now registered in application code. The migration file is committed
 but has not been applied to Supabase; therefore live admin discovery is not yet
 active or verified.
 
+## Completed Midnight Atelier task history
+
+| Task | Outcome | Commit | Status |
+| --- | --- | --- | --- |
+| 1 | Approved and documented the dark cinematic couture direction. | `451f7669` | Complete. |
+| 2 | Added tokens, typography, and unregistered theme foundation. | `3fb1338f` | Complete. |
+| 3 | Built the Midnight shell, cover, navigation, and motion foundation. | `3ad1a041` | Complete. |
+| 4 | Added hero, couple, parents, quote, and closing narrative. | `98334f83` | Complete. |
+| 5 | Added programme, events, maps, calendar, countdown, dress code, and livestream. | `c306b6cc` | Complete. |
+| 6 | Added couture story and contact-sheet gallery with sparse states. | `7e4ce95a` | Complete. |
+| 7 | Added RSVP, wishes, and gift interactions through shared behavior. | `7644883d` | Complete. |
+| 8 | Registered the theme, added a safe catalogue migration, expanded parity tests, and updated durable documentation. | Current task commit | 195/195 tests; lint/types/diff/build pass. |
+
 ## Remaining rollout notes
 
 - The Task 5 Instagram accessible-name note and Task 8 registry-example note
   were resolved during Task 9. The typed registry and runtime tests now cover
-  the current two-theme contract.
+  the current three-theme contract.
 - Remote Supabase images intentionally retain existing `unoptimized` delivery
   because `next.config.ts` has no narrow remote allowlist. Stable ratios,
   explicit sizes, lazy loading, and error fallbacks are already implemented.
@@ -270,9 +313,11 @@ The ignored execution ledger is at:
   verifies action payloads, pagination, state feedback, input recovery, and
   pending-edit concurrency behavior.
 
-## Next step — remote rollout requires user authorization
+## Next step — Midnight Task 9, then remote rollout
 
-The local implementation and Task 9 quality gate are complete. Do not push,
-apply the Terra migration to remote Supabase, or deploy until the user explicitly
-authorizes those actions. The committed migration has not been applied remotely;
-live admin theme discovery and customer data integration remain unverified.
+Run Midnight Atelier Task 9 responsive, accessibility, performance, and real
+browser QA across representative fixtures and all three themes. After Task 9,
+remote rollout still requires explicit user authorization. Do not push, apply
+Terra or Midnight migrations to remote Supabase, or deploy without that request.
+Neither committed catalogue migration should be treated as remotely applied
+without direct evidence; live admin discovery remains unverified.
