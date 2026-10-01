@@ -10,9 +10,11 @@ import { CountdownSection } from "./sections/CountdownSection";
 import { CoupleSection } from "./sections/CoupleSection";
 import { DressCodeSection } from "./sections/DressCodeSection";
 import { EventsSection } from "./sections/EventsSection";
+import { GallerySection } from "./sections/GallerySection";
 import { HeroSection } from "./sections/HeroSection";
 import { LivestreamSection } from "./sections/LivestreamSection";
 import { QuoteSection } from "./sections/QuoteSection";
+import { StorySection } from "./sections/StorySection";
 import { ThemeStyles } from "./ThemeStyles";
 
 export function buildCobaltRouteItems(invitation: PublicInvitation): RivieraRouteItem[] {
@@ -84,6 +86,10 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
           />
           <CountdownSection target={countdownTarget} />
           <DressCodeSection dressCode={dressCode} />
+          {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
+          {invitation.features.gallery ? (
+            <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} />
+          ) : null}
           <LivestreamSection events={invitation.events} enabled={invitation.features.livestream} />
           <ClosingSection
             displayName={coupleDisplayName}
