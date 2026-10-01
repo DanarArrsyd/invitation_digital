@@ -6,8 +6,12 @@ import type { RivieraRouteItem } from "./components/RouteNavigation";
 import { CoverGate } from "./CoverGate";
 import { rivieraBody, rivieraDisplay } from "./fonts";
 import { ClosingSection } from "./sections/ClosingSection";
+import { CountdownSection } from "./sections/CountdownSection";
 import { CoupleSection } from "./sections/CoupleSection";
+import { DressCodeSection } from "./sections/DressCodeSection";
+import { EventsSection } from "./sections/EventsSection";
 import { HeroSection } from "./sections/HeroSection";
+import { LivestreamSection } from "./sections/LivestreamSection";
 import { QuoteSection } from "./sections/QuoteSection";
 import { ThemeStyles } from "./ThemeStyles";
 
@@ -31,6 +35,8 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
     coupleDisplayName,
     guestDisplayName,
     primaryEvent,
+    countdownTarget,
+    dressCode,
     heroImageUrl,
     closingImageUrl,
   } = buildThemeViewModel(invitation, guest);
@@ -70,6 +76,15 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
             settings={invitation.theme.settings}
             invitationType={invitation.type}
           />
+          <EventsSection
+            events={invitation.events}
+            mapsEnabled={invitation.features.maps}
+            coupleDisplayName={coupleDisplayName}
+            invitationId={invitation.id}
+          />
+          <CountdownSection target={countdownTarget} />
+          <DressCodeSection dressCode={dressCode} />
+          <LivestreamSection events={invitation.events} enabled={invitation.features.livestream} />
           <ClosingSection
             displayName={coupleDisplayName}
             message={invitation.content.closingMessage}

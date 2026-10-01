@@ -174,7 +174,7 @@ for (const width of [320, 1440]) {
       }
       assert.deepEqual(
         Array.from(document.querySelectorAll(".cr-route-nav a"), (link) => link.getAttribute("href")),
-        ["#cr-beranda", "#cr-mempelai"],
+        ["#cr-beranda", "#cr-mempelai", "#cr-acara"],
       );
       assert.ok(document.querySelector('.cr-route-nav a[aria-current="location"]'));
     } finally {
