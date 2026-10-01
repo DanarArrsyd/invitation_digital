@@ -229,8 +229,9 @@ Current state:
 - Midnight Atelier application registration and its idempotent local catalogue
   migration are complete, but remote migration and production rollout remain
   separate authorized work;
-- final responsive, accessibility, performance, and browser QA for Midnight
-  Atelier remains in Task 9.
+- final responsive, accessibility, performance, and hydrated browser QA for
+  Midnight Atelier is complete across all three registered themes. Remote
+  migration and production rollout remain separate authorized work.
 
 ---
 

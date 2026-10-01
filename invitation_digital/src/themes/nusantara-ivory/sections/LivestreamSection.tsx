@@ -1,11 +1,14 @@
 import type { InvitationEvent } from "@/types/invitation";
+import { usableExternalUrl } from "@/themes/shared/external-url";
 
 import { Reveal } from "../components/Reveal";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 
 export function LivestreamSection({ events }: { events: InvitationEvent[] }) {
-  const links = events.filter((event) => event.livestreamUrl);
+  const links = events
+    .map((event) => ({ event, url: usableExternalUrl(event.livestreamUrl) }))
+    .filter((item): item is { event: InvitationEvent; url: string } => item.url !== null);
   if (links.length === 0) return null;
 
   return (
@@ -17,10 +20,10 @@ export function LivestreamSection({ events }: { events: InvitationEvent[] }) {
 
         <Reveal variant="up" delay={0.08} className="md:col-span-6 md:col-start-7">
           <div className="flex flex-col gap-4">
-            {links.map((event) => (
+            {links.map(({ event, url }) => (
               <a
                 key={event.id}
-                href={event.livestreamUrl ?? undefined}
+                href={url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex min-h-[64px] items-center justify-between gap-6 border-b pb-4 transition-colors"
