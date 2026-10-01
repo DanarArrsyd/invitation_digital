@@ -226,12 +226,11 @@ Current state:
 - every theme has preview metadata and an explicit 18-capability manifest;
 - the admin catalogue remains sourced from active database rows through
   `listActiveThemes()`;
-- Midnight Atelier application registration and its idempotent local catalogue
-  migration are complete, but remote migration and production rollout remain
-  separate authorized work;
+- Midnight Atelier application registration is complete and its reviewed
+  idempotent catalogue upsert is active in production;
 - final responsive, accessibility, performance, and hydrated browser QA for
-  Midnight Atelier is complete across all three registered themes. Remote
-  migration and production rollout remain separate authorized work.
+  Midnight Atelier is complete across all three registered themes. Production
+  deployment and catalogue activation were verified on 1 October 2026.
 
 ---
 
