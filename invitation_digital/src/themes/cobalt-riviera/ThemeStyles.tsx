@@ -19,6 +19,156 @@ export function ThemeStyles() {
         font-family: var(--font-cr-body), Georgia, serif;
       }
       .cr-theme, .cr-theme *, .cr-theme *::before, .cr-theme *::after { box-sizing: border-box; }
+      .cr-gate { --cr-mobile-nav-clearance: 5.5rem; min-height: 100svh; }
+      .cr-cover {
+        --cr-focus-ring: var(--cr-citron);
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        min-height: 100svh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background: var(--cr-cobalt);
+        color: var(--cr-porcelain);
+        transition: visibility 0s linear 800ms;
+      }
+      .cr-horizon { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+      .cr-horizon-shutter {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background: var(--cr-cobalt);
+        transition: transform 800ms cubic-bezier(.76, 0, .24, 1);
+        will-change: transform;
+      }
+      .cr-shutter-upper { top: 0; }
+      .cr-shutter-lower { bottom: 0; }
+      .cr-horizon-seam {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: var(--cr-porcelain);
+        transition: opacity 180ms ease 300ms;
+      }
+      .cr-cover-frame {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        width: min(100%, 96rem);
+        min-height: 100svh;
+        margin-inline: auto;
+        padding: max(1.25rem, env(safe-area-inset-top)) clamp(1.1rem, 6vw, 6rem) max(1.5rem, env(safe-area-inset-bottom));
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        gap: clamp(1rem, 4svh, 3rem);
+        transition: opacity 180ms ease, transform 800ms cubic-bezier(.76, 0, .24, 1);
+      }
+      .cr-cover-masthead {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid var(--cr-porcelain);
+        padding-bottom: .65rem;
+        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-size: .7rem;
+        font-weight: 650;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+      }
+      .cr-cover-stage { align-self: center; min-width: 0; }
+      .cr-cover-intro {
+        margin: 0 0 .65rem;
+        font-family: var(--font-cr-body), Georgia, serif;
+        font-size: clamp(.9rem, 2.5vw, 1.15rem);
+      }
+      .cr-cover-names {
+        display: flex;
+        max-width: 100%;
+        margin: 0;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: .05em .2em;
+        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-size: clamp(3.15rem, 17vw, 10rem);
+        font-variation-settings: "wght" 640;
+        letter-spacing: -.065em;
+        line-height: .78;
+        overflow-wrap: anywhere;
+      }
+      .cr-cover-names > span { min-width: 0; overflow-wrap: anywhere; }
+      .cr-cover-amp { color: var(--cr-citron); font-size: .48em; letter-spacing: 0; }
+      .cr-cover-stage time {
+        display: block;
+        margin-top: clamp(1rem, 3svh, 2rem);
+        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-size: .78rem;
+        font-weight: 650;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+      .cr-cover-recipient {
+        display: grid;
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 1rem;
+        align-items: end;
+        border-top: 1px solid var(--cr-porcelain);
+        padding-top: .8rem;
+      }
+      .cr-cover-recipient p { margin: 0; }
+      .cr-cover-recipient > div > p:first-child {
+        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-size: .68rem;
+        font-weight: 650;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+      .cr-cover-guest-name {
+        max-width: 42rem;
+        margin-top: .35rem !important;
+        color: var(--cr-citron);
+        font-size: clamp(1rem, 3vw, 1.35rem);
+        line-height: 1.15;
+        overflow-wrap: anywhere;
+      }
+      .cr-cover-open {
+        display: inline-grid;
+        min-width: 7.5rem;
+        max-width: 11rem;
+        padding: 0;
+        border: 0;
+        grid-template-columns: 3.25rem minmax(0, 1fr);
+        align-items: center;
+        gap: .7rem;
+        background: transparent;
+        color: var(--cr-porcelain);
+        cursor: pointer;
+        font: 650 .76rem/1.05 var(--font-cr-display), Arial, sans-serif;
+        letter-spacing: .08em;
+        text-align: left;
+        text-transform: uppercase;
+      }
+      .cr-cover-open .cr-sun-mark {
+        width: 3.25rem;
+        transition: transform 800ms cubic-bezier(.76, 0, .24, 1);
+      }
+      .cr-cover-open:active .cr-sun-mark { transform: translateY(-6px); }
+      .cr-gate[data-opened="true"] .cr-cover { visibility: hidden; pointer-events: none; }
+      .cr-gate[data-opened="true"] .cr-shutter-upper { transform: translateY(-101%); }
+      .cr-gate[data-opened="true"] .cr-shutter-lower { transform: translateY(101%); }
+      .cr-gate[data-opened="true"] .cr-horizon-seam { opacity: 0; }
+      .cr-gate[data-opened="true"] .cr-cover-frame { opacity: 0; transform: translateY(-1rem); }
+      .cr-gate[data-opened="true"] .cr-cover-open .cr-sun-mark { transform: translateY(-20px); }
+      .cr-content {
+        min-height: 100svh;
+        padding-bottom: calc(var(--cr-mobile-nav-clearance) + env(safe-area-inset-bottom));
+        outline: none;
+      }
+      .cr-route-anchor { position: absolute; top: 0; }
       .cr-section { position: relative; min-height: 100svh; }
       .cr-section-inner {
         width: min(100%, 96rem);
@@ -119,17 +269,112 @@ export function ThemeStyles() {
         letter-spacing: .1em;
         text-transform: uppercase;
       }
+      .cr-route-nav {
+        --cr-focus-ring: var(--cr-cobalt);
+        position: fixed;
+        z-index: 40;
+        background: var(--cr-porcelain);
+        color: var(--cr-sea-ink);
+        font-family: var(--font-cr-display), Arial, sans-serif;
+      }
+      .cr-route-nav ul { display: flex; margin: 0; padding: 0; list-style: none; }
+      .cr-route-nav li { flex: 0 0 auto; }
+      .cr-route-nav a {
+        display: grid;
+        min-width: 5.25rem;
+        padding: .55rem .8rem;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: .55rem;
+        color: inherit;
+        font-size: .7rem;
+        font-weight: 560;
+        letter-spacing: .04em;
+        text-decoration: none;
+      }
+      .cr-route-glyph { display: grid; width: 1.4rem; place-items: center; font-size: .54rem; line-height: 1; }
+      .cr-route-glyph > span:first-child {
+        display: block;
+        width: .5rem;
+        aspect-ratio: 1;
+        margin-bottom: .2rem;
+        background: var(--cr-tangerine);
+        transform: rotate(45deg);
+      }
+      .cr-route-nav a[aria-current="location"] {
+        --cr-focus-ring: var(--cr-sea-ink);
+        background: var(--cr-citron);
+        font-weight: 720;
+      }
+      .cr-route-nav a[aria-current="location"] .cr-route-glyph > span:first-child { background: var(--cr-cobalt); }
+      .cr-music {
+        --cr-focus-ring: var(--cr-sea-ink);
+        position: fixed;
+        right: max(1rem, env(safe-area-inset-right));
+        bottom: calc(var(--cr-mobile-nav-clearance) + env(safe-area-inset-bottom));
+        z-index: 41;
+        display: grid;
+        width: 3rem;
+        min-height: 3rem;
+        padding: 0;
+        border: 1px solid var(--cr-sea-ink);
+        place-items: center;
+        background: var(--cr-citron);
+        color: var(--cr-sea-ink);
+        cursor: pointer;
+      }
+      .cr-music svg { width: 1.1rem; fill: currentColor; }
       .cr-theme :is(a, button, input, textarea, select) { min-height: 48px; }
-      .cr-theme a { display: inline-flex; align-items: center; }
+      :where(.cr-theme) a { display: inline-flex; align-items: center; }
       .cr-theme :is(a, button, input, textarea, select):focus-visible {
         outline: 3px solid var(--cr-focus-ring);
         outline-offset: 4px;
       }
+      @media (max-width: 767px) {
+        .cr-cover-frame { max-height: none; }
+        .cr-cover-recipient { grid-template-columns: minmax(0, 1fr); align-items: start; }
+        .cr-cover-open { justify-self: start; }
+        .cr-route-nav {
+          right: 0;
+          bottom: 0;
+          left: 0;
+          padding-bottom: env(safe-area-inset-bottom);
+          border-top: 1px solid var(--cr-sea-ink);
+          overflow-x: auto;
+          overscroll-behavior-inline: contain;
+        }
+        .cr-route-nav ul { width: max-content; min-width: 100%; }
+      }
       @media (min-width: 768px) {
+        .cr-content { padding-bottom: 0; }
         .cr-foundation-layout { grid-template-columns: minmax(0, 1fr) minmax(12rem, .35fr); }
         .cr-foundation-header { grid-column: 1 / -1; }
         .cr-foundation-copy { grid-column: 1; }
         .cr-foundation-footer { grid-column: 2; align-self: end; }
+        .cr-cover-frame { grid-template-columns: minmax(0, 1.65fr) minmax(16rem, .55fr); }
+        .cr-cover-masthead { grid-column: 1 / -1; }
+        .cr-cover-stage { grid-column: 1; }
+        .cr-cover-recipient { grid-column: 2; align-self: end; grid-template-columns: minmax(0, 1fr); }
+        .cr-route-nav {
+          top: 50%;
+          right: 0;
+          border: 1px solid var(--cr-sea-ink);
+          border-right: 0;
+          transform: translateY(-50%);
+        }
+        .cr-route-nav ul { max-height: 76vh; flex-direction: column; overflow-y: auto; }
+        .cr-route-nav a { min-width: 8rem; }
+        .cr-music {
+          right: max(9.5rem, calc(8rem + env(safe-area-inset-right)));
+          bottom: max(1.25rem, env(safe-area-inset-bottom));
+        }
+      }
+      .cr-gate[data-reduced-motion="true"] .cr-cover,
+      .cr-gate[data-reduced-motion="true"] .cr-horizon-shutter,
+      .cr-gate[data-reduced-motion="true"] .cr-horizon-seam,
+      .cr-gate[data-reduced-motion="true"] .cr-cover-frame,
+      .cr-gate[data-reduced-motion="true"] .cr-cover-open .cr-sun-mark {
+        transition: none;
       }
       @media (prefers-reduced-motion: reduce) {
         .cr-theme, .cr-theme *, .cr-theme *::before, .cr-theme *::after {
