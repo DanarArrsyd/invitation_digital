@@ -49,9 +49,9 @@ The untracked `supabase/.temp/` directory predates this work; never stage,
 delete, or modify it.
 
 Terra's final verified behavior commit is `3abb1e3c`. Midnight Atelier Tasks
-1–7 end at `7644883d`; Task 8 ends at `a788711d`. Task 9 is implemented in the
-current branch. Its gate passes 201/201 tests plus lint, TypeScript, diff, and
-production build, with hydrated browser coverage recorded below.
+1–7 end at `7644883d`; Task 8 ends at `a788711d`; Task 9 ends at `17964b00`.
+Its gate passes 201/201 tests plus lint, TypeScript, diff, and production build,
+with hydrated browser coverage recorded below.
 
 ## Current architecture and data flow
 
@@ -260,9 +260,11 @@ For every changed public section:
 | 9 | Verified responsive, accessibility, performance, and hydrated browser behavior for both themes; isolated Terra feature flags. | `0a6d5cdf`, `16f45366` | 145/145 tests; 24 hydrated theme/viewport/fixture cases plus slow-image and expired-state checks; lint/types/diff/build pass. |
 | Final parity fix | Centralized WIB countdown interpretation and valid supplied event intervals; decoupled Ivory calendar availability from countdown while preserving its visual treatment. | `3abb1e3c` | 150/150 tests; cross-theme timezone/calendar regression tests; focused Ivory browser checks at 320 and 1440 px; lint/types/diff/build pass. |
 
-Terra is now registered in application code. The migration file is committed
-but has not been applied to Supabase; therefore live admin discovery is not yet
-active or verified.
+Terra and Midnight are registered in application code and both catalogue rows
+were verified active in the production Supabase project on 1 October 2026.
+The remote migration ledger predates the repository's renamed baseline and is
+not aligned with every local filename. Do not run a bulk `supabase db push` to
+repair that drift. Audit and reconcile migration history as a separate task.
 
 ## Completed Midnight Atelier task history
 
@@ -276,7 +278,7 @@ active or verified.
 | 6 | Added couture story and contact-sheet gallery with sparse states. | `7e4ce95a` | Complete. |
 | 7 | Added RSVP, wishes, and gift interactions through shared behavior. | `7644883d` | Complete. |
 | 8 | Registered the theme, added a safe catalogue migration, expanded parity tests, and updated durable documentation. | `a788711d` | 195/195 tests; lint/types/diff/build pass. |
-| 9 | Completed responsive, accessibility, performance, malformed-data, and hydrated browser QA across Midnight, Terra, and Ivory. The discovered Ivory invalid-date crash and unsafe event-link gap were fixed through shared validation boundaries. | Current task commit | 201/201 tests; 48 hydrated theme/viewport/state cases, 3 slow-image cases, and 1 expired-state case; lint/types/diff/build pass. |
+| 9 | Completed responsive, accessibility, performance, malformed-data, and hydrated browser QA across Midnight, Terra, and Ivory. The discovered Ivory invalid-date crash and unsafe event-link gap were fixed through shared validation boundaries. | `17964b00` | 201/201 tests; 48 hydrated theme/viewport/state cases, 3 slow-image cases, and 1 expired-state case; lint/types/diff/build pass. |
 
 ## Remaining rollout notes
 
@@ -317,11 +319,12 @@ The ignored execution ledger is at:
   verifies action payloads, pagination, state feedback, input recovery, and
   pending-edit concurrency behavior.
 
-## Next step — authorized remote rollout
+## Production rollout — complete
 
-Midnight Atelier Task 9 is complete. The next work is the explicit rollout
-sequence from the approved plan, but it still requires direct user
-authorization. Do not push, apply Terra or Midnight migrations to remote
-Supabase, or deploy without that request. Neither committed catalogue migration
-should be treated as remotely applied without direct evidence; live admin
-discovery remains unverified.
+Commit `17964b00` was pushed to `codex/terra-botanica-theme` and deployed to
+Vercel production on 1 October 2026. Deployment
+`dpl_B2ZC1WooG4bPSkHw3WZdmj4u8PBQ` reached `READY` and owns the
+`invitation-digital-delta.vercel.app` alias. The root and admin login route
+returned HTTP 200, and the reviewed Midnight catalogue upsert returned an
+active production row. Authenticated admin selection still requires a manual
+signed-in confirmation; do not claim it from the unauthenticated smoke test.
