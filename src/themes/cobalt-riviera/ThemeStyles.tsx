@@ -658,6 +658,168 @@ export function ThemeStyles() {
         line-height: 1.45;
         overflow-wrap: anywhere;
       }
+      .cr-rsvp, .cr-wishes, .cr-gift { min-height: auto; }
+      .cr-rsvp .cr-section-inner,
+      .cr-wishes .cr-section-inner,
+      .cr-gift .cr-section-inner {
+        display: grid;
+        min-width: 0;
+        min-height: auto;
+        gap: clamp(2.5rem, 7vw, 6rem);
+      }
+      .cr-interaction-heading {
+        display: grid;
+        min-width: 0;
+        max-width: 58rem;
+        align-content: start;
+        gap: .9rem;
+        overflow-wrap: anywhere;
+      }
+      .cr-interaction-heading > p {
+        margin: 0;
+        color: var(--cr-citron);
+        font: 680 .72rem/1 var(--font-cr-display), Arial, sans-serif;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+      .cr-interaction-heading h2 {
+        max-width: 12ch;
+        margin: 0;
+        font: 620 clamp(3rem, 11vw, 8rem)/.82 var(--font-cr-display), Arial, sans-serif;
+        font-variation-settings: "wght" 620;
+        letter-spacing: -.06em;
+        overflow-wrap: anywhere;
+      }
+      .cr-interaction-heading > span { max-width: 52ch; font-size: 1.05rem; line-height: 1.6; }
+      .cr-interaction-heading-dark > p { color: var(--cr-cobalt); }
+      .cr-rsvp-sheet {
+        --cr-focus-ring: var(--cr-cobalt);
+        min-width: 0;
+        padding: clamp(1.25rem, 5vw, 3.5rem);
+        background: var(--cr-porcelain);
+        color: var(--cr-sea-ink);
+      }
+      .cr-form { display: grid; min-width: 0; gap: 1.5rem; }
+      .cr-form-field { display: grid; min-width: 0; gap: .55rem; }
+      .cr-form-field label, .cr-form-recipient > span, .cr-attendance legend {
+        font: 680 .72rem/1 var(--font-cr-display), Arial, sans-serif;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+      .cr-form-control {
+        width: 100%;
+        min-width: 0;
+        min-height: 48px;
+        padding: .75rem 0;
+        border: 0;
+        border-bottom: 1px solid var(--cr-sea-ink);
+        background: transparent;
+        color: var(--cr-sea-ink);
+        font: 1rem/1.5 var(--font-cr-body), Georgia, serif;
+      }
+      .cr-form-control::placeholder { color: color-mix(in srgb, var(--cr-sea-ink) 62%, transparent); }
+      .cr-form-textarea { min-height: 9rem; resize: vertical; }
+      .cr-form-recipient { display: grid; min-width: 0; gap: .5rem; border-bottom: 1px solid var(--cr-sea-ink); padding-bottom: 1rem; }
+      .cr-form-recipient strong { font-size: clamp(1.2rem, 3vw, 1.65rem); overflow-wrap: anywhere; }
+      .cr-attendance { min-width: 0; margin: 0; padding: 0; border: 0; }
+      .cr-attendance legend { margin-bottom: .8rem; }
+      .cr-attendance-choices { display: grid; min-width: 0; gap: .75rem; }
+      .cr-attendance-choice {
+        display: grid;
+        width: 100%;
+        min-width: 0;
+        min-height: 56px;
+        padding: .85rem 1rem;
+        border: 1px solid var(--cr-sea-ink);
+        grid-template-columns: minmax(0, 1fr) 1.5rem;
+        align-items: center;
+        gap: 1rem;
+        background: var(--cr-porcelain);
+        color: var(--cr-sea-ink);
+        cursor: pointer;
+        font: 680 .82rem/1.15 var(--font-cr-display), Arial, sans-serif;
+        text-align: left;
+        transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+      }
+      .cr-attendance-choice[data-selected="true"] {
+        border-color: var(--cr-tangerine);
+        background: var(--cr-tangerine);
+        color: var(--cr-sea-ink);
+      }
+      .cr-attendance-check {
+        display: grid;
+        width: 1.5rem;
+        aspect-ratio: 1;
+        border: 1px solid currentColor;
+        clip-path: circle(50%);
+        place-items: center;
+        font-size: .8rem;
+      }
+      .cr-form-submit, .cr-more-wishes, .cr-gift-receipt button {
+        min-height: 48px;
+        border: 1px solid currentColor;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        font: 680 .78rem/1 var(--font-cr-display), Arial, sans-serif;
+      }
+      .cr-form-submit { width: 100%; padding: .9rem 1rem; background: var(--cr-cobalt); color: var(--cr-porcelain); }
+      .cr-form-submit:disabled { cursor: not-allowed; opacity: .58; }
+      .cr-form-error { margin: 0; border-left: .35rem solid var(--cr-tangerine); padding: .85rem 1rem; background: var(--cr-porcelain); color: var(--cr-sea-ink); line-height: 1.5; }
+      .cr-form-success {
+        display: grid;
+        min-width: 0;
+        grid-template-columns: 2.5rem minmax(0, 1fr);
+        align-items: start;
+        gap: 1rem;
+        overflow-wrap: anywhere;
+      }
+      .cr-form-success > span { display: grid; width: 2.5rem; aspect-ratio: 1; place-items: center; background: var(--cr-citron); color: var(--cr-sea-ink); font-weight: 800; }
+      .cr-form-success strong { font: 620 clamp(1.8rem, 5vw, 3rem)/1 var(--font-cr-display), Arial, sans-serif; }
+      .cr-form-success p { margin: .5rem 0 0; line-height: 1.5; }
+      .cr-form-success-dark { display: block; margin: 0; border-top: 1px solid var(--cr-sea-ink); padding-top: 1.25rem; }
+      .cr-form .cf-turnstile { max-width: 100%; overflow: hidden; }
+      .cr-wishes-compose { display: grid; min-width: 0; align-content: start; gap: clamp(2rem, 5vw, 4rem); }
+      .cr-wish-form { --cr-focus-ring: var(--cr-cobalt); }
+      .cr-wishes-ledger { min-width: 0; }
+      .cr-wishes-empty { margin: 0; border-block: 1px solid var(--cr-sea-ink); padding: 2rem 0; font-size: 1.05rem; line-height: 1.6; }
+      .cr-wishes-list, .cr-gift-list { min-width: 0; margin: 0; padding: 0; list-style: none; }
+      .cr-wish-entry {
+        display: grid;
+        min-width: 0;
+        padding: 1.5rem 0;
+        grid-template-columns: 2.75rem minmax(0, 1fr);
+        gap: 1rem;
+        border-top: 1px solid var(--cr-sea-ink);
+        overflow-wrap: anywhere;
+      }
+      .cr-wish-entry:last-child { border-bottom: 1px solid var(--cr-sea-ink); }
+      .cr-wish-route, .cr-gift-route {
+        color: var(--cr-tangerine);
+        font: 700 .72rem/1 var(--font-cr-display), Arial, sans-serif;
+        letter-spacing: .08em;
+      }
+      .cr-wish-meta { display: flex; min-width: 0; flex-wrap: wrap; justify-content: space-between; gap: .4rem 1rem; }
+      .cr-wish-meta strong { font-family: var(--font-cr-display), Arial, sans-serif; }
+      .cr-wish-meta time { font-size: .78rem; }
+      .cr-wish-entry p { max-width: 62ch; margin: .65rem 0 0; line-height: 1.6; white-space: pre-wrap; }
+      .cr-more-wishes { width: 100%; margin-top: 1.25rem; padding: .9rem 1rem; }
+      .cr-gift-list { border-top: 1px solid var(--cr-sea-ink); }
+      .cr-gift-receipt {
+        display: grid;
+        min-width: 0;
+        padding: clamp(1.5rem, 4vw, 2.5rem) 0;
+        gap: 1rem;
+        border-bottom: 1px solid var(--cr-sea-ink);
+        overflow-wrap: anywhere;
+      }
+      .cr-gift-details { display: grid; min-width: 0; gap: .5rem; }
+      .cr-gift-provider, .cr-gift-number, .cr-gift-owner { margin: 0; }
+      .cr-gift-provider { font: 680 .78rem/1.25 var(--font-cr-display), Arial, sans-serif; letter-spacing: .05em; }
+      .cr-gift-number { color: var(--cr-cobalt); font: 620 clamp(1.7rem, 7vw, 4.5rem)/.95 var(--font-cr-display), Arial, sans-serif; letter-spacing: -.04em; }
+      .cr-gift-owner { line-height: 1.5; }
+      .cr-gift-owner span { font-family: var(--font-cr-display), Arial, sans-serif; font-size: .72rem; font-weight: 680; letter-spacing: .08em; text-transform: uppercase; }
+      .cr-gift-receipt button { width: 100%; padding: .85rem 1rem; }
       .cr-closing .cr-section-inner { padding: 0; }
       .cr-closing-layout { display: grid; min-height: 100svh; }
       .cr-closing-copy {
@@ -794,6 +956,15 @@ export function ThemeStyles() {
         .cr-gallery-span-5 { grid-column: span 5; }
         .cr-gallery-span-7 { grid-column: span 7; }
         .cr-gallery-span-12, .cr-gallery-anchor { grid-column: 1 / -1; }
+        .cr-rsvp .cr-section-inner { grid-template-columns: minmax(0, 1fr) minmax(22rem, .85fr); align-items: start; }
+        .cr-rsvp-sheet { margin-top: clamp(3rem, 8vw, 7rem); }
+        .cr-attendance-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .cr-wishes .cr-section-inner { grid-template-columns: minmax(20rem, .8fr) minmax(0, 1.2fr); align-items: start; }
+        .cr-wishes-ledger { padding-top: clamp(3rem, 8vw, 7rem); }
+        .cr-gift .cr-section-inner { grid-template-columns: minmax(16rem, .55fr) minmax(0, 1.45fr); align-items: start; }
+        .cr-gift-list { margin-top: clamp(3rem, 8vw, 7rem); }
+        .cr-gift-receipt { grid-template-columns: 3.5rem minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 2rem); }
+        .cr-gift-receipt button { width: auto; min-width: 8.5rem; }
         .cr-closing-layout { grid-template-columns: minmax(18rem, .72fr) minmax(0, 1.28fr); }
         .cr-closing-image, .cr-closing-horizon { grid-column: 2; grid-row: 1; }
         .cr-foundation-layout { grid-template-columns: minmax(0, 1fr) minmax(12rem, .35fr); }

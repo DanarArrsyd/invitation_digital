@@ -312,11 +312,13 @@ repair that drift. Audit and reconcile migration history as a separate task.
 | 3 | Added the photo-free horizon cover, shared opening/audio/focus/analytics behavior, mounted-target route navigation, and collision-safe music control. | `0be1400c` | Complete; 214/214 tests, lint, TypeScript, build, and independent review clean. |
 | 4 | Added the panoramic hero and typographic missing-media horizon, optional Newsreader quote, offset couple and parent editorial, safe Instagram credits, and the closing field through the shared media fallback chain. | `4ab2550a` | Complete; 219/219 tests, lint, TypeScript, build, diff check, and independent review clean. |
 | 5 | Added flat one-to-five-event itinerary rows, safe Maps and calendar actions, a WIB horizon countdown, labelled wardrobe strips, and conditional broadcast rows. | `9bc9593a` | Complete; 229/229 tests, lint, TypeScript, build, diff check, and independent review clean after two Important fixes. |
-| 6 | Added the chronological story folio with text-only states and a panoramic-anchor ceramic gallery that preserves ordered media from one through forty images. | current task commit | Complete; 234/234 tests, lint, TypeScript, build, diff check, and independent review clean. |
+| 6 | Added the chronological story folio with text-only states and a panoramic-anchor ceramic gallery that preserves ordered media from one through forty images. | `92e74dc4` | Complete; 234/234 tests, lint, TypeScript, build, diff check, and independent review clean. |
+| 7 | Added Cobalt RSVP, wishes, and travel-folio gift interactions over the shared action, Turnstile, pagination, and clipboard behavior. Feature-gated guest personalization, explicit attendance checks, truthful pending/error/success states, and 320px-safe controls are covered. | `3d4032ee` | Complete; 242/242 tests, focused 16/16, lint, TypeScript, build, diff check, and independent review clean. |
 
-Next step: wait for user confirmation, then execute Cobalt Riviera Task 7 only.
-Add RSVP, wishes, and gift interactions through the existing shared form,
-pagination, Turnstile, and clipboard behavior without registering the theme.
+Next step: wait for user confirmation, then execute Cobalt Riviera Task 8 only.
+Register Cobalt in application code, add the safe catalogue migration, verify
+theme/package parity, and update durable documentation without deploying or
+mutating production until explicitly requested.
 
 ## Required execution workflow
 
