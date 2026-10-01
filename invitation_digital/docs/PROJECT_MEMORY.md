@@ -311,12 +311,12 @@ repair that drift. Audit and reconcile migration history as a separate task.
 | 2 | Added the unregistered 18-section foundation, bundled Familjen Grotesk and Newsreader, scoped palette and accessible primitives, stable media fallback, and behavioral contract tests. | `f1005fb8` | Complete; 206/206 tests, lint, TypeScript, build, and independent review clean. |
 | 3 | Added the photo-free horizon cover, shared opening/audio/focus/analytics behavior, mounted-target route navigation, and collision-safe music control. | `0be1400c` | Complete; 214/214 tests, lint, TypeScript, build, and independent review clean. |
 | 4 | Added the panoramic hero and typographic missing-media horizon, optional Newsreader quote, offset couple and parent editorial, safe Instagram credits, and the closing field through the shared media fallback chain. | `4ab2550a` | Complete; 219/219 tests, lint, TypeScript, build, diff check, and independent review clean. |
-| 5 | Added flat one-to-five-event itinerary rows, safe Maps and calendar actions, a WIB horizon countdown, labelled wardrobe strips, and conditional broadcast rows. | current task commit | Complete; 229/229 tests, lint, TypeScript, build, diff check, and independent review clean after two Important fixes. |
+| 5 | Added flat one-to-five-event itinerary rows, safe Maps and calendar actions, a WIB horizon countdown, labelled wardrobe strips, and conditional broadcast rows. | `9bc9593a` | Complete; 229/229 tests, lint, TypeScript, build, diff check, and independent review clean after two Important fixes. |
+| 6 | Added the chronological story folio with text-only states and a panoramic-anchor ceramic gallery that preserves ordered media from one through forty images. | current task commit | Complete; 234/234 tests, lint, TypeScript, build, diff check, and independent review clean. |
 
-Next step: wait for user confirmation, then execute Cobalt Riviera Task 6 only.
-Add the chronological story folio and ceramic-grid gallery, including sparse,
-text-only, failure, and one-through-forty-image states, without registering the
-theme.
+Next step: wait for user confirmation, then execute Cobalt Riviera Task 7 only.
+Add RSVP, wishes, and gift interactions through the existing shared form,
+pagination, Turnstile, and clipboard behavior without registering the theme.
 
 ## Required execution workflow
 
