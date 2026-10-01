@@ -308,10 +308,11 @@ repair that drift. Audit and reconcile migration history as a separate task.
 | Task | Outcome | Commit | Status |
 | --- | --- | --- | --- |
 | 1 | Approved the sunlit destination editorial direction and defined the guarded task-by-task delivery plan. | `582da847`, current plan commit | Complete. |
+| 2 | Added the unregistered 18-section foundation, bundled Familjen Grotesk and Newsreader, scoped palette and accessible primitives, stable media fallback, and behavioral contract tests. | current task commit | Complete; 206/206 tests, lint, TypeScript, build, and independent review clean. |
 
-Next step: execute Cobalt Riviera Task 2 only. Build the unregistered
-foundation, explicit manifest, bundled fonts, tokens, primitives, and contract
-tests. Stop for user confirmation after its independent review is clean.
+Next step: wait for user confirmation, then execute Cobalt Riviera Task 3 only.
+Compose the shell, photo-free horizon cover, navigation, shared music behavior,
+and reduced-motion opening path without registering the theme.
 
 ## Required execution workflow
 
