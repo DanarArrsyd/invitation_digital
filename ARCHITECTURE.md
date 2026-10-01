@@ -277,9 +277,10 @@ implemented. Customer self-service and payments remain outside this foundation.
 
 Use a registry rather than conditional logic scattered around routes.
 
-`src/themes/registry.ts` registers Nusantara Ivory and Terra Botanica under
-`nusantara-ivory` and `terra-botanica`. Each definition has preview metadata
-and an explicit manifest covering every key in the typed 18-section contract
+`src/themes/registry.ts` registers Nusantara Ivory, Terra Botanica, and
+Midnight Atelier under `nusantara-ivory`, `terra-botanica`, and
+`midnight-atelier`. Each definition has preview metadata and an explicit
+manifest covering every key in the typed 18-section contract
 (`src/themes/section-contract.ts`). Every public feature or layout added to one
 registered template must be represented in all registered templates in the
 same change. Themes may group or order sections differently, but cannot omit
@@ -295,17 +296,22 @@ not query Supabase or make package decisions.
 
 The admin theme selector reads active rows through `listActiveThemes()`, not
 the component registry. The registry and database row must therefore agree on
-the slug. Deploy registry support before applying the Terra seed migration;
-only then should the active row make Terra selectable. The seed upserts by the
-unique `themes.slug` without changing an existing theme ID or invitation
-reference. For rollback, deactivate Terra first, inspect and reassign any
-invitations referencing it under separate authorization, then roll back
-application code. There is no destructive down migration.
+the slug. Deploy registry support before applying the matching theme catalogue
+migration; only then should an active row make that theme selectable. Each
+migration upserts by the unique `themes.slug` without changing an existing
+theme ID or invitation reference.
 
-The current registry has explicit `nusantara-ivory` and `terra-botanica`
-definitions. Each includes its component, wedding category, preview metadata,
-and complete 18-section manifest; see `src/themes/registry.ts` for the typed
-implementation.
+For Midnight Atelier rollout, deploy and verify application registry support,
+then apply `20260930000001_midnight_atelier_theme.sql`, and finally verify the
+public row, RLS visibility, and admin selector. For rollback, deactivate the
+Midnight Atelier row first. Inspect and reassign any invitations referencing it
+only under separate authorization, then roll back application code. There is
+no destructive down migration.
+
+The current registry has explicit `nusantara-ivory`, `terra-botanica`, and
+`midnight-atelier` definitions. Each includes its component, wedding category,
+preview metadata, and complete 18-section manifest; see
+`src/themes/registry.ts` for the typed implementation.
 
 Theme renderer:
 

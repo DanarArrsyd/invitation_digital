@@ -220,6 +220,18 @@ Acceptance:
 - invitation chooses theme by slug;
 - missing theme fails gracefully.
 
+Current state:
+
+- `nusantara-ivory`, `terra-botanica`, and `midnight-atelier` are registered;
+- every theme has preview metadata and an explicit 18-capability manifest;
+- the admin catalogue remains sourced from active database rows through
+  `listActiveThemes()`;
+- Midnight Atelier application registration and its idempotent local catalogue
+  migration are complete, but remote migration and production rollout remain
+  separate authorized work;
+- final responsive, accessibility, performance, and browser QA for Midnight
+  Atelier remains in Task 9.
+
 ---
 
 ## 2. Nusantara Ivory
@@ -247,6 +259,15 @@ Acceptance:
 - all feature toggles work;
 - no customer data hardcoded;
 - polished at mobile width.
+
+## 3. Theme Collection
+
+- Nusantara Ivory: bright refined editorial foundation.
+- Terra Botanica: warm organic Editorial Garden direction.
+- Midnight Atelier: dark cinematic couture direction.
+
+All themes share the same normalized data and package capability contract.
+Visual composition may differ, but enabled public capabilities may not.
 
 ---
 
