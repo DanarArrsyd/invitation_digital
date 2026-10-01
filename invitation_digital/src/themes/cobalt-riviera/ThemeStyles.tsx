@@ -12,6 +12,7 @@ export function ThemeStyles() {
         --cr-tangerine: ${colors.tangerine};
         --cr-citron: ${colors.citron};
         --cr-pool: ${colors.pool};
+        --cr-focus-ring: ${colors.cobalt};
         min-height: 100svh;
         overflow-x: clip;
         background: var(--cr-porcelain);
@@ -443,6 +444,135 @@ export function ThemeStyles() {
         text-decoration: none;
         overflow-wrap: anywhere;
       }
+      .cr-events .cr-section-inner {
+        display: grid;
+        min-height: auto;
+        gap: clamp(3rem, 8vw, 6rem);
+      }
+      .cr-events-heading { max-width: 58rem; }
+      .cr-event-list { margin: 0; padding: 0; border-top: 1px solid var(--cr-sea-ink); list-style: none; }
+      .cr-event {
+        display: grid;
+        min-width: 0;
+        padding: clamp(1.75rem, 5vw, 3.5rem) 0;
+        gap: 1.25rem;
+        border-bottom: 1px solid var(--cr-sea-ink);
+        overflow-wrap: anywhere;
+      }
+      .cr-event-index, .cr-event-type {
+        margin: 0;
+        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-size: .7rem;
+        font-weight: 680;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+      .cr-event-index { color: var(--cr-tangerine); }
+      .cr-event-main, .cr-event-place { display: grid; min-width: 0; align-content: start; gap: .65rem; }
+      .cr-event-main h3 {
+        margin: 0;
+        color: var(--cr-cobalt);
+        font: 620 clamp(2.2rem, 8vw, 5rem)/.88 var(--font-cr-display), Arial, sans-serif;
+        letter-spacing: -.05em;
+      }
+      .cr-event-main time, .cr-event-time {
+        margin: 0;
+        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-size: .82rem;
+        font-weight: 620;
+        letter-spacing: .04em;
+      }
+      .cr-event-venue { margin: 0; font-size: clamp(1.2rem, 3vw, 1.75rem); font-weight: 650; line-height: 1.15; }
+      .cr-event-address { max-width: 52ch; margin: 0; line-height: 1.55; }
+      .cr-event-actions {
+        --cr-focus-ring: ${colors.cobalt};
+        display: flex;
+        min-height: 48px;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .35rem 1rem;
+      }
+      .cr-event-actions a, .cr-calendar-actions button {
+        border: 0;
+        border-bottom: 2px solid var(--cr-tangerine);
+        background: transparent;
+        color: var(--cr-sea-ink);
+        cursor: pointer;
+        font: 680 .78rem/1 var(--font-cr-display), Arial, sans-serif;
+        text-decoration: none;
+      }
+      .cr-calendar-actions { display: flex; flex-wrap: wrap; gap: .35rem 1rem; }
+      .cr-countdown { min-height: auto; }
+      .cr-countdown .cr-section-inner { display: grid; min-height: 78svh; align-content: center; gap: clamp(3rem, 8vw, 6rem); }
+      .cr-countdown-heading { display: grid; max-width: 60rem; gap: .75rem; }
+      .cr-countdown-heading p, .cr-livestream-copy p {
+        margin: 0;
+        color: var(--cr-citron);
+        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-size: .7rem;
+        font-weight: 680;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+      }
+      .cr-countdown-heading h2, .cr-livestream-copy h2 {
+        margin: 0;
+        font: 620 clamp(3rem, 10vw, 7rem)/.84 var(--font-cr-display), Arial, sans-serif;
+        letter-spacing: -.055em;
+        overflow-wrap: anywhere;
+      }
+      .cr-countdown-units {
+        display: grid;
+        margin: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-top: 1px solid var(--cr-porcelain);
+      }
+      .cr-countdown-units > div { min-width: 0; padding: 1rem .5rem 0 0; }
+      .cr-countdown-units dd {
+        margin: 0;
+        color: var(--cr-citron);
+        font: 620 clamp(2.5rem, 15vw, 8rem)/.8 var(--font-cr-display), Arial, sans-serif;
+        letter-spacing: -.06em;
+      }
+      .cr-countdown-units dt {
+        margin-top: .5rem;
+        font: 650 .7rem/1 var(--font-cr-display), Arial, sans-serif;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+      .cr-dress-code { min-height: auto; }
+      .cr-dress-code .cr-section-inner { display: grid; min-height: 72svh; align-content: center; gap: clamp(2rem, 6vw, 4rem); }
+      .cr-dress-heading h2 { color: var(--cr-sea-ink); }
+      .cr-dress-description { max-width: 58ch; margin: 0; font-size: clamp(1.1rem, 2vw, 1.4rem); line-height: 1.55; }
+      .cr-dress-groups { display: grid; border-top: 1px solid var(--cr-sea-ink); }
+      .cr-dress-group {
+        display: grid;
+        min-width: 0;
+        padding: 1.5rem 0;
+        gap: 1rem;
+        border-bottom: 1px solid var(--cr-sea-ink);
+      }
+      .cr-dress-group h3 { margin: 0; font: 680 .78rem/1 var(--font-cr-display), Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+      .cr-dress-group ul { display: flex; margin: 0; padding: 0; flex-wrap: wrap; gap: 1rem; list-style: none; }
+      .cr-dress-group li { display: grid; min-width: 5.5rem; grid-template-columns: 2rem minmax(0, 1fr); align-items: center; gap: .55rem; font: 620 .72rem/1 var(--font-cr-display), Arial, sans-serif; }
+      .cr-dress-swatch { display: block; width: 2rem; aspect-ratio: 1; border: 1px solid var(--cr-sea-ink); }
+      .cr-livestream { --cr-focus-ring: ${colors.citron}; min-height: auto; }
+      .cr-livestream .cr-section-inner { display: grid; min-height: 58svh; align-content: center; gap: clamp(2rem, 6vw, 4rem); }
+      .cr-livestream-copy { display: grid; max-width: 62rem; gap: .75rem; }
+      .cr-livestream-copy > span { max-width: 48ch; font-size: 1.05rem; line-height: 1.55; }
+      .cr-livestream ul { margin: 0; padding: 0; border-top: 1px solid var(--cr-porcelain); list-style: none; }
+      .cr-livestream li { border-bottom: 1px solid var(--cr-porcelain); }
+      .cr-livestream a {
+        display: flex;
+        width: 100%;
+        min-width: 0;
+        padding: 1rem 0;
+        justify-content: space-between;
+        gap: 1rem;
+        color: var(--cr-porcelain);
+        font: 650 clamp(1rem, 3vw, 1.35rem)/1.15 var(--font-cr-display), Arial, sans-serif;
+        text-decoration: none;
+        overflow-wrap: anywhere;
+      }
       .cr-closing .cr-section-inner { padding: 0; }
       .cr-closing-layout { display: grid; min-height: 100svh; }
       .cr-closing-copy {
@@ -548,6 +678,11 @@ export function ThemeStyles() {
         .cr-person[data-position="right"] .cr-person-portrait,
         .cr-person[data-position="right"] .cr-person-monogram { grid-column: 2; grid-row: 1; }
         .cr-person[data-position="right"] .cr-person-copy { grid-column: 1; grid-row: 1; }
+        .cr-event { grid-template-columns: 3.5rem minmax(15rem, .85fr) minmax(0, 1.15fr); gap: clamp(1.5rem, 4vw, 4rem); }
+        .cr-countdown-units { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .cr-countdown-units > div + div { border-left: 1px solid var(--cr-porcelain); padding-left: clamp(1rem, 3vw, 2.5rem); }
+        .cr-dress-group { grid-template-columns: minmax(8rem, .35fr) minmax(0, 1fr); align-items: center; }
+        .cr-livestream .cr-section-inner { grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr); align-items: end; }
         .cr-closing-layout { grid-template-columns: minmax(18rem, .72fr) minmax(0, 1.28fr); }
         .cr-closing-image, .cr-closing-horizon { grid-column: 2; grid-row: 1; }
         .cr-foundation-layout { grid-template-columns: minmax(0, 1fr) minmax(12rem, .35fr); }
