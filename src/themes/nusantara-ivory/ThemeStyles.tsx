@@ -195,22 +195,27 @@ const CSS = `
 .ni-events-frame { position: relative; border: 1px solid var(--ni-sand); padding: clamp(1.5rem, 4vw, 4rem); background: rgba(252,250,245,.65); }
 .ni-events-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(169,138,92,.17); pointer-events: none; }
 .ni-event-date { border-bottom: 1px solid var(--ni-sand); padding-bottom: 1.5rem; }
-/* No grid-auto-flow: dense here on purpose: dense reorders items to
-   backfill gaps, which silently shuffles photos out of the couple's
-   curated order once a wide (landscape) item can't fit the remaining
-   row -- verified with a 12-photo mix where it visibly jumped a later
-   photo ahead of two earlier ones. Sparse flow only ever wraps forward,
-   so a stray gap stays at the end of a row instead of scrambling order. */
-/* Every cell shares the same column span and the same aspect-ratio, so every
-   row lands at the identical height by construction -- no masonry-style gaps
-   to reconcile, at 6 photos or 60. object-fit: cover on .ni-photo absorbs
-   whatever ratio the source image actually is; data-ratio is kept in the DOM
-   for a11y/future use but no longer drives per-item sizing. */
-.ni-gallery-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; margin-top: 3rem; }
-.ni-gallery-grid > :only-child { max-width: 960px; width: 100%; margin-inline: auto; }
+/* Justified rows (GalleryRows.tsx): each item grows in proportion to its
+   width/height ratio (--r) from a basis of ratio x row height, so every
+   photo in a row ends at the same height. Order stays row-major, nothing is
+   cropped to a shared shape, and the ::after spacer keeps the last row at
+   its natural size instead of stretching one or two photos edge to edge. */
+.ni-gallery-rows { --ni-row-h: clamp(140px, 30vw, 320px); display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 3rem; }
+.ni-gallery-rows::after { content: ""; flex-grow: 999; }
+.ni-gallery-rows--single::after { content: none; }
+.ni-gallery-rows--single .ni-gallery-item { max-width: 960px; margin-inline: auto; }
+.ni-gallery-item { flex-grow: var(--r); flex-basis: calc(var(--r) * var(--ni-row-h)); min-width: 0; margin: 0; }
 .ni-gallery-caption { padding-top: .75rem; font-size: .8rem; line-height: 1.5; color: var(--ni-brown-soft); }
 
-.ni-gallery-photo { aspect-ratio: 4 / 5; }
+.ni-lightbox { width: 100vw; max-width: 100vw; height: 100svh; max-height: 100svh; margin: 0; padding: 0; border: 0; background: transparent; color: var(--ni-ivory-2); }
+.ni-lightbox::backdrop { background: rgba(26,21,16,.94); }
+.ni-lightbox-body { display: flex; height: 100%; flex-direction: column; padding: max(1rem, env(safe-area-inset-top)) var(--ni-gutter) max(1rem, env(safe-area-inset-bottom)); pointer-events: none; }
+.ni-lightbox-frame { position: relative; flex: 1; min-height: 0; }
+.ni-lightbox-photo { object-fit: contain; }
+.ni-lightbox-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding-top: 1rem; pointer-events: auto; }
+.ni-lightbox-caption { font-size: .85rem; color: var(--ni-on-dark-muted); overflow-wrap: anywhere; }
+.ni-lightbox-btn { min-width: 44px; min-height: 44px; padding: 0 1rem; border: 1px solid rgba(199,174,133,.45); color: var(--ni-ivory-2); font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; transition: background-color .25s ease; }
+.ni-lightbox-btn:hover { background: rgba(199,174,133,.16); }
 .ni-dresscode-groups { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(2.5rem, 8vw, 5rem); }
 .ni-dresscode-group { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
 .ni-dresscode-swatches { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem; }
@@ -234,9 +239,7 @@ const CSS = `
 }
 
 @media (min-width: 900px) {
-  .ni-gallery-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2rem; }
-  .ni-gallery-grid > :only-child { grid-column: 1/-1; max-width: none; }
-  .ni-gallery-grid > :only-child .ni-gallery-photo { aspect-ratio: 16/10; }
+  .ni-gallery-rows { gap: 1.25rem; }
 }
 @media (max-width: 374px) {
   .ni-theme { --ni-gutter: 1.25rem; }
