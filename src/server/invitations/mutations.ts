@@ -418,21 +418,40 @@ export async function deleteGiftAccount(id: string): Promise<{ error: string } |
 
 // --- Guests ------------------------------------------------------------
 
-export async function createGuest(input: {
+/**
+ * Bulk insert from a pasted list. Names that already exist on the
+ * invitation (case-insensitive) are skipped so pasting the same list twice
+ * doesn't double every guest; each new guest gets its own token.
+ */
+export async function createGuests(input: {
   invitationId: string;
-  displayName: string;
+  names: string[];
   notes: string | null;
-}): Promise<{ error: string } | null> {
+}): Promise<{ error: string } | { added: number; skipped: number }> {
   const supabase = await createSupabaseServerClient();
 
-  const { error } = await supabase.from("guests").insert({
-    invitation_id: input.invitationId,
-    display_name: input.displayName,
-    notes: input.notes,
-    token: randomUUID(),
-  });
+  const { data: existing, error: readError } = await supabase
+    .from("guests")
+    .select("display_name")
+    .eq("invitation_id", input.invitationId);
+  if (readError) return { error: readError.message };
 
-  return error ? { error: error.message } : null;
+  const taken = new Set(existing.map((guest) => guest.display_name.toLocaleLowerCase("id-ID")));
+  const fresh = input.names.filter((name) => !taken.has(name.toLocaleLowerCase("id-ID")));
+
+  if (fresh.length > 0) {
+    const { error } = await supabase.from("guests").insert(
+      fresh.map((name) => ({
+        invitation_id: input.invitationId,
+        display_name: name,
+        notes: input.notes,
+        token: randomUUID(),
+      })),
+    );
+    if (error) return { error: error.message };
+  }
+
+  return { added: fresh.length, skipped: input.names.length - fresh.length };
 }
 
 export async function deleteGuest(id: string): Promise<{ error: string } | null> {
