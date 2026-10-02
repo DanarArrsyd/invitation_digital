@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useActiveSection } from "@/themes/shared/use-active-section";
 
-export type NavIcon = "home" | "heart" | "calendar" | "gallery" | "book" | "gift" | "message" | "sparkle";
+export type NavIcon = "home" | "heart" | "calendar" | "gallery" | "book" | "gift" | "message" | "pen";
 
 export type NavItem = {
   id: string;
@@ -45,18 +45,20 @@ const ICONS: Record<NavIcon, React.ReactNode> = {
   message: (
     <path d="M4 5.5h16v11H9.5L5 20v-3.5H4v-11Z" />
   ),
-  sparkle: (
-    <path d="M12 3c.6 3.4 1.6 5.4 4 6.7-2.4 1.3-3.4 3.3-4 6.7-.6-3.4-1.6-5.4-4-6.7 2.4-1.3 3.4-3.3 4-6.7ZM19 14.5c.35 1.9.9 3 2.2 3.7-1.3.7-1.85 1.8-2.2 3.7-.35-1.9-.9-3-2.2-3.7 1.3-.7 1.85-1.8 2.2-3.7Z" />
+  pen: (
+    <>
+      <path d="M15.5 4.5 19.5 8.5 9 19H5v-4L15.5 4.5Z" />
+      <path d="M13.5 6.5l4 4" />
+    </>
   ),
 };
 
 function NavGlyph({ icon }: { icon: NavIcon }) {
-  const filled = icon === "sparkle";
   return (
     <svg
       viewBox="0 0 24 24"
-      fill={filled ? "currentColor" : "none"}
-      stroke={filled ? "none" : "currentColor"}
+      fill="none"
+      stroke="currentColor"
       strokeWidth="1.6"
       strokeLinecap="round"
       strokeLinejoin="round"

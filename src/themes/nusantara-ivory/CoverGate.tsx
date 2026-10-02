@@ -236,7 +236,10 @@ export function CoverGate({
               aria-label={playing ? "Jeda musik" : "Putar musik"}
               className="fixed right-5 z-40 flex size-12 items-center justify-center rounded-full border backdrop-blur transition-colors"
               style={{
-                bottom: "calc(5.4rem + env(safe-area-inset-bottom))",
+                // Clears the floating nav, which only renders with 2+ items.
+                bottom: navItems.length >= 2
+                  ? "calc(5.4rem + env(safe-area-inset-bottom))"
+                  : "calc(1.25rem + env(safe-area-inset-bottom))",
                 borderColor: "var(--ni-line-strong)",
                 background: "rgba(252,250,245,0.88)",
                 color: "var(--ni-brown)",
