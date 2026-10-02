@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 
 import { ColorListInput } from "@/components/admin/color-list-input";
-import { Button } from "@/components/ui/button";
+import { ConfirmDeleteForm } from "@/components/admin/confirm-delete-form";
+import { FormField } from "@/components/admin/form-field";
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -36,6 +39,13 @@ export default async function ContentPage({
 
   return (
     <div className="flex flex-col gap-10">
+      {error || saved ? (
+        <div className="-mb-4">
+          <FormMessage tone="error">{error}</FormMessage>
+          <FormMessage tone="success">{!error && saved ? "Tersimpan." : null}</FormMessage>
+        </div>
+      ) : null}
+
       <section>
         <h2 className="text-sm font-semibold text-foreground">Opening &amp; Closing</h2>
         <form action={updateContentAction} className="mt-4 flex max-w-lg flex-col gap-4">
@@ -71,12 +81,7 @@ export default async function ContentPage({
             />
           </div>
 
-          {error ? <p className="text-sm text-destructive">{error}</p> : null}
-          {saved ? <p className="text-sm text-success">Saved.</p> : null}
-
-          <Button type="submit" className="mt-2 w-fit">
-            Save
-          </Button>
+          <SubmitButton className="mt-2 w-fit">Save</SubmitButton>
         </form>
       </section>
 
@@ -119,12 +124,7 @@ export default async function ContentPage({
               <ColorListInput name="group2Colors" defaultValue={group2?.colors.join(", ") ?? ""} label="Warna grup 2" />
             </div>
 
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
-            {saved ? <p className="text-sm text-success">Saved.</p> : null}
-
-            <Button type="submit" className="mt-2 w-fit">
-              Save
-            </Button>
+            <SubmitButton className="mt-2 w-fit">Save</SubmitButton>
           </fieldset>
         </form>
       </section>
@@ -152,56 +152,56 @@ export default async function ContentPage({
                     />
                   ) : null}
                 </div>
-                <form action={deleteStoryAction}>
-                  <input type="hidden" name="id" value={story.id} />
-                  <input type="hidden" name="invitationId" value={invitation.id} />
-                  <Button type="submit" variant="destructive" size="sm">
-                    Delete
-                  </Button>
-                </form>
+                <ConfirmDeleteForm
+                  action={deleteStoryAction}
+                  hiddenFields={{ id: story.id, invitationId: invitation.id }}
+                  title="Hapus cerita ini?"
+                  description={`"${story.title}" akan dihapus dari Love Story. Tindakan ini tidak bisa dibatalkan.`}
+                  triggerLabel="Delete"
+                />
               </div>
 
-              <form action={uploadStoryImageAction} className="mt-3 flex items-center gap-2">
+              <form action={uploadStoryImageAction} className="mt-3 flex flex-wrap items-center gap-2">
                 <input type="hidden" name="invitationId" value={invitation.id} />
                 <input type="hidden" name="storyId" value={story.id} />
-                <Input type="file" name="file" accept="image/png,image/jpeg,image/webp" required />
-                <Button type="submit" variant="outline" size="sm">
+                <Input
+                  type="file"
+                  name="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  aria-label={`Foto untuk cerita ${story.title}`}
+                  className="max-w-xs"
+                  required
+                />
+                <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
                   Upload image
-                </Button>
+                </SubmitButton>
               </form>
             </div>
           ))}
 
           <form
             action={upsertStoryAction}
-            className="grid max-w-lg grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-4"
+            className="grid max-w-lg gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-2"
           >
             <input type="hidden" name="invitationId" value={invitation.id} />
             <input type="hidden" name="sortOrder" value={stories.length} />
 
-            <div className="col-span-2 flex flex-col gap-2">
-              <Label htmlFor="storyTitle">Title</Label>
-              <Input id="storyTitle" name="title" required />
-            </div>
+            <FormField id="story-new-title" label="Title" className="sm:col-span-2">
+              <Input id="story-new-title" name="title" required />
+            </FormField>
+            <FormField id="story-new-yearLabel" label="Year label">
+              <Input id="story-new-yearLabel" name="yearLabel" placeholder="2019" />
+            </FormField>
+            <FormField id="story-new-storyDate" label="Date">
+              <Input id="story-new-storyDate" name="storyDate" type="date" />
+            </FormField>
+            <FormField id="story-new-description" label="Description" className="sm:col-span-2">
+              <Textarea id="story-new-description" name="description" rows={2} />
+            </FormField>
 
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="yearLabel">Year label</Label>
-              <Input id="yearLabel" name="yearLabel" placeholder="2019" />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="storyDate">Date</Label>
-              <Input id="storyDate" name="storyDate" type="date" />
-            </div>
-
-            <div className="col-span-2 flex flex-col gap-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea id="description" name="description" rows={2} />
-            </div>
-
-            <Button type="submit" className="col-span-2 w-fit">
+            <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
               Add story
-            </Button>
+            </SubmitButton>
           </form>
         </div>
       </section>

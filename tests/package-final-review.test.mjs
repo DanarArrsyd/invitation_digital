@@ -201,6 +201,10 @@ function renderAdminPage(path, packageKey) {
   const dependencies = {
     "next/navigation": { notFound: () => { throw new Error("NOT_FOUND"); } },
     "@/components/admin/color-list-input": { ColorListInput: "input" },
+    "@/components/admin/confirm-delete-form": { ConfirmDeleteForm: () => null },
+    "@/components/admin/form-field": { FormField: ({ children }) => children },
+    "@/components/admin/form-message": { FormMessage: ({ children }) => children ?? null },
+    "@/components/admin/submit-button": { SubmitButton: "button" },
     "@/components/ui/button": { Button: "button" },
     "@/components/ui/input": { Input: "input" },
     "@/components/ui/label": { Label: "label" },
@@ -240,7 +244,8 @@ test("Signature keeps Instagram and Dress Code editors available", async () => {
 test("package selector makes keyboard focus visible on every radio card", () => {
   const PackageForm = loadTs("app/admin/(protected)/invitations/[id]/general/PackageForm.tsx", {
     "@/components/ui/badge": { Badge: "span" },
-    "@/components/ui/button": { Button: "button" },
+    "@/components/admin/form-message": { FormMessage: ({ children }) => children ?? null },
+    "@/components/admin/submit-button": { SubmitButton: "button" },
     "@/lib/packages/entitlements": entitlements,
     "./package-actions": { updateInvitationPackageAction: () => {} },
   }).PackageForm;

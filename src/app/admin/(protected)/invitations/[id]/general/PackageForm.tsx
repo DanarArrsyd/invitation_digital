@@ -1,3 +1,5 @@
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,8 +32,8 @@ export function PackageForm({
         </p>
       </div>
 
-      {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
-      {saved ? <p role="status" className="text-sm text-success">Paket tersimpan.</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
+      <FormMessage tone="success">{saved ? "Paket tersimpan." : null}</FormMessage>
 
       <form action={updatePackageAction} className="flex flex-col gap-4">
         <input type="hidden" name="invitationId" value={invitationId} />
@@ -74,9 +76,7 @@ export function PackageForm({
           Downgrade hanya dapat disimpan setelah semua konflik paket diselesaikan.
         </p>
 
-        <Button type="submit" className="w-fit">
-          Simpan paket
-        </Button>
+        <SubmitButton className="w-fit">Simpan paket</SubmitButton>
       </form>
     </section>
   );

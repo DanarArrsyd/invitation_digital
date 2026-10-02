@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { InvitationStatusBadge } from "@/components/admin/status-badge";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlements";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -22,7 +23,7 @@ export default async function InvitationEditLayout({
 
   const { data: invitation } = await supabase
     .from("invitations")
-    .select("id, title, status, package_key")
+    .select("id, title, status, package_key, expires_at")
     .eq("id", id)
     .maybeSingle();
 
@@ -42,9 +43,7 @@ export default async function InvitationEditLayout({
             </Link>
             <span className="text-muted-foreground">/</span>
             <h1 className="text-lg font-semibold text-foreground">{invitation.title}</h1>
-            <Badge variant={invitation.status === "published" ? "default" : "secondary"}>
-              {invitation.status}
-            </Badge>
+            <InvitationStatusBadge status={invitation.status} expiresAt={invitation.expires_at} />
             <Badge variant="secondary">
               {PACKAGE_DEFINITIONS[invitation.package_key as PackageKey].label}
             </Badge>
@@ -62,16 +61,16 @@ export default async function InvitationEditLayout({
             {invitation.status === "published" ? (
               <form action={unpublishAction}>
                 <input type="hidden" name="invitationId" value={id} />
-                <Button type="submit" variant="outline" size="sm">
+                <SubmitButton variant="outline" size="sm" pendingText="Memproses...">
                   Unpublish
-                </Button>
+                </SubmitButton>
               </form>
             ) : (
               <form action={publishAction}>
                 <input type="hidden" name="invitationId" value={id} />
-                <Button type="submit" size="sm">
+                <SubmitButton size="sm" pendingText="Menerbitkan...">
                   Publish
-                </Button>
+                </SubmitButton>
               </form>
             )}
           </div>

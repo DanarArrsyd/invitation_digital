@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { ConfirmDeleteForm } from "@/components/admin/confirm-delete-form";
+import { FormField } from "@/components/admin/form-field";
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -34,19 +36,19 @@ export default async function GuestsPage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
 
-      <form action={createGuestAction} className="flex max-w-lg items-end gap-3">
+      <form action={createGuestAction} className="flex max-w-xl flex-col gap-3 sm:flex-row sm:items-end">
         <input type="hidden" name="invitationId" value={invitation.id} />
-        <div className="flex flex-1 flex-col gap-2">
-          <Label htmlFor="displayName">Guest name</Label>
-          <Input id="displayName" name="displayName" required />
-        </div>
-        <div className="flex flex-1 flex-col gap-2">
-          <Label htmlFor="notes">Notes</Label>
-          <Input id="notes" name="notes" />
-        </div>
-        <Button type="submit">Add guest</Button>
+        <FormField id="guest-displayName" label="Guest name" className="flex-1">
+          <Input id="guest-displayName" name="displayName" required />
+        </FormField>
+        <FormField id="guest-notes" label="Notes" className="flex-1">
+          <Input id="guest-notes" name="notes" />
+        </FormField>
+        <SubmitButton className="w-fit" pendingText="Menambahkan...">
+          Add guest
+        </SubmitButton>
       </form>
 
       <div className="overflow-x-auto rounded-lg border border-border bg-card">
@@ -82,13 +84,13 @@ export default async function GuestsPage({
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <form action={deleteGuestAction}>
-                        <input type="hidden" name="id" value={guest.id} />
-                        <input type="hidden" name="invitationId" value={invitation.id} />
-                        <Button type="submit" variant="destructive" size="sm">
-                          Delete
-                        </Button>
-                      </form>
+                      <ConfirmDeleteForm
+                        action={deleteGuestAction}
+                        hiddenFields={{ id: guest.id, invitationId: invitation.id }}
+                        title="Hapus tamu ini?"
+                        description={`Link personal untuk ${guest.display_name} akan berhenti berfungsi, termasuk yang sudah terkirim. Tindakan ini tidak bisa dibatalkan.`}
+                        triggerLabel="Delete"
+                      />
                     </TableCell>
                   </TableRow>
                 );

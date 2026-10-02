@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { FormMessage } from "@/components/admin/form-message";
 import { EmptyState } from "@/components/admin/empty-state";
 import { SubmitButton } from "@/components/admin/submit-button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +40,7 @@ export default async function GalleryPage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
       <p className="text-sm text-muted-foreground">
         {gallery.length} dari {packageDefinition.limits.maxGalleryImages} foto · Paket {packageDefinition.label} · drag foto untuk mengubah urutan
       </p>
@@ -61,8 +62,8 @@ export default async function GalleryPage({
 
         <fieldset disabled={limitReached} className="flex flex-col gap-3 border-0 p-0">
           <div className="flex flex-col gap-2">
-            <Label>Foto (bisa pilih banyak sekaligus)</Label>
-            <Input type="file" name="files" accept="image/png,image/jpeg,image/webp" multiple required />
+            <Label htmlFor="gallery-files">Foto (bisa pilih banyak sekaligus)</Label>
+            <Input id="gallery-files" type="file" name="files" accept="image/png,image/jpeg,image/webp" multiple required />
           </div>
 
           <SubmitButton className="w-fit" pendingText="Mengunggah...">

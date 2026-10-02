@@ -1,3 +1,4 @@
+import { effectiveInvitationStatus } from "@/lib/invitations/status";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export interface DashboardSummary {
@@ -24,14 +25,12 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
     throw new Error(error.message);
   }
 
+  const now = Date.now();
   const counts = { draft: 0, published: 0, expired: 0, archived: 0, total: data.length };
   for (const row of data) {
-    if (row.status in counts) {
-      (counts as Record<string, number>)[row.status] += 1;
-    }
+    counts[effectiveInvitationStatus(row.status, row.expires_at, now)] += 1;
   }
 
-  const now = Date.now();
   const windowMs = EXPIRING_SOON_WINDOW_DAYS * 24 * 60 * 60 * 1000;
 
   const expiringSoon = data

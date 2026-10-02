@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
 
+import { ConfirmDeleteForm } from "@/components/admin/confirm-delete-form";
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -15,7 +18,6 @@ import { PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlement
 import { getInvitationAnalyticsSummary, getInvitationDetail, getInvitationResponses } from "@/server/invitations/queries";
 
 import { deleteWishAction, hideWishAction, unhideWishAction } from "./actions";
-import { DeleteWishButton } from "./DeleteWishButton";
 
 export default async function ResponsesPage({
   params,
@@ -52,7 +54,7 @@ export default async function ResponsesPage({
 
   return (
     <div className="flex flex-col gap-10">
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
 
       <section>
         <h2 className="text-sm font-semibold text-foreground">Overview</h2>
@@ -123,14 +125,14 @@ export default async function ResponsesPage({
                 key={wish.id}
                 className="flex items-start justify-between gap-4 rounded-lg border border-border bg-card p-4"
               >
-                <div>
+                <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium text-foreground">{wish.guest_name}</p>
                     <Badge variant={wish.is_visible ? "default" : "secondary"}>
                       {wish.is_visible ? "Visible" : "Hidden"}
                     </Badge>
                   </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{wish.message}</p>
+                  <p className="mt-1 text-sm break-words whitespace-pre-line text-muted-foreground">{wish.message}</p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {new Date(wish.created_at).toLocaleString("id-ID")}
                   </p>
@@ -141,25 +143,27 @@ export default async function ResponsesPage({
                     <form action={hideWishAction}>
                       <input type="hidden" name="id" value={wish.id} />
                       <input type="hidden" name="invitationId" value={id} />
-                      <Button type="submit" variant="outline" size="sm">
+                      <SubmitButton variant="outline" size="sm">
                         Hide
-                      </Button>
+                      </SubmitButton>
                     </form>
                   ) : (
                     <form action={unhideWishAction}>
                       <input type="hidden" name="id" value={wish.id} />
                       <input type="hidden" name="invitationId" value={id} />
-                      <Button type="submit" variant="outline" size="sm">
+                      <SubmitButton variant="outline" size="sm">
                         Unhide
-                      </Button>
+                      </SubmitButton>
                     </form>
                   )}
 
-                  <form action={deleteWishAction}>
-                    <input type="hidden" name="id" value={wish.id} />
-                    <input type="hidden" name="invitationId" value={id} />
-                    <DeleteWishButton />
-                  </form>
+                  <ConfirmDeleteForm
+                    action={deleteWishAction}
+                    hiddenFields={{ id: wish.id, invitationId: id }}
+                    title="Hapus ucapan ini?"
+                    description={`Ucapan dari ${wish.guest_name} akan dihapus permanen. Untuk menyembunyikannya dari tamu tanpa menghapus, pakai Hide.`}
+                    triggerLabel="Delete"
+                  />
                 </div>
               </div>
             ))

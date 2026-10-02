@@ -1,5 +1,7 @@
 "use client";
 
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -101,12 +103,10 @@ export function GeneralForm({
         />
       </div>
 
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-      {saved ? <p className="text-sm text-success">Saved.</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
+      <FormMessage tone="success">{!error && saved ? "Tersimpan." : null}</FormMessage>
 
-      <Button type="submit" className="mt-2 w-fit">
-        Save
-      </Button>
+      <SubmitButton className="mt-2 w-fit">Save</SubmitButton>
     </form>
   );
 }

@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,7 +36,7 @@ export default async function GeneralPage({
 
   return (
     <div className="flex flex-col gap-10">
-      {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
       <div className="flex flex-col gap-2">
         <h2 id="prewedding-heading" className="text-base font-semibold text-foreground">Foto prewedding — hero undangan</h2>
         <p id="prewedding-help" className="text-sm text-muted-foreground">Tampil dalam frame melengkung di sebelah nama pasangan setelah undangan dibuka. Gunakan foto portrait 4:5; PNG, JPG, atau WebP.</p>
@@ -50,9 +52,9 @@ export default async function GeneralPage({
         <form action={uploadCoverImageAction} className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
           <input type="hidden" name="invitationId" value={invitation.id} />
           <Input id="prewedding-photo" aria-describedby="prewedding-help" type="file" name="file" accept="image/png,image/jpeg,image/webp" required />
-          <Button type="submit" variant="outline" size="sm">
+          <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
             {invitation.cover_image_path ? "Ganti foto prewedding" : "Upload foto prewedding"}
-          </Button>
+          </SubmitButton>
         </form>
       </div>
 
@@ -75,18 +77,18 @@ export default async function GeneralPage({
         <h2 className="text-sm font-semibold text-foreground">Musik</h2>
 
         <div className="flex flex-col gap-2">
-          <Label>Music</Label>
+          <Label htmlFor="music-file">Music</Label>
           {invitation.music_path ? (
             <p className="text-sm text-muted-foreground">
               Current: {invitation.music_path.split("/").pop()}
             </p>
           ) : null}
-          <form action={uploadMusicAction} className="flex items-center gap-2">
+          <form action={uploadMusicAction} className="flex flex-wrap items-center gap-2">
             <input type="hidden" name="invitationId" value={invitation.id} />
-            <Input type="file" name="file" accept="audio/mpeg,audio/mp4,audio/wav" required />
-            <Button type="submit" variant="outline" size="sm">
+            <Input id="music-file" type="file" name="file" accept="audio/mpeg,audio/mp4,audio/wav" className="max-w-xs" required />
+            <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
               Upload
-            </Button>
+            </SubmitButton>
           </form>
         </div>
       </div>

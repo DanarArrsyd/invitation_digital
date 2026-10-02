@@ -1,12 +1,65 @@
 import { notFound } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { ConfirmDeleteForm } from "@/components/admin/confirm-delete-form";
+import { FormField } from "@/components/admin/form-field";
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { getPackageDefinition, type PackageKey } from "@/lib/packages/entitlements";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
 import { deleteEventAction, upsertEventAction } from "./actions";
+
+type EventDefaults = {
+  event_type: string | null;
+  title: string;
+  event_date: string;
+  start_time: string | null;
+  end_time: string | null;
+  venue_name: string | null;
+  address: string | null;
+  maps_url: string | null;
+  livestream_url: string | null;
+};
+
+/** Shared by the edit forms and the "add" form; `idPrefix` keeps ids unique per row. */
+function EventFields({ idPrefix, event }: { idPrefix: string; event?: EventDefaults }) {
+  const id = (name: string) => `${idPrefix}-${name}`;
+
+  return (
+    <>
+      <FormField id={id("eventType")} label="Event type">
+        <Input id={id("eventType")} name="eventType" defaultValue={event?.event_type ?? ""} placeholder="akad, reception..." />
+      </FormField>
+      <FormField id={id("title")} label="Title">
+        <Input id={id("title")} name="title" defaultValue={event?.title ?? ""} required />
+      </FormField>
+      <FormField id={id("eventDate")} label="Date">
+        <Input id={id("eventDate")} name="eventDate" type="date" defaultValue={event?.event_date ?? ""} required />
+      </FormField>
+      <div className="grid grid-cols-2 gap-3">
+        <FormField id={id("startTime")} label="Start time">
+          <Input id={id("startTime")} name="startTime" type="time" defaultValue={event?.start_time ?? ""} />
+        </FormField>
+        <FormField id={id("endTime")} label="End time">
+          <Input id={id("endTime")} name="endTime" type="time" defaultValue={event?.end_time ?? ""} />
+        </FormField>
+      </div>
+      <FormField id={id("venueName")} label="Venue name">
+        <Input id={id("venueName")} name="venueName" defaultValue={event?.venue_name ?? ""} />
+      </FormField>
+      <FormField id={id("address")} label="Address">
+        <Input id={id("address")} name="address" defaultValue={event?.address ?? ""} />
+      </FormField>
+      <FormField id={id("mapsUrl")} label="Maps URL">
+        <Input id={id("mapsUrl")} name="mapsUrl" type="url" defaultValue={event?.maps_url ?? ""} />
+      </FormField>
+      <FormField id={id("livestreamUrl")} label="Livestream URL">
+        <Input id={id("livestreamUrl")} name="livestreamUrl" type="url" defaultValue={event?.livestream_url ?? ""} />
+      </FormField>
+    </>
+  );
+}
 
 export default async function EventsPage({
   params,
@@ -27,132 +80,57 @@ export default async function EventsPage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
       <p className="text-sm text-muted-foreground">
         {events.length} dari {packageDefinition.limits.maxEvents} acara digunakan · Paket {packageDefinition.label}
       </p>
 
-      {events.map((event) => (
-        <form
-          key={event.id}
-          action={upsertEventAction}
-          className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-card p-4"
-        >
-          <input type="hidden" name="id" value={event.id} />
-          <input type="hidden" name="invitationId" value={invitation.id} />
-          <input type="hidden" name="sortOrder" value={event.sort_order} />
-
-          <div className="flex flex-col gap-2">
-            <Label>Event type</Label>
-            <Input name="eventType" defaultValue={event.event_type ?? ""} placeholder="akad, reception..." />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Title</Label>
-            <Input name="title" defaultValue={event.title} required />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Date</Label>
-            <Input name="eventDate" type="date" defaultValue={event.event_date} required />
-          </div>
-          <div className="flex gap-3">
-            <div className="flex flex-1 flex-col gap-2">
-              <Label>Start time</Label>
-              <Input name="startTime" type="time" defaultValue={event.start_time ?? ""} />
-            </div>
-            <div className="flex flex-1 flex-col gap-2">
-              <Label>End time</Label>
-              <Input name="endTime" type="time" defaultValue={event.end_time ?? ""} />
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Venue name</Label>
-            <Input name="venueName" defaultValue={event.venue_name ?? ""} />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Address</Label>
-            <Input name="address" defaultValue={event.address ?? ""} />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Maps URL</Label>
-            <Input name="mapsUrl" defaultValue={event.maps_url ?? ""} />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Livestream URL</Label>
-            <Input name="livestreamUrl" defaultValue={event.livestream_url ?? ""} />
+      {events.map((event, index) => (
+        <section key={event.id} className="rounded-lg border border-border bg-card p-4">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="min-w-0 truncate text-sm font-medium text-foreground">
+              {index + 1}. {event.title}
+            </h2>
+            <ConfirmDeleteForm
+              action={deleteEventAction}
+              hiddenFields={{ id: event.id, invitationId: invitation.id }}
+              title="Hapus acara ini?"
+              description={`"${event.title}" akan dihapus dari undangan. Tindakan ini tidak bisa dibatalkan.`}
+              triggerLabel="Delete"
+            />
           </div>
 
-          <div className="col-span-2 flex gap-2">
-            <Button type="submit" className="w-fit">
-              Save
-            </Button>
-            <Button
-              type="submit"
-              formAction={deleteEventAction}
-              variant="destructive"
-              className="w-fit"
-            >
-              Delete
-            </Button>
-          </div>
-        </form>
+          <form action={upsertEventAction} className="grid gap-3 sm:grid-cols-2">
+            <input type="hidden" name="id" value={event.id} />
+            <input type="hidden" name="invitationId" value={invitation.id} />
+            <input type="hidden" name="sortOrder" value={event.sort_order} />
+
+            <EventFields idPrefix={`event-${event.id}`} event={event} />
+
+            <SubmitButton className="w-fit sm:col-span-2">Save</SubmitButton>
+          </form>
+        </section>
       ))}
 
       <form
         action={upsertEventAction}
-        className="grid max-w-2xl grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-4"
+        className="grid max-w-2xl gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-2"
       >
         <input type="hidden" name="invitationId" value={invitation.id} />
         <input type="hidden" name="sortOrder" value={events.length} />
 
-        <fieldset disabled={limitReached} className="col-span-2 grid grid-cols-2 gap-3 border-0 p-0">
-          <div className="flex flex-col gap-2">
-            <Label>Event type</Label>
-            <Input name="eventType" placeholder="akad, reception..." />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Title</Label>
-            <Input name="title" required />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Date</Label>
-            <Input name="eventDate" type="date" required />
-          </div>
-          <div className="flex gap-3">
-            <div className="flex flex-1 flex-col gap-2">
-              <Label>Start time</Label>
-              <Input name="startTime" type="time" />
-            </div>
-            <div className="flex flex-1 flex-col gap-2">
-              <Label>End time</Label>
-              <Input name="endTime" type="time" />
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Venue name</Label>
-            <Input name="venueName" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Address</Label>
-            <Input name="address" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Maps URL</Label>
-            <Input name="mapsUrl" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Livestream URL</Label>
-            <Input name="livestreamUrl" />
-          </div>
+        <fieldset disabled={limitReached} className="grid gap-3 border-0 p-0 sm:col-span-2 sm:grid-cols-2">
+          <EventFields idPrefix="event-new" />
         </fieldset>
 
         {limitReached ? (
-          <p className="col-span-2 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground sm:col-span-2">
             Batas acara paket tercapai. Hapus acara atau upgrade paket.
           </p>
         ) : (
-          <Button type="submit" className="col-span-2 w-fit">
+          <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
             Add event
-          </Button>
+          </SubmitButton>
         )}
       </form>
     </div>

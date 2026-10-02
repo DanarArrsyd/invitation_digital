@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 import { EmptyState } from "@/components/admin/empty-state";
-import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/admin/page-header";
+import { InvitationStatusBadge } from "@/components/admin/status-badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
@@ -9,18 +10,17 @@ import { cn } from "@/lib/utils";
 import { listInvitations } from "@/server/invitations/queries";
 
 const STATUS_FILTERS = [
-  { value: "all", label: "All" },
-  { value: "draft", label: "Draft" },
-  { value: "published", label: "Published" },
-  { value: "expired", label: "Expired" },
+  { value: "all", label: "Semua" },
+  { value: "draft", label: "Draf" },
+  { value: "published", label: "Terbit" },
+  { value: "expired", label: "Kedaluwarsa" },
 ] as const;
 
-const STATUS_VARIANT: Record<string, "default" | "secondary" | "outline"> = {
-  draft: "secondary",
-  published: "default",
-  expired: "outline",
-  archived: "outline",
-};
+
+/** `event_date` is a plain date; format it in UTC so no viewer timezone shifts the day. */
+function formatEventDate(date: string): string {
+  return new Date(`${date}T00:00:00Z`).toLocaleDateString("id-ID", { dateStyle: "medium", timeZone: "UTC" });
+}
 
 export default async function InvitationsListPage({
   searchParams,
@@ -32,27 +32,30 @@ export default async function InvitationsListPage({
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-foreground">Invitations</h1>
-        <Link href="/admin/invitations/new" className={buttonVariants()}>
-          New Invitation
-        </Link>
-      </div>
+      <PageHeader
+        title="Invitations"
+        actions={
+          <Link href="/admin/invitations/new" className={buttonVariants()}>
+            New Invitation
+          </Link>
+        }
+      />
 
-      <div className="mt-4 flex gap-1 border-b border-border">
+      <nav aria-label="Filter status" className="mt-4 flex gap-1 overflow-x-auto border-b border-border">
         {STATUS_FILTERS.map((filter) => (
           <Link
             key={filter.value}
             href={filter.value === "all" ? "/admin/invitations" : `/admin/invitations?status=${filter.value}`}
+            aria-current={status === filter.value ? "page" : undefined}
             className={cn(
-              "rounded-t-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground",
+              "shrink-0 rounded-t-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground",
               status === filter.value && "border-b-2 border-primary text-foreground",
             )}
           >
             {filter.label}
           </Link>
         ))}
-      </div>
+      </nav>
 
       {invitations.length === 0 ? (
         <EmptyState
@@ -86,12 +89,10 @@ export default async function InvitationsListPage({
                 <CardContent className="flex flex-col gap-2">
                   <div className="flex items-center justify-between gap-2">
                     <p className="truncate font-medium text-foreground">{invitation.title}</p>
-                    <Badge variant={STATUS_VARIANT[invitation.status] ?? "outline"}>
-                      {invitation.status}
-                    </Badge>
+                    <InvitationStatusBadge status={invitation.status} expiresAt={invitation.expires_at} />
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {invitation.event_date ?? "Tanggal belum diatur"} · {invitation.theme?.name ?? "—"}
+                    {invitation.event_date ? formatEventDate(invitation.event_date) : "Tanggal belum diatur"} · {invitation.theme?.name ?? "—"}
                   </p>
                 </CardContent>
                 <CardFooter className="justify-between gap-2 bg-transparent">

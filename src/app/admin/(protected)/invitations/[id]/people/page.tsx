@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { ConfirmDeleteForm } from "@/components/admin/confirm-delete-form";
+import { FormField } from "@/components/admin/form-field";
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +13,43 @@ import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
 import { deletePersonAction, upsertPersonAction, uploadPersonPhotoAction, updatePersonInstagramAction } from "./actions";
+
+type PersonDefaults = {
+  role: string;
+  full_name: string;
+  nickname: string | null;
+  father_name: string | null;
+  mother_name: string | null;
+  bio: string | null;
+};
+
+/** Shared by the edit forms and the "add" form; `idPrefix` keeps ids unique per row. */
+function PersonFields({ idPrefix, person }: { idPrefix: string; person?: PersonDefaults }) {
+  const id = (name: string) => `${idPrefix}-${name}`;
+
+  return (
+    <>
+      <FormField id={id("role")} label="Role">
+        <Input id={id("role")} name="role" defaultValue={person?.role ?? ""} placeholder="bride / groom" required />
+      </FormField>
+      <FormField id={id("fullName")} label="Full name">
+        <Input id={id("fullName")} name="fullName" defaultValue={person?.full_name ?? ""} required />
+      </FormField>
+      <FormField id={id("nickname")} label="Nickname">
+        <Input id={id("nickname")} name="nickname" defaultValue={person?.nickname ?? ""} />
+      </FormField>
+      <FormField id={id("fatherName")} label="Father's name">
+        <Input id={id("fatherName")} name="fatherName" defaultValue={person?.father_name ?? ""} />
+      </FormField>
+      <FormField id={id("motherName")} label="Mother's name">
+        <Input id={id("motherName")} name="motherName" defaultValue={person?.mother_name ?? ""} />
+      </FormField>
+      <FormField id={id("bio")} label="Bio" className="sm:col-span-2">
+        <Textarea id={id("bio")} name="bio" defaultValue={person?.bio ?? ""} rows={2} />
+      </FormField>
+    </>
+  );
+}
 
 export default async function PeoplePage({
   params,
@@ -30,13 +70,12 @@ export default async function PeoplePage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-
-      {saved === "instagram" ? <p role="status" className="text-sm text-success">Instagram tersimpan.</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
+      <FormMessage tone="success">{saved === "instagram" ? "Instagram tersimpan." : null}</FormMessage>
 
       {people.map((person) => (
         <div key={person.id} className="rounded-lg border border-border bg-card p-4">
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             {getMediaPublicUrl(person.photo_path) ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -50,63 +89,45 @@ export default async function PeoplePage({
               </div>
             )}
 
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-foreground">
                 {person.full_name} ({person.role})
               </p>
 
-              <form action={uploadPersonPhotoAction} className="mt-2 flex items-center gap-2">
+              <form action={uploadPersonPhotoAction} className="mt-2 flex flex-wrap items-center gap-2">
                 <input type="hidden" name="invitationId" value={invitation.id} />
                 <input type="hidden" name="personId" value={person.id} />
-                <Input type="file" name="file" accept="image/png,image/jpeg,image/webp" required />
-                <Button type="submit" variant="outline" size="sm">
+                <Input
+                  type="file"
+                  name="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  aria-label={`Foto ${person.full_name}`}
+                  className="max-w-xs"
+                  required
+                />
+                <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
                   Upload photo
-                </Button>
+                </SubmitButton>
               </form>
             </div>
 
-            <form action={deletePersonAction}>
-              <input type="hidden" name="id" value={person.id} />
-              <input type="hidden" name="invitationId" value={invitation.id} />
-              <Button type="submit" variant="destructive" size="sm">
-                Delete
-              </Button>
-            </form>
+            <ConfirmDeleteForm
+              action={deletePersonAction}
+              hiddenFields={{ id: person.id, invitationId: invitation.id }}
+              title="Hapus data mempelai ini?"
+              description={`${person.full_name} beserta fotonya akan hilang dari undangan. Tindakan ini tidak bisa dibatalkan.`}
+              triggerLabel="Delete"
+            />
           </div>
 
-          <form action={upsertPersonAction} className="mt-4 grid grid-cols-2 gap-3">
+          <form action={upsertPersonAction} className="mt-4 grid gap-3 sm:grid-cols-2">
             <input type="hidden" name="id" value={person.id} />
             <input type="hidden" name="invitationId" value={invitation.id} />
             <input type="hidden" name="sortOrder" value={person.sort_order} />
 
-            <div className="flex flex-col gap-2">
-              <Label>Role</Label>
-              <Input name="role" defaultValue={person.role} required />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Full name</Label>
-              <Input name="fullName" defaultValue={person.full_name} required />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Nickname</Label>
-              <Input name="nickname" defaultValue={person.nickname ?? ""} />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Father&apos;s name</Label>
-              <Input name="fatherName" defaultValue={person.father_name ?? ""} />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Mother&apos;s name</Label>
-              <Input name="motherName" defaultValue={person.mother_name ?? ""} />
-            </div>
-            <div className="col-span-2 flex flex-col gap-2">
-              <Label>Bio</Label>
-              <Textarea name="bio" defaultValue={person.bio ?? ""} rows={2} />
-            </div>
+            <PersonFields idPrefix={`person-${person.id}`} person={person} />
 
-            <Button type="submit" className="col-span-2 w-fit">
-              Save
-            </Button>
+            <SubmitButton className="w-fit sm:col-span-2">Save</SubmitButton>
           </form>
 
           <form action={updatePersonInstagramAction} className="mt-5 flex flex-col gap-3 border-t border-border pt-5">
@@ -129,7 +150,7 @@ export default async function PeoplePage({
                   ? `Tersedia di ${PACKAGE_DEFINITIONS[instagramPackage].label}. Konten tersimpan tetap disimpan.`
                   : "Tampil di bawah profil pada undangan. Kosongkan untuk menyembunyikan tautan."}
               </p>
-              <Button type="submit" variant="outline" className="w-fit">Simpan Instagram</Button>
+              <SubmitButton variant="outline" className="w-fit">Simpan Instagram</SubmitButton>
             </fieldset>
           </form>
         </div>
@@ -137,39 +158,16 @@ export default async function PeoplePage({
 
       <form
         action={upsertPersonAction}
-        className="grid max-w-lg grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-4"
+        className="grid max-w-lg gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-2"
       >
         <input type="hidden" name="invitationId" value={invitation.id} />
         <input type="hidden" name="sortOrder" value={people.length} />
 
-        <div className="flex flex-col gap-2">
-          <Label>Role</Label>
-          <Input name="role" placeholder="bride / groom" required />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Full name</Label>
-          <Input name="fullName" required />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Nickname</Label>
-          <Input name="nickname" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Father&apos;s name</Label>
-          <Input name="fatherName" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Mother&apos;s name</Label>
-          <Input name="motherName" />
-        </div>
-        <div className="col-span-2 flex flex-col gap-2">
-          <Label>Bio</Label>
-          <Textarea name="bio" rows={2} />
-        </div>
+        <PersonFields idPrefix="person-new" />
 
-        <Button type="submit" className="col-span-2 w-fit">
+        <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
           Add person
-        </Button>
+        </SubmitButton>
       </form>
     </div>
   );

@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/admin/page-header";
 import { listActiveThemes } from "@/server/invitations/queries";
 
 import { NewInvitationForm } from "./NewInvitationForm";
@@ -7,7 +8,7 @@ export default async function NewInvitationPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-foreground">New Invitation</h1>
+      <PageHeader title="New Invitation" />
       <div className="mt-6">
         <NewInvitationForm themes={themes} />
       </div>

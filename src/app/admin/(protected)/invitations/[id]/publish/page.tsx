@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Button } from "@/components/ui/button";
 import { buildPublishedInvitationPath } from "@/lib/share/invitation-share";
 import { getInvitationDetail } from "@/server/invitations/queries";
@@ -58,19 +60,17 @@ export default async function PublishPage({
         ) : null}
       </div>
 
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
 
       {isPublished ? (
         <form action={unpublishAction} className="w-fit">
           <input type="hidden" name="invitationId" value={invitation.id} />
-          <Button type="submit" variant="outline">
-            Unpublish
-          </Button>
+          <SubmitButton variant="outline" pendingText="Memproses...">Unpublish</SubmitButton>
         </form>
       ) : (
         <form action={publishAction} className="w-fit">
           <input type="hidden" name="invitationId" value={invitation.id} />
-          <Button type="submit">Publish</Button>
+          <SubmitButton pendingText="Menerbitkan...">Publish</SubmitButton>
         </form>
       )}
     </div>
