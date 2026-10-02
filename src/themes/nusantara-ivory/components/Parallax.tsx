@@ -30,7 +30,8 @@ export function Parallax({
     <div ref={ref} className={className}>
       <motion.div
         style={reduced ? undefined : { y, willChange: "transform" }}
-        className="h-full w-full"
+        // Positioned so fill-mode images (next/image) size against this box.
+        className="relative h-full w-full"
       >
         {children}
       </motion.div>

@@ -9,7 +9,7 @@ export function StorySection({ stories }: { stories: InvitationStory[] }) {
   if (stories.length === 0) return null;
 
   return (
-    <Section id="ni-cerita" className="ni-story" tone="cream" floral>
+    <Section id="ni-cerita" className="ni-story" tone="cream">
       <SectionHeading title="Perjalanan Kami" align="left" />
 
       <div className="relative mt-14 md:mt-20">
@@ -72,11 +72,10 @@ export function StorySection({ stories }: { stories: InvitationStory[] }) {
                     }`}
                   >
                     <div className="ni-photo-wrap aspect-[3/2] w-full">
-                      
                       <EditorialImage
                         src={story.imageUrl}
-                        alt=""
-                        
+                        alt={story.title}
+                        sizes="(min-width: 768px) 40vw, 100vw"
                         className="ni-photo"
                       />
                     </div>

@@ -269,7 +269,7 @@ test("expired public routes stop before theme rendering or analytics", async () 
   });
   const element = await exports.default({ params: Promise.resolve({ slug: "expired" }), searchParams: Promise.resolve({ guest: "token" }) });
   const html = renderToStaticMarkup(element);
-  assert.match(html, /This invitation is no longer active\./);
+  assert.match(html, /Masa berlaku undangan ini sudah berakhir\./);
   assert.equal(themeCalls, 0);
   assert.equal(analyticsCalls, 0);
 });

@@ -35,7 +35,7 @@ export function WishesSection({
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
 
   return (
-    <Section id="ni-ucapan" tone="ivory" floral>
+    <Section id="ni-ucapan" tone="ivory">
       <div className="grid gap-12 md:grid-cols-12 md:gap-14">
         <div className="md:col-span-5">
           <SectionHeading title="Doa & Ucapan" align="left" />

@@ -138,9 +138,6 @@ const CSS = `
 .ni-theme :is(form, fieldset), .ni-theme .grid > * { min-width: 0; }
 .ni-theme .ni-eyebrow { color: var(--ni-gold-ink); letter-spacing: .23em; }
 .ni-theme .ni-panel-dark .ni-eyebrow { color: var(--ni-gold-soft); }
-.ni-story > .ni-botanical { left: -6%; right: auto; bottom: -10%; transform: rotate(24deg); opacity: .12; }
-.ni-rsvp > .ni-botanical { top: -50px; bottom: auto; left: -8%; right: auto; transform: rotate(100deg); opacity: .18; }
-.ni-events > .ni-botanical { top: 0; bottom: auto; width: 270px; opacity: .22; }
 .ni-cover-stagger { animation: ni-cover-enter .75s cubic-bezier(.22,.61,.36,1) both; }
 @keyframes ni-cover-enter { from { opacity: 0; translate: 0 16px; } to { opacity: 1; translate: 0 0; } }
 .ni-cover-arch { height: calc(100% - 3rem); }
@@ -151,12 +148,13 @@ const CSS = `
 .ni-hero { min-height: 80svh; display: grid; align-items: center; }
 .ni-hero .ni-hero-floral { width: clamp(280px, 45vw, 620px); left: -8%; right: auto; bottom: -8%; opacity: .13; transform: rotate(-12deg); }
 .ni-hero-inner { position: relative; display: grid; align-items: center; gap: 3rem; width: 100%; max-width: 1440px; margin-inline: auto; padding: clamp(3.5rem, 6vw, 6rem) var(--ni-gutter); }
+.ni-hero-inner--text { display: block; max-width: 1180px; }
 .ni-hero-names { max-width: 12ch; font-size: clamp(3.5rem, 7.5vw, 8rem); line-height: .95; }
 .ni-hero-portrait { width: 100%; max-width: 480px; justify-self: center; min-width: 0; }
 .ni-hero-photo-frame { position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 4 / 5; border-radius: 50% 50% 0 0 / 40% 40% 0 0; border: 1px solid var(--ni-gold-soft); background: var(--ni-ivory-2); box-shadow: 0 18px 50px -36px rgba(74,63,52,.3); }
 .ni-hero-photo-frame::after { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(169,138,92,.2); border-radius: inherit; pointer-events: none; }
 @media (min-width: 768px) {
-  .ni-hero-inner { grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: clamp(2rem,5vw,5rem); }
+  .ni-hero-inner:not(.ni-hero-inner--text) { grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: clamp(2rem,5vw,5rem); }
   .ni-hero-portrait { justify-self: end; }
 }
 @media (max-width: 767px) {
@@ -194,22 +192,30 @@ const CSS = `
 .ni-events-frame { position: relative; border: 1px solid var(--ni-sand); padding: clamp(1.5rem, 4vw, 4rem); background: rgba(252,250,245,.65); }
 .ni-events-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(169,138,92,.17); pointer-events: none; }
 .ni-event-date { border-bottom: 1px solid var(--ni-sand); padding-bottom: 1.5rem; }
-/* No grid-auto-flow: dense here on purpose: dense reorders items to
-   backfill gaps, which silently shuffles photos out of the couple's
-   curated order once a wide (landscape) item can't fit the remaining
-   row -- verified with a 12-photo mix where it visibly jumped a later
-   photo ahead of two earlier ones. Sparse flow only ever wraps forward,
-   so a stray gap stays at the end of a row instead of scrambling order. */
-/* Every cell shares the same column span and the same aspect-ratio, so every
-   row lands at the identical height by construction -- no masonry-style gaps
-   to reconcile, at 6 photos or 60. object-fit: cover on .ni-photo absorbs
-   whatever ratio the source image actually is; data-ratio is kept in the DOM
-   for a11y/future use but no longer drives per-item sizing. */
-.ni-gallery-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; margin-top: 3rem; }
-.ni-gallery-grid > :only-child { max-width: 960px; width: 100%; margin-inline: auto; }
+/* Justified rows (GalleryRows.tsx): each item grows in proportion to its
+   width/height ratio (--r) from a basis of ratio x row height, so every
+   photo in a row ends at the same height. Order stays row-major, nothing is
+   cropped to a shared shape, and the ::after spacer keeps the last row at
+   its natural size instead of stretching one or two photos edge to edge. */
+.ni-gallery-rows { --ni-row-h: clamp(140px, 30vw, 320px); display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 3rem; }
+.ni-gallery-rows::after { content: ""; flex-grow: 99999; }
+.ni-gallery-rows--single::after { content: none; }
+.ni-gallery-rows--single .ni-gallery-item { max-width: 960px; margin-inline: auto; }
+/* Grow is ratio x 100: when a row's grow values sum below 1 (one 4:5
+   portrait = 0.8), flexbox hands out only that fraction of the free space
+   and the row stops short of the edge. */
+.ni-gallery-item { flex-grow: calc(var(--r) * 100); flex-basis: calc(var(--r) * var(--ni-row-h)); min-width: 0; margin: 0; }
 .ni-gallery-caption { padding-top: .75rem; font-size: .8rem; line-height: 1.5; color: var(--ni-brown-soft); }
 
-.ni-gallery-photo { aspect-ratio: 4 / 5; }
+.ni-lightbox { width: 100vw; max-width: 100vw; height: 100svh; max-height: 100svh; margin: 0; padding: 0; border: 0; background: transparent; color: var(--ni-ivory-2); }
+.ni-lightbox::backdrop { background: rgba(26,21,16,.94); }
+.ni-lightbox-body { display: flex; height: 100%; flex-direction: column; padding: max(1rem, env(safe-area-inset-top)) var(--ni-gutter) max(1rem, env(safe-area-inset-bottom)); pointer-events: none; }
+.ni-lightbox-frame { position: relative; flex: 1; min-height: 0; }
+.ni-lightbox-photo { object-fit: contain; }
+.ni-lightbox-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding-top: 1rem; pointer-events: auto; }
+.ni-lightbox-caption { font-size: .85rem; color: var(--ni-on-dark-muted); overflow-wrap: anywhere; }
+.ni-lightbox-btn { min-width: 44px; min-height: 44px; padding: 0 1rem; border: 1px solid rgba(199,174,133,.45); color: var(--ni-ivory-2); font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; transition: background-color .25s ease; }
+.ni-lightbox-btn:hover { background: rgba(199,174,133,.16); }
 .ni-dresscode-groups { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(2.5rem, 8vw, 5rem); }
 .ni-dresscode-group { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
 .ni-dresscode-swatches { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem; }
@@ -233,9 +239,7 @@ const CSS = `
 }
 
 @media (min-width: 900px) {
-  .ni-gallery-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2rem; }
-  .ni-gallery-grid > :only-child { grid-column: 1/-1; max-width: none; }
-  .ni-gallery-grid > :only-child .ni-gallery-photo { aspect-ratio: 16/10; }
+  .ni-gallery-rows { gap: 1.25rem; }
 }
 @media (max-width: 374px) {
   .ni-theme { --ni-gutter: 1.25rem; }

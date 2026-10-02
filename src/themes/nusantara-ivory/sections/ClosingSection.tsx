@@ -26,7 +26,7 @@ export function ClosingSection({
         <>
           <Parallax className="absolute inset-[-6%_0]" distance={36}>
             
-            <EditorialImage src={imageUrl} alt=""  className="h-full w-full object-cover" />
+            <EditorialImage src={imageUrl} alt="" sizes="100vw" className="h-full w-full object-cover" />
           </Parallax>
           <div
             className="absolute inset-0"

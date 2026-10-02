@@ -11,12 +11,13 @@ import { OrnamentArch, OrnamentDivider } from "./components/Ornament";
 
 function formatEventDate(eventDate: string | null): string {
   if (!eventDate) return "";
-  const date = new Date(eventDate);
+  // Plain YYYY-MM-DD: format in UTC so no viewer timezone shifts the day.
   return new Intl.DateTimeFormat("id-ID", {
     day: "2-digit",
     month: "long",
     year: "numeric",
-  }).format(date);
+    timeZone: "UTC",
+  }).format(new Date(`${eventDate}T00:00:00Z`));
 }
 
 function splitCoupleName(displayName: string): [string, string] | null {
@@ -43,7 +44,6 @@ export function CoverGate({
   displayName: string;
   eventDate: string | null;
   guestDisplayName: string | null;
-  coverImageUrl: string | null;
   musicUrl: string | null;
   musicEnabled: boolean;
   navItems: NavItem[];
@@ -72,10 +72,11 @@ export function CoverGate({
               reduced
                 ? { opacity: 0, transition: { duration: 0.2 } }
                 : {
+                    // Opacity + translate only: a full-screen blur/scale is
+                    // expensive to composite on mid-range phones.
                     opacity: 0,
-                    scale: 1.06,
-                    filter: "blur(10px)",
-                    transition: { duration: 0.85, ease: [0.7, 0, 0.3, 1] },
+                    y: -24,
+                    transition: { duration: 0.7, ease: [0.7, 0, 0.3, 1] },
                   }
             }
             style={{ pointerEvents: "auto" }}
@@ -236,7 +237,10 @@ export function CoverGate({
               aria-label={playing ? "Jeda musik" : "Putar musik"}
               className="fixed right-5 z-40 flex size-12 items-center justify-center rounded-full border backdrop-blur transition-colors"
               style={{
-                bottom: "calc(5.4rem + env(safe-area-inset-bottom))",
+                // Clears the floating nav, which only renders with 2+ items.
+                bottom: navItems.length >= 2
+                  ? "calc(5.4rem + env(safe-area-inset-bottom))"
+                  : "calc(1.25rem + env(safe-area-inset-bottom))",
                 borderColor: "var(--ni-line-strong)",
                 background: "rgba(252,250,245,0.88)",
                 color: "var(--ni-brown)",

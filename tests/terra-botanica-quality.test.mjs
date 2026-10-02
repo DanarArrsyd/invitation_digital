@@ -170,7 +170,7 @@ test("expired public route renders its expiry state without mounting either them
   });
   const element = await exports.default({ params: Promise.resolve({ slug: "expired" }), searchParams: Promise.resolve({ guest: "token" }) });
   const html = renderToStaticMarkup(element);
-  assert.match(html, /This invitation is no longer active\./);
+  assert.match(html, /Masa berlaku undangan ini sudah berakhir\./);
   assert.match(html, /Nara &amp; Bima/);
   assert.equal(themeCalls, 0);
   assert.equal(analyticsCalls, 0);
