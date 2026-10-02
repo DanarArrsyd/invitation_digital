@@ -568,3 +568,65 @@ Motion uses selected 600–900ms reveals, roughly 2–6px botanical drift, and
 occasional organic image masks. Avoid continuous costly animation and scroll
 jacking; disable nonessential motion under `prefers-reduced-motion`. Keep
 forms, focus states, imagery, and long text usable at 320px through desktop.
+
+---
+
+## 26. Midnight Atelier — Theme #003
+
+Midnight Atelier is a dark cinematic couture invitation: intimate, dramatic,
+and composed like a private evening programme. It must not become a generic
+black-and-gold wedding template or a recolored version of another theme. It
+presents the same enabled public capabilities as every registered theme while
+using its own chapter rhythm and visual hierarchy.
+
+Palette: Ink `#09090B` (primary ground), Lacquer `#171216` (layered dark
+surface), Oxblood `#541E2B` (ceremonial accent), Champagne `#C6A15B` (rules and
+small highlights), Pearl `#F3EEE6` (reading surface), and Smoke `#AAA3A4`
+(secondary text). Bodoni Moda provides the high-contrast display voice;
+Barlow Condensed provides compact supporting labels and readable metadata.
+
+Storyboard: a curtain-like opening seam; a cinematic hero; left-aligned
+editorial couple and event spreads; a programme-inspired countdown and event
+chapter; a couture story sequence; a contact-sheet gallery; a Lacquer RSVP
+moment; a Pearl guestbook; a dark ledger for gifts; and a restrained closing.
+Use precise hairline rules, purposeful negative space, strong image crops, and
+small typographic contrasts. Avoid gradients, fake foil effects, star fields,
+repeated ornamental frames, excessive gold, and generic SaaS cards.
+
+Optional content must disappear without leaving dead navigation or accidental
+gaps. Sparse states should still feel composed and must never invent customer
+details. Motion stays cinematic but selective: controlled curtain movement,
+small image reveals, and restrained text transitions. Disable nonessential
+motion under `prefers-reduced-motion`; maintain visible focus, readable
+contrast, stable media dimensions, and usable forms from 320px through desktop.
+
+---
+
+## 27. Cobalt Riviera — Theme #004
+
+Cobalt Riviera is a sunlit destination editorial invitation: bright,
+architectural, and composed like a contemporary Riviera travel folio. It
+presents the same normalized data and all 18 canonical capabilities as every
+registered theme without becoming a generic blue beach or travel template.
+
+Palette: Cobalt `#1646C8` (architectural field), Porcelain `#FFF9EE` (reading
+surface), Sea Ink `#123047` (text), Tangerine `#F06A3C` (active interaction),
+Citron `#F3CF4C` (sun control), and Pool `#81C7D4` (quiet secondary field).
+Familjen Grotesk Variable carries names, chapter titles, and itinerary display;
+Newsreader Variable carries body copy and intimate text.
+
+Storyboard: a photo-free horizon-shutter cover with one labelled Citron sun
+control; a panoramic hero; offset couple and parent editorials; flat itinerary
+rows with visible Maps and calendar actions; a horizon countdown and wardrobe
+strip; chronological story folios; a panoramic-anchor ceramic gallery; large
+attendance color fields; route-separated wishes; travel-folio gift receipts;
+and a restrained Cobalt closing field.
+
+Use hard rectangular crops, quarter-circle geometry, thin route rules, strong
+left alignment, and flat color chapters. Avoid gradients, glass, shadows,
+rounded card repetition, shells, palms, waves, passport stamps, decorative
+flight paths, and any invented customer data. The horizon cover owns the one
+theatrical motion; all other feedback stays short and functional, and reduced
+motion preserves every action. Empty, malformed, and disabled content must
+leave no dead route item or decorative gap, while controls remain at least
+48px and usable from 320px through desktop.

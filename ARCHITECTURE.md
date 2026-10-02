@@ -101,11 +101,10 @@ src/
 │
 ├── themes/
 │   ├── registry.ts
-│   └── nusantara-ivory/
-│       ├── index.ts
-│       ├── NusantaraIvory.tsx
-│       ├── components/
-│       └── styles/
+│   ├── nusantara-ivory/
+│   ├── terra-botanica/
+│   ├── midnight-atelier/
+│   └── cobalt-riviera/
 │
 ├── features/
 │   ├── invitations/
@@ -277,8 +276,9 @@ implemented. Customer self-service and payments remain outside this foundation.
 
 Use a registry rather than conditional logic scattered around routes.
 
-`src/themes/registry.ts` registers Nusantara Ivory and Terra Botanica under
-`nusantara-ivory` and `terra-botanica`. Each definition has preview metadata
+`src/themes/registry.ts` registers Nusantara Ivory, Terra Botanica, Midnight
+Atelier, and Cobalt Riviera under `nusantara-ivory`, `terra-botanica`,
+`midnight-atelier`, and `cobalt-riviera`. Each definition has preview metadata
 and an explicit manifest covering every key in the typed 18-section contract
 (`src/themes/section-contract.ts`). Every public feature or layout added to one
 registered template must be represented in all registered templates in the
@@ -295,17 +295,29 @@ not query Supabase or make package decisions.
 
 The admin theme selector reads active rows through `listActiveThemes()`, not
 the component registry. The registry and database row must therefore agree on
-the slug. Deploy registry support before applying the Terra seed migration;
-only then should the active row make Terra selectable. The seed upserts by the
-unique `themes.slug` without changing an existing theme ID or invitation
-reference. For rollback, deactivate Terra first, inspect and reassign any
-invitations referencing it under separate authorization, then roll back
-application code. There is no destructive down migration.
+the slug. Deploy registry support before applying the matching theme catalogue
+migration; only then should an active row make that theme selectable. Each
+migration upserts by the unique `themes.slug` without changing an existing
+theme ID or invitation reference.
 
-The current registry has explicit `nusantara-ivory` and `terra-botanica`
-definitions. Each includes its component, wedding category, preview metadata,
-and complete 18-section manifest; see `src/themes/registry.ts` for the typed
-implementation.
+For Cobalt Riviera rollout, first deploy and verify application support for all
+four registered slugs while the catalogue row is still absent or inactive.
+Then apply only `20261002000001_cobalt_riviera_theme.sql`. Verify the exact
+active row through the public/RLS catalogue, confirm authenticated admin
+selection still comes from `listActiveThemes()`, preview a dedicated Cobalt
+invitation, and publish it only after its content is approved. The migration is
+an idempotent slug upsert: it does not replace an existing theme ID or mutate
+invitation references.
+
+Rollback begins by setting only the `cobalt-riviera` catalogue row inactive.
+Do not delete it. Audit and reassign invitations that reference it only under
+separate authorization; after the row is inactive, roll back application code.
+There is no destructive down migration.
+
+The current registry has explicit `nusantara-ivory`, `terra-botanica`,
+`midnight-atelier`, and `cobalt-riviera` definitions. Each includes its
+component, wedding category, preview metadata, and complete 18-section
+manifest; see `src/themes/registry.ts` for the typed implementation.
 
 Theme renderer:
 

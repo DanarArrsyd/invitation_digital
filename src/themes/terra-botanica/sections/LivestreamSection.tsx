@@ -1,8 +1,8 @@
 import type { InvitationEvent } from "@/types/invitation";
+import { usableExternalUrl } from "@/themes/shared/external-url";
 
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
-import { usableExternalUrl } from "./EventsSection";
 
 export function LivestreamSection({ events, enabled }: { events: InvitationEvent[]; enabled: boolean }) {
   if (!enabled) return null;
