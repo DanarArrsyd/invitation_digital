@@ -50,6 +50,46 @@ function buildVariants(variant: RevealVariant, reduced: boolean, delay = 0): Var
 }
 
 /**
+ * Elements still waiting for the fail-safe reveal. One passive scroll/resize
+ * listener serves all of them and detaches when the last one has revealed,
+ * instead of every Reveal on the page keeping its own pair of listeners.
+ * It reads rects directly (no requestAnimationFrame) on purpose: in throttled
+ * tabs animation frames can be delayed, which is the case this fallback is for.
+ */
+const pending = new Map<Element, () => void>();
+
+function revealVisible() {
+  const limit = window.innerHeight * 0.98;
+  for (const [el, reveal] of pending) {
+    if (el.getBoundingClientRect().top < limit) {
+      pending.delete(el);
+      reveal();
+    }
+  }
+  if (pending.size === 0) detach();
+}
+
+function attach() {
+  window.addEventListener("scroll", revealVisible, { passive: true });
+  window.addEventListener("resize", revealVisible, { passive: true });
+}
+
+function detach() {
+  window.removeEventListener("scroll", revealVisible);
+  window.removeEventListener("resize", revealVisible);
+}
+
+function watch(el: Element, reveal: () => void) {
+  if (pending.size === 0) attach();
+  pending.set(el, reveal);
+}
+
+function unwatch(el: Element) {
+  pending.delete(el);
+  if (pending.size === 0) detach();
+}
+
+/**
  * Fail-safe visibility: content must never be left invisible because a
  * scroll trigger did not fire. Anything already within (or above) the
  * viewport shortly after mount is revealed regardless of the observer.
@@ -60,22 +100,23 @@ function useShouldReveal(ref: React.RefObject<HTMLElement | null>) {
 
   useEffect(() => {
     if (settled) return;
+    const el = ref.current;
+    if (!el) return;
+    const reveal = () => setSettled(true);
+    // Synchronous first check, a delayed one for late layout (fonts, images),
+    // then the shared scroll/resize watcher. Read-only rect checks.
     const check = () => {
-      const el = ref.current;
-      if (!el) return;
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.98) setSettled(true);
+      if (el.getBoundingClientRect().top >= window.innerHeight * 0.98) return false;
+      unwatch(el);
+      reveal();
+      return true;
     };
-    // Scroll/resize fallback for environments where IntersectionObserver or
-    // requestAnimationFrame are delayed or skipped (fast jumps, throttled tabs).
-    // Read-only rect check, removed as soon as the element has revealed.
-    check();
+    if (check()) return;
     const timer = window.setTimeout(check, 300);
-    window.addEventListener("scroll", check, { passive: true });
-    window.addEventListener("resize", check, { passive: true });
+    watch(el, reveal);
     return () => {
       window.clearTimeout(timer);
-      window.removeEventListener("scroll", check);
-      window.removeEventListener("resize", check);
+      unwatch(el);
     };
   }, [ref, settled]);
 

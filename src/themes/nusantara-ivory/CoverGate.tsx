@@ -89,15 +89,9 @@ export function CoverGate({
             {/* Arch frame — bound to the content block so short screens still scroll cleanly. */}
             <OrnamentArch className="ni-cover-arch pointer-events-none absolute inset-y-6 left-1/2 w-[min(560px,86vw)] -translate-x-1/2" />
 
-            <motion.div
-              className="ni-cover-content relative flex flex-col items-center text-center"
-              initial={false}
-              animate="visible"
-              variants={{
-                hidden: {},
-                visible: { transition: { staggerChildren: 0.11, delayChildren: 0.15 } },
-              }}
-            >
+            {/* Entrance stagger is CSS (.ni-cover-stagger + animation-delay),
+                so it runs before hydration and respects reduced motion. */}
+            <div className="ni-cover-content relative flex flex-col items-center text-center">
               {(
                 [
                   eyebrow ? (
@@ -189,23 +183,11 @@ export function CoverGate({
               )
                 .filter(Boolean)
                 .map((node, i) => (
-                  <motion.div
-                    key={i}
-                    className="ni-cover-stagger"
-                    style={{ animationDelay: `${i * .09}s` }}
-                    variants={{
-                      hidden: reduced ? { opacity: 1 } : { opacity: 0, y: 22 },
-                      visible: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.8, ease: [0.22, 0.61, 0.36, 1] },
-                      },
-                    }}
-                  >
+                  <div key={i} className="ni-cover-stagger" style={{ animationDelay: `${i * .09}s` }}>
                     {node}
-                  </motion.div>
+                  </div>
                 ))}
-            </motion.div>
+            </div>
             </div>
           </motion.div>
         ) : null}
