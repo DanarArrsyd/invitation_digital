@@ -8,7 +8,7 @@ export default async function NewInvitationPage() {
 
   return (
     <div>
-      <PageHeader title="New Invitation" />
+      <PageHeader title="Undangan baru" />
       <div className="mt-6">
         <NewInvitationForm themes={themes} />
       </div>

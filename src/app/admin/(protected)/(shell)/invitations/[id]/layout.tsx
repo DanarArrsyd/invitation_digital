@@ -47,7 +47,7 @@ export default async function InvitationEditLayout({
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
+          <nav aria-label="Navigasi" className="text-sm text-muted-foreground">
             <Link href="/admin/invitations" className="hover:text-foreground">
               Undangan
             </Link>
@@ -69,7 +69,7 @@ export default async function InvitationEditLayout({
             target="_blank"
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            Preview
+            Pratinjau
             <ExternalLink aria-hidden="true" />
             <span className="sr-only">(tab baru)</span>
           </Link>

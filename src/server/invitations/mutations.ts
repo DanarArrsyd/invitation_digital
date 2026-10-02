@@ -51,7 +51,7 @@ export async function createInvitation(input: {
 
   if (error) {
     if (error.code === "23505") {
-      return { error: "Slug sudah dipakai invitation lain" };
+      return { error: "Alamat URL sudah dipakai undangan lain" };
     }
     return { error: error.message };
   }
@@ -84,7 +84,7 @@ export async function updateInvitationGeneral(input: {
 
   if (error) {
     if (error.code === "23505") {
-      return { error: "Slug sudah dipakai invitation lain" };
+      return { error: "Alamat URL sudah dipakai undangan lain" };
     }
     return { error: error.message };
   }

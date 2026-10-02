@@ -22,13 +22,13 @@ function GiftFields({ idPrefix, gift }: { idPrefix: string; gift?: GiftDefaults 
 
   return (
     <>
-      <FormField id={id("providerType")} label="Provider type">
-        <Input id={id("providerType")} name="providerType" defaultValue={gift?.provider_type ?? "bank"} />
+      <FormField id={id("providerType")} label="Jenis">
+        <Input id={id("providerType")} name="providerType" defaultValue={gift?.provider_type ?? "bank"} placeholder="bank / e-wallet" />
       </FormField>
-      <FormField id={id("providerName")} label="Bank / provider name">
+      <FormField id={id("providerName")} label="Nama bank / e-wallet">
         <Input id={id("providerName")} name="providerName" defaultValue={gift?.provider_name ?? ""} required />
       </FormField>
-      <FormField id={id("accountNumber")} label="Account number">
+      <FormField id={id("accountNumber")} label="Nomor rekening">
         <Input
           id={id("accountNumber")}
           name="accountNumber"
@@ -37,7 +37,7 @@ function GiftFields({ idPrefix, gift }: { idPrefix: string; gift?: GiftDefaults 
           required
         />
       </FormField>
-      <FormField id={id("accountName")} label="Account name">
+      <FormField id={id("accountName")} label="Atas nama">
         <Input id={id("accountName")} name="accountName" defaultValue={gift?.account_name ?? ""} required />
       </FormField>
     </>
@@ -74,7 +74,6 @@ export default async function GiftsPage({
               hiddenFields={{ id: gift.id, invitationId: invitation.id }}
               title="Hapus rekening ini?"
               description={`Rekening ${gift.provider_name} a.n. ${gift.account_name} akan hilang dari undangan. Tindakan ini tidak bisa dibatalkan.`}
-              triggerLabel="Delete"
             />
           </div>
 
@@ -85,7 +84,7 @@ export default async function GiftsPage({
 
             <GiftFields idPrefix={`gift-${gift.id}`} gift={gift} />
 
-            <SubmitButton className="w-fit sm:col-span-2">Save</SubmitButton>
+            <SubmitButton className="w-fit sm:col-span-2">Simpan</SubmitButton>
           </form>
         </section>
       ))}
@@ -100,7 +99,7 @@ export default async function GiftsPage({
         <GiftFields idPrefix="gift-new" />
 
         <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
-          Add gift account
+          Tambah rekening
         </SubmitButton>
       </form>
     </div>

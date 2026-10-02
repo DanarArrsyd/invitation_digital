@@ -57,8 +57,8 @@ export function PackageForm({
                 >
                   <span className="flex flex-wrap items-center gap-2">
                     <span className="font-medium text-foreground">{definition.label}</span>
-                    {definition.recommended ? <Badge variant="secondary">Recommended</Badge> : null}
-                    {key === currentPackage ? <Badge variant="outline">Current selection</Badge> : null}
+                    {definition.recommended ? <Badge variant="secondary">Disarankan</Badge> : null}
+                    {key === currentPackage ? <Badge variant="outline">Paket saat ini</Badge> : null}
                   </span>
                   <span className="text-sm text-muted-foreground">{definition.description}</span>
                   <span className="grid gap-2 text-sm text-foreground sm:grid-cols-2">

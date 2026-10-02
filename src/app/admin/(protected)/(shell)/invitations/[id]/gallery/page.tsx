@@ -67,7 +67,7 @@ export default async function GalleryPage({
           </div>
 
           <SubmitButton className="w-fit" pendingText="Mengunggah...">
-            Upload
+            Unggah
           </SubmitButton>
         </fieldset>
         {limitReached ? (

@@ -22,7 +22,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <PageHeader title="Dashboard" description="Ringkasan seluruh invitation." />
+      <PageHeader title="Dashboard" description="Ringkasan semua undangan." />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {metrics.map((metric) => (
@@ -37,14 +37,14 @@ export default async function AdminDashboardPage() {
 
       <div>
         <h2 className="text-sm font-semibold text-foreground">
-          Perlu perhatian — expired dalam 14 hari
+          Berakhir dalam 14 hari
         </h2>
 
         {expiringSoon.length === 0 ? (
           <EmptyState
             className="mt-3"
-            title="Tidak ada invitation yang akan expired"
-            description="Invitation published yang mendekati masa expired (≤14 hari) akan muncul di sini."
+            title="Tidak ada undangan yang segera berakhir"
+            description="Undangan terbit yang masa berlakunya tinggal 14 hari atau kurang akan muncul di sini."
           />
         ) : (
           <div className="mt-3 flex flex-col gap-2">
@@ -53,7 +53,7 @@ export default async function AdminDashboardPage() {
                 <CardContent className="flex flex-row items-center justify-between">
                   <div>
                     <p className="font-medium text-foreground">{item.title}</p>
-                    <p className="text-sm text-muted-foreground">Expired {formatDate(item.expiresAt)}</p>
+                    <p className="text-sm text-muted-foreground">Berakhir {formatDate(item.expiresAt)}</p>
                   </div>
                   <Link
                     href={`/admin/invitations/${item.id}/publish`}
@@ -69,7 +69,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       <Link href="/admin/invitations" className={`${buttonVariants({ variant: "outline" })} w-fit`}>
-        Lihat semua invitations
+        Lihat semua undangan
       </Link>
     </div>
   );
