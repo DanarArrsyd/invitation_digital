@@ -138,9 +138,6 @@ const CSS = `
 .ni-theme :is(form, fieldset), .ni-theme .grid > * { min-width: 0; }
 .ni-theme .ni-eyebrow { color: var(--ni-gold-ink); letter-spacing: .23em; }
 .ni-theme .ni-panel-dark .ni-eyebrow { color: var(--ni-gold-soft); }
-.ni-story > .ni-botanical { left: -6%; right: auto; bottom: -10%; transform: rotate(24deg); opacity: .12; }
-.ni-rsvp > .ni-botanical { top: -50px; bottom: auto; left: -8%; right: auto; transform: rotate(100deg); opacity: .18; }
-.ni-events > .ni-botanical { top: 0; bottom: auto; width: 270px; opacity: .22; }
 .ni-cover-stagger { animation: ni-cover-enter .75s cubic-bezier(.22,.61,.36,1) both; }
 @keyframes ni-cover-enter { from { opacity: 0; translate: 0 16px; } to { opacity: 1; translate: 0 0; } }
 .ni-cover-arch { height: calc(100% - 3rem); }

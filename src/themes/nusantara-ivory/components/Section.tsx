@@ -1,5 +1,3 @@
-import { FloralCorner } from "./Botanical";
-
 /**
  * Section shell — owns its own background so the page rhythm never depends on
  * how many optional sections happen to be enabled. Any section can be toggled
@@ -13,7 +11,6 @@ export function Section({
   className = "",
   innerClassName = "",
   wide = false,
-  floral = false,
 }: {
   children: React.ReactNode;
   id?: string;
@@ -22,7 +19,6 @@ export function Section({
   className?: string;
   innerClassName?: string;
   wide?: boolean;
-  floral?: boolean;
 }) {
   const toneClass =
     tone === "dark"
@@ -37,7 +33,6 @@ export function Section({
       className={`ni-grain relative isolate overflow-hidden ${toneClass} ${className}`}
       style={{ paddingBlock: "var(--ni-section-y)" }}
     >
-      {floral ? <FloralCorner className="ni-floral-edge" /> : null}
       {lattice ? <div className="ni-lattice absolute inset-0 opacity-[0.35]" aria-hidden="true" /> : null}
 
       <div

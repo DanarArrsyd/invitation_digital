@@ -7,7 +7,7 @@ import { GalleryRows } from "./GalleryRows";
 export function GallerySection({ gallery }: { gallery: GalleryItem[] }) {
   if (gallery.length === 0) return null;
   return (
-    <Section id="ni-galeri" tone="ivory" wide floral>
+    <Section id="ni-galeri" tone="ivory" wide>
       <SectionHeading title="Galeri" />
       <GalleryRows gallery={gallery} />
     </Section>

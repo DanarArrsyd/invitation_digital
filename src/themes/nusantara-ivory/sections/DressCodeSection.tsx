@@ -9,7 +9,7 @@ export function DressCodeSection({ dressCode }: { dressCode: DressCodeSettings }
   if (!description && groups.length === 0) return null;
 
   return (
-    <Section id="ni-dresscode" tone="cream" floral>
+    <Section id="ni-dresscode" tone="cream">
       <div className="mx-auto flex max-w-[620px] flex-col items-center text-center">
         <Reveal variant="fade" className="flex flex-col items-center gap-4">
           <p className="ni-eyebrow">Dress Code</p>

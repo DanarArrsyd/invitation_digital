@@ -67,7 +67,6 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
         displayName={coupleDisplayName}
         eventDate={invitation.eventDate}
         guestDisplayName={guestDisplayName}
-        coverImageUrl={invitation.media.coverImageUrl}
         musicUrl={invitation.media.musicUrl}
         musicEnabled={features.music}
         navItems={navItems}

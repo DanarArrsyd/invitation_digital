@@ -44,7 +44,6 @@ export function CoverGate({
   displayName: string;
   eventDate: string | null;
   guestDisplayName: string | null;
-  coverImageUrl: string | null;
   musicUrl: string | null;
   musicEnabled: boolean;
   navItems: NavItem[];
@@ -73,10 +72,11 @@ export function CoverGate({
               reduced
                 ? { opacity: 0, transition: { duration: 0.2 } }
                 : {
+                    // Opacity + translate only: a full-screen blur/scale is
+                    // expensive to composite on mid-range phones.
                     opacity: 0,
-                    scale: 1.06,
-                    filter: "blur(10px)",
-                    transition: { duration: 0.85, ease: [0.7, 0, 0.3, 1] },
+                    y: -24,
+                    transition: { duration: 0.7, ease: [0.7, 0, 0.3, 1] },
                   }
             }
             style={{ pointerEvents: "auto" }}
