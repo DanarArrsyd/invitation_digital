@@ -177,13 +177,13 @@ test("responses admin skips analytics reads for locked packages but keeps RSVP t
     const { Page, tableReads } = loadFeatureAdminPage("responses", packageKey);
     const html = await renderAdminPage(Page);
     assert.equal(tableReads.includes("analytics_events"), false);
-    assert.match(html, /Visitor analytics tersedia di Grand/);
-    assert.match(html, /RSVP Total<\/p><p[^>]*>2<\/p>/);
-    assert.match(html, /Hadir<\/p><p[^>]*>1<\/p>/);
-    assert.match(html, /Tidak Hadir<\/p><p[^>]*>1<\/p>/);
+    assert.match(html, /Statistik kunjungan tersedia di Grand/);
+    assert.match(html, /RSVP masuk<\/dt><dd[^>]*>2<\/dd>/);
+    assert.match(html, />Hadir<\/dt><dd[^>]*>1<\/dd>/);
+    assert.match(html, /Tidak hadir<\/dt><dd[^>]*>1<\/dd>/);
     assert.match(html, /Alya/);
     assert.match(html, /Bima/);
-    assert.doesNotMatch(html, /Total Opens|Unique Visitors|Cover Opened/);
+    assert.doesNotMatch(html, /Dibuka<\/dt>|Pengunjung unik|Membuka cover/);
   }
 });
 
@@ -191,22 +191,22 @@ test("responses admin queries and renders visitor analytics for Grand alongside 
   const { Page, tableReads } = loadFeatureAdminPage("responses", "grand");
   const html = await renderAdminPage(Page);
   assert.equal(tableReads.filter((table) => table === "analytics_events").length, 1);
-  assert.match(html, /Total Opens<\/p><p[^>]*>2<\/p>/);
-  assert.match(html, /Unique Visitors<\/p><p[^>]*>1<\/p>/);
-  assert.match(html, /Cover Opened<\/p><p[^>]*>1<\/p>/);
-  assert.match(html, /RSVP Total<\/p><p[^>]*>2<\/p>/);
+  assert.match(html, /Dibuka<\/dt><dd[^>]*>2<\/dd>/);
+  assert.match(html, /Pengunjung unik<\/dt><dd[^>]*>1<\/dd>/);
+  assert.match(html, /Membuka cover<\/dt><dd[^>]*>1<\/dd>/);
+  assert.match(html, /RSVP masuk<\/dt><dd[^>]*>2<\/dd>/);
   assert.match(html, /Alya/);
-  assert.doesNotMatch(html, /Visitor analytics tersedia/);
+  assert.doesNotMatch(html, /Statistik kunjungan tersedia/);
 });
 
 test("locked responses admin retains empty and error states", async () => {
   const { Page, tableReads } = loadFeatureAdminPage("responses", "intimate", {}, { empty: true });
   const html = await renderAdminPage(Page, { error: "Response failed" });
   assert.equal(tableReads.includes("analytics_events"), false);
-  assert.match(html, /No RSVP yet\./);
-  assert.match(html, /No wishes yet\./);
+  assert.match(html, /Belum ada RSVP/);
+  assert.match(html, /Belum ada ucapan/);
   assert.match(html, /Response failed/);
-  assert.match(html, /RSVP Total<\/p><p[^>]*>0<\/p>/);
+  assert.match(html, /RSVP masuk<\/dt><dd[^>]*>0<\/dd>/);
 });
 
 test("responses admin returns not found before analytics when the invitation is missing", async () => {
