@@ -2,7 +2,9 @@ import { getCoupleDisplayName } from "@/lib/utils/coupleName";
 import { getDressCode, type DressCodeSettings } from "@/lib/utils/dressCode";
 import type { Guest, InvitationEvent, PublicInvitation } from "@/types/invitation";
 
-import { calendarEventForEvent, toWibTimestamp, type CalendarEventInput } from "./calendar";
+import { DEFAULT_INVITATION_TIME_ZONE, timeZoneLabel } from "@/lib/invitations/time-zones";
+
+import { calendarEventForEvent, toEventTimestamp, type CalendarEventInput } from "./calendar";
 
 export interface ThemeViewModel {
   coupleDisplayName: string;
@@ -13,6 +15,8 @@ export interface ThemeViewModel {
   dressCode: DressCodeSettings | null;
   heroImageUrl: string | null;
   closingImageUrl: string | null;
+  /** Short zone name shown next to event times (WIB / WITA / WIT). */
+  timeZoneLabel: string;
 }
 
 function earliestEvent(events: InvitationEvent[]): InvitationEvent | null {
@@ -22,13 +26,14 @@ function earliestEvent(events: InvitationEvent[]): InvitationEvent | null {
 
 export function buildThemeViewModel(invitation: PublicInvitation, guest: Guest | null): ThemeViewModel {
   const { features } = invitation;
+  const timeZone = invitation.timeZone ?? DEFAULT_INVITATION_TIME_ZONE;
   const primaryEvent = earliestEvent(invitation.events);
   const countdownTarget = features.countdown
-    ? toWibTimestamp(primaryEvent?.eventDate ?? invitation.eventDate, primaryEvent?.startTime ?? null)
+    ? toEventTimestamp(primaryEvent?.eventDate ?? invitation.eventDate, primaryEvent?.startTime ?? null, timeZone)
     : null;
   const coupleDisplayName = getCoupleDisplayName(invitation.people, invitation.title);
   const calendarEvent: CalendarEventInput | null = primaryEvent
-    ? calendarEventForEvent(primaryEvent, coupleDisplayName)
+    ? calendarEventForEvent(primaryEvent, coupleDisplayName, timeZone)
     : null;
 
   return {
@@ -40,5 +45,6 @@ export function buildThemeViewModel(invitation: PublicInvitation, guest: Guest |
     dressCode: features.dressCode ? getDressCode(invitation.theme.settings) : null,
     heroImageUrl: invitation.media.coverImageUrl,
     closingImageUrl: invitation.gallery.at(-1)?.imageUrl ?? invitation.media.coverImageUrl ?? null,
+    timeZoneLabel: timeZoneLabel(timeZone),
   };
 }

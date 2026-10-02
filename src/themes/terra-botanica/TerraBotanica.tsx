@@ -56,7 +56,7 @@ export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
         <HeroSection displayName={coupleDisplayName} imageUrl={heroImageUrl} message={invitation.content.openingMessage} />
         <QuoteSection quote={invitation.content.openingQuote} />
         <CoupleSection people={invitation.people} settings={invitation.theme.settings} invitationType={invitation.type} />
-        <EventsSection events={invitation.events} mapsEnabled={invitation.features.maps} coupleDisplayName={coupleDisplayName} invitationId={invitation.id} />
+        <EventsSection events={invitation.events} mapsEnabled={invitation.features.maps} coupleDisplayName={coupleDisplayName} invitationId={invitation.id} timeZone={invitation.timeZone} />
         <CountdownSection target={countdownTarget} />
         <DressCodeSection dressCode={dressCode} />
         {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}

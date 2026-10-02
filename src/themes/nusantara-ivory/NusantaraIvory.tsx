@@ -89,6 +89,7 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
           events={invitation.events}
           venueSummary={invitation.venueSummary}
           showMaps={features.maps}
+          timeZone={invitation.timeZone}
         />
 
         {countdownTarget !== null || calendarEvent ? (

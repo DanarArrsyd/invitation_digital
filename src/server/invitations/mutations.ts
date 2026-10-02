@@ -8,6 +8,7 @@ import {
   validatePackageCapacity,
   type PackageKey,
 } from "@/lib/packages/entitlements";
+import type { InvitationTimeZone } from "@/lib/invitations/time-zones";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 import type { InvitationFeatures } from "@/types/invitation";
@@ -67,10 +68,23 @@ export async function updateInvitationGeneral(input: {
   themeId: string;
   eventDate: string | null;
   venueSummary: string | null;
+  timeZone: InvitationTimeZone;
 }): Promise<{ error: string } | null> {
   const supabase = await createSupabaseServerClient();
 
-  const { error } = await supabase
+  // The time zone lives in the settings JSON next to other presentation
+  // metadata; merge it into the current settings and only write if no one
+  // else saved in between (same optimistic check as the dress-code editor).
+  const { data: current, error: readError } = await supabase
+    .from("invitations")
+    .select("settings, updated_at")
+    .eq("id", input.invitationId)
+    .maybeSingle();
+  if (readError || !current) return { error: "Undangan tidak dapat dimuat." };
+
+  const settings = (current.settings ?? {}) as Record<string, unknown>;
+
+  const { data: saved, error } = await supabase
     .from("invitations")
     .update({
       title: input.title,
@@ -79,8 +93,12 @@ export async function updateInvitationGeneral(input: {
       theme_id: input.themeId,
       event_date: input.eventDate,
       venue_summary: input.venueSummary,
+      settings: { ...settings, timeZone: input.timeZone } as Json,
     })
-    .eq("id", input.invitationId);
+    .eq("id", input.invitationId)
+    .eq("updated_at", current.updated_at)
+    .select("id")
+    .maybeSingle();
 
   if (error) {
     if (error.code === "23505") {
@@ -88,6 +106,7 @@ export async function updateInvitationGeneral(input: {
     }
     return { error: error.message };
   }
+  if (!saved) return { error: "Data berubah. Muat ulang halaman lalu simpan kembali." };
 
   return null;
 }

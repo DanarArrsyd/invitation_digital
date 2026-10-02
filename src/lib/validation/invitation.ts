@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { INVITATION_TIME_ZONE_KEYS, type InvitationTimeZone } from "@/lib/invitations/time-zones";
+
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export const invitationTypeSchema = z.enum([
@@ -46,6 +48,9 @@ export const updateGeneralSchema = z.object({
   themeId: z.string().uuid("Theme wajib dipilih"),
   eventDate: z.string().trim().optional().or(z.literal("")),
   venueSummary: z.string().trim().max(300).optional().or(z.literal("")),
+  timeZone: z.enum(INVITATION_TIME_ZONE_KEYS as [InvitationTimeZone, ...InvitationTimeZone[]], {
+    message: "Zona waktu tidak valid",
+  }),
 });
 
 export const updateContentSchema = z.object({

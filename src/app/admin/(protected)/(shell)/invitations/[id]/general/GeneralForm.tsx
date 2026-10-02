@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  INVITATION_TIME_ZONE_KEYS,
+  INVITATION_TIME_ZONES,
+  resolveInvitationTimeZone,
+} from "@/lib/invitations/time-zones";
 import { INVITATION_TYPE_LABELS, INVITATION_TYPES, invitationTypeLabel } from "@/lib/invitations/types";
 import { FormMessage } from "@/components/admin/form-message";
 import { SubmitButton } from "@/components/admin/submit-button";
@@ -83,6 +88,27 @@ export function GeneralForm({
           type="date"
           defaultValue={invitation.event_date ?? ""}
         />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="timeZone">Zona waktu acara</Label>
+        <Select name="timeZone" defaultValue={resolveInvitationTimeZone(invitation.settings)}>
+          <SelectTrigger id="timeZone" className="w-full" aria-describedby="timeZone-hint">
+            <SelectValue>
+              {(value: string) => INVITATION_TIME_ZONES[value as keyof typeof INVITATION_TIME_ZONES]?.label ?? value}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {INVITATION_TIME_ZONE_KEYS.map((zone) => (
+              <SelectItem key={zone} value={zone}>
+                {INVITATION_TIME_ZONES[zone].label} — {INVITATION_TIME_ZONES[zone].region}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p id="timeZone-hint" className="text-xs text-muted-foreground">
+          Jam acara diisi dalam zona ini. Label di undangan, hitung mundur dan kalender tamu mengikutinya.
+        </p>
       </div>
 
       <div className="flex flex-col gap-2">

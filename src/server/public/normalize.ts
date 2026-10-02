@@ -5,6 +5,7 @@ import {
   resolveEffectiveInvitationFeatures,
   type PackageKey,
 } from "@/lib/packages/entitlements";
+import { resolveInvitationTimeZone } from "@/lib/invitations/time-zones";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import type { Database, Tables } from "@/types/database";
 import type { GalleryItem, InvitationFeatures, PublicInvitation } from "@/types/invitation";
@@ -105,6 +106,7 @@ export async function loadNormalizedInvitation(
     venueSummary: invitation.venue_summary,
     publishedAt: invitation.published_at ?? invitation.created_at,
     expiresAt: invitation.expires_at,
+    timeZone: resolveInvitationTimeZone(settings),
 
     theme: {
       slug: invitation.theme.slug,
