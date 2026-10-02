@@ -3,7 +3,7 @@ import type { Tables } from "@/types/database";
 
 export type InvitationListItem = Pick<
   Tables<"invitations">,
-  "id" | "title" | "slug" | "type" | "status" | "event_date"
+  "id" | "title" | "slug" | "type" | "status" | "event_date" | "expires_at"
 > & {
   theme: Pick<Tables<"themes">, "name" | "slug"> | null;
   gallery_items: Pick<Tables<"gallery_items">, "image_path">[];
@@ -15,13 +15,20 @@ export async function listInvitations(status?: string): Promise<InvitationListIt
   let query = supabase
     .from("invitations")
     .select(
-      "id, title, slug, type, status, event_date, theme:themes(name, slug), gallery_items(image_path)",
+      "id, title, slug, type, status, event_date, expires_at, theme:themes(name, slug), gallery_items(image_path)",
     )
     .order("sort_order", { referencedTable: "gallery_items", ascending: true })
     .limit(1, { foreignTable: "gallery_items" })
     .order("created_at", { ascending: false });
 
-  if (status && status !== "all") {
+  // Filters follow the effective status (see lib/invitations/status.ts): a
+  // published row past its expires_at belongs under "expired".
+  const now = new Date().toISOString();
+  if (status === "published") {
+    query = query.eq("status", "published").or(`expires_at.is.null,expires_at.gt.${now}`);
+  } else if (status === "expired") {
+    query = query.or(`status.eq.expired,and(status.eq.published,expires_at.lte.${now})`);
+  } else if (status && status !== "all") {
     query = query.eq("status", status);
   }
 

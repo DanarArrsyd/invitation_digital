@@ -166,7 +166,7 @@ test("features admin uses saved checked and unchecked values only for granted co
       assert.equal(control.includes('checked=""'), checked, key);
       assert.equal(control.includes('disabled=""'), disabled, key);
     }
-    assert.match(html, /Saved\./);
+    assert.match(html, /Tersimpan\./);
   }
 });
 
@@ -390,6 +390,7 @@ function loadGalleryPage(galleryCount) {
         return { notFound: () => { throw new Error("Unexpected notFound"); } };
       }
       if (name === "@/components/admin/empty-state") return { EmptyState: "empty-state" };
+      if (name === "@/components/admin/form-message") return { FormMessage: ({ children }) => children ?? null };
       if (name === "@/components/admin/submit-button") return { SubmitButton: "submit-button" };
       if (name === "@/components/ui/input") return { Input: "input" };
       if (name === "@/components/ui/label") return { Label: "label" };

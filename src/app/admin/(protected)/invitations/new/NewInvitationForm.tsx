@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 
+import { FormMessage } from "@/components/admin/form-message";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -115,11 +116,7 @@ export function NewInvitationForm({ themes }: { themes: Tables<"themes">[] }) {
         </Select>
       </div>
 
-      {state.error ? (
-        <p role="alert" className="text-sm text-destructive">
-          {state.error}
-        </p>
-      ) : null}
+      <FormMessage tone="error">{state.error}</FormMessage>
 
       <Button type="submit" disabled={isPending} className="mt-2 w-fit">
         {isPending ? "Creating..." : "Create Invitation"}

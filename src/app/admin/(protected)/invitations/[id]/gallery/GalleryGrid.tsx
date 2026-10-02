@@ -87,7 +87,7 @@ export function GalleryGrid({
           />
 
           <div className="mt-3 flex flex-col gap-2">
-            <Label>Rasio foto</Label>
+            <Label htmlFor={`gallery-ratio-${item.id}`}>Rasio foto</Label>
             <Select
               defaultValue={item.aspectRatio}
               onValueChange={(value) => {
@@ -101,7 +101,7 @@ export function GalleryGrid({
                 });
               }}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id={`gallery-ratio-${item.id}`} className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

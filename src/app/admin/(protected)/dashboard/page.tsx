@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { EmptyState } from "@/components/admin/empty-state";
+import { PageHeader } from "@/components/admin/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getDashboardSummary } from "@/server/invitations/dashboard";
@@ -14,17 +15,14 @@ export default async function AdminDashboardPage() {
 
   const metrics = [
     { label: "Total", value: counts.total },
-    { label: "Draft", value: counts.draft },
-    { label: "Published", value: counts.published },
-    { label: "Expired", value: counts.expired },
+    { label: "Draf", value: counts.draft },
+    { label: "Terbit", value: counts.published },
+    { label: "Kedaluwarsa", value: counts.expired },
   ];
 
   return (
     <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Ringkasan seluruh invitation.</p>
-      </div>
+      <PageHeader title="Dashboard" description="Ringkasan seluruh invitation." />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {metrics.map((metric) => (

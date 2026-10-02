@@ -1,11 +1,48 @@
 import { notFound } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { ConfirmDeleteForm } from "@/components/admin/confirm-delete-form";
+import { FormField } from "@/components/admin/form-field";
+import { FormMessage } from "@/components/admin/form-message";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
 import { deleteGiftAccountAction, upsertGiftAccountAction } from "./actions";
+
+type GiftDefaults = {
+  provider_type: string;
+  provider_name: string;
+  account_number: string;
+  account_name: string;
+};
+
+/** Shared by the edit forms and the "add" form; `idPrefix` keeps ids unique per row. */
+function GiftFields({ idPrefix, gift }: { idPrefix: string; gift?: GiftDefaults }) {
+  const id = (name: string) => `${idPrefix}-${name}`;
+
+  return (
+    <>
+      <FormField id={id("providerType")} label="Provider type">
+        <Input id={id("providerType")} name="providerType" defaultValue={gift?.provider_type ?? "bank"} />
+      </FormField>
+      <FormField id={id("providerName")} label="Bank / provider name">
+        <Input id={id("providerName")} name="providerName" defaultValue={gift?.provider_name ?? ""} required />
+      </FormField>
+      <FormField id={id("accountNumber")} label="Account number">
+        <Input
+          id={id("accountNumber")}
+          name="accountNumber"
+          autoComplete="off"
+          defaultValue={gift?.account_number ?? ""}
+          required
+        />
+      </FormField>
+      <FormField id={id("accountName")} label="Account name">
+        <Input id={id("accountName")} name="accountName" defaultValue={gift?.account_name ?? ""} required />
+      </FormField>
+    </>
+  );
+}
 
 export default async function GiftsPage({
   params,
@@ -24,78 +61,47 @@ export default async function GiftsPage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <FormMessage tone="error">{error}</FormMessage>
 
       {gifts.map((gift) => (
-        <form
-          key={gift.id}
-          action={upsertGiftAccountAction}
-          className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-card p-4"
-        >
-          <input type="hidden" name="id" value={gift.id} />
-          <input type="hidden" name="invitationId" value={invitation.id} />
-          <input type="hidden" name="sortOrder" value={gift.sort_order} />
-
-          <div className="flex flex-col gap-2">
-            <Label>Provider type</Label>
-            <Input name="providerType" defaultValue={gift.provider_type} />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Bank / provider name</Label>
-            <Input name="providerName" defaultValue={gift.provider_name} required />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Account number</Label>
-            <Input name="accountNumber" defaultValue={gift.account_number} required />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label>Account name</Label>
-            <Input name="accountName" defaultValue={gift.account_name} required />
+        <section key={gift.id} className="rounded-lg border border-border bg-card p-4">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="min-w-0 truncate text-sm font-medium text-foreground">
+              {gift.provider_name} · {gift.account_name}
+            </h2>
+            <ConfirmDeleteForm
+              action={deleteGiftAccountAction}
+              hiddenFields={{ id: gift.id, invitationId: invitation.id }}
+              title="Hapus rekening ini?"
+              description={`Rekening ${gift.provider_name} a.n. ${gift.account_name} akan hilang dari undangan. Tindakan ini tidak bisa dibatalkan.`}
+              triggerLabel="Delete"
+            />
           </div>
 
-          <div className="col-span-2 flex gap-2">
-            <Button type="submit" className="w-fit">
-              Save
-            </Button>
-            <Button
-              type="submit"
-              formAction={deleteGiftAccountAction}
-              variant="destructive"
-              className="w-fit"
-            >
-              Delete
-            </Button>
-          </div>
-        </form>
+          <form action={upsertGiftAccountAction} className="grid gap-3 sm:grid-cols-2">
+            <input type="hidden" name="id" value={gift.id} />
+            <input type="hidden" name="invitationId" value={invitation.id} />
+            <input type="hidden" name="sortOrder" value={gift.sort_order} />
+
+            <GiftFields idPrefix={`gift-${gift.id}`} gift={gift} />
+
+            <SubmitButton className="w-fit sm:col-span-2">Save</SubmitButton>
+          </form>
+        </section>
       ))}
 
       <form
         action={upsertGiftAccountAction}
-        className="grid max-w-lg grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-4"
+        className="grid max-w-lg gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-2"
       >
         <input type="hidden" name="invitationId" value={invitation.id} />
         <input type="hidden" name="sortOrder" value={gifts.length} />
 
-        <div className="flex flex-col gap-2">
-          <Label>Provider type</Label>
-          <Input name="providerType" defaultValue="bank" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Bank / provider name</Label>
-          <Input name="providerName" required />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Account number</Label>
-          <Input name="accountNumber" required />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Account name</Label>
-          <Input name="accountName" required />
-        </div>
+        <GiftFields idPrefix="gift-new" />
 
-        <Button type="submit" className="col-span-2 w-fit">
+        <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
           Add gift account
-        </Button>
+        </SubmitButton>
       </form>
     </div>
   );
