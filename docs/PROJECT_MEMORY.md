@@ -368,6 +368,16 @@ Never delete the row or rewrite its ID. Audit and reassign referencing
 invitations only with separate authorization, then roll back application code.
 No remote step has been performed during Task 8.
 
+## Cobalt Riviera production rollout — 2026-10-02
+
+- Branch `codex/cobalt-riviera-theme` was pushed at reviewed commit `e529748f`.
+- Pull request: https://github.com/DanarArrsyd/invitation_digital/pull/3 (delta against `codex/terra-botanica-theme`, because the remote `main` history is unrelated).
+- Vercel production deployment `dpl_GX3dFa4CgKdHHgij7iS8VnGn5peR` reached `READY` and owns `https://invitation-digital-delta.vercel.app`.
+- Smoke checks returned HTTP 200 for `/`, `/admin/login`, `/sample-1`, `/sample-2`, and `/rayhana-febry`; recent production logs showed info-level requests without runtime errors.
+- Supabase project `kcmddkxpwhphyqynghsl`: applied only the Cobalt catalogue migration. The recorded migration is `20261002012904_cobalt_riviera_theme`; row `2344901c-5f17-49bc-8ba8-6e7092ce7c4f` is active and visible through the `anon` role.
+- No Cobalt customer invitation was created or published; the theme is catalogue-ready and remains subject to content approval for the first dedicated invitation.
+- Note: GitHub's automatic Vercel preview context for PR #3 reported an error before READY, while the explicit production deployment above built and reached READY successfully. Resolve that preview integration status before merging the PR.
+
 ## Required execution workflow
 
 Work one task at a time with subagent-driven development:
