@@ -23,6 +23,7 @@ function ratioOf(item: GalleryItem): { css: string; value: number } {
  */
 export function GalleryRows({ gallery }: { gallery: GalleryItem[] }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const show = useCallback(
@@ -33,7 +34,11 @@ export function GalleryRows({ gallery }: { gallery: GalleryItem[] }) {
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
-    if (openIndex !== null && !dialog.open) dialog.showModal();
+    if (openIndex !== null && !dialog.open) {
+      dialog.showModal();
+      // showModal focuses the first control; Close is the expected landing spot.
+      closeRef.current?.focus();
+    }
     if (openIndex === null && dialog.open) dialog.close();
   }, [openIndex]);
 
@@ -118,7 +123,7 @@ export function GalleryRows({ gallery }: { gallery: GalleryItem[] }) {
                     </button>
                   </>
                 ) : null}
-                <button type="button" className="ni-lightbox-btn" onClick={() => setOpenIndex(null)} autoFocus>
+                <button ref={closeRef} type="button" className="ni-lightbox-btn" onClick={() => setOpenIndex(null)}>
                   Tutup
                 </button>
               </div>

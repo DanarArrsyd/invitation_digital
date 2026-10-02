@@ -198,10 +198,13 @@ const CSS = `
    cropped to a shared shape, and the ::after spacer keeps the last row at
    its natural size instead of stretching one or two photos edge to edge. */
 .ni-gallery-rows { --ni-row-h: clamp(140px, 30vw, 320px); display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 3rem; }
-.ni-gallery-rows::after { content: ""; flex-grow: 999; }
+.ni-gallery-rows::after { content: ""; flex-grow: 99999; }
 .ni-gallery-rows--single::after { content: none; }
 .ni-gallery-rows--single .ni-gallery-item { max-width: 960px; margin-inline: auto; }
-.ni-gallery-item { flex-grow: var(--r); flex-basis: calc(var(--r) * var(--ni-row-h)); min-width: 0; margin: 0; }
+/* Grow is ratio x 100: when a row's grow values sum below 1 (one 4:5
+   portrait = 0.8), flexbox hands out only that fraction of the free space
+   and the row stops short of the edge. */
+.ni-gallery-item { flex-grow: calc(var(--r) * 100); flex-basis: calc(var(--r) * var(--ni-row-h)); min-width: 0; margin: 0; }
 .ni-gallery-caption { padding-top: .75rem; font-size: .8rem; line-height: 1.5; color: var(--ni-brown-soft); }
 
 .ni-lightbox { width: 100vw; max-width: 100vw; height: 100svh; max-height: 100svh; margin: 0; padding: 0; border: 0; background: transparent; color: var(--ni-ivory-2); }
