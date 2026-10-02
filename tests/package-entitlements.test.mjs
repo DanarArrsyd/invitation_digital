@@ -3,6 +3,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import test from "node:test";
 import ts from "typescript";
+
+import * as timeZones from "../src/lib/invitations/time-zones.ts";
 import vm from "node:vm";
 
 const nodeRequire = createRequire(import.meta.url);
@@ -279,6 +281,7 @@ function loadCreateInvitationAction() {
     module: { exports: validationExports },
     require(name) {
       if (name === "zod") return nodeRequire("zod");
+      if (name === "@/lib/invitations/time-zones") return timeZones;
       throw new Error(`Unexpected validation import: ${name}`);
     },
   });

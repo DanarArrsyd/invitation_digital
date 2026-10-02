@@ -19,6 +19,7 @@ export async function updateGeneralAction(formData: FormData) {
     themeId: formData.get("themeId"),
     eventDate: formData.get("eventDate"),
     venueSummary: formData.get("venueSummary"),
+    timeZone: formData.get("timeZone"),
   });
 
   if (!parsed.success) {
@@ -46,6 +47,7 @@ export async function updateGeneralAction(formData: FormData) {
     themeId: parsed.data.themeId,
     eventDate: parsed.data.eventDate || null,
     venueSummary: parsed.data.venueSummary || null,
+    timeZone: parsed.data.timeZone,
   });
 
   if (result?.error) {
