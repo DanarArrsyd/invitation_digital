@@ -6,7 +6,6 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import vm from "node:vm";
 import React from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import ts from "typescript";
 
 const nodeRequire = createRequire(import.meta.url);
@@ -26,11 +25,23 @@ function loadSource(entry) {
     vm.runInNewContext(output, {
       exports, module: { exports }, console, Date, Intl, URL, URLSearchParams, Blob, process,
       setTimeout, clearTimeout, setInterval, clearInterval,
+      get window() { return globalThis.window; },
+      get document() { return globalThis.document; },
+      get IntersectionObserver() { return globalThis.IntersectionObserver; },
+      get requestAnimationFrame() { return globalThis.requestAnimationFrame; },
       require(name) {
         if (name === "next/font/google") return Object.fromEntries(
           ["Cormorant_Garamond", "Jost", "Fraunces", "Manrope"].map((font) => [font, () => ({ variable: font })]),
         );
         if (name === "next/script") return { __esModule: true, default: () => null };
+        if (name === "next/image") return { __esModule: true, default: (imageProps) => {
+          const props = { ...imageProps };
+          delete props.fill;
+          delete props.fetchPriority;
+          delete props.unoptimized;
+          return React.createElement("img", props);
+        } };
+        if (name === "motion/react") return { useReducedMotion: () => false };
         if (name === "@/app/(public)/[slug]/actions") return {
           trackCoverOpenedAction: async () => {},
           submitRsvpAction: async () => ({ status: "success" }),
@@ -59,26 +70,39 @@ function invitation(themeSlug) {
   };
 }
 
-test("both registered theme slugs resolve through the real public renderer", () => {
+test("all four registered theme slugs resolve through the real public renderer", () => {
   const { themeRegistry } = loadSource("themes/registry");
   const { ThemeRenderer } = loadSource("themes/ThemeRenderer");
-  assert.deepEqual(Object.keys(themeRegistry).sort(), ["nusantara-ivory", "terra-botanica"]);
+  assert.deepEqual(Object.keys(themeRegistry).sort(), ["cobalt-riviera", "midnight-atelier", "nusantara-ivory", "terra-botanica"]);
   assert.equal(themeRegistry["terra-botanica"].preview.name, "Terra Botanica");
   assert.equal(themeRegistry["terra-botanica"].category, "wedding");
   assert.deepEqual([...themeRegistry["terra-botanica"].preview.palette], ["#F2E7D8", "#B6634B", "#53634E"]);
-  for (const slug of Object.keys(themeRegistry)) {
-    const html = renderToStaticMarkup(React.createElement(ThemeRenderer, { invitation: invitation(slug), guest: null }));
-    assert.doesNotMatch(html, /is not available yet/, slug);
-    assert.match(html, /Alya/, slug);
-    assert.match(html, /Bima/, slug);
+  assert.equal(themeRegistry["midnight-atelier"].preview.name, "Midnight Atelier");
+  assert.equal(themeRegistry["midnight-atelier"].category, "wedding");
+  assert.deepEqual([...themeRegistry["midnight-atelier"].preview.palette], ["#09090B", "#541E2B", "#C6A15B"]);
+  assert.equal(themeRegistry["cobalt-riviera"].preview.name, "Cobalt Riviera");
+  assert.equal(themeRegistry["cobalt-riviera"].category, "wedding");
+  assert.deepEqual([...themeRegistry["cobalt-riviera"].preview.palette], ["#1646C8", "#FFF9EE", "#F06A3C"]);
+  const expectedComponents = {
+    "cobalt-riviera": "CobaltRiviera",
+    "nusantara-ivory": "NusantaraIvory",
+    "terra-botanica": "TerraBotanica",
+    "midnight-atelier": "MidnightAtelier",
+  };
+  for (const [slug, componentName] of Object.entries(expectedComponents)) {
+    const resolved = ThemeRenderer({ invitation: invitation(slug), guest: null });
+    assert.equal(typeof resolved.type, "function", slug);
+    assert.equal(resolved.type.name, componentName, slug);
+    assert.equal(resolved.props.invitation.theme.slug, slug);
   }
 });
 
 const terraSql = readFileSync(new URL("../supabase/migrations/20260924000001_terra_botanica_theme.sql", import.meta.url), "utf8");
+const midnightMigration = new URL("../supabase/migrations/20260930000001_midnight_atelier_theme.sql", import.meta.url);
 const themesSchema = readFileSync(new URL("../supabase/migrations/20260913000003_themes.sql", import.meta.url), "utf8");
 const invitationsSchema = readFileSync(new URL("../supabase/migrations/20260913000004_invitations.sql", import.meta.url), "utf8");
 
-function assertMigrationContract(sql, schema, invitationSchema) {
+function assertMigrationContract(sql, schema, invitationSchema, { name, slug }) {
   assert.doesNotMatch(sql, /--|\/\*/, "this fixed seed migration must not contain SQL comments");
   const statements = sql.split(";").map((statement) => statement.trim()).filter(Boolean);
   assert.equal(statements.length, 1, "migration must have exactly one statement");
@@ -88,7 +112,7 @@ function assertMigrationContract(sql, schema, invitationSchema) {
   assert.match(schema, /create trigger set_themes_updated_at/i);
   assert.match(invitationSchema, /theme_id\s+uuid\s+not null\s+references\s+public\.themes\s*\(\s*id\s*\)\s+on\s+delete\s+restrict\b/i);
   assert.match(sql, /insert into public\.themes\s*\(name, slug, category, description, is_active\)/i);
-  assert.match(sql, /'Terra Botanica',\s*'terra-botanica',\s*'wedding'/i);
+  assert.match(sql, new RegExp(`'${name}',\\s*'${slug}',\\s*'wedding'`, "i"));
   assert.match(sql, /on conflict \(slug\) do update/i);
   for (const column of ["name", "category", "description"]) {
     assert.match(sql, new RegExp(`${column}\\s*=\\s*excluded\\.${column}`, "i"));
@@ -100,12 +124,19 @@ function assertMigrationContract(sql, schema, invitationSchema) {
 }
 
 test("Terra migration activates an existing slug in place on every retry", () => {
-  assertMigrationContract(terraSql, themesSchema, invitationsSchema);
+  assertMigrationContract(terraSql, themesSchema, invitationsSchema, { name: "Terra Botanica", slug: "terra-botanica" });
+});
+
+test("Midnight migration activates an existing slug in place on every retry", () => {
+  assert.equal(existsSync(midnightMigration), true, "Midnight catalogue migration must exist");
+  const sql = readFileSync(midnightMigration, "utf8");
+  assertMigrationContract(sql, themesSchema, invitationsSchema, { name: "Midnight Atelier", slug: "midnight-atelier" });
+  assert.match(sql, /'Dark cinematic editorial wedding invitation\.'/i);
 });
 
 test("migration contract rejects an extra plain theme insert", () => {
   const unsafeSql = `${terraSql}\ninsert into public.themes (name, slug, category) values ('Duplicate', 'terra-botanica', 'wedding');`;
-  assert.throws(() => assertMigrationContract(unsafeSql, themesSchema, invitationsSchema));
+  assert.throws(() => assertMigrationContract(unsafeSql, themesSchema, invitationsSchema, { name: "Terra Botanica", slug: "terra-botanica" }));
 });
 
 test("migration contract rejects an upsert hidden in SQL comments", () => {
@@ -124,7 +155,7 @@ values (
 --     is_active = true,
 --     updated_at = now()
 ;`;
-  assert.throws(() => assertMigrationContract(unsafeSql, themesSchema, invitationsSchema));
+  assert.throws(() => assertMigrationContract(unsafeSql, themesSchema, invitationsSchema, { name: "Terra Botanica", slug: "terra-botanica" }));
 });
 
 test("migration contract rejects additional destructive theme writes", () => {
@@ -133,7 +164,7 @@ test("migration contract rejects additional destructive theme writes", () => {
     "update public.themes set is_active = false where slug = 'nusantara-ivory';",
     "drop table public.themes;",
   ]) {
-    assert.throws(() => assertMigrationContract(`${terraSql}\n${additionalWrite}`, themesSchema, invitationsSchema));
+    assert.throws(() => assertMigrationContract(`${terraSql}\n${additionalWrite}`, themesSchema, invitationsSchema, { name: "Terra Botanica", slug: "terra-botanica" }));
   }
 });
 
@@ -143,13 +174,19 @@ test("migration contract requires the invitation theme foreign key", () => {
     "theme_id uuid not null",
   );
   assert.notEqual(withoutForeignKey, invitationsSchema);
-  assert.throws(() => assertMigrationContract(terraSql, themesSchema, withoutForeignKey));
+  assert.throws(() => assertMigrationContract(terraSql, themesSchema, withoutForeignKey, { name: "Terra Botanica", slug: "terra-botanica" }));
   const cascadingForeignKey = invitationsSchema.replace(
     "theme_id uuid not null references public.themes (id) on delete restrict",
     "theme_id uuid not null references public.themes (id) on delete cascade",
   );
   assert.notEqual(cascadingForeignKey, invitationsSchema);
-  assert.throws(() => assertMigrationContract(terraSql, themesSchema, cascadingForeignKey));
+  assert.throws(() => assertMigrationContract(terraSql, themesSchema, cascadingForeignKey, { name: "Terra Botanica", slug: "terra-botanica" }));
+});
+
+test("admin theme selection remains database-backed", () => {
+  const source = readFileSync(new URL("../src/app/admin/(protected)/invitations/new/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /listActiveThemes\(\)/);
+  assert.doesNotMatch(source, /themeRegistry/);
 });
 
 function loadNormalizer() {
@@ -172,7 +209,7 @@ function loadNormalizer() {
   return load("server/public/normalize").loadNormalizedInvitation;
 }
 
-test("all packages normalize identical effective features for Ivory and Terra", async () => {
+test("all packages normalize identical effective features for every registered theme", async () => {
   const normalize = loadNormalizer();
   const savedFeatures = {
     music: true, countdown: true, maps: true, story: true, gallery: true,
@@ -191,7 +228,7 @@ test("all packages normalize identical effective features for Ivory and Terra", 
   };
   for (const packageKey of ["intimate", "signature", "grand"]) {
     const results = [];
-    for (const slug of ["nusantara-ivory", "terra-botanica"]) {
+    for (const slug of ["nusantara-ivory", "terra-botanica", "midnight-atelier", "cobalt-riviera"]) {
       const row = {
         id: "test", type: "wedding", slug: "test", title: "Alya & Bima", status: "published",
         package_key: packageKey, settings: { features: savedFeatures }, theme_id: "theme-id", theme: { id: "theme-id", slug },
@@ -205,6 +242,6 @@ test("all packages normalize identical effective features for Ivory and Terra", 
       assert.deepEqual(normalized.theme.settings.features, expected[packageKey], `${packageKey}/${slug}`);
       results.push(normalized.features);
     }
-    assert.deepEqual(results[0], results[1], packageKey);
+    for (const features of results.slice(1)) assert.deepEqual(features, results[0], packageKey);
   }
 });

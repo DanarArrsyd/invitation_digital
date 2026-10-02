@@ -2,9 +2,15 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@fontsource-variable/cormorant-garamond";
 import "@fontsource-variable/cormorant-garamond/wght-italic.css";
+import "@fontsource-variable/familjen-grotesk";
 import "@fontsource-variable/fraunces";
 import "@fontsource-variable/jost";
 import "@fontsource-variable/manrope";
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/bodoni-moda";
+import "@fontsource/ibm-plex-sans-condensed/400.css";
+import "@fontsource/ibm-plex-sans-condensed/500.css";
+import "@fontsource/ibm-plex-sans-condensed/600.css";
 import "./globals.css";
 
 import { Toaster } from "@/components/ui/sonner";

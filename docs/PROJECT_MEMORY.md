@@ -1,15 +1,19 @@
 # Project Memory
 
-Last updated: 29 September 2026 (Asia/Jakarta)
+Last updated: 2 October 2026 (Asia/Jakarta)
 
 ## Purpose
 
 This is the durable resume checkpoint for the invitation platform. Read it
-after `CLAUDE.md` and before continuing the active Terra Botanica plan. The
-approved spec and implementation plan remain the source of truth:
+after `CLAUDE.md` and before continuing theme work. Approved specifications and
+implementation plans remain the source of truth:
 
 - `docs/superpowers/specs/2026-09-24-terra-botanica-theme-design.md`
 - `docs/superpowers/plans/2026-09-24-terra-botanica-theme.md`
+- `docs/superpowers/specs/2026-09-30-midnight-atelier-theme-design.md`
+- `docs/superpowers/plans/2026-09-30-midnight-atelier-theme.md`
+- `docs/superpowers/specs/2026-10-01-cobalt-riviera-theme-design.md`
+- `docs/superpowers/plans/2026-10-01-cobalt-riviera-theme.md`
 
 ## Product decisions that must survive future sessions
 
@@ -19,10 +23,19 @@ approved spec and implementation plan remain the source of truth:
 - Every public feature or layout added to one registered theme must be
   represented in **all registered themes** through the canonical typed section
   contract. Presentation may differ; capability parity may not.
-- `nusantara-ivory` must remain visually unchanged while Terra is built.
+- Existing themes must remain visually unchanged unless shared behavior
+  requires a tested parity fix.
 - Terra Botanica uses the approved **Editorial Garden** direction: Fraunces,
   Manrope, Linen/Clay/Moss/Cacao/Sun/Bone, asymmetrical editorial composition,
   restrained custom botanical marks, and no generic SaaS-card styling.
+- Midnight Atelier uses the approved **dark cinematic couture** direction:
+  Bodoni Moda, Barlow Condensed, Ink/Lacquer/Oxblood/Champagne/Pearl/Smoke,
+  programme-led editorial composition, and no generic black-and-gold styling.
+- Cobalt Riviera uses the approved **sunlit destination editorial** direction:
+  wide grotesk display type, Newsreader body text, Cobalt/Porcelain/Sea Ink/
+  Tangerine/Citron/Pool, a horizon-shutter cover, panoramic imagery, flat
+  itinerary rows, and ceramic-grid rhythm. Literal beach/travel props and
+  generic travel cards are outside the approved direction.
 - Sponsorship is only a reserved package entitlement. There is no public
   sponsorship data model or UI in this plan.
 - Themes receive normalized data and never query Supabase directly.
@@ -42,10 +55,16 @@ another worktree or move implementation back to the dirty original checkout.
 The untracked `supabase/.temp/` directory predates this work; never stage,
 delete, or modify it.
 
-Current verified behavior commit: `3abb1e3c` (final countdown/calendar parity
-fix). Task 9 was completed in `0a6d5cdf` and `16f45366`. The full suite passes
-150/150; lint, TypeScript, diff checks, and the production build pass. The
-exact final documentation commit is recorded in the final-fix report.
+Terra's final verified behavior commit is `3abb1e3c`. Midnight Atelier Tasks
+1–7 end at `7644883d`; Task 8 ends at `a788711d`; Task 9 ends at `17964b00`.
+Its gate passes 201/201 tests plus lint, TypeScript, diff, and production build,
+with hydrated browser coverage recorded below.
+
+Cobalt Riviera Task 1 design specification ends at `582da847`. Its approved
+implementation plan is the active work on branch `codex/cobalt-riviera-theme`.
+The spec is the visual source of truth. Agents may improve composition within
+its upgrade rule but may not introduce a new motif or interaction model without
+updating the spec and receiving user approval.
 
 ## Current architecture and data flow
 
@@ -81,11 +100,36 @@ Key boundaries:
 - Shared hooks own cover/audio/focus/analytics, active-section navigation,
   RSVP/wish action state and pagination, pending-error input recovery, and
   clipboard feedback.
+- `src/themes/shared/external-url.ts` owns the HTTP(S)-only boundary for Maps
+  and livestream actions across every registered theme.
 - Theme directories own markup, spacing, typography, ornaments, responsive
   composition, and visual feedback only. They do not query Supabase or
   duplicate package, validation, calendar, or server-action logic.
 - `listActiveThemes()` remains the admin theme source. The registry is not an
   admin catalogue and no second theme list should be introduced.
+
+## Cobalt Riviera construction map
+
+`CobaltRiviera.tsx` consumes `buildThemeViewModel()` once and composes the
+fourth visual system from the same normalized invitation contract:
+
+```text
+CoverGate — horizon shutters, guest personalization, music and focus handoff
+  ├─ Hero + quote — panoramic or typographic horizon opening
+  ├─ Couple + parents — offset resort editorials and social credits
+  ├─ Itinerary — events, Maps, calendar, countdown, dress code, livestream
+  ├─ Story — ordered folio with complete text-only entries
+  ├─ Gallery — panoramic anchor plus ceramic mosaic
+  ├─ RSVP — large checked color fields over shared action state
+  ├─ Wishes — route-separated notes over shared action and pagination
+  ├─ Gifts — flat folio receipts with truthful shared clipboard feedback
+  └─ Closing — Cobalt conclusion through the shared image fallback chain
+```
+
+The registry preview uses Cobalt `#1646C8`, Porcelain `#FFF9EE`, and Tangerine
+`#F06A3C`. The catalogue migration is
+`20261002000001_cobalt_riviera_theme.sql`; it is a single slug upsert that
+preserves an existing row ID and all invitation foreign-key references.
 
 ## Cross-template feature workflow
 
@@ -99,9 +143,9 @@ When adding a feature or layout capability to any template, follow this order:
    contain package names, database queries, or customer-specific defaults.
 4. Put reusable calculations and interaction state in `src/themes/shared/`.
    Keep only theme-specific DOM/CSS/ornaments inside each theme package.
-5. Implement the user outcome in Ivory, Terra, and every future registered
-   theme. Layouts may express different art directions, but no template may
-   silently lose the feature.
+5. Implement the user outcome in Ivory, Terra, Midnight, and every future
+   registered theme. Layouts may express different art directions, but no
+   template may silently lose the feature.
 6. Add cross-theme behavioral tests for feature gating, empty/error states,
    payloads, accessibility, and package parity. Source-text assertions alone
    never prove parity.
@@ -112,6 +156,31 @@ When adding a feature or layout capability to any template, follow this order:
    sequence.
 
 Never solve parity by copying shared business logic between theme folders.
+
+## Midnight Atelier construction map
+
+`MidnightAtelier.tsx` consumes the shared normalized data and composes a
+distinct couture programme from the same canonical capabilities:
+
+```text
+CoverGate — curtain seam, guest personalization, music and focus handoff
+  ├─ Hero — cinematic image or intentional dark sparse state
+  ├─ Couple + parents — left-aligned editorial portrait spread
+  ├─ Programme — events, maps, calendar, countdown, dress code, livestream
+  ├─ Story — couture narrative sequence, including text-only entries
+  ├─ Gallery — contact-sheet composition for sparse or full collections
+  ├─ RSVP — Lacquer interaction using shared action state and Turnstile
+  ├─ Wishes — Pearl guestbook using shared action and pagination behavior
+  ├─ Gifts — dark ledger with shared clipboard feedback
+  └─ Closing — restrained cinematic conclusion
+```
+
+Midnight uses Ink `#09090B`, Lacquer `#171216`, Oxblood `#541E2B`, Champagne
+`#C6A15B`, Pearl `#F3EEE6`, and Smoke `#AAA3A4`. Bodoni Moda carries display
+type and Barlow Condensed carries supporting type. Avoid gradients, fake foil,
+stars, repeated ornamental frames, excessive gold, and SaaS cards. Optional
+content must disappear cleanly, and nonessential motion must honor reduced
+motion preferences.
 
 ## Terra Botanica construction map
 
@@ -227,19 +296,87 @@ For every changed public section:
 | 9 | Verified responsive, accessibility, performance, and hydrated browser behavior for both themes; isolated Terra feature flags. | `0a6d5cdf`, `16f45366` | 145/145 tests; 24 hydrated theme/viewport/fixture cases plus slow-image and expired-state checks; lint/types/diff/build pass. |
 | Final parity fix | Centralized WIB countdown interpretation and valid supplied event intervals; decoupled Ivory calendar availability from countdown while preserving its visual treatment. | `3abb1e3c` | 150/150 tests; cross-theme timezone/calendar regression tests; focused Ivory browser checks at 320 and 1440 px; lint/types/diff/build pass. |
 
-Terra is now registered in application code. The migration file is committed
-but has not been applied to Supabase; therefore live admin discovery is not yet
-active or verified.
+Terra and Midnight are registered in application code and both catalogue rows
+were verified active in the production Supabase project on 1 October 2026.
+The remote migration ledger predates the repository's renamed baseline and is
+not aligned with every local filename. Do not run a bulk `supabase db push` to
+repair that drift. Audit and reconcile migration history as a separate task.
+
+## Completed Midnight Atelier task history
+
+| Task | Outcome | Commit | Status |
+| --- | --- | --- | --- |
+| 1 | Approved and documented the dark cinematic couture direction. | `451f7669` | Complete. |
+| 2 | Added tokens, typography, and unregistered theme foundation. | `3fb1338f` | Complete. |
+| 3 | Built the Midnight shell, cover, navigation, and motion foundation. | `3ad1a041` | Complete. |
+| 4 | Added hero, couple, parents, quote, and closing narrative. | `98334f83` | Complete. |
+| 5 | Added programme, events, maps, calendar, countdown, dress code, and livestream. | `c306b6cc` | Complete. |
+| 6 | Added couture story and contact-sheet gallery with sparse states. | `7e4ce95a` | Complete. |
+| 7 | Added RSVP, wishes, and gift interactions through shared behavior. | `7644883d` | Complete. |
+| 8 | Registered the theme, added a safe catalogue migration, expanded parity tests, and updated durable documentation. | `a788711d` | 195/195 tests; lint/types/diff/build pass. |
+| 9 | Completed responsive, accessibility, performance, malformed-data, and hydrated browser QA across Midnight, Terra, and Ivory. The discovered Ivory invalid-date crash and unsafe event-link gap were fixed through shared validation boundaries. | `17964b00` | 201/201 tests; 48 hydrated theme/viewport/state cases, 3 slow-image cases, and 1 expired-state case; lint/types/diff/build pass. |
 
 ## Remaining rollout notes
 
 - The Task 5 Instagram accessible-name note and Task 8 registry-example note
   were resolved during Task 9. The typed registry and runtime tests now cover
-  the current two-theme contract.
+  the then-current three-theme contract; Task 8 now covers the four-theme
+  contract including Cobalt Riviera.
 - Remote Supabase images intentionally retain existing `unoptimized` delivery
   because `next.config.ts` has no narrow remote allowlist. Stable ratios,
   explicit sizes, lazy loading, and error fallbacks are already implemented.
   Revisit optimization only during integration QA with evidence.
+
+## Cobalt Riviera task history
+
+| Task | Outcome | Commit | Status |
+| --- | --- | --- | --- |
+| 1 | Approved the sunlit destination editorial direction and defined the guarded task-by-task delivery plan. | `582da847`, current plan commit | Complete. |
+| 2 | Added the unregistered 18-section foundation, bundled Familjen Grotesk and Newsreader, scoped palette and accessible primitives, stable media fallback, and behavioral contract tests. | `f1005fb8` | Complete; 206/206 tests, lint, TypeScript, build, and independent review clean. |
+| 3 | Added the photo-free horizon cover, shared opening/audio/focus/analytics behavior, mounted-target route navigation, and collision-safe music control. | `0be1400c` | Complete; 214/214 tests, lint, TypeScript, build, and independent review clean. |
+| 4 | Added the panoramic hero and typographic missing-media horizon, optional Newsreader quote, offset couple and parent editorial, safe Instagram credits, and the closing field through the shared media fallback chain. | `4ab2550a` | Complete; 219/219 tests, lint, TypeScript, build, diff check, and independent review clean. |
+| 5 | Added flat one-to-five-event itinerary rows, safe Maps and calendar actions, a WIB horizon countdown, labelled wardrobe strips, and conditional broadcast rows. | `9bc9593a` | Complete; 229/229 tests, lint, TypeScript, build, diff check, and independent review clean after two Important fixes. |
+| 6 | Added the chronological story folio with text-only states and a panoramic-anchor ceramic gallery that preserves ordered media from one through forty images. | `92e74dc4` | Complete; 234/234 tests, lint, TypeScript, build, diff check, and independent review clean. |
+| 7 | Added Cobalt RSVP, wishes, and travel-folio gift interactions over the shared action, Turnstile, pagination, and clipboard behavior. Feature-gated guest personalization, explicit attendance checks, truthful pending/error/success states, and 320px-safe controls are covered. | `31e5787f` | Complete; 242/242 tests, focused 16/16, lint, TypeScript, build, diff check, and independent review clean. |
+| 8 | Registered Cobalt with approved preview metadata, added an idempotent in-place catalogue upsert, expanded four-theme package/capability parity, and documented safe rollout/rollback. | `f2733a3b` | Complete; focused 56/56 and full 246/246 tests, lint, TypeScript, build, and diff check pass; independent review clean; no push, deploy, or remote migration. |
+| 9 | Completed final code and hydrated visual QA, hardened invalid-image fallbacks, and fixed tablet/desktop navigation plus hero collisions across portrait and landscape layouts. | current task commit | Complete; focused quality 7/7 and full 253/253 tests; 320/390/768/1024/1440 browser checks; lint, TypeScript, build, and diff check pass; no push, deploy, or remote migration. |
+
+Next step: wait for user confirmation, then execute the documented Cobalt
+Riviera rollout sequence. Do not push, deploy, apply the remote catalogue
+migration, or activate production until explicitly requested.
+
+## Cobalt Riviera rollout and rollback
+
+The rollout order is strict:
+
+1. Push the reviewed branch and update its pull request.
+2. Deploy application support while the catalogue row is absent or inactive.
+3. Verify all four registered slugs and the safe unsupported-theme fallback.
+4. Apply only `20261002000001_cobalt_riviera_theme.sql`; do not use a bulk
+   `supabase db push` against the drifted remote migration ledger.
+5. Verify the exact row with
+   `select id, name, slug, category, is_active from public.themes where slug = 'cobalt-riviera';`
+   and confirm it is publicly discoverable under the active-theme RLS policy.
+6. Confirm authenticated admin selection still flows through
+   `listActiveThemes()`, then preview a dedicated Cobalt invitation.
+7. Publish only after its content is approved.
+
+Rollback begins with
+`update public.themes set is_active = false, updated_at = now() where slug = 'cobalt-riviera';`.
+Verify the row is inactive and absent from public/admin active-theme discovery.
+Never delete the row or rewrite its ID. Audit and reassign referencing
+invitations only with separate authorization, then roll back application code.
+No remote step has been performed during Task 8.
+
+## Cobalt Riviera production rollout — 2026-10-02
+
+- Branch `codex/cobalt-riviera-theme` was pushed at reviewed commit `e529748f`.
+- Pull request: https://github.com/DanarArrsyd/invitation_digital/pull/3 (delta against `codex/terra-botanica-theme`, because the remote `main` history is unrelated).
+- Vercel production deployment `dpl_GX3dFa4CgKdHHgij7iS8VnGn5peR` reached `READY` and owns `https://invitation-digital-delta.vercel.app`.
+- Smoke checks returned HTTP 200 for `/`, `/admin/login`, `/sample-1`, `/sample-2`, and `/rayhana-febry`; recent production logs showed info-level requests without runtime errors.
+- Supabase project `kcmddkxpwhphyqynghsl`: applied only the Cobalt catalogue migration. The recorded migration is `20261002012904_cobalt_riviera_theme`; row `2344901c-5f17-49bc-8ba8-6e7092ce7c4f` is active and visible through the `anon` role.
+- No Cobalt customer invitation was created or published; the theme is catalogue-ready and remains subject to content approval for the first dedicated invitation.
+- Note: GitHub's automatic Vercel preview context for PR #3 reported an error before READY, while the explicit production deployment above built and reached READY successfully. Resolve that preview integration status before merging the PR.
 
 ## Required execution workflow
 
@@ -270,9 +407,12 @@ The ignored execution ledger is at:
   verifies action payloads, pagination, state feedback, input recovery, and
   pending-edit concurrency behavior.
 
-## Next step — remote rollout requires user authorization
+## Production rollout — complete
 
-The local implementation and Task 9 quality gate are complete. Do not push,
-apply the Terra migration to remote Supabase, or deploy until the user explicitly
-authorizes those actions. The committed migration has not been applied remotely;
-live admin theme discovery and customer data integration remain unverified.
+Commit `2b7f7065` was pushed to `codex/terra-botanica-theme` and deployed to
+Vercel production on 1 October 2026. Deployment
+`dpl_DXPp8K1RntxvJRQBQs7viy8gVL9q` reached `READY` and owns the
+`invitation-digital-delta.vercel.app` alias. The root and admin login route
+returned HTTP 200, and the reviewed Midnight catalogue upsert returned an
+active production row. Authenticated admin selection still requires a manual
+signed-in confirmation; do not claim it from the unauthenticated smoke test.

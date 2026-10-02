@@ -33,6 +33,14 @@ function loadThemeContract() {
   const { themeRegistry } = loadTs("themes/registry.ts", {
     "./nusantara-ivory": { NusantaraIvory: () => null },
     "./terra-botanica": { TerraBotanica: () => null },
+    "./midnight-atelier": {
+      MidnightAtelier: () => null,
+      MIDNIGHT_ATELIER_SECTIONS: Object.fromEntries(contract.THEME_SECTION_KEYS.map((key) => [key, true])),
+    },
+    "./cobalt-riviera": {
+      CobaltRiviera: () => null,
+      COBALT_RIVIERA_SECTIONS: Object.fromEntries(contract.THEME_SECTION_KEYS.map((key) => [key, true])),
+    },
     "./section-contract": contract,
   });
   return { ...contract, themeRegistry };
@@ -48,11 +56,15 @@ test("all registered themes cover the canonical public section contract", () => 
   assert.equal(THEME_SECTION_KEYS.includes("sponsorship"), false);
 });
 
-test("Nusantara Ivory exposes its preview metadata", () => {
+test("every registered theme exposes its approved preview metadata", () => {
   const { themeRegistry } = loadThemeContract();
-  const { name, palette } = themeRegistry["nusantara-ivory"].preview;
-  assert.deepEqual({ name, palette: [...palette] }, {
-    name: "Nusantara Ivory",
-    palette: ["#FCFAF5", "#AA8D61", "#27231F"],
+  assert.deepEqual(Object.fromEntries(Object.entries(themeRegistry).map(([slug, definition]) => [slug, {
+    name: definition.preview.name,
+    palette: [...definition.preview.palette],
+  }])), {
+    "cobalt-riviera": { name: "Cobalt Riviera", palette: ["#1646C8", "#FFF9EE", "#F06A3C"] },
+    "nusantara-ivory": { name: "Nusantara Ivory", palette: ["#FCFAF5", "#AA8D61", "#27231F"] },
+    "terra-botanica": { name: "Terra Botanica", palette: ["#F2E7D8", "#B6634B", "#53634E"] },
+    "midnight-atelier": { name: "Midnight Atelier", palette: ["#09090B", "#541E2B", "#C6A15B"] },
   });
 });

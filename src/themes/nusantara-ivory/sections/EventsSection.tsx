@@ -1,20 +1,19 @@
 import type { InvitationEvent } from "@/types/invitation";
+import { normalizedEventTime, validEventDate } from "@/themes/shared/calendar";
+import { usableExternalUrl } from "@/themes/shared/external-url";
 
 import { Reveal } from "../components/Reveal";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 
-function formatTime(time: string): string {
-  return time.slice(0, 5);
-}
-
 function dateParts(dateStr: string) {
-  const date = new Date(dateStr);
+  if (!validEventDate(dateStr)) return null;
+  const date = new Date(`${dateStr}T00:00:00Z`);
   return {
-    weekday: new Intl.DateTimeFormat("id-ID", { weekday: "long" }).format(date),
-    day: new Intl.DateTimeFormat("id-ID", { day: "2-digit" }).format(date),
-    month: new Intl.DateTimeFormat("id-ID", { month: "long" }).format(date),
-    year: new Intl.DateTimeFormat("id-ID", { year: "numeric" }).format(date),
+    weekday: new Intl.DateTimeFormat("id-ID", { weekday: "long", timeZone: "UTC" }).format(date),
+    day: new Intl.DateTimeFormat("id-ID", { day: "2-digit", timeZone: "UTC" }).format(date),
+    month: new Intl.DateTimeFormat("id-ID", { month: "long", timeZone: "UTC" }).format(date),
+    year: new Intl.DateTimeFormat("id-ID", { year: "numeric", timeZone: "UTC" }).format(date),
   };
 }
 
@@ -27,11 +26,11 @@ function EventRow({
   showMaps: boolean;
   isFirst: boolean;
 }) {
-  const timeRange = [event.startTime, event.endTime]
-    .filter((t): t is string => Boolean(t))
-    .map(formatTime)
-    .join(" – ");
-  const { weekday, day, month, year } = dateParts(event.eventDate);
+  const startTime = normalizedEventTime(event.startTime);
+  const endTime = normalizedEventTime(event.endTime);
+  const timeRange = startTime ? [startTime, endTime].filter(Boolean).join(" – ") : "";
+  const date = dateParts(event.eventDate);
+  const mapUrl = showMaps ? usableExternalUrl(event.mapsUrl) : null;
 
   return (
     <article
@@ -40,29 +39,31 @@ function EventRow({
       }`}
       style={isFirst ? undefined : { borderColor: "rgba(169,138,92,0.25)" }}
     >
-      <Reveal variant="left" className="ni-event-date md:col-span-4 lg:col-span-3">
-        <div className="flex items-end gap-4 md:flex-col md:items-start md:gap-1">
-          <span className="ni-display text-[clamp(4.5rem,10vw,8rem)] tabular-nums">{day}</span>
-          <div className="flex flex-col pb-2 md:pb-0">
-            <span className="ni-serif text-[1.25rem] text-[var(--ni-brown)]">{month}</span>
-            <span
-              className="text-[0.68rem] tracking-[0.3em] uppercase"
-              style={{ color: "var(--ni-gold)" }}
-            >
-              {year}
-            </span>
+      {date ? (
+        <Reveal variant="left" className="ni-event-date md:col-span-4 lg:col-span-3">
+          <div className="flex items-end gap-4 md:flex-col md:items-start md:gap-1">
+            <span className="ni-display text-[clamp(4.5rem,10vw,8rem)] tabular-nums">{date.day}</span>
+            <div className="flex flex-col pb-2 md:pb-0">
+              <span className="ni-serif text-[1.25rem] text-[var(--ni-brown)]">{date.month}</span>
+              <span
+                className="text-[0.68rem] tracking-[0.3em] uppercase"
+                style={{ color: "var(--ni-gold)" }}
+              >
+                {date.year}
+              </span>
+            </div>
           </div>
-        </div>
-      </Reveal>
+        </Reveal>
+      ) : null}
 
-      <Reveal variant="up" delay={0.08} className="md:col-span-8 lg:col-span-8 lg:col-start-5">
+      <Reveal variant="up" delay={0.08} className={date ? "md:col-span-8 lg:col-span-8 lg:col-start-5" : "md:col-span-12"}>
         <div className="flex flex-col gap-4">
           {event.eventType ? <p className="ni-eyebrow">{event.eventType}</p> : null}
 
           <h3 className="ni-display text-[clamp(1.8rem,4.2vw,2.8rem)]">{event.title}</h3>
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
-            <span className="ni-serif text-[1.05rem] text-[var(--ni-brown)]">{weekday}</span>
+            {date ? <span className="ni-serif text-[1.05rem] text-[var(--ni-brown)]">{date.weekday}</span> : null}
             {timeRange ? (
               <>
                 <span aria-hidden="true" style={{ color: "var(--ni-sand)" }}>
@@ -86,9 +87,9 @@ function EventRow({
             </div>
           ) : null}
 
-          {showMaps && event.mapsUrl ? (
+          {mapUrl ? (
             <a
-              href={event.mapsUrl}
+              href={mapUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="group mt-3 inline-flex min-h-[48px] w-fit items-center gap-3 border px-7 text-[0.7rem] tracking-[0.28em] uppercase transition-colors duration-400"
