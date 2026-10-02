@@ -338,11 +338,12 @@ repair that drift. Audit and reconcile migration history as a separate task.
 | 5 | Added flat one-to-five-event itinerary rows, safe Maps and calendar actions, a WIB horizon countdown, labelled wardrobe strips, and conditional broadcast rows. | `9bc9593a` | Complete; 229/229 tests, lint, TypeScript, build, diff check, and independent review clean after two Important fixes. |
 | 6 | Added the chronological story folio with text-only states and a panoramic-anchor ceramic gallery that preserves ordered media from one through forty images. | `92e74dc4` | Complete; 234/234 tests, lint, TypeScript, build, diff check, and independent review clean. |
 | 7 | Added Cobalt RSVP, wishes, and travel-folio gift interactions over the shared action, Turnstile, pagination, and clipboard behavior. Feature-gated guest personalization, explicit attendance checks, truthful pending/error/success states, and 320px-safe controls are covered. | `31e5787f` | Complete; 242/242 tests, focused 16/16, lint, TypeScript, build, diff check, and independent review clean. |
-| 8 | Registered Cobalt with approved preview metadata, added an idempotent in-place catalogue upsert, expanded four-theme package/capability parity, and documented safe rollout/rollback. | current task commit | Complete; focused 56/56 and full 246/246 tests, lint, TypeScript, build, and diff check pass; independent review clean; no push, deploy, or remote migration. |
+| 8 | Registered Cobalt with approved preview metadata, added an idempotent in-place catalogue upsert, expanded four-theme package/capability parity, and documented safe rollout/rollback. | `f2733a3b` | Complete; focused 56/56 and full 246/246 tests, lint, TypeScript, build, and diff check pass; independent review clean; no push, deploy, or remote migration. |
+| 9 | Completed final code and hydrated visual QA, hardened invalid-image fallbacks, and fixed tablet/desktop navigation plus hero collisions across portrait and landscape layouts. | current task commit | Complete; focused quality 7/7 and full 253/253 tests; 320/390/768/1024/1440 browser checks; lint, TypeScript, build, and diff check pass; no push, deploy, or remote migration. |
 
-Next step: wait for user confirmation, then execute Cobalt Riviera Task 9 only.
-Run full responsive, accessibility, performance, and regression QA without
-deploying or mutating production until explicitly requested.
+Next step: wait for user confirmation, then execute the documented Cobalt
+Riviera rollout sequence. Do not push, deploy, apply the remote catalogue
+migration, or activate production until explicitly requested.
 
 ## Cobalt Riviera rollout and rollback
 
