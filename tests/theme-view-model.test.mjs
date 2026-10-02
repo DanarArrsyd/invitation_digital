@@ -7,6 +7,7 @@ import ts from "typescript";
 
 import { getCoupleDisplayName } from "../src/lib/utils/coupleName.ts";
 import { getDressCode } from "../src/lib/utils/dressCode.ts";
+import * as timeZones from "../src/lib/invitations/time-zones.ts";
 
 const nodeRequire = createRequire(import.meta.url);
 
@@ -34,12 +35,15 @@ function loadModule(path, dependencies = {}) {
   return exports;
 }
 
-const calendar = loadModule("../src/themes/shared/calendar.ts");
+const calendar = loadModule("../src/themes/shared/calendar.ts", {
+  "@/lib/invitations/time-zones": timeZones,
+});
 const viewModel = loadModule("../src/themes/shared/view-model.ts", {
   "@/lib/utils/coupleName": { getCoupleDisplayName },
   "@/lib/utils/dressCode": { getDressCode },
   "./calendar": calendar,
   "@/themes/shared/calendar": calendar,
+  "@/lib/invitations/time-zones": timeZones,
 });
 
 const features = {

@@ -1,7 +1,9 @@
 import {
   calendarEventForEvent,
   normalizedEventTime,
+  timeZoneLabel,
   validEventDate,
+  type InvitationTimeZone,
 } from "@/themes/shared/calendar";
 import { usableExternalUrl } from "@/themes/shared/external-url";
 import type { InvitationEvent } from "@/types/invitation";
@@ -25,11 +27,13 @@ export function EventsSection({
   mapsEnabled,
   coupleDisplayName,
   invitationId,
+  timeZone,
 }: {
   events: InvitationEvent[];
   mapsEnabled: boolean;
   coupleDisplayName: string;
   invitationId: string;
+  timeZone?: InvitationTimeZone;
 }) {
   if (events.length === 0) return null;
 
@@ -46,7 +50,7 @@ export function EventsSection({
           const start = normalizedEventTime(event.startTime);
           const end = normalizedEventTime(event.endTime);
           const mapUrl = mapsEnabled ? usableExternalUrl(event.mapsUrl) : null;
-          const calendarEvent = calendarEventForEvent(event, coupleDisplayName);
+          const calendarEvent = calendarEventForEvent(event, coupleDisplayName, timeZone);
           const hasActions = mapUrl !== null || calendarEvent !== null;
 
           return (
@@ -56,7 +60,7 @@ export function EventsSection({
                 {event.eventType ? <p className="cr-event-type">{event.eventType}</p> : null}
                 <h3>{event.title}</h3>
                 {date ? <time dateTime={event.eventDate}>{date}</time> : null}
-                {start ? <p className="cr-event-time">{start}{end ? ` – ${end}` : ""} WIB</p> : null}
+                {start ? <p className="cr-event-time">{start}{end ? ` – ${end}` : ""} {timeZoneLabel(timeZone)}</p> : null}
               </div>
               <div className="cr-event-place">
                 {event.venueName ? <p className="cr-event-venue">{event.venueName}</p> : null}

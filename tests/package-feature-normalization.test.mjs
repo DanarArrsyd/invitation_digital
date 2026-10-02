@@ -16,6 +16,7 @@ function loadModule(path) {
     require(name) {
       if (name === "@/lib/packages/entitlements") return loadModule("lib/packages/entitlements");
       if (name === "@/lib/supabase/storage") return { getMediaPublicUrl: () => null };
+      if (name === "@/lib/invitations/time-zones") return loadModule("lib/invitations/time-zones");
       throw new Error(`Unexpected normalization import: ${name}`);
     },
   });

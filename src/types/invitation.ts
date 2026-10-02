@@ -1,3 +1,5 @@
+import type { InvitationTimeZone } from "@/lib/invitations/time-zones";
+
 export type InvitationType =
   | "wedding"
   | "birthday"
@@ -107,6 +109,8 @@ export interface PublicInvitation {
   venueSummary: string | null;
   publishedAt: string;
   expiresAt: string | null;
+  /** Time zone the event times are entered in (settings.timeZone, default WIB). */
+  timeZone: InvitationTimeZone;
 
   theme: {
     slug: string;

@@ -86,6 +86,7 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
             mapsEnabled={invitation.features.maps}
             coupleDisplayName={coupleDisplayName}
             invitationId={invitation.id}
+            timeZone={invitation.timeZone}
           />
           <CountdownSection target={countdownTarget} />
           <DressCodeSection dressCode={dressCode} />

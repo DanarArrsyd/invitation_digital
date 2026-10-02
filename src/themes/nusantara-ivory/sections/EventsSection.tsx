@@ -1,5 +1,5 @@
 import type { InvitationEvent } from "@/types/invitation";
-import { normalizedEventTime, validEventDate } from "@/themes/shared/calendar";
+import { normalizedEventTime, timeZoneLabel, validEventDate, type InvitationTimeZone } from "@/themes/shared/calendar";
 import { usableExternalUrl } from "@/themes/shared/external-url";
 
 import { Reveal } from "../components/Reveal";
@@ -21,10 +21,12 @@ function EventRow({
   event,
   showMaps,
   isFirst,
+  zoneLabel,
 }: {
   event: InvitationEvent;
   showMaps: boolean;
   isFirst: boolean;
+  zoneLabel: string;
 }) {
   const startTime = normalizedEventTime(event.startTime);
   const endTime = normalizedEventTime(event.endTime);
@@ -70,7 +72,7 @@ function EventRow({
                   ·
                 </span>
                 <span className="ni-serif text-[1.05rem] text-[var(--ni-brown)]">
-                  {timeRange} WIB
+                  {timeRange} {zoneLabel}
                 </span>
               </>
             ) : null}
@@ -120,10 +122,12 @@ export function EventsSection({
   events,
   venueSummary,
   showMaps,
+  timeZone,
 }: {
   events: InvitationEvent[];
   venueSummary: string | null;
   showMaps: boolean;
+  timeZone?: InvitationTimeZone;
 }) {
   if (events.length === 0 && !venueSummary) return null;
 
@@ -135,6 +139,7 @@ export function EventsSection({
         {events.length > 0 ? (
           events.map((event, index) => (
             <EventRow
+              zoneLabel={timeZoneLabel(timeZone)}
               key={event.id}
               event={event}
               showMaps={showMaps}

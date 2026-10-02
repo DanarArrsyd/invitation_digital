@@ -1,4 +1,12 @@
+import {
+  DEFAULT_INVITATION_TIME_ZONE,
+  timeZoneOffsetHours,
+  type InvitationTimeZone,
+} from "@/lib/invitations/time-zones";
 import type { InvitationEvent } from "@/types/invitation";
+
+export { timeZoneLabel } from "@/lib/invitations/time-zones";
+export type { InvitationTimeZone } from "@/lib/invitations/time-zones";
 
 export type CalendarEventInput = {
   title: string;
@@ -7,10 +15,9 @@ export type CalendarEventInput = {
   endTime: string | null;
   location: string | null;
   description?: string | null;
+  /** Wall-clock times above are in this zone (the invitation's time zone). */
+  timeZone?: InvitationTimeZone;
 };
-
-/** Wedding venues in this platform are Indonesian; times are entered in WIB. */
-const WIB_OFFSET_HOURS = 7;
 
 export function validEventDate(value: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -23,15 +30,30 @@ export function normalizedEventTime(value: string | null): string | null {
   return value.slice(0, 5);
 }
 
-/** A date and optional wall-clock time entered in WIB, independent of the viewer's timezone. */
-export function toWibTimestamp(date: string | null, time: string | null): number | null {
+function offsetSuffix(timeZone: InvitationTimeZone): string {
+  return `+${String(timeZoneOffsetHours(timeZone)).padStart(2, "0")}:00`;
+}
+
+/**
+ * A date and optional wall-clock time entered in the invitation's time zone,
+ * as an absolute instant, independent of the viewer's own time zone.
+ */
+export function toEventTimestamp(
+  date: string | null,
+  time: string | null,
+  timeZone: InvitationTimeZone = DEFAULT_INVITATION_TIME_ZONE,
+): number | null {
   if (!date || !validEventDate(date)) return null;
   if (time !== null && normalizedEventTime(time) === null) return null;
-  const timestamp = Date.parse(`${date}T${time ?? "00:00:00"}+07:00`);
+  const timestamp = Date.parse(`${date}T${time ?? "00:00:00"}${offsetSuffix(timeZone)}`);
   return Number.isFinite(timestamp) ? timestamp : null;
 }
 
-export function calendarEventForEvent(event: InvitationEvent, coupleDisplayName: string): CalendarEventInput | null {
+export function calendarEventForEvent(
+  event: InvitationEvent,
+  coupleDisplayName: string,
+  timeZone: InvitationTimeZone = DEFAULT_INVITATION_TIME_ZONE,
+): CalendarEventInput | null {
   const startTime = normalizedEventTime(event.startTime);
   const endTime = normalizedEventTime(event.endTime);
   if (!validEventDate(event.eventDate) || !startTime || !endTime || endTime <= startTime) return null;
@@ -42,13 +64,14 @@ export function calendarEventForEvent(event: InvitationEvent, coupleDisplayName:
     endTime,
     location: event.venueName,
     description: `Undangan ${coupleDisplayName}`,
+    timeZone,
   };
 }
 
-function toUtcDate(date: string, time: string | null, fallbackHour: number): Date {
+function toUtcDate(date: string, time: string | null, fallbackHour: number, timeZone: InvitationTimeZone): Date {
   const [h, m] = (time ?? `${String(fallbackHour).padStart(2, "0")}:00`).split(":").map(Number);
   const d = new Date(`${date}T00:00:00Z`);
-  d.setUTCHours(h - WIB_OFFSET_HOURS, m || 0, 0, 0);
+  d.setUTCHours(h - timeZoneOffsetHours(timeZone), m || 0, 0, 0);
   return d;
 }
 
@@ -57,9 +80,10 @@ function formatUtcStamp(date: Date): string {
 }
 
 function buildTimes(event: CalendarEventInput) {
-  const startDate = toUtcDate(event.date, event.startTime, 9);
+  const timeZone = event.timeZone ?? DEFAULT_INVITATION_TIME_ZONE;
+  const startDate = toUtcDate(event.date, event.startTime, 9, timeZone);
   const endDate = event.endTime
-    ? toUtcDate(event.date, event.endTime, 11)
+    ? toUtcDate(event.date, event.endTime, 11, timeZone)
     : new Date(startDate.getTime() + 2 * 3_600_000);
   return { start: formatUtcStamp(startDate), end: formatUtcStamp(endDate) };
 }
