@@ -222,7 +222,8 @@ Acceptance:
 
 Current state:
 
-- `nusantara-ivory`, `terra-botanica`, and `midnight-atelier` are registered;
+- `nusantara-ivory`, `terra-botanica`, `midnight-atelier`, and
+  `cobalt-riviera` are registered in application code;
 - every theme has preview metadata and an explicit 18-capability manifest;
 - the admin catalogue remains sourced from active database rows through
   `listActiveThemes()`;
@@ -231,6 +232,9 @@ Current state:
 - final responsive, accessibility, performance, and hydrated browser QA for
   Midnight Atelier is complete across all three registered themes. Production
   deployment and catalogue activation were verified on 1 October 2026.
+- Cobalt Riviera registry support, its idempotent local catalogue upsert, and
+  four-theme package/capability parity are complete locally. The migration has
+  not been applied remotely and the theme is not yet activated in production.
 
 ---
 
@@ -265,6 +269,7 @@ Acceptance:
 - Nusantara Ivory: bright refined editorial foundation.
 - Terra Botanica: warm organic Editorial Garden direction.
 - Midnight Atelier: dark cinematic couture direction.
+- Cobalt Riviera: sunlit destination editorial direction.
 
 All themes share the same normalized data and package capability contract.
 Visual composition may differ, but enabled public capabilities may not.

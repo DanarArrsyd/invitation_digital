@@ -70,17 +70,21 @@ function invitation(themeSlug) {
   };
 }
 
-test("all three registered theme slugs resolve through the real public renderer", () => {
+test("all four registered theme slugs resolve through the real public renderer", () => {
   const { themeRegistry } = loadSource("themes/registry");
   const { ThemeRenderer } = loadSource("themes/ThemeRenderer");
-  assert.deepEqual(Object.keys(themeRegistry).sort(), ["midnight-atelier", "nusantara-ivory", "terra-botanica"]);
+  assert.deepEqual(Object.keys(themeRegistry).sort(), ["cobalt-riviera", "midnight-atelier", "nusantara-ivory", "terra-botanica"]);
   assert.equal(themeRegistry["terra-botanica"].preview.name, "Terra Botanica");
   assert.equal(themeRegistry["terra-botanica"].category, "wedding");
   assert.deepEqual([...themeRegistry["terra-botanica"].preview.palette], ["#F2E7D8", "#B6634B", "#53634E"]);
   assert.equal(themeRegistry["midnight-atelier"].preview.name, "Midnight Atelier");
   assert.equal(themeRegistry["midnight-atelier"].category, "wedding");
   assert.deepEqual([...themeRegistry["midnight-atelier"].preview.palette], ["#09090B", "#541E2B", "#C6A15B"]);
+  assert.equal(themeRegistry["cobalt-riviera"].preview.name, "Cobalt Riviera");
+  assert.equal(themeRegistry["cobalt-riviera"].category, "wedding");
+  assert.deepEqual([...themeRegistry["cobalt-riviera"].preview.palette], ["#1646C8", "#FFF9EE", "#F06A3C"]);
   const expectedComponents = {
+    "cobalt-riviera": "CobaltRiviera",
     "nusantara-ivory": "NusantaraIvory",
     "terra-botanica": "TerraBotanica",
     "midnight-atelier": "MidnightAtelier",
@@ -224,7 +228,7 @@ test("all packages normalize identical effective features for every registered t
   };
   for (const packageKey of ["intimate", "signature", "grand"]) {
     const results = [];
-    for (const slug of ["nusantara-ivory", "terra-botanica", "midnight-atelier"]) {
+    for (const slug of ["nusantara-ivory", "terra-botanica", "midnight-atelier", "cobalt-riviera"]) {
       const row = {
         id: "test", type: "wedding", slug: "test", title: "Alya & Bima", status: "published",
         package_key: packageKey, settings: { features: savedFeatures }, theme_id: "theme-id", theme: { id: "theme-id", slug },
