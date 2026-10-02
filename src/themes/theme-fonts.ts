@@ -1,0 +1,32 @@
+/**
+ * Self-hosted faces for every registered theme, plus each theme's
+ * `fonts.css` mapping its font tokens to those faces.
+ *
+ * Imported only by routes that render a theme (the public invitation and
+ * the admin preview), never by the root layout, so admin screens don't
+ * carry wedding font CSS. Kept out of the theme modules themselves so they
+ * stay plain TS/TSX that tests can load without a CSS loader.
+ */
+
+// nusantara-ivory
+import "@fontsource-variable/cormorant-garamond";
+import "@fontsource-variable/cormorant-garamond/wght-italic.css";
+import "@fontsource-variable/jost";
+import "./nusantara-ivory/fonts.css";
+
+// terra-botanica
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/manrope";
+import "./terra-botanica/fonts.css";
+
+// midnight-atelier
+import "@fontsource-variable/bodoni-moda";
+import "@fontsource/ibm-plex-sans-condensed/400.css";
+import "@fontsource/ibm-plex-sans-condensed/500.css";
+import "@fontsource/ibm-plex-sans-condensed/600.css";
+import "./midnight-atelier/fonts.css";
+
+// cobalt-riviera
+import "@fontsource-variable/familjen-grotesk";
+import "@fontsource-variable/newsreader";
+import "./cobalt-riviera/fonts.css";

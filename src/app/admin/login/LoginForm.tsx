@@ -46,7 +46,7 @@ export function LoginForm() {
       </div>
 
       {state.error ? (
-        <p id={errorId} role="alert" aria-live="polite" className="text-sm text-red-700">
+        <p id={errorId} role="alert" aria-live="polite" className="text-sm text-destructive">
           {state.error}
         </p>
       ) : null}

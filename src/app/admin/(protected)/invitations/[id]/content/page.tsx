@@ -37,7 +37,7 @@ export default async function ContentPage({
   return (
     <div className="flex flex-col gap-10">
       <section>
-        <h2 className="text-sm font-semibold text-neutral-900">Opening &amp; Closing</h2>
+        <h2 className="text-sm font-semibold text-foreground">Opening &amp; Closing</h2>
         <form action={updateContentAction} className="mt-4 flex max-w-lg flex-col gap-4">
           <input type="hidden" name="invitationId" value={invitation.id} />
 
@@ -71,8 +71,8 @@ export default async function ContentPage({
             />
           </div>
 
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
-          {saved ? <p className="text-sm text-green-600">Saved.</p> : null}
+          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          {saved ? <p className="text-sm text-success">Saved.</p> : null}
 
           <Button type="submit" className="mt-2 w-fit">
             Save
@@ -83,8 +83,8 @@ export default async function ContentPage({
       <Separator />
 
       <section>
-        <h2 className="text-sm font-semibold text-neutral-900">Dress Code</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h2 className="text-sm font-semibold text-foreground">Dress Code</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           {dressCodeLocked && dressCodePackage
             ? `Tersedia di ${PACKAGE_DEFINITIONS[dressCodePackage].label}. Konten tersimpan tetap disimpan.`
             : "Aktifkan section ini lewat tab Features."}
@@ -103,7 +103,7 @@ export default async function ContentPage({
               />
             </div>
 
-            <div className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-4">
+            <div className="flex flex-col gap-3 rounded-lg border border-border p-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="group1Label">Label grup 1</Label>
                 <Input id="group1Label" name="group1Label" defaultValue={group1?.label ?? ""} placeholder="Pria" />
@@ -111,7 +111,7 @@ export default async function ContentPage({
               <ColorListInput name="group1Colors" defaultValue={group1?.colors.join(", ") ?? ""} label="Warna grup 1" />
             </div>
 
-            <div className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-4">
+            <div className="flex flex-col gap-3 rounded-lg border border-border p-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="group2Label">Label grup 2</Label>
                 <Input id="group2Label" name="group2Label" defaultValue={group2?.label ?? ""} placeholder="Wanita" />
@@ -119,8 +119,8 @@ export default async function ContentPage({
               <ColorListInput name="group2Colors" defaultValue={group2?.colors.join(", ") ?? ""} label="Warna grup 2" />
             </div>
 
-            {error ? <p className="text-sm text-red-600">{error}</p> : null}
-            {saved ? <p className="text-sm text-green-600">Saved.</p> : null}
+            {error ? <p className="text-sm text-destructive">{error}</p> : null}
+            {saved ? <p className="text-sm text-success">Saved.</p> : null}
 
             <Button type="submit" className="mt-2 w-fit">
               Save
@@ -132,17 +132,17 @@ export default async function ContentPage({
       <Separator />
 
       <section>
-        <h2 className="text-sm font-semibold text-neutral-900">Love Story</h2>
+        <h2 className="text-sm font-semibold text-foreground">Love Story</h2>
 
         <div className="mt-4 flex flex-col gap-4">
           {stories.map((story) => (
-            <div key={story.id} className="rounded-lg border border-neutral-200 bg-white p-4">
+            <div key={story.id} className="rounded-lg border border-border bg-card p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-sm font-medium text-neutral-900">
+                  <p className="text-sm font-medium text-foreground">
                     {story.year_label ?? story.story_date ?? ""} — {story.title}
                   </p>
-                  <p className="mt-1 text-sm text-neutral-500">{story.description}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{story.description}</p>
                   {story.image_path ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -174,7 +174,7 @@ export default async function ContentPage({
 
           <form
             action={upsertStoryAction}
-            className="grid max-w-lg grid-cols-2 gap-3 rounded-lg border border-dashed border-neutral-300 p-4"
+            className="grid max-w-lg grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-4"
           >
             <input type="hidden" name="invitationId" value={invitation.id} />
             <input type="hidden" name="sortOrder" value={stories.length} />

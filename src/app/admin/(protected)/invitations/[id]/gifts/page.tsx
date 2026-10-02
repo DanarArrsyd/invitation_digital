@@ -24,13 +24,13 @@ export default async function GiftsPage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       {gifts.map((gift) => (
         <form
           key={gift.id}
           action={upsertGiftAccountAction}
-          className="grid grid-cols-2 gap-3 rounded-lg border border-neutral-200 bg-white p-4"
+          className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-card p-4"
         >
           <input type="hidden" name="id" value={gift.id} />
           <input type="hidden" name="invitationId" value={invitation.id} />
@@ -71,7 +71,7 @@ export default async function GiftsPage({
 
       <form
         action={upsertGiftAccountAction}
-        className="grid max-w-lg grid-cols-2 gap-3 rounded-lg border border-dashed border-neutral-300 p-4"
+        className="grid max-w-lg grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-4"
       >
         <input type="hidden" name="invitationId" value={invitation.id} />
         <input type="hidden" name="sortOrder" value={gifts.length} />

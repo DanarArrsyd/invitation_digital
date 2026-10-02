@@ -19,7 +19,7 @@ export function StorySection({ stories }: { stories: InvitationStory[] }) {
           className="absolute top-2 bottom-2 left-[5px] w-px md:left-1/2"
           style={{
             background:
-              "linear-gradient(180deg, transparent, rgba(169,138,92,0.45) 12%, rgba(169,138,92,0.45) 88%, transparent)",
+              "linear-gradient(180deg, transparent, var(--ni-line-strong) 12%, var(--ni-line-strong) 88%, transparent)",
           }}
         />
 
@@ -43,7 +43,7 @@ export function StorySection({ stories }: { stories: InvitationStory[] }) {
                     {story.yearLabel || story.storyDate ? (
                       <p
                         className="ni-serif text-[clamp(3rem,6vw,5rem)] leading-none"
-                        style={{ color: "rgba(169,138,92,0.75)" }}
+                        style={{ color: "var(--ni-gold-ink)" }}
                       >
                         {story.yearLabel ?? story.storyDate}
                       </p>

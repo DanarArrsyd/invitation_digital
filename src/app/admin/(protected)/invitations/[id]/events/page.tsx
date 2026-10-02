@@ -27,8 +27,8 @@ export default async function EventsPage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      <p className="text-sm text-neutral-600">
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <p className="text-sm text-muted-foreground">
         {events.length} dari {packageDefinition.limits.maxEvents} acara digunakan · Paket {packageDefinition.label}
       </p>
 
@@ -36,7 +36,7 @@ export default async function EventsPage({
         <form
           key={event.id}
           action={upsertEventAction}
-          className="grid grid-cols-2 gap-3 rounded-lg border border-neutral-200 bg-white p-4"
+          className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-card p-4"
         >
           <input type="hidden" name="id" value={event.id} />
           <input type="hidden" name="invitationId" value={invitation.id} />
@@ -99,7 +99,7 @@ export default async function EventsPage({
 
       <form
         action={upsertEventAction}
-        className="grid max-w-2xl grid-cols-2 gap-3 rounded-lg border border-dashed border-neutral-300 p-4"
+        className="grid max-w-2xl grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-4"
       >
         <input type="hidden" name="invitationId" value={invitation.id} />
         <input type="hidden" name="sortOrder" value={events.length} />
@@ -146,7 +146,7 @@ export default async function EventsPage({
         </fieldset>
 
         {limitReached ? (
-          <p className="col-span-2 text-sm text-neutral-600">
+          <p className="col-span-2 text-sm text-muted-foreground">
             Batas acara paket tercapai. Hapus acara atau upgrade paket.
           </p>
         ) : (

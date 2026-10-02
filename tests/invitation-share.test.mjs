@@ -76,6 +76,8 @@ function loadPublicPage(loaderResult) {
       if (name === "@/server/public/invitation-loader") return { getPublicInvitationBySlug: async () => loaderResult };
       if (name === "@/server/public/analytics") return { trackEvent: async () => undefined };
       if (name.endsWith("/ExpiredState")) return { ExpiredState: () => null };
+      // Side-effect CSS import (theme font faces); nothing to evaluate in Node.
+      if (name === "@/themes/theme-fonts") return {};
       if (name === "@/themes/ThemeRenderer") return { ThemeRenderer: () => null };
       return nodeRequire(name);
     },

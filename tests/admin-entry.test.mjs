@@ -52,7 +52,9 @@ test("root sends operators into the authenticated admin flow", () => {
 });
 
 test("all admin screens are excluded from search indexing", () => {
-  const layout = loadTs("app/admin/layout.tsx");
+  const layout = loadTs("app/admin/layout.tsx", {
+    "@/components/ui/sonner": { Toaster: () => null },
+  });
 
   assert.equal(layout.metadata.robots.index, false);
   assert.equal(layout.metadata.robots.follow, false);

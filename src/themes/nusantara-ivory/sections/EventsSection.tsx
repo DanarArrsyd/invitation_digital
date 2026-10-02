@@ -37,7 +37,7 @@ function EventRow({
       className={`grid gap-6 md:grid-cols-12 md:gap-10 ${
         isFirst ? "" : "mt-12 border-t pt-12 md:mt-16 md:pt-16"
       }`}
-      style={isFirst ? undefined : { borderColor: "rgba(169,138,92,0.25)" }}
+      style={isFirst ? undefined : { borderColor: "var(--ni-line)" }}
     >
       {date ? (
         <Reveal variant="left" className="ni-event-date md:col-span-4 lg:col-span-3">
@@ -47,7 +47,7 @@ function EventRow({
               <span className="ni-serif text-[1.25rem] text-[var(--ni-brown)]">{date.month}</span>
               <span
                 className="text-[0.68rem] tracking-[0.3em] uppercase"
-                style={{ color: "var(--ni-gold)" }}
+                style={{ color: "var(--ni-gold-ink)" }}
               >
                 {date.year}
               </span>

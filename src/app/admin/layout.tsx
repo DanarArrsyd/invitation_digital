@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { Toaster } from "@/components/ui/sonner";
+
 export const metadata: Metadata = {
   title: {
     default: "Invitation Admin",
@@ -15,5 +17,10 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      {children}
+      <Toaster richColors position="top-right" />
+    </>
+  );
 }

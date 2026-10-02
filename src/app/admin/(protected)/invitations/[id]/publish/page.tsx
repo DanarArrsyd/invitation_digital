@@ -37,7 +37,7 @@ export default async function PublishPage({
 
   return (
     <div className="flex max-w-md flex-col gap-4">
-      <div className="flex flex-col gap-1 rounded-lg border border-neutral-200 bg-white p-4 text-sm text-neutral-700">
+      <div className="flex flex-col gap-1 rounded-lg border border-border bg-card p-4 text-sm text-foreground">
         <p>
           Status: <span className="font-medium">{invitation.status}</span>
         </p>
@@ -49,7 +49,7 @@ export default async function PublishPage({
             <Link
               href={publicLink}
               target="_blank"
-              className="text-neutral-900 underline underline-offset-2"
+              className="text-foreground underline underline-offset-2"
             >
               {publicLink}
             </Link>
@@ -58,7 +58,7 @@ export default async function PublishPage({
         ) : null}
       </div>
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       {isPublished ? (
         <form action={unpublishAction} className="w-fit">

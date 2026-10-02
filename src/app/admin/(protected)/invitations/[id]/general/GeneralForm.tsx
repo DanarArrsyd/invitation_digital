@@ -101,8 +101,8 @@ export function GeneralForm({
         />
       </div>
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      {saved ? <p className="text-sm text-green-600">Saved.</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {saved ? <p className="text-sm text-success">Saved.</p> : null}
 
       <Button type="submit" className="mt-2 w-fit">
         Save

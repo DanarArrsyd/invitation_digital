@@ -6,6 +6,7 @@ import { getSessionId } from "@/lib/analytics/session";
 import { getInvitationShareData } from "@/lib/share/invitation-share";
 import { getPublicInvitationBySlug } from "@/server/public/invitation-loader";
 import { trackEvent } from "@/server/public/analytics";
+import "@/themes/theme-fonts";
 import { ThemeRenderer } from "@/themes/ThemeRenderer";
 
 import { ExpiredState } from "./ExpiredState";

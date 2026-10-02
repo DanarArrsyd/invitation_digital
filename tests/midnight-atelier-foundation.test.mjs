@@ -180,13 +180,13 @@ test("Midnight source stays presentation-only and uses bundled font families", (
   const files = readdirSync(midnightRoot, { recursive: true })
     .filter((entry) => /\.(ts|tsx)$/.test(entry));
   const source = files.map((entry) => readFileSync(resolve(midnightRoot, entry), "utf8")).join("\n");
-  const layout = readFileSync(resolve(sourceRoot, "app/layout.tsx"), "utf8");
-  const globals = readFileSync(resolve(sourceRoot, "app/globals.css"), "utf8");
+  const fontsTs = readFileSync(resolve(sourceRoot, "themes/theme-fonts.ts"), "utf8");
+  const fontsCss = readFileSync(resolve(sourceRoot, "themes/midnight-atelier/fonts.css"), "utf8");
 
   assert.doesNotMatch(source, /supabase|createSupabase|next\/font\/google/i);
   assert.doesNotMatch(source, /<img\b/);
-  assert.match(layout, /@fontsource-variable\/bodoni-moda/);
-  assert.match(layout, /@fontsource\/ibm-plex-sans-condensed/);
-  assert.match(globals, /--font-ma-display:\s*"Bodoni Moda Variable"/);
-  assert.match(globals, /--font-ma-body:\s*"IBM Plex Sans Condensed"/);
+  assert.match(fontsTs, /@fontsource-variable\/bodoni-moda/);
+  assert.match(fontsTs, /@fontsource\/ibm-plex-sans-condensed/);
+  assert.match(fontsCss, /--font-ma-display:\s*"Bodoni Moda Variable"/);
+  assert.match(fontsCss, /--font-ma-body:\s*"IBM Plex Sans Condensed"/);
 });

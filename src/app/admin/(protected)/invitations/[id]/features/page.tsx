@@ -53,11 +53,11 @@ export default async function FeaturesPage({
         const requiredPackage = getRequiredPackageForFeature(key);
         const granted = allowed[key];
         return (
-          <div key={key} className="flex items-center justify-between gap-4 rounded-lg border border-neutral-200 bg-white px-4 py-3">
+          <div key={key} className="flex items-center justify-between gap-4 rounded-lg border border-border bg-card px-4 py-3">
             <div className="min-w-0">
               <Label htmlFor={key}>{FEATURE_LABELS[key]}</Label>
               {!granted && requiredPackage ? (
-                <p id={`${key}-package`} className="mt-1 text-xs text-neutral-500">
+                <p id={`${key}-package`} className="mt-1 text-xs text-muted-foreground">
                   Tersedia di {PACKAGE_DEFINITIONS[requiredPackage].label}
                 </p>
               ) : null}
@@ -73,8 +73,8 @@ export default async function FeaturesPage({
         );
       })}
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      {saved ? <p className="text-sm text-green-600">Saved.</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {saved ? <p className="text-sm text-success">Saved.</p> : null}
 
       <Button type="submit" className="mt-2 w-fit">
         Save

@@ -4,23 +4,60 @@ import test from "node:test";
 
 const source = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("wedding themes use bundled fonts instead of build-time Google font downloads", async () => {
-  const [layout, globals, ivoryFonts, terraFonts] = await Promise.all([
+const THEME_FONTS = {
+  "nusantara-ivory": {
+    packages: [/@fontsource-variable\/cormorant-garamond/, /@fontsource-variable\/jost/],
+    faces: [/--font-nusantara-serif:\s*"Cormorant Garamond Variable"/, /--font-nusantara-sans:\s*"Jost Variable"/],
+  },
+  "terra-botanica": {
+    packages: [/@fontsource-variable\/fraunces/, /@fontsource-variable\/manrope/],
+    faces: [/--font-tb-display:\s*"Fraunces Variable"/, /--font-tb-body:\s*"Manrope Variable"/],
+  },
+  "midnight-atelier": {
+    packages: [/@fontsource-variable\/bodoni-moda/, /@fontsource\/ibm-plex-sans-condensed/],
+    faces: [/--font-ma-display:\s*"Bodoni Moda Variable"/, /--font-ma-body:\s*"IBM Plex Sans Condensed"/],
+  },
+  "cobalt-riviera": {
+    packages: [/@fontsource-variable\/familjen-grotesk/, /@fontsource-variable\/newsreader/],
+    faces: [/--font-cr-display:\s*"Familjen Grotesk Variable"/, /--font-cr-body:\s*"Newsreader Variable"/],
+  },
+};
+
+test("each wedding theme bundles its own fonts instead of downloading Google fonts at build time", async () => {
+  for (const [theme, { packages, faces }] of Object.entries(THEME_FONTS)) {
+    const [themeFonts, fontsTs, fontsCss] = await Promise.all([
+      source("src/themes/theme-fonts.ts"),
+      source(`src/themes/${theme}/fonts.ts`),
+      source(`src/themes/${theme}/fonts.css`),
+    ]);
+
+    assert.doesNotMatch(fontsTs, /next\/font\/google/, theme);
+    assert.ok(themeFonts.includes(`import "./${theme}/fonts.css";`), theme);
+    for (const pattern of packages) assert.match(themeFonts, pattern, theme);
+    for (const pattern of faces) assert.match(fontsCss, pattern, theme);
+  }
+});
+
+test("theme fonts load only on routes that render a theme", async () => {
+  const [layout, publicPage, previewPage, globals] = await Promise.all([
     source("src/app/layout.tsx"),
+    source("src/app/(public)/[slug]/page.tsx"),
+    source("src/app/admin/(protected)/invitations/[id]/preview/page.tsx"),
     source("src/app/globals.css"),
-    source("src/themes/nusantara-ivory/fonts.ts"),
-    source("src/themes/terra-botanica/fonts.ts"),
   ]);
 
-  assert.match(layout, /@fontsource-variable\/cormorant-garamond/);
-  assert.match(layout, /@fontsource-variable\/jost/);
-  assert.match(layout, /@fontsource-variable\/fraunces/);
-  assert.match(layout, /@fontsource-variable\/manrope/);
+  assert.match(publicPage, /import "@\/themes\/theme-fonts";/);
+  assert.match(previewPage, /import "@\/themes\/theme-fonts";/);
+  assert.doesNotMatch(layout, /@fontsource|theme-fonts/);
+  assert.match(layout, /lang="id"/);
+  assert.doesNotMatch(globals, /--font-(nusantara|tb|ma|cr)-/);
+});
 
-  assert.doesNotMatch(ivoryFonts, /next\/font\/google/);
-  assert.doesNotMatch(terraFonts, /next\/font\/google/);
-  assert.match(globals, /--font-nusantara-serif:\s*"Cormorant Garamond Variable"/);
-  assert.match(globals, /--font-nusantara-sans:\s*"Jost Variable"/);
-  assert.match(globals, /--font-tb-display:\s*"Fraunces Variable"/);
-  assert.match(globals, /--font-tb-body:\s*"Manrope Variable"/);
+test("the admin sans token resolves to Geist instead of referencing itself", async () => {
+  const globals = await source("src/app/globals.css");
+
+  // `--font-sans: var(--font-sans)` is a cycle: the declaration is invalid at
+  // computed time and the browser falls back to its default serif (Times).
+  assert.doesNotMatch(globals, /--font-sans:\s*var\(--font-sans\)/);
+  assert.match(globals, /--font-sans:\s*var\(--font-geist-sans\)/);
 });

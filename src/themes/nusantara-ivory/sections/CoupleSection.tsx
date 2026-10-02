@@ -17,7 +17,7 @@ function PersonPortrait({ person }: { person: InvitationPerson }) {
         <div className="ni-lattice relative flex h-full w-full items-center justify-center bg-[var(--ni-cream)]">
           <span
             className="ni-serif relative text-[clamp(4rem,12vw,7rem)] leading-none"
-            style={{ color: "rgba(169,138,92,0.5)" }}
+            style={{ color: "var(--ni-line-strong)" }}
             aria-hidden="true"
           >
             {(person.nickname || person.fullName).charAt(0)}
@@ -51,7 +51,7 @@ function PersonDetails({
       {hasSubtitle ? (
         <p
           className="text-[0.72rem] tracking-[0.26em] uppercase"
-          style={{ color: "var(--ni-gold)" }}
+          style={{ color: "var(--ni-gold-ink)" }}
         >
           {person.fullName}
         </p>

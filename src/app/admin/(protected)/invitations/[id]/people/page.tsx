@@ -30,12 +30,12 @@ export default async function PeoplePage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-      {saved === "instagram" ? <p role="status" className="text-sm text-green-700">Instagram tersimpan.</p> : null}
+      {saved === "instagram" ? <p role="status" className="text-sm text-success">Instagram tersimpan.</p> : null}
 
       {people.map((person) => (
-        <div key={person.id} className="rounded-lg border border-neutral-200 bg-white p-4">
+        <div key={person.id} className="rounded-lg border border-border bg-card p-4">
           <div className="flex gap-4">
             {getMediaPublicUrl(person.photo_path) ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -45,13 +45,13 @@ export default async function PeoplePage({
                 className="h-20 w-20 rounded-full object-cover"
               />
             ) : (
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-neutral-100 text-xs text-neutral-400">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted text-xs text-muted-foreground">
                 No photo
               </div>
             )}
 
             <div className="flex-1">
-              <p className="text-sm font-medium text-neutral-900">
+              <p className="text-sm font-medium text-foreground">
                 {person.full_name} ({person.role})
               </p>
 
@@ -109,7 +109,7 @@ export default async function PeoplePage({
             </Button>
           </form>
 
-          <form action={updatePersonInstagramAction} className="mt-5 flex flex-col gap-3 border-t border-neutral-200 pt-5">
+          <form action={updatePersonInstagramAction} className="mt-5 flex flex-col gap-3 border-t border-border pt-5">
             <input type="hidden" name="invitationId" value={invitation.id} />
             <input type="hidden" name="personId" value={person.id} />
             <fieldset disabled={instagramLocked} className="flex flex-col gap-3">
@@ -124,7 +124,7 @@ export default async function PeoplePage({
                 defaultValue={getPersonInstagram(invitation.settings, person.id)?.url ?? ""}
                 aria-describedby={`instagram-help-${person.id}`}
               />
-              <p id={`instagram-help-${person.id}`} className="text-sm text-neutral-500">
+              <p id={`instagram-help-${person.id}`} className="text-sm text-muted-foreground">
                 {instagramLocked && instagramPackage
                   ? `Tersedia di ${PACKAGE_DEFINITIONS[instagramPackage].label}. Konten tersimpan tetap disimpan.`
                   : "Tampil di bawah profil pada undangan. Kosongkan untuk menyembunyikan tautan."}
@@ -137,7 +137,7 @@ export default async function PeoplePage({
 
       <form
         action={upsertPersonAction}
-        className="grid max-w-lg grid-cols-2 gap-3 rounded-lg border border-dashed border-neutral-300 p-4"
+        className="grid max-w-lg grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-4"
       >
         <input type="hidden" name="invitationId" value={invitation.id} />
         <input type="hidden" name="sortOrder" value={people.length} />

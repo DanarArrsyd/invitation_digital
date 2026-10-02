@@ -46,7 +46,7 @@ export function ColorListInput({
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-sm font-medium text-neutral-900">{label}</span>
+      <span className="text-sm font-medium text-foreground">{label}</span>
       <input type="hidden" name={name} value={colors.join(", ")} />
 
       <div className="flex flex-wrap items-center gap-3">
@@ -60,19 +60,19 @@ export function ColorListInput({
                   type="color"
                   value={normalizeHexColor(color) ?? FALLBACK_COLOR}
                   onChange={(e) => updateColor(index, e.target.value)}
-                  className="size-9 cursor-pointer rounded-full border border-neutral-300 p-0 [&::-webkit-color-swatch-wrapper]:rounded-full [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full [&::-webkit-color-swatch]:border-none"
+                  className="size-9 cursor-pointer rounded-full border border-border p-0 [&::-webkit-color-swatch-wrapper]:rounded-full [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full [&::-webkit-color-swatch]:border-none"
                   aria-label={`Warna ${index + 1}`}
                 />
                 <button
                   type="button"
                   onClick={() => removeColor(index)}
                   aria-label={`Hapus warna ${index + 1}`}
-                  className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-neutral-700 text-[10px] leading-none text-white"
+                  className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-foreground text-[10px] leading-none text-background"
                 >
                   ×
                 </button>
               </div>
-              <span className="text-[10px] tabular-nums text-neutral-500">
+              <span className="text-[10px] tabular-nums text-muted-foreground">
                 {normalizeHexColor(color) ?? color}
               </span>
             </div>
