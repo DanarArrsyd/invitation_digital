@@ -989,8 +989,55 @@ export function ThemeStyles() {
           bottom: max(1.25rem, env(safe-area-inset-bottom));
         }
       }
+      @media (min-width: 768px) and (max-width: 1199px) {
+        .cr-content { padding-bottom: calc(var(--cr-mobile-nav-clearance) + env(safe-area-inset-bottom)); }
+        .cr-hero-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; }
+        .cr-hero-masthead, .cr-hero-image, .cr-hero-horizon, .cr-hero-copy {
+          grid-column: auto;
+          grid-row: auto;
+        }
+        .cr-hero-copy { align-content: start; }
+        .cr-route-nav {
+          top: auto;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          padding-bottom: env(safe-area-inset-bottom);
+          border: 0;
+          border-top: 1px solid var(--cr-sea-ink);
+          overflow-x: auto;
+          overflow-y: hidden;
+          overscroll-behavior-inline: contain;
+          transform: none;
+        }
+        .cr-route-nav ul {
+          width: max-content;
+          min-width: 100%;
+          max-height: none;
+          flex-direction: row;
+          overflow-y: visible;
+        }
+        .cr-route-nav a { min-width: 5.25rem; }
+        .cr-music {
+          right: max(1rem, env(safe-area-inset-right));
+          bottom: calc(var(--cr-mobile-nav-clearance) + env(safe-area-inset-bottom));
+        }
+      }
+      @media (min-width: 900px) and (max-width: 1199px) and (max-height: 850px) {
+        .cr-hero-horizon { min-height: clamp(18rem, 42svh, 22rem); }
+        .cr-hero-image {
+          aspect-ratio: auto !important;
+          height: clamp(18rem, 42svh, 22rem);
+        }
+      }
       @media (min-width: 1200px) {
+        .cr-section-inner { padding-right: max(clamp(1.25rem, 6vw, 6rem), 10rem); }
+        .cr-hero-layout {
+          padding-right: 8rem;
+          grid-template-columns: minmax(0, 1.35fr) minmax(22rem, .9fr);
+        }
         .cr-hero-copy { padding-inline: clamp(3rem, 5vw, 6rem); }
+        .cr-hero-copy h2 { font-size: clamp(4.5rem, 7.2vw, 6.5rem); }
         .cr-person { padding-right: 8vw; }
         .cr-person[data-position="right"] { padding-right: 0; padding-left: 8vw; }
       }
