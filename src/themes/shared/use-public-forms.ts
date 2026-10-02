@@ -55,12 +55,27 @@ function useRecoverableTextFields(state: RsvpFormState | WishFormState) {
 }
 
 function restoreTextFields(form: HTMLFormElement, data: FormData) {
-  // React resets action forms even when the action reports an error.
-  for (const name of ["guestName", "message"]) {
+  // React resets action forms even when the action reports an error. That
+  // also unchecks a radio group whose controlled state still says "chosen",
+  // so attendance is restored too (RadioNodeList.value checks the match).
+  for (const name of ["guestName", "message", "attendance"]) {
     const control = form.elements.namedItem(name);
     const value = data.get(name);
     if (control && "value" in control && typeof value === "string") control.value = value;
   }
+}
+
+/**
+ * The form unmounts on success and its confirmation takes its place; move
+ * focus there so keyboard and screen-reader users aren't dropped at the
+ * top of the page and the confirmation is announced.
+ */
+export function useFocusOnSuccess<T extends HTMLElement = HTMLDivElement>(succeeded: boolean) {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    if (succeeded) ref.current?.focus();
+  }, [succeeded]);
+  return ref;
 }
 
 export function nextVisibleWishCount(current: number, total: number, pageSize: number): number {
