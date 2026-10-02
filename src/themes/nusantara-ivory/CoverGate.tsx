@@ -11,12 +11,13 @@ import { OrnamentArch, OrnamentDivider } from "./components/Ornament";
 
 function formatEventDate(eventDate: string | null): string {
   if (!eventDate) return "";
-  const date = new Date(eventDate);
+  // Plain YYYY-MM-DD: format in UTC so no viewer timezone shifts the day.
   return new Intl.DateTimeFormat("id-ID", {
     day: "2-digit",
     month: "long",
     year: "numeric",
-  }).format(date);
+    timeZone: "UTC",
+  }).format(new Date(`${eventDate}T00:00:00Z`));
 }
 
 function splitCoupleName(displayName: string): [string, string] | null {

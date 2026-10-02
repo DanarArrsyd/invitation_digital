@@ -39,6 +39,7 @@ function PersonDetails({
   instagram?: InstagramProfile | null;
 }) {
   const parents = [person.fatherName, person.motherName].filter(Boolean).join(" & ");
+  const childOf = person.role === "bride" ? "Putri dari" : person.role === "groom" ? "Putra dari" : "Putra/i dari";
   const display = person.nickname || person.fullName;
   const hasSubtitle = Boolean(person.nickname) && person.fullName !== person.nickname;
 
@@ -65,7 +66,7 @@ function PersonDetails({
 
       {parents ? (
         <p className="ni-body max-w-[34ch] text-[0.9rem]">
-          Putra/i dari <span className="text-[var(--ni-brown)]">{parents}</span>
+          {childOf} <span className="text-[var(--ni-brown)]">{parents}</span>
         </p>
       ) : null}
 
