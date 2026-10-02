@@ -599,3 +599,34 @@ details. Motion stays cinematic but selective: controlled curtain movement,
 small image reveals, and restrained text transitions. Disable nonessential
 motion under `prefers-reduced-motion`; maintain visible focus, readable
 contrast, stable media dimensions, and usable forms from 320px through desktop.
+
+---
+
+## 27. Cobalt Riviera — Theme #004
+
+Cobalt Riviera is a sunlit destination editorial invitation: bright,
+architectural, and composed like a contemporary Riviera travel folio. It
+presents the same normalized data and all 18 canonical capabilities as every
+registered theme without becoming a generic blue beach or travel template.
+
+Palette: Cobalt `#1646C8` (architectural field), Porcelain `#FFF9EE` (reading
+surface), Sea Ink `#123047` (text), Tangerine `#F06A3C` (active interaction),
+Citron `#F3CF4C` (sun control), and Pool `#81C7D4` (quiet secondary field).
+Familjen Grotesk Variable carries names, chapter titles, and itinerary display;
+Newsreader Variable carries body copy and intimate text.
+
+Storyboard: a photo-free horizon-shutter cover with one labelled Citron sun
+control; a panoramic hero; offset couple and parent editorials; flat itinerary
+rows with visible Maps and calendar actions; a horizon countdown and wardrobe
+strip; chronological story folios; a panoramic-anchor ceramic gallery; large
+attendance color fields; route-separated wishes; travel-folio gift receipts;
+and a restrained Cobalt closing field.
+
+Use hard rectangular crops, quarter-circle geometry, thin route rules, strong
+left alignment, and flat color chapters. Avoid gradients, glass, shadows,
+rounded card repetition, shells, palms, waves, passport stamps, decorative
+flight paths, and any invented customer data. The horizon cover owns the one
+theatrical motion; all other feedback stays short and functional, and reduced
+motion preserves every action. Empty, malformed, and disabled content must
+leave no dead route item or decorative gap, while controls remain at least
+48px and usable from 320px through desktop.

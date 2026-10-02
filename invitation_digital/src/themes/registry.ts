@@ -1,6 +1,7 @@
 import { NusantaraIvory } from "./nusantara-ivory";
 import { TerraBotanica } from "./terra-botanica";
 import { MidnightAtelier, MIDNIGHT_ATELIER_SECTIONS } from "./midnight-atelier";
+import { CobaltRiviera, COBALT_RIVIERA_SECTIONS } from "./cobalt-riviera";
 import { defineThemeSectionManifest } from "./section-contract";
 import type { ThemeRegistry } from "@/types/theme";
 
@@ -47,6 +48,15 @@ export const TERRA_BOTANICA_SECTIONS = defineThemeSectionManifest({
 });
 
 export const themeRegistry: ThemeRegistry = {
+  "cobalt-riviera": {
+    component: CobaltRiviera,
+    category: "wedding",
+    preview: {
+      name: "Cobalt Riviera",
+      palette: ["#1646C8", "#FFF9EE", "#F06A3C"],
+    },
+    sections: COBALT_RIVIERA_SECTIONS,
+  },
   "nusantara-ivory": {
     component: NusantaraIvory,
     category: "wedding",

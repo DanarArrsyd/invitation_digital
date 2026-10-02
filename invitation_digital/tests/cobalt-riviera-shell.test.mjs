@@ -136,7 +136,7 @@ test("photo-free horizon cover renders normalized names, date, guest, shutters, 
   assert.ok(action?.querySelector(".cr-sun-mark"));
 });
 
-test("route candidates require usable content and enabled features while Cobalt stays unregistered", () => {
+test("route candidates require usable content and enabled features after registration", () => {
   const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
   const { themeRegistry } = loadTheme().load("themes/registry");
   assert.deepEqual(Array.from(buildCobaltRouteItems(fixture()), (item) => item.id), [
@@ -147,7 +147,7 @@ test("route candidates require usable content and enabled features while Cobalt 
     features: { ...features, story: false, gallery: false, rsvp: false, wishes: false, gift: false },
   });
   assert.deepEqual(Array.from(buildCobaltRouteItems(sparse), (item) => item.id), ["cr-beranda"]);
-  assert.equal(themeRegistry["cobalt-riviera"], undefined);
+  assert.equal(themeRegistry["cobalt-riviera"].component.name, "CobaltRiviera");
 });
 
 for (const width of [320, 1440]) {

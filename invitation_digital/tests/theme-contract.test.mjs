@@ -37,6 +37,10 @@ function loadThemeContract() {
       MidnightAtelier: () => null,
       MIDNIGHT_ATELIER_SECTIONS: Object.fromEntries(contract.THEME_SECTION_KEYS.map((key) => [key, true])),
     },
+    "./cobalt-riviera": {
+      CobaltRiviera: () => null,
+      COBALT_RIVIERA_SECTIONS: Object.fromEntries(contract.THEME_SECTION_KEYS.map((key) => [key, true])),
+    },
     "./section-contract": contract,
   });
   return { ...contract, themeRegistry };
@@ -58,6 +62,7 @@ test("every registered theme exposes its approved preview metadata", () => {
     name: definition.preview.name,
     palette: [...definition.preview.palette],
   }])), {
+    "cobalt-riviera": { name: "Cobalt Riviera", palette: ["#1646C8", "#FFF9EE", "#F06A3C"] },
     "nusantara-ivory": { name: "Nusantara Ivory", palette: ["#FCFAF5", "#AA8D61", "#27231F"] },
     "terra-botanica": { name: "Terra Botanica", palette: ["#F2E7D8", "#B6634B", "#53634E"] },
     "midnight-atelier": { name: "Midnight Atelier", palette: ["#09090B", "#541E2B", "#C6A15B"] },

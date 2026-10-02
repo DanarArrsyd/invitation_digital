@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 1 October 2026 (Asia/Jakarta)
+Last updated: 2 October 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -107,6 +107,29 @@ Key boundaries:
   duplicate package, validation, calendar, or server-action logic.
 - `listActiveThemes()` remains the admin theme source. The registry is not an
   admin catalogue and no second theme list should be introduced.
+
+## Cobalt Riviera construction map
+
+`CobaltRiviera.tsx` consumes `buildThemeViewModel()` once and composes the
+fourth visual system from the same normalized invitation contract:
+
+```text
+CoverGate — horizon shutters, guest personalization, music and focus handoff
+  ├─ Hero + quote — panoramic or typographic horizon opening
+  ├─ Couple + parents — offset resort editorials and social credits
+  ├─ Itinerary — events, Maps, calendar, countdown, dress code, livestream
+  ├─ Story — ordered folio with complete text-only entries
+  ├─ Gallery — panoramic anchor plus ceramic mosaic
+  ├─ RSVP — large checked color fields over shared action state
+  ├─ Wishes — route-separated notes over shared action and pagination
+  ├─ Gifts — flat folio receipts with truthful shared clipboard feedback
+  └─ Closing — Cobalt conclusion through the shared image fallback chain
+```
+
+The registry preview uses Cobalt `#1646C8`, Porcelain `#FFF9EE`, and Tangerine
+`#F06A3C`. The catalogue migration is
+`20261002000001_cobalt_riviera_theme.sql`; it is a single slug upsert that
+preserves an existing row ID and all invitation foreign-key references.
 
 ## Cross-template feature workflow
 
@@ -297,7 +320,8 @@ repair that drift. Audit and reconcile migration history as a separate task.
 
 - The Task 5 Instagram accessible-name note and Task 8 registry-example note
   were resolved during Task 9. The typed registry and runtime tests now cover
-  the current three-theme contract.
+  the then-current three-theme contract; Task 8 now covers the four-theme
+  contract including Cobalt Riviera.
 - Remote Supabase images intentionally retain existing `unoptimized` delivery
   because `next.config.ts` has no narrow remote allowlist. Stable ratios,
   explicit sizes, lazy loading, and error fallbacks are already implemented.
@@ -313,12 +337,35 @@ repair that drift. Audit and reconcile migration history as a separate task.
 | 4 | Added the panoramic hero and typographic missing-media horizon, optional Newsreader quote, offset couple and parent editorial, safe Instagram credits, and the closing field through the shared media fallback chain. | `4ab2550a` | Complete; 219/219 tests, lint, TypeScript, build, diff check, and independent review clean. |
 | 5 | Added flat one-to-five-event itinerary rows, safe Maps and calendar actions, a WIB horizon countdown, labelled wardrobe strips, and conditional broadcast rows. | `9bc9593a` | Complete; 229/229 tests, lint, TypeScript, build, diff check, and independent review clean after two Important fixes. |
 | 6 | Added the chronological story folio with text-only states and a panoramic-anchor ceramic gallery that preserves ordered media from one through forty images. | `92e74dc4` | Complete; 234/234 tests, lint, TypeScript, build, diff check, and independent review clean. |
-| 7 | Added Cobalt RSVP, wishes, and travel-folio gift interactions over the shared action, Turnstile, pagination, and clipboard behavior. Feature-gated guest personalization, explicit attendance checks, truthful pending/error/success states, and 320px-safe controls are covered. | `3d4032ee` | Complete; 242/242 tests, focused 16/16, lint, TypeScript, build, diff check, and independent review clean. |
+| 7 | Added Cobalt RSVP, wishes, and travel-folio gift interactions over the shared action, Turnstile, pagination, and clipboard behavior. Feature-gated guest personalization, explicit attendance checks, truthful pending/error/success states, and 320px-safe controls are covered. | `31e5787f` | Complete; 242/242 tests, focused 16/16, lint, TypeScript, build, diff check, and independent review clean. |
+| 8 | Registered Cobalt with approved preview metadata, added an idempotent in-place catalogue upsert, expanded four-theme package/capability parity, and documented safe rollout/rollback. | current task commit | Complete; focused 56/56 and full 246/246 tests, lint, TypeScript, build, and diff check pass; independent review clean; no push, deploy, or remote migration. |
 
-Next step: wait for user confirmation, then execute Cobalt Riviera Task 8 only.
-Register Cobalt in application code, add the safe catalogue migration, verify
-theme/package parity, and update durable documentation without deploying or
-mutating production until explicitly requested.
+Next step: wait for user confirmation, then execute Cobalt Riviera Task 9 only.
+Run full responsive, accessibility, performance, and regression QA without
+deploying or mutating production until explicitly requested.
+
+## Cobalt Riviera rollout and rollback
+
+The rollout order is strict:
+
+1. Push the reviewed branch and update its pull request.
+2. Deploy application support while the catalogue row is absent or inactive.
+3. Verify all four registered slugs and the safe unsupported-theme fallback.
+4. Apply only `20261002000001_cobalt_riviera_theme.sql`; do not use a bulk
+   `supabase db push` against the drifted remote migration ledger.
+5. Verify the exact row with
+   `select id, name, slug, category, is_active from public.themes where slug = 'cobalt-riviera';`
+   and confirm it is publicly discoverable under the active-theme RLS policy.
+6. Confirm authenticated admin selection still flows through
+   `listActiveThemes()`, then preview a dedicated Cobalt invitation.
+7. Publish only after its content is approved.
+
+Rollback begins with
+`update public.themes set is_active = false, updated_at = now() where slug = 'cobalt-riviera';`.
+Verify the row is inactive and absent from public/admin active-theme discovery.
+Never delete the row or rewrite its ID. Audit and reassign referencing
+invitations only with separate authorization, then roll back application code.
+No remote step has been performed during Task 8.
 
 ## Required execution workflow
 

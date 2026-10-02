@@ -113,7 +113,7 @@ function fixture() {
   };
 }
 
-test("Cobalt declares every canonical section explicitly while remaining unregistered", () => {
+test("Cobalt declares every canonical section explicitly and keeps its registry manifest", () => {
   const { COBALT_RIVIERA_SECTIONS } = loadSource("themes/cobalt-riviera/manifest");
   const { themeRegistry } = loadSource("themes/registry");
 
@@ -121,9 +121,12 @@ test("Cobalt declares every canonical section explicitly while remaining unregis
   assert.ok(sectionKeys.every((key) => COBALT_RIVIERA_SECTIONS[key] === true));
   assert.deepEqual(
     Object.keys(themeRegistry).sort(),
-    ["midnight-atelier", "nusantara-ivory", "terra-botanica"],
+    ["cobalt-riviera", "midnight-atelier", "nusantara-ivory", "terra-botanica"],
   );
-  assert.equal(themeRegistry["cobalt-riviera"], undefined);
+  assert.deepEqual(
+    Object.keys(themeRegistry["cobalt-riviera"].sections),
+    sectionKeys,
+  );
 });
 
 test("Cobalt foundation renders normalized names and semantic Riviera primitives", () => {
@@ -252,7 +255,7 @@ test("Cobalt stays presentation-only and bundles only its approved font families
 
   assert.doesNotMatch(source, /supabase|createSupabase|next\/font\/google|@\/lib\/packages/i);
   assert.doesNotMatch(source, /<img\b/);
-  assert.doesNotMatch(registry, /cobalt-riviera/i);
+  assert.match(registry, /import \{ CobaltRiviera, COBALT_RIVIERA_SECTIONS \} from "\.\/cobalt-riviera"/);
   assert.match(layout, /@fontsource-variable\/familjen-grotesk/);
   assert.match(layout, /@fontsource-variable\/newsreader/);
   assert.match(globals, /--font-cr-display:\s*"Familjen Grotesk Variable"/);
