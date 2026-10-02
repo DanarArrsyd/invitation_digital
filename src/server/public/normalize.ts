@@ -26,6 +26,18 @@ const DEFAULT_FEATURES: InvitationFeatures = {
 type InvitationRow = Tables<"invitations"> & { theme: Tables<"themes"> };
 
 /**
+ * Features a theme actually renders: the stored toggles (missing = off),
+ * narrowed to what the invitation's package allows.
+ */
+export function resolveInvitationFeatures(
+  packageKey: PackageKey,
+  settings: unknown,
+): InvitationFeatures {
+  const stored = ((settings ?? {}) as { features?: Partial<InvitationFeatures> }).features;
+  return resolveEffectiveInvitationFeatures(packageKey, { ...DEFAULT_FEATURES, ...stored });
+}
+
+/**
  * Shared by the public loader (published/non-expired only) and the admin
  * preview loader (any status) — the ONE place raw rows become the
  * normalized `PublicInvitation` contract ThemeRenderer consumes. Never
@@ -77,10 +89,7 @@ export async function loadNormalizedInvitation(
     features?: Partial<InvitationFeatures>;
   };
   const packageKey = invitation.package_key as PackageKey;
-  const features = resolveEffectiveInvitationFeatures(
-    packageKey,
-    { ...DEFAULT_FEATURES, ...settings.features },
-  );
+  const features = resolveInvitationFeatures(packageKey, settings);
   const effectiveSettings: Record<string, unknown> = { ...settings, features };
   const definition = PACKAGE_DEFINITIONS[packageKey];
   if (!definition.capabilities.instagram) delete effectiveSettings.personSocials;
