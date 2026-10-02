@@ -42,7 +42,7 @@ export function HeroSection({ coverImageUrl, displayName, eventDate, venueSummar
           <div className="ni-hero-photo-frame">
             {coverImageUrl ? (
               <Parallax className="absolute inset-[-8%_0]" distance={16}>
-                <EditorialImage src={coverImageUrl} alt={`Foto prewedding ${displayName}`} priority className="ni-photo" />
+                <EditorialImage src={coverImageUrl} alt={`Foto prewedding ${displayName}`} sizes="(min-width: 768px) 480px, 92vw" priority className="ni-photo" />
               </Parallax>
             ) : (
               <div className="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">

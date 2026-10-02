@@ -12,7 +12,7 @@ function PersonPortrait({ person }: { person: InvitationPerson }) {
   return (
     <div className="ni-photo-wrap relative aspect-[4/5] w-full">
       {person.photoUrl ? (
-        <EditorialImage src={person.photoUrl} alt={person.fullName} className="ni-photo" />
+        <EditorialImage src={person.photoUrl} alt={person.fullName} sizes="(min-width: 768px) 45vw, 100vw" className="ni-photo" />
       ) : (
         <div className="ni-lattice relative flex h-full w-full items-center justify-center bg-[var(--ni-cream)]">
           <span

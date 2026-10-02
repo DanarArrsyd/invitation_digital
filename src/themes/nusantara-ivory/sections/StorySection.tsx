@@ -72,11 +72,10 @@ export function StorySection({ stories }: { stories: InvitationStory[] }) {
                     }`}
                   >
                     <div className="ni-photo-wrap aspect-[3/2] w-full">
-                      
                       <EditorialImage
                         src={story.imageUrl}
-                        alt=""
-                        
+                        alt={story.title}
+                        sizes="(min-width: 768px) 40vw, 100vw"
                         className="ni-photo"
                       />
                     </div>
