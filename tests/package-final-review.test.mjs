@@ -224,25 +224,25 @@ function renderAdminPage(path, packageKey) {
 }
 
 test("Intimate keeps Instagram and Dress Code editors visible with Signature labels and locked inputs", async () => {
-  const people = await renderAdminPage("app/admin/(protected)/invitations/[id]/people/page.tsx", "intimate");
+  const people = await renderAdminPage("app/admin/(protected)/(shell)/invitations/[id]/people/page.tsx", "intimate");
   assert.match(people, /Instagram \(opsional\)/);
   assert.match(people, /Tersedia di Signature/);
   assert.match(people, /<fieldset disabled=""[^>]*>[^]*?name="instagram"/);
-  const content = await renderAdminPage("app/admin/(protected)/invitations/[id]/content/page.tsx", "intimate");
+  const content = await renderAdminPage("app/admin/(protected)/(shell)/invitations/[id]/content/page.tsx", "intimate");
   assert.match(content, /Dress Code/);
   assert.match(content, /Tersedia di Signature/);
   assert.match(content, /<fieldset disabled=""[^>]*>[^]*?name="description"/);
 });
 
 test("Signature keeps Instagram and Dress Code editors available", async () => {
-  const people = await renderAdminPage("app/admin/(protected)/invitations/[id]/people/page.tsx", "signature");
-  const content = await renderAdminPage("app/admin/(protected)/invitations/[id]/content/page.tsx", "signature");
+  const people = await renderAdminPage("app/admin/(protected)/(shell)/invitations/[id]/people/page.tsx", "signature");
+  const content = await renderAdminPage("app/admin/(protected)/(shell)/invitations/[id]/content/page.tsx", "signature");
   assert.doesNotMatch(people, /<fieldset disabled=""[^>]*>[^]*?name="instagram"/);
   assert.doesNotMatch(content, /<fieldset disabled=""[^>]*>[^]*?name="description"/);
 });
 
 test("package selector makes keyboard focus visible on every radio card", () => {
-  const PackageForm = loadTs("app/admin/(protected)/invitations/[id]/general/PackageForm.tsx", {
+  const PackageForm = loadTs("app/admin/(protected)/(shell)/invitations/[id]/general/PackageForm.tsx", {
     "@/components/ui/badge": { Badge: "span" },
     "@/components/admin/form-message": { FormMessage: ({ children }) => children ?? null },
     "@/components/admin/submit-button": { SubmitButton: "button" },

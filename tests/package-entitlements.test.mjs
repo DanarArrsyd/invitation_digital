@@ -124,7 +124,7 @@ function loadFeatureAdminPage(section, packageKey, settings = {}, { empty = fals
     });
     return exports;
   }
-  return { Page: load(`app/admin/(protected)/invitations/[id]/${section}/page`).default, tableReads };
+  return { Page: load(`app/admin/(protected)/(shell)/invitations/[id]/${section}/page`).default, tableReads };
 }
 
 async function renderAdminPage(Page, searchParams = {}) {
@@ -285,7 +285,7 @@ function loadCreateInvitationAction() {
 
   const actionSource = ts.transpileModule(
     readFileSync(
-      new URL("../src/app/admin/(protected)/invitations/new/actions.ts", import.meta.url),
+      new URL("../src/app/admin/(protected)/(shell)/invitations/new/actions.ts", import.meta.url),
       "utf8",
     ),
     { compilerOptions: { module: ts.ModuleKind.CommonJS } },
@@ -375,7 +375,7 @@ function loadGalleryUpload({ invitationResult, galleryResult } = {}) {
 function loadGalleryPage(galleryCount) {
   const source = ts.transpileModule(
     readFileSync(
-      new URL("../src/app/admin/(protected)/invitations/[id]/gallery/page.tsx", import.meta.url),
+      new URL("../src/app/admin/(protected)/(shell)/invitations/[id]/gallery/page.tsx", import.meta.url),
       "utf8",
     ),
     { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } },
