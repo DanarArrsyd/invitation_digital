@@ -52,30 +52,30 @@ export default async function ResponsesPage({
 
   return (
     <div className="flex flex-col gap-10">
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       <section>
-        <h2 className="text-sm font-semibold text-neutral-900">Overview</h2>
+        <h2 className="text-sm font-semibold text-foreground">Overview</h2>
 
         <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {metrics.map((metric) => (
-            <div key={metric.label} className="rounded-lg border border-neutral-200 bg-white px-4 py-3">
-              <p className="text-xs text-neutral-500">{metric.label}</p>
-              <p className="text-xl font-semibold text-neutral-900">{metric.value}</p>
+            <div key={metric.label} className="rounded-lg border border-border bg-card px-4 py-3">
+              <p className="text-xs text-muted-foreground">{metric.label}</p>
+              <p className="text-xl font-semibold text-foreground">{metric.value}</p>
             </div>
           ))}
         </div>
         {!analytics ? (
-          <div className="mt-3 rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-500">
+          <div className="mt-3 rounded-lg border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
             Visitor analytics tersedia di Grand
           </div>
         ) : null}
       </section>
 
       <section>
-        <h2 className="text-sm font-semibold text-neutral-900">RSVP</h2>
+        <h2 className="text-sm font-semibold text-foreground">RSVP</h2>
 
-        <div className="mt-4 overflow-x-auto rounded-lg border border-neutral-200 bg-white">
+        <div className="mt-4 overflow-x-auto rounded-lg border border-border bg-card">
           <Table>
             <TableHeader>
               <TableRow>
@@ -87,7 +87,7 @@ export default async function ResponsesPage({
             <TableBody>
               {rsvps.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center text-sm text-neutral-500">
+                  <TableCell colSpan={3} className="text-center text-sm text-muted-foreground">
                     No RSVP yet.
                   </TableCell>
                 </TableRow>
@@ -112,26 +112,26 @@ export default async function ResponsesPage({
       <Separator />
 
       <section>
-        <h2 className="text-sm font-semibold text-neutral-900">Wishes</h2>
+        <h2 className="text-sm font-semibold text-foreground">Wishes</h2>
 
         <div className="mt-4 flex flex-col gap-3">
           {wishes.length === 0 ? (
-            <p className="text-sm text-neutral-500">No wishes yet.</p>
+            <p className="text-sm text-muted-foreground">No wishes yet.</p>
           ) : (
             wishes.map((wish) => (
               <div
                 key={wish.id}
-                className="flex items-start justify-between gap-4 rounded-lg border border-neutral-200 bg-white p-4"
+                className="flex items-start justify-between gap-4 rounded-lg border border-border bg-card p-4"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-neutral-900">{wish.guest_name}</p>
+                    <p className="text-sm font-medium text-foreground">{wish.guest_name}</p>
                     <Badge variant={wish.is_visible ? "default" : "secondary"}>
                       {wish.is_visible ? "Visible" : "Hidden"}
                     </Badge>
                   </div>
-                  <p className="mt-1 text-sm text-neutral-600">{wish.message}</p>
-                  <p className="mt-1 text-xs text-neutral-400">
+                  <p className="mt-1 text-sm text-muted-foreground">{wish.message}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {new Date(wish.created_at).toLocaleString("id-ID")}
                   </p>
                 </div>

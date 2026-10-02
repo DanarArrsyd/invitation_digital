@@ -7,7 +7,7 @@ export default async function NewInvitationPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-neutral-900">New Invitation</h1>
+      <h1 className="text-xl font-semibold text-foreground">New Invitation</h1>
       <div className="mt-6">
         <NewInvitationForm themes={themes} />
       </div>

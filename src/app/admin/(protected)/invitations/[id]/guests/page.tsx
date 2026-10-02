@@ -34,7 +34,7 @@ export default async function GuestsPage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       <form action={createGuestAction} className="flex max-w-lg items-end gap-3">
         <input type="hidden" name="invitationId" value={invitation.id} />
@@ -49,7 +49,7 @@ export default async function GuestsPage({
         <Button type="submit">Add guest</Button>
       </form>
 
-      <div className="overflow-x-auto rounded-lg border border-neutral-200 bg-white">
+      <div className="overflow-x-auto rounded-lg border border-border bg-card">
         <Table>
           <TableHeader>
             <TableRow>
@@ -61,7 +61,7 @@ export default async function GuestsPage({
           <TableBody>
             {guests.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-sm text-neutral-500">
+                <TableCell colSpan={3} className="text-center text-sm text-muted-foreground">
                   No guests yet.
                 </TableCell>
               </TableRow>
@@ -77,7 +77,7 @@ export default async function GuestsPage({
                     <TableCell className="font-medium">{guest.display_name}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <code className="text-xs text-neutral-500">{link}</code>
+                        <code className="text-xs text-muted-foreground">{link}</code>
                         <CopyLinkButton link={link} />
                       </div>
                     </TableCell>

@@ -39,7 +39,7 @@ export default async function GalleryPage({
 
   return (
     <div className="flex flex-col gap-6">
-      {error ? <p role="alert" className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
       <p className="text-sm text-muted-foreground">
         {gallery.length} dari {packageDefinition.limits.maxGalleryImages} foto · Paket {packageDefinition.label} · drag foto untuk mengubah urutan
       </p>

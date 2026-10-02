@@ -16,7 +16,7 @@ export default async function InvitationPreviewPage({
 
   return (
     <div>
-      <div className="sticky top-0 z-50 bg-neutral-900 py-1.5 text-center text-xs tracking-wide text-white">
+      <div className="sticky top-0 z-50 bg-primary py-1.5 text-center text-xs tracking-wide text-primary-foreground">
         Preview Mode — not visible to guests until published
       </div>
       <ThemeRenderer invitation={invitation} guest={null} />
