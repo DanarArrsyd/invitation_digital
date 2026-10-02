@@ -9,13 +9,6 @@ export function GiftAccountCard({ gift }: { gift: GiftAccount }) {
   const { copied, failed, copy } = useCopyFeedback();
   const numberRef = useRef<HTMLParagraphElement>(null);
 
-  async function handleCopy() {
-    const ok = await copy(gift.accountNumber);
-    if (!ok && numberRef.current) {
-      // Clipboard blocked: select the number so a long-press copies it.
-      window.getSelection()?.selectAllChildren(numberRef.current);
-    }
-  }
 
   return (
     <div
@@ -43,7 +36,7 @@ export function GiftAccountCard({ gift }: { gift: GiftAccount }) {
 
       <button
         type="button"
-        onClick={() => void handleCopy()}
+        onClick={() => void copy(gift.accountNumber, numberRef.current)}
         className="min-h-[48px] w-full border text-[0.68rem] tracking-[0.28em] uppercase transition-colors duration-300"
         style={{
           borderColor: copied ? "var(--ni-gold-soft)" : "rgba(199,174,133,0.5)",

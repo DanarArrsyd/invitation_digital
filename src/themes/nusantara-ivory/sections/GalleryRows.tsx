@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-
+import { enlargeLabel, GalleryLightbox } from "@/themes/shared/GalleryLightbox";
+import { useGalleryLightbox } from "@/themes/shared/use-gallery-lightbox";
 import { GALLERY_ASPECT_RATIO_CSS, type GalleryItem } from "@/types/invitation";
 
 import { EditorialImage } from "../components/EditorialImage";
@@ -19,30 +19,10 @@ function ratioOf(item: GalleryItem): { css: string; value: number } {
  * proportion to the ratio chosen in admin, so landscapes and portraits sit
  * together without cropping to a common shape or leaving gaps, and the
  * couple's order reads left-to-right, top-to-bottom. Tapping a photo opens
- * it in a native <dialog> (focus trap, Esc to close, arrow keys to browse).
+ * it in the shared lightbox (themes/shared/GalleryLightbox).
  */
 export function GalleryRows({ gallery }: { gallery: GalleryItem[] }) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const show = useCallback(
-    (index: number) => setOpenIndex(((index % gallery.length) + gallery.length) % gallery.length),
-    [gallery.length],
-  );
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (openIndex !== null && !dialog.open) {
-      dialog.showModal();
-      // showModal focuses the first control; Close is the expected landing spot.
-      closeRef.current?.focus();
-    }
-    if (openIndex === null && dialog.open) dialog.close();
-  }, [openIndex]);
-
-  const active = openIndex !== null ? gallery[openIndex] : null;
+  const lightbox = useGalleryLightbox(gallery.length);
 
   return (
     <>
@@ -58,10 +38,10 @@ export function GalleryRows({ gallery }: { gallery: GalleryItem[] }) {
               <Reveal variant="mask" delay={(index % 3) * 0.08}>
                 <button
                   type="button"
-                  onClick={() => show(index)}
+                  onClick={() => lightbox.show(index)}
                   className="ni-photo-wrap ni-gallery-photo block w-full cursor-zoom-in"
                   style={{ aspectRatio: ratio.css }}
-                  aria-label={`Perbesar foto ${index + 1} dari ${gallery.length}${item.caption ? `: ${item.caption}` : ""}`}
+                  aria-label={enlargeLabel(index, gallery.length, item.caption)}
                 >
                   <EditorialImage
                     src={item.imageUrl}
@@ -77,60 +57,27 @@ export function GalleryRows({ gallery }: { gallery: GalleryItem[] }) {
         })}
       </div>
 
-      <dialog
-        ref={dialogRef}
-        className="ni-lightbox"
-        aria-label="Foto galeri"
-        onClose={() => setOpenIndex(null)}
-        onClick={(event) => {
-          // A click on the backdrop (the dialog element itself) closes it.
-          if (event.target === event.currentTarget) setOpenIndex(null);
+      <GalleryLightbox
+        gallery={gallery}
+        lightbox={lightbox}
+        classes={{
+          dialog: "ni-lightbox",
+          body: "ni-lightbox-body",
+          frame: "ni-lightbox-frame",
+          bar: "ni-lightbox-bar",
+          caption: "ni-lightbox-caption",
+          button: "ni-lightbox-btn",
         }}
-        onKeyDown={(event) => {
-          if (openIndex === null) return;
-          if (event.key === "ArrowRight") show(openIndex + 1);
-          if (event.key === "ArrowLeft") show(openIndex - 1);
-        }}
-      >
-        {active && openIndex !== null ? (
-          <div className="ni-lightbox-body">
-            <div className="ni-lightbox-frame">
-              <EditorialImage
-                key={active.id}
-                src={active.imageUrl}
-                alt={active.altText ?? active.caption ?? ""}
-                sizes="100vw"
-                className="ni-lightbox-photo"
-              />
-            </div>
-            <div className="ni-lightbox-bar">
-              <p className="ni-lightbox-caption">
-                <span className="tabular-nums">
-                  {openIndex + 1} / {gallery.length}
-                </span>
-                {active.caption ? <span> · {active.caption}</span> : null}
-              </p>
-              <div className="flex gap-2">
-                {gallery.length > 1 ? (
-                  <>
-                    <button type="button" className="ni-lightbox-btn" onClick={() => show(openIndex - 1)}>
-                      <span aria-hidden="true">←</span>
-                      <span className="sr-only">Foto sebelumnya</span>
-                    </button>
-                    <button type="button" className="ni-lightbox-btn" onClick={() => show(openIndex + 1)}>
-                      <span aria-hidden="true">→</span>
-                      <span className="sr-only">Foto berikutnya</span>
-                    </button>
-                  </>
-                ) : null}
-                <button ref={closeRef} type="button" className="ni-lightbox-btn" onClick={() => setOpenIndex(null)}>
-                  Tutup
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : null}
-      </dialog>
+        renderImage={(item) => (
+          <EditorialImage
+            key={item.id}
+            src={item.imageUrl}
+            alt={item.altText ?? item.caption ?? ""}
+            sizes="100vw"
+            className="ni-lightbox-photo"
+          />
+        )}
+      />
     </>
   );
 }

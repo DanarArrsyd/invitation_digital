@@ -82,9 +82,9 @@ const CSS = `
   font-family: var(--ni-sans);
   font-size: clamp(0.625rem, 1.4vw, 0.7rem);
   font-weight: 400;
-  letter-spacing: 0.38em;
+  letter-spacing: 0.23em;
   text-transform: uppercase;
-  color: var(--ni-gold);
+  color: var(--ni-gold-ink);
 }
 
 .ni-display {
@@ -136,7 +136,6 @@ const CSS = `
 .ni-theme :is(a, button, input, textarea):focus-visible { outline: 2px solid var(--ni-brown); outline-offset: 5px; }
 .ni-theme :is(input, textarea) { min-width: 0; max-width: 100%; border-radius: 0; }
 .ni-theme :is(form, fieldset), .ni-theme .grid > * { min-width: 0; }
-.ni-theme .ni-eyebrow { color: var(--ni-gold-ink); letter-spacing: .23em; }
 .ni-theme .ni-panel-dark .ni-eyebrow { color: var(--ni-gold-soft); }
 .ni-cover-stagger { animation: ni-cover-enter .75s cubic-bezier(.22,.61,.36,1) both; }
 @keyframes ni-cover-enter { from { opacity: 0; translate: 0 16px; } to { opacity: 1; translate: 0 0; } }
