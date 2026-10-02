@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 2 October 2026 (Asia/Jakarta)
+Last updated: 3 October 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -46,14 +46,19 @@ implementation plans remain the source of truth:
 
 ## Working location and repository state
 
-Active isolated project worktree:
+Since 2 October 2026 the repository is a standalone clone of
+`github.com/DanarArrsyd/invitation_digital` at
+`/Users/ekadanararrasyid/VS Code/invitation_digital`, and `main` is the
+source of truth and the production branch (merges auto-deploy on Vercel).
 
-`/Users/ekadanararrasyid/.codex/worktrees/package-entitlements/VS Code/invitation_digital`
+History: the themes were originally built inside a parent `VS Code`
+repository under the `invitation_digital/` prefix (the Codex worktree
+`~/.codex/worktrees/package-entitlements` still points there). That history
+was imported with `git subtree split` and merged in PR #4; the `codex/*`
+branches were then deleted. Do not resume work in the old worktree.
 
-The worktree is intentionally detached and externally managed. Do not create
-another worktree or move implementation back to the dirty original checkout.
-The untracked `supabase/.temp/` directory predates this work; never stage,
-delete, or modify it.
+Work happens on a feature branch from `main`, merged through a pull request
+after lint, typecheck, tests and build pass.
 
 Terra's final verified behavior commit is `3abb1e3c`. Midnight Atelier Tasks
 1–7 end at `7644883d`; Task 8 ends at `a788711d`; Task 9 ends at `17964b00`.
@@ -399,6 +404,40 @@ does not prove a feature works. Do not perform unrelated refactors.
 The ignored execution ledger is at:
 
 `/Users/ekadanararrasyid/.codex/worktrees/package-entitlements/VS Code/.superpowers/sdd/2026-09-24-terra-botanica-theme/progress.md`
+
+## UI/UX redesign — 2–3 October 2026
+
+Phased redesign from the UI/UX audit, each phase merged through its own PR:
+
+| Phase | PR | Scope |
+| --- | --- | --- |
+| Repo cleanup | #4, #5 | Port Cobalt/Midnight history; docs into `docs/`; README; tooling |
+| 1 Foundation | #6 | Admin font fix (`--font-sans` self-reference rendered Times); theme fonts via `src/themes/theme-fonts.ts`; admin status tokens; `--ni-*` tokens and AA contrast |
+| 2 Admin components | #7 | `FormField`, `FormMessage`, `PageHeader`, `InvitationStatusBadge` (`lib/invitations/status.ts`); confirm dialogs on every delete |
+| 3 Admin shell | #8 | One sidebar; `(protected)/(shell)` route group; preview renders full-bleed outside the shell |
+| 4 Admin pages | #9 | Bulk guest paste, RSVP per guest, publish readiness checklist (`lib/invitations/readiness.ts`), Indonesian copy |
+| 5 Ivory template | #10 | `next/image` for uploads, guest-action nav priority, text hero without photo, justified gallery honouring ratios, lightbox |
+| 6 Guest forms | #11 | RSVP native radios, attendance recovery after errors, focus on confirmation, wish counter, copy fallback |
+| 7 Polish + parity | this branch | Shared Reveal watcher; dead cover motion removed; lightbox and copy fallback brought to Terra, Midnight and Cobalt |
+
+Shared pieces added for parity: `themes/shared/use-gallery-lightbox.ts`,
+`themes/shared/GalleryLightbox.tsx`, `useCopyFeedback().failed` and
+`copy(text, fallbackElement)`. `tests/gallery-gift-parity.test.mjs` mounts
+every theme's real gallery and gift components.
+
+Open items:
+
+- Event times are labelled "WIB" and countdown/calendar use UTC+7 in
+  `themes/shared/calendar.ts`. Venues in WITA/WIT need a per-invitation
+  time-zone setting (admin field + shared calendar), not yet decided.
+- Terra keeps its RSVP pressed-button pair (presentation), Ivory uses
+  radios; both submit the same payload through `useRsvpForm`.
+
+Visual QA without touching customer data: never open a live customer
+invitation from local dev (each visit writes analytics). Use a throwaway
+`src/app/qa-fixture/page.tsx` rendering `ThemeRenderer` with fixture data
+and local SVGs in `public/qa/` (both listed in `.git/info/exclude`), then
+delete them.
 
 ## Resolved review notes
 
