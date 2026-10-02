@@ -74,7 +74,7 @@ export function RsvpSection({
                       name="guestName"
                       required
                       className="min-h-[48px] border-b bg-transparent pb-2 text-[1.05rem] text-[var(--ni-ink)] outline-none transition-colors focus:border-[var(--ni-gold)]"
-                      style={{ borderColor: "rgba(169,138,92,0.45)" }}
+                      style={{ borderColor: "var(--ni-line-strong)" }}
                     />
                   </label>
                 )}
@@ -97,9 +97,9 @@ export function RsvpSection({
                           onClick={() => setAttendance(option.value)}
                           className="min-h-[52px] border px-4 text-[0.72rem] tracking-[0.26em] uppercase transition-colors duration-300"
                           style={{
-                            borderColor: active ? "var(--ni-gold)" : "rgba(169,138,92,0.35)",
-                            background: active ? "var(--ni-gold)" : "transparent",
-                            color: active ? "#FFFFFF" : "var(--ni-brown)",
+                            borderColor: active ? "var(--ni-brown)" : "var(--ni-line)",
+                            background: active ? "var(--ni-brown)" : "transparent",
+                            color: active ? "var(--ni-ivory)" : "var(--ni-brown)",
                           }}
                         >
                           {option.label}
@@ -112,7 +112,7 @@ export function RsvpSection({
                 <TurnstileWidget />
 
                 {state.status === "error" ? (
-                  <p role="alert" className="text-[0.85rem] text-[#8C2F1F]">
+                  <p role="alert" className="text-[0.85rem] text-[var(--ni-danger)]">
                     {state.message}
                   </p>
                 ) : null}

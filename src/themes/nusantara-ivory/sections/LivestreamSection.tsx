@@ -27,12 +27,12 @@ export function LivestreamSection({ events }: { events: InvitationEvent[] }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex min-h-[64px] items-center justify-between gap-6 border-b pb-4 transition-colors"
-                style={{ borderColor: "rgba(169,138,92,0.3)" }}
+                style={{ borderColor: "var(--ni-line)" }}
               >
                 <span className="ni-serif text-[clamp(1.2rem,2.6vw,1.6rem)] text-[var(--ni-ink)]">
                   {event.title}
                 </span>
-                <span className="flex items-center gap-3 text-[0.68rem] tracking-[0.28em] uppercase" style={{ color: "var(--ni-gold)" }}>
+                <span className="flex items-center gap-3 text-[0.68rem] tracking-[0.28em] uppercase" style={{ color: "var(--ni-gold-ink)" }}>
                   Tonton
                   <svg
                     viewBox="0 0 24 24"

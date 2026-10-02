@@ -16,7 +16,7 @@ export function GiftSection({ gifts }: { gifts: GiftAccount[] }) {
           <Reveal delay={0.1}>
             <p
               className="mt-6 max-w-[32ch] text-[0.9rem] leading-[1.75]"
-              style={{ color: "rgba(252,250,245,0.62)" }}
+              style={{ color: "var(--ni-on-dark-muted)" }}
             >
               Doa restu Anda adalah hadiah terindah. Bila berkenan memberi tanda kasih, berikut
               informasi yang dapat digunakan.

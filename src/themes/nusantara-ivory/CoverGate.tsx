@@ -152,7 +152,7 @@ export function CoverGate({
                     <div
                       key="guest"
                       className="ni-recipient mx-auto mt-8 flex w-full max-w-[min(380px,74vw)] flex-col items-center gap-2 border-t border-b px-4 py-5"
-                      style={{ borderColor: "rgba(169,138,92,0.28)" }}
+                      style={{ borderColor: "var(--ni-line)" }}
                     >
                       <p
                         className="text-[0.66rem] tracking-[0.3em] uppercase"
@@ -176,7 +176,7 @@ export function CoverGate({
                     >
                       <span
                         className="absolute inset-0 origin-bottom scale-y-0 transition-transform duration-500 ease-out group-hover:scale-y-100 motion-reduce:transition-none"
-                        style={{ background: "var(--ni-gold)" }}
+                        style={{ background: "var(--ni-gold-ink)" }}
                         aria-hidden="true"
                       />
                       <span className="relative transition-colors duration-500 group-hover:text-white">
@@ -237,7 +237,7 @@ export function CoverGate({
               className="fixed right-5 z-40 flex size-12 items-center justify-center rounded-full border backdrop-blur transition-colors"
               style={{
                 bottom: "calc(5.4rem + env(safe-area-inset-bottom))",
-                borderColor: "rgba(169,138,92,0.5)",
+                borderColor: "var(--ni-line-strong)",
                 background: "rgba(252,250,245,0.88)",
                 color: "var(--ni-brown)",
               }}

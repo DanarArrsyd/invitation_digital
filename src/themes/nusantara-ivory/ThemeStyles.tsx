@@ -25,6 +25,17 @@ const CSS = `
   --ni-section-y: clamp(4rem, 7.5vw, 7rem);
   --ni-olive: #7C8069;
 
+  /* Gold for small text: --ni-gold is ~3:1 on ivory and fails WCAG AA below
+     large sizes, this darker ink stays >= 4.5:1 on every light panel
+     (ivory through the cream gradient edge). --ni-gold stays for rules,
+     ornaments and display-size type. */
+  --ni-gold-ink: #735B3A;
+  --ni-line-strong: rgba(169,138,92,0.45);
+  --ni-line: rgba(169,138,92,0.3);
+  --ni-line-soft: rgba(169,138,92,0.22);
+  --ni-on-dark-muted: rgba(252,250,245,0.62);
+  --ni-danger: #8C2F1F;
+
   background-color: var(--ni-ivory);
   color: var(--ni-brown);
   font-family: var(--ni-sans);
@@ -125,7 +136,7 @@ const CSS = `
 .ni-theme :is(a, button, input, textarea):focus-visible { outline: 2px solid var(--ni-brown); outline-offset: 5px; }
 .ni-theme :is(input, textarea) { min-width: 0; max-width: 100%; border-radius: 0; }
 .ni-theme :is(form, fieldset), .ni-theme .grid > * { min-width: 0; }
-.ni-theme .ni-eyebrow { color: #806741; letter-spacing: .23em; }
+.ni-theme .ni-eyebrow { color: var(--ni-gold-ink); letter-spacing: .23em; }
 .ni-theme .ni-panel-dark .ni-eyebrow { color: var(--ni-gold-soft); }
 .ni-story > .ni-botanical { left: -6%; right: auto; bottom: -10%; transform: rotate(24deg); opacity: .12; }
 .ni-rsvp > .ni-botanical { top: -50px; bottom: auto; left: -8%; right: auto; transform: rotate(100deg); opacity: .18; }
@@ -212,7 +223,6 @@ const CSS = `
 }
 .ni-dresscode-hex { font-size: .62rem; letter-spacing: .08em; color: var(--ni-brown-soft); }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
-.ni-theme .ni-rsvp-panel button[aria-pressed='true'] { background: var(--ni-brown) !important; border-color: var(--ni-brown) !important; }
 .ni-wishes-empty { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-direction: column; min-height: 220px; border-block: 1px solid var(--ni-sand); }
 .ni-wishes-empty .ni-botanical { position: relative; width: 125px; height: 160px; opacity: .7; }
 @media (min-width: 768px) {

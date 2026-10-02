@@ -24,7 +24,7 @@ export function GiftAccountCard({ gift }: { gift: GiftAccount }) {
         >
           {gift.accountNumber}
         </p>
-        <p className="text-[0.85rem]" style={{ color: "rgba(252,250,245,0.62)" }}>
+        <p className="text-[0.85rem]" style={{ color: "var(--ni-on-dark-muted)" }}>
           a.n. {gift.accountName}
         </p>
       </div>
@@ -34,9 +34,9 @@ export function GiftAccountCard({ gift }: { gift: GiftAccount }) {
         onClick={() => void copy(gift.accountNumber)}
         className="min-h-[48px] w-full border text-[0.68rem] tracking-[0.28em] uppercase transition-colors duration-300"
         style={{
-          borderColor: copied ? "var(--ni-gold)" : "rgba(199,174,133,0.5)",
-          background: copied ? "var(--ni-gold)" : "transparent",
-          color: copied ? "#FFFFFF" : "var(--ni-gold-soft)",
+          borderColor: copied ? "var(--ni-gold-soft)" : "rgba(199,174,133,0.5)",
+          background: copied ? "var(--ni-gold-soft)" : "transparent",
+          color: copied ? "var(--ni-espresso)" : "var(--ni-gold-soft)",
         }}
       >
         {copied ? "Tersalin" : "Salin Nomor"}

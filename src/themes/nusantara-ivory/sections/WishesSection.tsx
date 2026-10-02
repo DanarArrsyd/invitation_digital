@@ -64,7 +64,7 @@ export function WishesSection({
                       name="guestName"
                       required
                       className="min-h-[48px] border-b bg-transparent pb-2 text-[1.05rem] text-[var(--ni-ink)] outline-none transition-colors focus:border-[var(--ni-gold)]"
-                      style={{ borderColor: "rgba(169,138,92,0.45)" }}
+                      style={{ borderColor: "var(--ni-line-strong)" }}
                     />
                   </label>
                 )}
@@ -78,14 +78,14 @@ export function WishesSection({
                     rows={4}
                     placeholder="Tulis ucapan dan doa..."
                     className="resize-y border-b bg-transparent pb-2 text-[1rem] text-[var(--ni-ink)] outline-none transition-colors placeholder:text-[rgba(124,107,88,0.55)] focus:border-[var(--ni-gold)]"
-                    style={{ borderColor: "rgba(169,138,92,0.45)" }}
+                    style={{ borderColor: "var(--ni-line-strong)" }}
                   />
                 </label>
 
                 <TurnstileWidget />
 
                 {state.status === "error" ? (
-                  <p role="alert" className="text-[0.85rem] text-[#8C2F1F]">
+                  <p role="alert" className="text-[0.85rem] text-[var(--ni-danger)]">
                     {state.message}
                   </p>
                 ) : null}
@@ -113,14 +113,14 @@ export function WishesSection({
                   delay={Math.min(index, 3) * 0.05}
                   className={index === 0 ? "" : "mt-7 border-t pt-7"}
                 >
-                  <div style={index === 0 ? undefined : { borderColor: "rgba(169,138,92,0.22)" }}>
+                  <div style={index === 0 ? undefined : { borderColor: "var(--ni-line-soft)" }}>
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <p className="ni-serif text-[1.15rem] text-[var(--ni-ink)]">
                         {wish.guestName}
                       </p>
                       <p
                         className="shrink-0 text-[0.65rem] tracking-[0.2em] uppercase"
-                        style={{ color: "var(--ni-gold)" }}
+                        style={{ color: "var(--ni-gold-ink)" }}
                       >
                         {formatWishDate(wish.createdAt)}
                       </p>
@@ -137,7 +137,7 @@ export function WishesSection({
               <button
                 type="button"
                 onClick={showMore}
-                className="mt-9 min-h-[48px] border px-7 text-[0.68rem] tracking-[0.28em] uppercase transition-colors duration-300 hover:bg-[var(--ni-gold)] hover:text-white"
+                className="mt-9 min-h-[48px] border px-7 text-[0.68rem] tracking-[0.28em] uppercase transition-colors duration-300 hover:bg-[var(--ni-gold-ink)] hover:text-[var(--ni-ivory)]"
                 style={{ borderColor: "var(--ni-gold)", color: "var(--ni-brown)" }}
               >
                 Muat Lebih Banyak
