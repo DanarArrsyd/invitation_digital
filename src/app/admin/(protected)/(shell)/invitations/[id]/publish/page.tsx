@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { FormMessage } from "@/components/admin/form-message";
 import { SubmitButton } from "@/components/admin/submit-button";
-import { Button } from "@/components/ui/button";
 import { buildPublishedInvitationPath } from "@/lib/share/invitation-share";
 import { getInvitationDetail } from "@/server/invitations/queries";
 

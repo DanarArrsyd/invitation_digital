@@ -184,7 +184,7 @@ test("migration contract requires the invitation theme foreign key", () => {
 });
 
 test("admin theme selection remains database-backed", () => {
-  const source = readFileSync(new URL("../src/app/admin/(protected)/invitations/new/page.tsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/admin/(protected)/(shell)/invitations/new/page.tsx", import.meta.url), "utf8");
   assert.match(source, /listActiveThemes\(\)/);
   assert.doesNotMatch(source, /themeRegistry/);
 });

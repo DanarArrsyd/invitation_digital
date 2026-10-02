@@ -131,7 +131,7 @@ test("Cobalt catalogue migration is one idempotent in-place upsert", () => {
 });
 
 test("admin discovery remains database-backed through listActiveThemes", () => {
-  const page = readFileSync(new URL("../src/app/admin/(protected)/invitations/new/page.tsx", import.meta.url), "utf8");
+  const page = readFileSync(new URL("../src/app/admin/(protected)/(shell)/invitations/new/page.tsx", import.meta.url), "utf8");
   const queries = readFileSync(new URL("../src/server/invitations/queries.ts", import.meta.url), "utf8");
   assert.match(page, /listActiveThemes\(\)/);
   assert.doesNotMatch(page, /themeRegistry/);
