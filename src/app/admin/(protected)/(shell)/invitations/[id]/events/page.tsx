@@ -28,33 +28,33 @@ function EventFields({ idPrefix, event }: { idPrefix: string; event?: EventDefau
 
   return (
     <>
-      <FormField id={id("eventType")} label="Event type">
-        <Input id={id("eventType")} name="eventType" defaultValue={event?.event_type ?? ""} placeholder="akad, reception..." />
+      <FormField id={id("eventType")} label="Jenis acara">
+        <Input id={id("eventType")} name="eventType" defaultValue={event?.event_type ?? ""} placeholder="Akad, resepsi, ..." />
       </FormField>
-      <FormField id={id("title")} label="Title">
+      <FormField id={id("title")} label="Nama acara">
         <Input id={id("title")} name="title" defaultValue={event?.title ?? ""} required />
       </FormField>
-      <FormField id={id("eventDate")} label="Date">
+      <FormField id={id("eventDate")} label="Tanggal">
         <Input id={id("eventDate")} name="eventDate" type="date" defaultValue={event?.event_date ?? ""} required />
       </FormField>
       <div className="grid grid-cols-2 gap-3">
-        <FormField id={id("startTime")} label="Start time">
+        <FormField id={id("startTime")} label="Jam mulai">
           <Input id={id("startTime")} name="startTime" type="time" defaultValue={event?.start_time ?? ""} />
         </FormField>
-        <FormField id={id("endTime")} label="End time">
+        <FormField id={id("endTime")} label="Jam selesai">
           <Input id={id("endTime")} name="endTime" type="time" defaultValue={event?.end_time ?? ""} />
         </FormField>
       </div>
-      <FormField id={id("venueName")} label="Venue name">
+      <FormField id={id("venueName")} label="Nama tempat">
         <Input id={id("venueName")} name="venueName" defaultValue={event?.venue_name ?? ""} />
       </FormField>
-      <FormField id={id("address")} label="Address">
+      <FormField id={id("address")} label="Alamat">
         <Input id={id("address")} name="address" defaultValue={event?.address ?? ""} />
       </FormField>
-      <FormField id={id("mapsUrl")} label="Maps URL">
+      <FormField id={id("mapsUrl")} label="Link Google Maps">
         <Input id={id("mapsUrl")} name="mapsUrl" type="url" defaultValue={event?.maps_url ?? ""} />
       </FormField>
-      <FormField id={id("livestreamUrl")} label="Livestream URL">
+      <FormField id={id("livestreamUrl")} label="Link live streaming">
         <Input id={id("livestreamUrl")} name="livestreamUrl" type="url" defaultValue={event?.livestream_url ?? ""} />
       </FormField>
     </>
@@ -96,7 +96,6 @@ export default async function EventsPage({
               hiddenFields={{ id: event.id, invitationId: invitation.id }}
               title="Hapus acara ini?"
               description={`"${event.title}" akan dihapus dari undangan. Tindakan ini tidak bisa dibatalkan.`}
-              triggerLabel="Delete"
             />
           </div>
 
@@ -107,7 +106,7 @@ export default async function EventsPage({
 
             <EventFields idPrefix={`event-${event.id}`} event={event} />
 
-            <SubmitButton className="w-fit sm:col-span-2">Save</SubmitButton>
+            <SubmitButton className="w-fit sm:col-span-2">Simpan</SubmitButton>
           </form>
         </section>
       ))}
@@ -129,7 +128,7 @@ export default async function EventsPage({
           </p>
         ) : (
           <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
-            Add event
+            Tambah acara
           </SubmitButton>
         )}
       </form>

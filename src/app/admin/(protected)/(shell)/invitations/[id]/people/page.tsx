@@ -29,19 +29,19 @@ function PersonFields({ idPrefix, person }: { idPrefix: string; person?: PersonD
 
   return (
     <>
-      <FormField id={id("role")} label="Role">
+      <FormField id={id("role")} label="Peran" hint="Isi bride untuk mempelai wanita, groom untuk mempelai pria.">
         <Input id={id("role")} name="role" defaultValue={person?.role ?? ""} placeholder="bride / groom" required />
       </FormField>
-      <FormField id={id("fullName")} label="Full name">
+      <FormField id={id("fullName")} label="Nama lengkap">
         <Input id={id("fullName")} name="fullName" defaultValue={person?.full_name ?? ""} required />
       </FormField>
-      <FormField id={id("nickname")} label="Nickname">
+      <FormField id={id("nickname")} label="Nama panggilan">
         <Input id={id("nickname")} name="nickname" defaultValue={person?.nickname ?? ""} />
       </FormField>
-      <FormField id={id("fatherName")} label="Father's name">
+      <FormField id={id("fatherName")} label="Nama ayah">
         <Input id={id("fatherName")} name="fatherName" defaultValue={person?.father_name ?? ""} />
       </FormField>
-      <FormField id={id("motherName")} label="Mother's name">
+      <FormField id={id("motherName")} label="Nama ibu">
         <Input id={id("motherName")} name="motherName" defaultValue={person?.mother_name ?? ""} />
       </FormField>
       <FormField id={id("bio")} label="Bio" className="sm:col-span-2">
@@ -85,7 +85,7 @@ export default async function PeoplePage({
               />
             ) : (
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted text-xs text-muted-foreground">
-                No photo
+                Belum ada foto
               </div>
             )}
 
@@ -106,7 +106,7 @@ export default async function PeoplePage({
                   required
                 />
                 <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
-                  Upload photo
+                  Unggah foto
                 </SubmitButton>
               </form>
             </div>
@@ -116,7 +116,6 @@ export default async function PeoplePage({
               hiddenFields={{ id: person.id, invitationId: invitation.id }}
               title="Hapus data mempelai ini?"
               description={`${person.full_name} beserta fotonya akan hilang dari undangan. Tindakan ini tidak bisa dibatalkan.`}
-              triggerLabel="Delete"
             />
           </div>
 
@@ -127,7 +126,7 @@ export default async function PeoplePage({
 
             <PersonFields idPrefix={`person-${person.id}`} person={person} />
 
-            <SubmitButton className="w-fit sm:col-span-2">Save</SubmitButton>
+            <SubmitButton className="w-fit sm:col-span-2">Simpan</SubmitButton>
           </form>
 
           <form action={updatePersonInstagramAction} className="mt-5 flex flex-col gap-3 border-t border-border pt-5">
@@ -166,7 +165,7 @@ export default async function PeoplePage({
         <PersonFields idPrefix="person-new" />
 
         <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
-          Add person
+          Tambah mempelai
         </SubmitButton>
       </form>
     </div>

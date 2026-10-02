@@ -20,7 +20,7 @@ export function CopyLinkButton({ link }: { link: string }) {
         setTimeout(() => setCopied(false), 1500);
       }}
     >
-      {copied ? "Copied!" : "Copy link"}
+      {copied ? "Tersalin" : "Salin link"}
     </Button>
   );
 }

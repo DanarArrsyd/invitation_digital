@@ -33,10 +33,10 @@ export default async function InvitationsListPage({
   return (
     <div>
       <PageHeader
-        title="Invitations"
+        title="Undangan"
         actions={
           <Link href="/admin/invitations/new" className={buttonVariants()}>
-            New Invitation
+            Undangan baru
           </Link>
         }
       />
@@ -60,11 +60,11 @@ export default async function InvitationsListPage({
       {invitations.length === 0 ? (
         <EmptyState
           className="mt-8"
-          title="Belum ada invitation"
-          description="Buat invitation pertama untuk mulai mengatur tema, konten, dan tamu."
+          title="Belum ada undangan"
+          description="Buat undangan pertama untuk mulai mengatur tema, konten, dan tamu."
           action={
             <Link href="/admin/invitations/new" className={buttonVariants({ size: "sm" })}>
-              Buat invitation pertama
+              Buat undangan pertama
             </Link>
           }
         />
@@ -100,7 +100,7 @@ export default async function InvitationsListPage({
                     href={`/admin/invitations/${invitation.id}/general`}
                     className={buttonVariants({ variant: "outline", size: "sm" })}
                   >
-                    Edit
+                    Ubah
                   </Link>
                   <div className="flex gap-2">
                     <Link
@@ -108,7 +108,7 @@ export default async function InvitationsListPage({
                       target="_blank"
                       className={buttonVariants({ variant: "ghost", size: "sm" })}
                     >
-                      Preview
+                      Pratinjau
                     </Link>
                     {invitation.status === "published" ? (
                       <Link
@@ -116,7 +116,7 @@ export default async function InvitationsListPage({
                         target="_blank"
                         className={buttonVariants({ variant: "ghost", size: "sm" })}
                       >
-                        Buka link
+                        Buka undangan
                       </Link>
                     ) : null}
                   </div>

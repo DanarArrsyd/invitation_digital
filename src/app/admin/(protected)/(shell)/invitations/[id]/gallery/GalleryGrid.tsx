@@ -117,11 +117,11 @@ export function GalleryGrid({
           <form action={updateGalleryItemAction} className="mt-3 flex flex-col gap-2">
             <input type="hidden" name="id" value={item.id} />
             <input type="hidden" name="invitationId" value={invitationId} />
-            <Input name="caption" placeholder="Caption" defaultValue={item.caption ?? ""} />
-            <Input name="altText" placeholder="Alt text" defaultValue={item.altText ?? ""} />
+            <Input name="caption" placeholder="Keterangan foto" aria-label="Keterangan foto" defaultValue={item.caption ?? ""} />
+            <Input name="altText" placeholder="Deskripsi untuk pembaca layar" aria-label="Deskripsi foto untuk pembaca layar" defaultValue={item.altText ?? ""} />
             <div className="flex justify-end gap-2">
               <SubmitButton variant="outline" size="sm" pendingText="Menyimpan...">
-                Simpan caption
+                Simpan keterangan
               </SubmitButton>
             </div>
           </form>

@@ -16,16 +16,17 @@ export default async function InvitationPreviewPage({
 }) {
   const { id } = await params;
 
-  const invitation = await getInvitationPreview(id);
-  if (!invitation) notFound();
+  const preview = await getInvitationPreview(id);
+  if (!preview) notFound();
+  const { invitation, isLive } = preview;
 
   return (
     <div>
       {/* Above the theme's fixed cover (z-50) so the mode stays visible. */}
       <div className="sticky top-0 z-[60] bg-primary px-4 py-1.5 text-center text-xs tracking-wide text-primary-foreground">
-        {invitation.status === "published"
+        {isLive
           ? "Mode pratinjau — tampilan sama dengan yang dilihat tamu"
-          : "Mode pratinjau — belum terlihat oleh tamu sampai diterbitkan"}
+          : "Mode pratinjau — belum terlihat oleh tamu (draf atau kedaluwarsa)"}
       </div>
       <ThemeRenderer invitation={invitation} guest={null} />
     </div>

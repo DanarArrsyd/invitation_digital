@@ -1,5 +1,6 @@
 "use client";
 
+import { INVITATION_TYPE_LABELS, INVITATION_TYPES, invitationTypeLabel } from "@/lib/invitations/types";
 import { FormMessage } from "@/components/admin/form-message";
 import { SubmitButton } from "@/components/admin/submit-button";
 import { Input } from "@/components/ui/input";
@@ -14,15 +15,6 @@ import {
 import type { Tables } from "@/types/database";
 
 import { updateGeneralAction } from "./actions";
-
-const INVITATION_TYPES = [
-  "wedding",
-  "birthday",
-  "engagement",
-  "aqiqah",
-  "graduation",
-  "corporate",
-] as const;
 
 export function GeneralForm({
   invitation,
@@ -40,25 +32,25 @@ export function GeneralForm({
       <input type="hidden" name="invitationId" value={invitation.id} />
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="title">Title</Label>
+        <Label htmlFor="title">Judul</Label>
         <Input id="title" name="title" defaultValue={invitation.title} required />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="slug">Slug</Label>
+        <Label htmlFor="slug">Alamat URL</Label>
         <Input id="slug" name="slug" defaultValue={invitation.slug} required />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="type">Type</Label>
+        <Label htmlFor="type">Jenis acara</Label>
         <Select name="type" defaultValue={invitation.type}>
           <SelectTrigger id="type" className="w-full">
-            <SelectValue />
+            <SelectValue>{(value: string) => invitationTypeLabel(value)}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             {INVITATION_TYPES.map((type) => (
               <SelectItem key={type} value={type}>
-                {type}
+                {INVITATION_TYPE_LABELS[type]}
               </SelectItem>
             ))}
           </SelectContent>
@@ -66,11 +58,11 @@ export function GeneralForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="themeId">Theme</Label>
+        <Label htmlFor="themeId">Tema</Label>
         <Select name="themeId" defaultValue={invitation.theme_id}>
           <SelectTrigger id="themeId" className="w-full">
             <SelectValue>
-              {(value: string) => themes.find((t) => t.id === value)?.name ?? "Select a theme"}
+              {(value: string) => themes.find((t) => t.id === value)?.name ?? "Pilih tema"}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
@@ -84,7 +76,7 @@ export function GeneralForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="eventDate">Event date</Label>
+        <Label htmlFor="eventDate">Tanggal acara</Label>
         <Input
           id="eventDate"
           name="eventDate"
@@ -94,7 +86,7 @@ export function GeneralForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="venueSummary">Venue summary</Label>
+        <Label htmlFor="venueSummary">Ringkasan lokasi</Label>
         <Input
           id="venueSummary"
           name="venueSummary"
@@ -105,7 +97,7 @@ export function GeneralForm({
       <FormMessage tone="error">{error}</FormMessage>
       <FormMessage tone="success">{!error && saved ? "Tersimpan." : null}</FormMessage>
 
-      <SubmitButton className="mt-2 w-fit">Save</SubmitButton>
+      <SubmitButton className="mt-2 w-fit">Simpan</SubmitButton>
     </form>
   );
 }

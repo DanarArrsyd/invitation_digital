@@ -47,12 +47,12 @@ export default async function ContentPage({
       ) : null}
 
       <section>
-        <h2 className="text-sm font-semibold text-foreground">Opening &amp; Closing</h2>
+        <h2 className="text-sm font-semibold text-foreground">Pembuka &amp; penutup</h2>
         <form action={updateContentAction} className="mt-4 flex max-w-lg flex-col gap-4">
           <input type="hidden" name="invitationId" value={invitation.id} />
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="openingQuote">Opening quote</Label>
+            <Label htmlFor="openingQuote">Kutipan pembuka</Label>
             <Textarea
               id="openingQuote"
               name="openingQuote"
@@ -62,7 +62,7 @@ export default async function ContentPage({
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="openingMessage">Opening message</Label>
+            <Label htmlFor="openingMessage">Pesan pembuka</Label>
             <Textarea
               id="openingMessage"
               name="openingMessage"
@@ -72,7 +72,7 @@ export default async function ContentPage({
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="closingMessage">Closing message</Label>
+            <Label htmlFor="closingMessage">Pesan penutup</Label>
             <Textarea
               id="closingMessage"
               name="closingMessage"
@@ -81,7 +81,7 @@ export default async function ContentPage({
             />
           </div>
 
-          <SubmitButton className="mt-2 w-fit">Save</SubmitButton>
+          <SubmitButton className="mt-2 w-fit">Simpan</SubmitButton>
         </form>
       </section>
 
@@ -124,7 +124,7 @@ export default async function ContentPage({
               <ColorListInput name="group2Colors" defaultValue={group2?.colors.join(", ") ?? ""} label="Warna grup 2" />
             </div>
 
-            <SubmitButton className="mt-2 w-fit">Save</SubmitButton>
+            <SubmitButton className="mt-2 w-fit">Simpan</SubmitButton>
           </fieldset>
         </form>
       </section>
@@ -157,7 +157,6 @@ export default async function ContentPage({
                   hiddenFields={{ id: story.id, invitationId: invitation.id }}
                   title="Hapus cerita ini?"
                   description={`"${story.title}" akan dihapus dari Love Story. Tindakan ini tidak bisa dibatalkan.`}
-                  triggerLabel="Delete"
                 />
               </div>
 
@@ -173,7 +172,7 @@ export default async function ContentPage({
                   required
                 />
                 <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
-                  Upload image
+                  Unggah foto
                 </SubmitButton>
               </form>
             </div>
@@ -186,21 +185,21 @@ export default async function ContentPage({
             <input type="hidden" name="invitationId" value={invitation.id} />
             <input type="hidden" name="sortOrder" value={stories.length} />
 
-            <FormField id="story-new-title" label="Title" className="sm:col-span-2">
+            <FormField id="story-new-title" label="Judul" className="sm:col-span-2">
               <Input id="story-new-title" name="title" required />
             </FormField>
-            <FormField id="story-new-yearLabel" label="Year label">
+            <FormField id="story-new-yearLabel" label="Label tahun">
               <Input id="story-new-yearLabel" name="yearLabel" placeholder="2019" />
             </FormField>
-            <FormField id="story-new-storyDate" label="Date">
+            <FormField id="story-new-storyDate" label="Tanggal">
               <Input id="story-new-storyDate" name="storyDate" type="date" />
             </FormField>
-            <FormField id="story-new-description" label="Description" className="sm:col-span-2">
+            <FormField id="story-new-description" label="Cerita" className="sm:col-span-2">
               <Textarea id="story-new-description" name="description" rows={2} />
             </FormField>
 
             <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
-              Add story
+              Tambah cerita
             </SubmitButton>
           </form>
         </div>

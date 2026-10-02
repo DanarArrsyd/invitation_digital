@@ -52,7 +52,7 @@ export default async function GeneralPage({
           <input type="hidden" name="invitationId" value={invitation.id} />
           <Input id="prewedding-photo" aria-describedby="prewedding-help" type="file" name="file" accept="image/png,image/jpeg,image/webp" required />
           <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
-            {invitation.cover_image_path ? "Ganti foto prewedding" : "Upload foto prewedding"}
+            {invitation.cover_image_path ? "Ganti foto prewedding" : "Unggah foto prewedding"}
           </SubmitButton>
         </form>
       </div>
@@ -76,17 +76,17 @@ export default async function GeneralPage({
         <h2 className="text-sm font-semibold text-foreground">Musik</h2>
 
         <div className="flex flex-col gap-2">
-          <Label htmlFor="music-file">Music</Label>
+          <Label htmlFor="music-file">File musik (MP3, M4A atau WAV)</Label>
           {invitation.music_path ? (
             <p className="text-sm text-muted-foreground">
-              Current: {invitation.music_path.split("/").pop()}
+              Saat ini: {invitation.music_path.split("/").pop()}
             </p>
           ) : null}
           <form action={uploadMusicAction} className="flex flex-wrap items-center gap-2">
             <input type="hidden" name="invitationId" value={invitation.id} />
             <Input id="music-file" type="file" name="file" accept="audio/mpeg,audio/mp4,audio/wav" className="max-w-xs" required />
             <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
-              Upload
+              Unggah
             </SubmitButton>
           </form>
         </div>

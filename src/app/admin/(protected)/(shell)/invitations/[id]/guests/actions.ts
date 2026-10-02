@@ -2,37 +2,43 @@
 
 import { redirect } from "next/navigation";
 
-import { createGuestSchema, deleteGuestSchema } from "@/lib/validation/guests";
-import { createGuest, deleteGuest } from "@/server/invitations/mutations";
+import { createGuestsSchema, deleteGuestSchema, parseGuestNames } from "@/lib/validation/guests";
+import { createGuests, deleteGuest } from "@/server/invitations/mutations";
 
 function path(id: string, query?: string) {
   return `/admin/invitations/${id}/guests${query ? `?${query}` : ""}`;
 }
 
-export async function createGuestAction(formData: FormData) {
+export async function createGuestsAction(formData: FormData) {
   const invitationId = String(formData.get("invitationId"));
 
-  const parsed = createGuestSchema.safeParse({
+  const parsed = createGuestsSchema.safeParse({
     invitationId,
-    displayName: formData.get("displayName"),
-    notes: formData.get("notes"),
+    names: parseGuestNames(String(formData.get("names") ?? "")),
+    notes: formData.get("notes") ?? undefined,
   });
 
   if (!parsed.success) {
     redirect(path(invitationId, `error=${encodeURIComponent(parsed.error.issues[0]?.message ?? "")}`));
   }
 
-  const result = await createGuest({
+  const result = await createGuests({
     invitationId: parsed.data.invitationId,
-    displayName: parsed.data.displayName,
+    names: parsed.data.names,
     notes: parsed.data.notes || null,
   });
 
-  if (result?.error) {
+  if ("error" in result) {
     redirect(path(invitationId, `error=${encodeURIComponent(result.error)}`));
   }
 
-  redirect(path(invitationId, `ok=${encodeURIComponent("Tamu ditambahkan")}`));
+  const message =
+    result.added === 0
+      ? "Semua nama sudah ada di daftar tamu"
+      : result.skipped > 0
+        ? `${result.added} tamu ditambahkan, ${result.skipped} dilewati karena sudah ada`
+        : `${result.added} tamu ditambahkan`;
+  redirect(path(invitationId, `ok=${encodeURIComponent(message)}`));
 }
 
 export async function deleteGuestAction(formData: FormData) {

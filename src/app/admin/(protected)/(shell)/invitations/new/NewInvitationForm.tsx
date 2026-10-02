@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 
+import { INVITATION_TYPE_LABELS, INVITATION_TYPES, invitationTypeLabel } from "@/lib/invitations/types";
 import { FormMessage } from "@/components/admin/form-message";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,15 +22,6 @@ import { createInvitationAction, type CreateInvitationState } from "./actions";
 
 const initialState: CreateInvitationState = { error: null };
 
-const INVITATION_TYPES = [
-  "wedding",
-  "birthday",
-  "engagement",
-  "aqiqah",
-  "graduation",
-  "corporate",
-] as const;
-
 export function NewInvitationForm({ themes }: { themes: Tables<"themes">[] }) {
   const [state, formAction, isPending] = useActionState(createInvitationAction, initialState);
   const [slug, setSlug] = useState("");
@@ -38,7 +30,7 @@ export function NewInvitationForm({ themes }: { themes: Tables<"themes">[] }) {
   return (
     <form action={formAction} className="flex max-w-md flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="title">Title</Label>
+        <Label htmlFor="title">Judul</Label>
         <Input
           id="title"
           name="title"
@@ -50,7 +42,7 @@ export function NewInvitationForm({ themes }: { themes: Tables<"themes">[] }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="slug">Slug</Label>
+        <Label htmlFor="slug">Alamat URL</Label>
         <Input
           id="slug"
           name="slug"
@@ -64,15 +56,15 @@ export function NewInvitationForm({ themes }: { themes: Tables<"themes">[] }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="type">Type</Label>
+        <Label htmlFor="type">Jenis acara</Label>
         <Select name="type" defaultValue="wedding">
           <SelectTrigger id="type" className="w-full">
-            <SelectValue />
+            <SelectValue>{(value: string) => invitationTypeLabel(value)}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             {INVITATION_TYPES.map((type) => (
               <SelectItem key={type} value={type}>
-                {type}
+                {INVITATION_TYPE_LABELS[type]}
               </SelectItem>
             ))}
           </SelectContent>
@@ -80,11 +72,11 @@ export function NewInvitationForm({ themes }: { themes: Tables<"themes">[] }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="themeId">Theme</Label>
+        <Label htmlFor="themeId">Tema</Label>
         <Select name="themeId" defaultValue={themes[0]?.id}>
           <SelectTrigger id="themeId" className="w-full">
-            <SelectValue placeholder="Select a theme">
-              {(value: string) => themes.find((t) => t.id === value)?.name ?? "Select a theme"}
+            <SelectValue placeholder="Pilih tema">
+              {(value: string) => themes.find((t) => t.id === value)?.name ?? "Pilih tema"}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
@@ -98,17 +90,17 @@ export function NewInvitationForm({ themes }: { themes: Tables<"themes">[] }) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="packageKey">Package</Label>
+        <Label htmlFor="packageKey">Paket</Label>
         <Select name="packageKey">
           <SelectTrigger id="packageKey" className="w-full">
-            <SelectValue placeholder="Select a package" />
+            <SelectValue placeholder="Pilih paket" />
           </SelectTrigger>
           <SelectContent>
             {PACKAGE_KEYS.map((key) => {
               const definition = PACKAGE_DEFINITIONS[key];
               return (
                 <SelectItem key={key} value={key}>
-                  {definition.label}{definition.recommended ? " — Recommended" : ""}
+                  {definition.label}{definition.recommended ? " — disarankan" : ""}
                 </SelectItem>
               );
             })}
@@ -119,7 +111,7 @@ export function NewInvitationForm({ themes }: { themes: Tables<"themes">[] }) {
       <FormMessage tone="error">{state.error}</FormMessage>
 
       <Button type="submit" disabled={isPending} className="mt-2 w-fit">
-        {isPending ? "Creating..." : "Create Invitation"}
+        {isPending ? "Membuat..." : "Buat undangan"}
       </Button>
     </form>
   );

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { FormMessage } from "@/components/admin/form-message";
@@ -14,19 +15,28 @@ import type { InvitationFeatures } from "@/types/invitation";
 
 import { updateFeaturesAction } from "./actions";
 
-const FEATURE_LABELS: Record<keyof InvitationFeatures, string> = {
-  music: "Music",
-  countdown: "Countdown",
-  maps: "Maps",
-  story: "Love Story",
-  gallery: "Gallery",
-  dressCode: "Dress Code",
-  livestream: "Livestream",
-  rsvp: "RSVP",
-  wishes: "Wishes",
-  gift: "Wedding Gift",
-  guestPersonalization: "Guest Personalization",
+type FeatureCopy = { label: string; description: string; contentSection?: string };
+
+/** What each toggle shows guests, and where its content is filled in. */
+const FEATURE_COPY: Record<keyof InvitationFeatures, FeatureCopy> = {
+  countdown: { label: "Hitung mundur", description: "Hari, jam, menit menuju acara pertama, plus tombol simpan ke kalender." },
+  maps: { label: "Tombol lokasi", description: "Tombol Lihat Lokasi di setiap acara yang punya link Maps.", contentSection: "events" },
+  story: { label: "Love story", description: "Linimasa cerita pasangan.", contentSection: "content" },
+  gallery: { label: "Galeri", description: "Kumpulan foto pasangan.", contentSection: "gallery" },
+  dressCode: { label: "Dress code", description: "Saran warna busana untuk tamu.", contentSection: "content" },
+  livestream: { label: "Live streaming", description: "Link siaran untuk acara yang punya link livestream.", contentSection: "events" },
+  rsvp: { label: "RSVP", description: "Tamu mengonfirmasi hadir atau tidak hadir." },
+  wishes: { label: "Ucapan & doa", description: "Tamu mengirim ucapan; tampil langsung dan bisa disembunyikan di RSVP & Ucapan." },
+  gift: { label: "Wedding gift", description: "Rekening untuk tanda kasih, dengan tombol salin nomor.", contentSection: "gifts" },
+  guestPersonalization: { label: "Nama tamu di cover", description: "Link personal menampilkan nama tamu di halaman pembuka.", contentSection: "guests" },
+  music: { label: "Musik latar", description: "Diputar setelah tamu membuka undangan, dengan tombol jeda.", contentSection: "general" },
 };
+
+const FEATURE_GROUPS: { label: string; keys: (keyof InvitationFeatures)[] }[] = [
+  { label: "Isi undangan", keys: ["countdown", "maps", "story", "gallery", "dressCode", "livestream"] },
+  { label: "Interaksi tamu", keys: ["rsvp", "wishes", "gift", "guestPersonalization"] },
+  { label: "Suasana", keys: ["music"] },
+];
 
 export default async function FeaturesPage({
   params,
@@ -47,37 +57,59 @@ export default async function FeaturesPage({
   const allowed = PACKAGE_DEFINITIONS[invitation.package_key as PackageKey].invitationFeatures;
 
   return (
-    <form action={updateFeaturesAction} className="flex max-w-md flex-col gap-4">
+    <form action={updateFeaturesAction} className="flex max-w-2xl flex-col gap-6">
       <input type="hidden" name="invitationId" value={invitation.id} />
 
-      {(Object.keys(FEATURE_LABELS) as (keyof InvitationFeatures)[]).map((key) => {
-        const requiredPackage = getRequiredPackageForFeature(key);
-        const granted = allowed[key];
-        return (
-          <div key={key} className="flex items-center justify-between gap-4 rounded-lg border border-border bg-card px-4 py-3">
-            <div className="min-w-0">
-              <Label htmlFor={key}>{FEATURE_LABELS[key]}</Label>
-              {!granted && requiredPackage ? (
-                <p id={`${key}-package`} className="mt-1 text-xs text-muted-foreground">
-                  Tersedia di {PACKAGE_DEFINITIONS[requiredPackage].label}
-                </p>
-              ) : null}
-            </div>
-            <Switch
-              id={key}
-              name={key}
-              disabled={!granted}
-              defaultChecked={granted && Boolean(features[key])}
-              aria-describedby={!granted && requiredPackage ? `${key}-package` : undefined}
-            />
-          </div>
-        );
-      })}
+      {FEATURE_GROUPS.map((group) => (
+        <fieldset key={group.label} className="flex flex-col gap-2">
+          <legend className="mb-2 text-sm font-semibold text-foreground">{group.label}</legend>
+          {group.keys.map((key) => {
+            const copy = FEATURE_COPY[key];
+            const requiredPackage = getRequiredPackageForFeature(key);
+            const granted = allowed[key];
+            return (
+              <div key={key} className="flex items-start justify-between gap-4 rounded-lg border border-border bg-card px-4 py-3">
+                <div className="min-w-0">
+                  <Label htmlFor={key}>{copy.label}</Label>
+                  <p id={`${key}-description`} className="mt-1 text-sm text-muted-foreground">
+                    {copy.description}
+                    {copy.contentSection ? (
+                      <>
+                        {" "}
+                        <Link
+                          href={`/admin/invitations/${invitation.id}/${copy.contentSection}`}
+                          className="underline underline-offset-2 hover:text-foreground"
+                        >
+                          Atur isinya
+                        </Link>
+                      </>
+                    ) : null}
+                  </p>
+                  {!granted && requiredPackage ? (
+                    <p id={`${key}-package`} className="mt-1 text-xs text-muted-foreground">
+                      Tersedia di {PACKAGE_DEFINITIONS[requiredPackage].label}
+                    </p>
+                  ) : null}
+                </div>
+                <Switch
+                  id={key}
+                  name={key}
+                  disabled={!granted}
+                  defaultChecked={granted && Boolean(features[key])}
+                  aria-describedby={
+                    !granted && requiredPackage ? `${key}-description ${key}-package` : `${key}-description`
+                  }
+                />
+              </div>
+            );
+          })}
+        </fieldset>
+      ))}
 
       <FormMessage tone="error">{error}</FormMessage>
       <FormMessage tone="success">{!error && saved ? "Tersimpan." : null}</FormMessage>
 
-      <SubmitButton className="mt-2 w-fit">Save</SubmitButton>
+      <SubmitButton className="w-fit">Simpan fitur</SubmitButton>
     </form>
   );
 }

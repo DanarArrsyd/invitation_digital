@@ -3,13 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { InvitationStatusBadge } from "@/components/admin/status-badge";
-import { SubmitButton } from "@/components/admin/submit-button";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { effectiveInvitationStatus } from "@/lib/invitations/status";
 import { PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlements";
+import { buildPublishedInvitationPath } from "@/lib/share/invitation-share";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { publishAction, unpublishAction } from "./publish/actions";
 
 /**
  * Editor header shared by every invitation section. Navigation between
@@ -28,7 +28,7 @@ export default async function InvitationEditLayout({
 
   const { data: invitation } = await supabase
     .from("invitations")
-    .select("id, title, status, package_key, expires_at")
+    .select("id, title, slug, status, package_key, published_at, expires_at")
     .eq("id", id)
     .maybeSingle();
 
@@ -36,11 +36,18 @@ export default async function InvitationEditLayout({
     notFound();
   }
 
+  // Publishing happens on the Publikasi page, next to the readiness
+  // checklist; the header only links there or opens the live invitation.
+  const isLive = effectiveInvitationStatus(invitation.status, invitation.expires_at) === "published";
+  const publicLink = isLive
+    ? buildPublishedInvitationPath({ slug: invitation.slug, publishedAt: invitation.published_at })
+    : null;
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
+          <nav aria-label="Navigasi" className="text-sm text-muted-foreground">
             <Link href="/admin/invitations" className="hover:text-foreground">
               Undangan
             </Link>
@@ -62,25 +69,20 @@ export default async function InvitationEditLayout({
             target="_blank"
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            Preview
+            Pratinjau
             <ExternalLink aria-hidden="true" />
             <span className="sr-only">(tab baru)</span>
           </Link>
 
-          {invitation.status === "published" ? (
-            <form action={unpublishAction}>
-              <input type="hidden" name="invitationId" value={id} />
-              <SubmitButton variant="outline" size="sm" pendingText="Memproses...">
-                Unpublish
-              </SubmitButton>
-            </form>
+          {isLive && publicLink ? (
+            <Link href={publicLink} target="_blank" className={buttonVariants({ size: "sm" })}>
+              Buka undangan
+              <span className="sr-only">(tab baru)</span>
+            </Link>
           ) : (
-            <form action={publishAction}>
-              <input type="hidden" name="invitationId" value={id} />
-              <SubmitButton size="sm" pendingText="Menerbitkan...">
-                Publish
-              </SubmitButton>
-            </form>
+            <Link href={`/admin/invitations/${id}/publish`} className={buttonVariants({ size: "sm" })}>
+              {invitation.status === "published" ? "Status publikasi" : "Terbitkan…"}
+            </Link>
           )}
         </div>
       </div>

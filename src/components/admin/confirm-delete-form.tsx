@@ -21,12 +21,19 @@ export function ConfirmDeleteForm({
   title,
   description,
   triggerLabel = "Hapus",
+  confirmLabel = "Ya, hapus",
+  triggerVariant = "destructive",
+  triggerSize = "sm",
 }: {
   action: (formData: FormData) => void | Promise<void>;
   hiddenFields: Record<string, string>;
   title: string;
   description: string;
   triggerLabel?: string;
+  confirmLabel?: string;
+  /** Destructive by default; other confirmations (e.g. unpublish) can soften it. */
+  triggerVariant?: "destructive" | "outline";
+  triggerSize?: "sm" | "default";
 }) {
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -36,7 +43,7 @@ export function ConfirmDeleteForm({
         <input key={name} type="hidden" name={name} value={value} />
       ))}
       <AlertDialog>
-        <AlertDialogTrigger render={<Button type="button" variant="destructive" size="sm" />}>
+        <AlertDialogTrigger render={<Button type="button" variant={triggerVariant} size={triggerSize} />}>
           {triggerLabel}
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -47,7 +54,7 @@ export function ConfirmDeleteForm({
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
             <AlertDialogAction onClick={() => formRef.current?.requestSubmit()}>
-              Ya, hapus
+              {confirmLabel}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
