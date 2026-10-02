@@ -29,11 +29,16 @@ export function useCopyFeedback(durationMs = 1500) {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
   }, []);
 
-  async function copy(text: string): Promise<boolean> {
+  /**
+   * Copies `text`. If the clipboard is blocked and `fallback` is given, its
+   * text is selected so the guest can long-press / Cmd-C it themselves.
+   */
+  async function copy(text: string, fallback?: HTMLElement | null): Promise<boolean> {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     const success = await attemptClipboardCopy(text);
     setCopied(success);
     setFailed(!success);
+    if (!success && fallback) window.getSelection()?.selectAllChildren(fallback);
     if (success) {
       timeoutRef.current = setTimeout(() => setCopied(false), durationMs);
     }

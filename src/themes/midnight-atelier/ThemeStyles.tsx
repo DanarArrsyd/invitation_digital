@@ -776,6 +776,22 @@ export function ThemeStyles() {
           transition: none !important;
         }
       }
-    `}</style>
+  
+      /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */
+      .ma-theme .ma-gallery-zoom { display: block; width: 100%; padding: 0; border: 0; background: none; color: inherit; text-align: inherit; cursor: zoom-in; }
+      .ma-theme .ma-gallery-zoom:focus-visible { outline: 2px solid var(--ma-champagne); outline-offset: 4px; }
+      .ma-theme .ma-lightbox { width: 100vw; max-width: 100vw; height: 100svh; max-height: 100svh; margin: 0; padding: 0; border: 0; background: transparent; color: var(--ma-pearl); }
+      .ma-theme .ma-lightbox::backdrop { background: rgba(10, 8, 8, .95); }
+      .ma-theme .ma-lightbox-body { display: flex; height: 100%; flex-direction: column; padding: max(1rem, env(safe-area-inset-top)) clamp(1rem, 5vw, 3rem) max(1rem, env(safe-area-inset-bottom)); pointer-events: none; }
+      .ma-theme .ma-lightbox-frame { position: relative; flex: 1; min-height: 0; }
+      .ma-theme .ma-lightbox-frame > * { position: absolute; inset: 0; background: transparent; }
+      .ma-theme .ma-lightbox-frame img { object-fit: contain; }
+      .ma-theme .ma-lightbox-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding-top: 1rem; pointer-events: auto; }
+      .ma-theme .ma-lightbox-caption { margin: 0; font-size: .85rem; overflow-wrap: anywhere; }
+      .ma-theme .ma-lightbox-btn { min-width: 44px; min-height: 44px; padding: 0 1rem; border: 1px solid rgba(214, 190, 150, .45); background: transparent; color: var(--ma-pearl); cursor: pointer; }
+      .ma-theme .ma-lightbox-btn:focus-visible { outline: 2px solid var(--ma-champagne); outline-offset: 3px; }
+      .ma-theme .ma-gift-copy-status { margin: .5rem 0 0; font-size: .8rem; color: var(--ma-smoke); }
+      .ma-theme .ma-gift-copy-status:empty { margin: 0; }
+  `}</style>
   );
 }

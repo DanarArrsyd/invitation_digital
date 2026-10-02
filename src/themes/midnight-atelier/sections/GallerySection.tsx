@@ -1,9 +1,14 @@
+"use client";
+
+import { enlargeLabel, GalleryLightbox } from "@/themes/shared/GalleryLightbox";
+import { useGalleryLightbox } from "@/themes/shared/use-gallery-lightbox";
 import { GALLERY_ASPECT_RATIO_CSS, type GalleryItem } from "@/types/invitation";
 
 import { AtelierImage } from "../components/AtelierImage";
 import { Section } from "../components/Section";
 
 export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[]; displayName: string }) {
+  const lightbox = useGalleryLightbox(gallery.length);
   if (gallery.length === 0) return null;
 
   function frame(item: GalleryItem, index: number, anchor = false) {
@@ -14,15 +19,22 @@ export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[
         data-gallery-anchor={anchor ? "true" : undefined}
         className={`ma-gallery-item${anchor ? " ma-gallery-anchor" : ""}`}
       >
-        <AtelierImage
-          src={item.imageUrl}
-          alt={item.altText?.trim() || item.caption?.trim() || `Momen ${displayName}, foto ${index + 1}`}
-          sizes={anchor
-            ? "(min-width: 1440px) 1216px, (min-width: 768px) 84vw, 100vw"
-            : "(min-width: 1440px) 390px, (min-width: 768px) 42vw, 100vw"}
-          aspectRatio={GALLERY_ASPECT_RATIO_CSS[item.aspectRatio]}
-          className="ma-gallery-image"
-        />
+        <button
+          type="button"
+          className="ma-gallery-zoom"
+          onClick={() => lightbox.show(index)}
+          aria-label={enlargeLabel(index, gallery.length, item.caption)}
+        >
+          <AtelierImage
+            src={item.imageUrl}
+            alt={item.altText?.trim() || item.caption?.trim() || `Momen ${displayName}, foto ${index + 1}`}
+            sizes={anchor
+              ? "(min-width: 1440px) 1216px, (min-width: 768px) 84vw, 100vw"
+              : "(min-width: 1440px) 390px, (min-width: 768px) 42vw, 100vw"}
+            aspectRatio={GALLERY_ASPECT_RATIO_CSS[item.aspectRatio]}
+            className="ma-gallery-image"
+          />
+        </button>
         {item.caption?.trim() ? (
           <figcaption><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>{item.caption}</figcaption>
         ) : null}
@@ -45,6 +57,27 @@ export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[
           </div>
         ) : null}
       </div>
+      <GalleryLightbox
+        gallery={gallery}
+        lightbox={lightbox}
+        classes={{
+          dialog: "ma-lightbox",
+          body: "ma-lightbox-body",
+          frame: "ma-lightbox-frame",
+          bar: "ma-lightbox-bar",
+          caption: "ma-lightbox-caption",
+          button: "ma-lightbox-btn",
+        }}
+        renderImage={(item) => (
+          <AtelierImage
+            key={item.id}
+            src={item.imageUrl}
+            alt={item.altText?.trim() || item.caption?.trim() || ""}
+            sizes="100vw"
+            aspectRatio="auto"
+          />
+        )}
+      />
     </Section>
   );
 }

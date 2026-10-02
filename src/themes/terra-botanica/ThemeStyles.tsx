@@ -240,5 +240,21 @@ export function ThemeStyles() {
       .tb-theme *, .tb-theme *::before, .tb-theme *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
       .tb-theme .tb-cover, .tb-theme .tb-gate[data-opened="true"] .tb-cover { transform: none; }
     }
+
+      /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */
+      .tb-theme .tb-gallery-zoom { display: block; width: 100%; padding: 0; border: 0; background: none; color: inherit; text-align: inherit; cursor: zoom-in; }
+      .tb-theme .tb-gallery-zoom:focus-visible { outline: 2px solid var(--tb-clay); outline-offset: 4px; }
+      .tb-theme .tb-lightbox { width: 100vw; max-width: 100vw; height: 100svh; max-height: 100svh; margin: 0; padding: 0; border: 0; background: transparent; color: var(--tb-bone); }
+      .tb-theme .tb-lightbox::backdrop { background: rgba(69, 55, 44, .94); }
+      .tb-theme .tb-lightbox-body { display: flex; height: 100%; flex-direction: column; padding: max(1rem, env(safe-area-inset-top)) var(--tb-gutter) max(1rem, env(safe-area-inset-bottom)); pointer-events: none; }
+      .tb-theme .tb-lightbox-frame { position: relative; flex: 1; min-height: 0; }
+      .tb-theme .tb-lightbox-frame > * { position: absolute; inset: 0; background: transparent; }
+      .tb-theme .tb-lightbox-frame img { object-fit: contain; }
+      .tb-theme .tb-lightbox-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding-top: 1rem; pointer-events: auto; }
+      .tb-theme .tb-lightbox-caption { margin: 0; font-size: .85rem; overflow-wrap: anywhere; }
+      .tb-theme .tb-lightbox-btn { min-width: 44px; min-height: 44px; padding: 0 1rem; border: 1px solid rgba(251, 247, 240, .45); background: transparent; color: var(--tb-bone); cursor: pointer; }
+      .tb-theme .tb-lightbox-btn:focus-visible { outline: 2px solid var(--tb-clay); outline-offset: 3px; }
+      .tb-theme .tb-gift-copy-status { margin: .5rem 0 0; font-size: .8rem; color: var(--tb-moss); }
+      .tb-theme .tb-gift-copy-status:empty { margin: 0; }
   `}</style>;
 }
