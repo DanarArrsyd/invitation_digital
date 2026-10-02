@@ -229,6 +229,11 @@ const CSS = `
 }
 .ni-dresscode-hex { font-size: .62rem; letter-spacing: .08em; color: var(--ni-brown-soft); }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
+.ni-rsvp-option { position: relative; display: block; cursor: pointer; }
+.ni-rsvp-option span { display: flex; min-height: 52px; align-items: center; justify-content: center; padding: 0 1rem; border: 1px solid var(--ni-line); color: var(--ni-brown); font-size: .72rem; letter-spacing: .26em; text-transform: uppercase; text-align: center; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
+.ni-rsvp-option:hover span { border-color: var(--ni-line-strong); }
+.ni-rsvp-option input:checked + span { background: var(--ni-brown); border-color: var(--ni-brown); color: var(--ni-ivory); }
+.ni-rsvp-option input:focus-visible + span { outline: 2px solid var(--ni-brown); outline-offset: 4px; }
 .ni-wishes-empty { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-direction: column; min-height: 220px; border-block: 1px solid var(--ni-sand); }
 .ni-wishes-empty .ni-botanical { position: relative; width: 125px; height: 160px; opacity: .7; }
 @media (min-width: 768px) {

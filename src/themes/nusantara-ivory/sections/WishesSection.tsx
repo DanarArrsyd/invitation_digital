@@ -1,16 +1,18 @@
 "use client";
 
-import { FloralCorner, BotanicalDivider } from "../components/Botanical";
+import { useState } from "react";
 
 import { TurnstileWidget } from "@/components/TurnstileWidget";
-import { useWishForm, useWishPagination } from "@/themes/shared/use-public-forms";
+import { useFocusOnSuccess, useWishForm, useWishPagination } from "@/themes/shared/use-public-forms";
 import type { Wish } from "@/types/invitation";
 
+import { BotanicalDivider, FloralCorner } from "../components/Botanical";
 import { Reveal } from "../components/Reveal";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 
 const PAGE_SIZE = 5;
+const MAX_MESSAGE_LENGTH = 500;
 
 function formatWishDate(iso: string): string {
   return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" }).format(
@@ -33,6 +35,8 @@ export function WishesSection({
 }) {
   const { state, formAction, isPending, formRef, onSubmit } = useWishForm();
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
+  const successRef = useFocusOnSuccess<HTMLParagraphElement>(state.status === "success");
+  const [messageLength, setMessageLength] = useState(0);
 
   return (
     <Section id="ni-ucapan" tone="ivory">
@@ -42,7 +46,12 @@ export function WishesSection({
 
           <Reveal delay={0.08} className="mt-8">
             {state.status === "success" ? (
-              <p className="ni-serif text-[1.25rem] text-[var(--ni-ink)]">
+              <p
+                ref={successRef}
+                role="status"
+                tabIndex={-1}
+                className="ni-serif text-[1.25rem] text-[var(--ni-ink)] outline-none"
+              >
                 Terima kasih atas ucapan dan doanya.
               </p>
             ) : (
@@ -62,6 +71,7 @@ export function WishesSection({
                     <input
                       type="text"
                       name="guestName"
+                      autoComplete="name"
                       required
                       className="min-h-[48px] border-b bg-transparent pb-2 text-[1.05rem] text-[var(--ni-ink)] outline-none transition-colors focus:border-[var(--ni-gold)]"
                       style={{ borderColor: "var(--ni-line-strong)" }}
@@ -74,12 +84,17 @@ export function WishesSection({
                   <textarea
                     name="message"
                     required
-                    maxLength={500}
+                    maxLength={MAX_MESSAGE_LENGTH}
+                    aria-describedby="ni-wish-count"
+                    onInput={(event) => setMessageLength(event.currentTarget.value.length)}
                     rows={4}
                     placeholder="Tulis ucapan dan doa..."
-                    className="resize-y border-b bg-transparent pb-2 text-[1rem] text-[var(--ni-ink)] outline-none transition-colors placeholder:text-[rgba(124,107,88,0.55)] focus:border-[var(--ni-gold)]"
+                    className="resize-y border-b bg-transparent pb-2 text-[1rem] text-[var(--ni-ink)] outline-none transition-colors placeholder:text-[var(--ni-brown-soft)] focus:border-[var(--ni-gold)]"
                     style={{ borderColor: "var(--ni-line-strong)" }}
                   />
+                  <span id="ni-wish-count" className="self-end text-[0.75rem] tabular-nums text-[var(--ni-brown-soft)]">
+                    {messageLength}/{MAX_MESSAGE_LENGTH} karakter
+                  </span>
                 </label>
 
                 <TurnstileWidget />

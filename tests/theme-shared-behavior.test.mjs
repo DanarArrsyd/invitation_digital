@@ -179,8 +179,11 @@ test("copy feedback remains false when the browser denies clipboard access", asy
   const { useCopyFeedback } = loadShared("use-copy-feedback");
   const hook = await renderHook(() => useCopyFeedback());
   try {
-    await act(async () => hook.current.copy("123456"));
+    let result;
+    await act(async () => { result = await hook.current.copy("123456"); });
+    assert.equal(result, false);
     assert.equal(hook.current.copied, false);
+    assert.equal(hook.current.failed, true, "a blocked clipboard is reported so themes can offer a fallback");
   } finally {
     await hook.cleanup();
     if (clipboardDescriptor) Object.defineProperty(globalThis.navigator, "clipboard", clipboardDescriptor);
@@ -246,7 +249,7 @@ test("shared RSVP behavior reaches the real Ivory form and retains its entered n
   try {
     const form = view.document.querySelector("#ni-rsvp form");
     form.elements.namedItem("guestName").value = "Tamu Ivory";
-    await act(async () => [...form.querySelectorAll('button[type="button"]')].find(button => button.textContent.trim() === "Hadir").click());
+    await act(async () => form.querySelector('input[type="radio"][value="attending"]').click());
     await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
     assert.deepEqual(calls[0], { invitationId: "inv-ivory", slug: "ivory", guestToken: "", attendance: "attending", guestName: "Tamu Ivory" });
     assert.match(form.textContent, /Mengirim\.\.\./);
@@ -298,7 +301,11 @@ for (const theme of ["ivory", "terra"]) {
       const form = view.document.querySelector(`#${id} form`);
       const name = form.elements.namedItem("guestName");
       await typeInto(name, "Original RSVP");
-      await act(async () => [...form.querySelectorAll('button[type="button"]')].find(button => button.textContent.trim() === "Hadir").click());
+      // Ivory uses a native radio group; Terra keeps its pressed-button pair.
+      const attending = theme === "ivory"
+        ? form.querySelector('input[type="radio"][value="attending"]')
+        : [...form.querySelectorAll('button[type="button"]')].find(button => button.textContent.trim() === "Hadir");
+      await act(async () => attending.click());
       await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
       assert.equal(submissions[0].guestName, "Original RSVP");
       await typeInto(name, "Newer RSVP");
