@@ -157,7 +157,7 @@ export interface InvitationAnalyticsSummary {
 
 /**
  * RSVP/wishes counts come from their own tables (getInvitationResponses),
- * never from analytics_events — see ROADMAP.md Phase 6 section 7. This only
+ * never from analytics_events — see docs/ROADMAP.md Phase 6 section 7. This only
  * covers what has no other source of truth: opens and unique sessions.
  */
 export async function getInvitationAnalyticsSummary(

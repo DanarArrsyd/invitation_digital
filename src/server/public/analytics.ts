@@ -10,7 +10,7 @@ export type AnalyticsEventType =
 
 /**
  * Best-effort only. The public experience must never break or slow down
- * because analytics failed — see ROADMAP.md Phase 6 section 8. Callers
+ * because analytics failed — see docs/ROADMAP.md Phase 6 section 8. Callers
  * fire-and-forget or await without checking the result.
  */
 export async function trackEvent(input: {

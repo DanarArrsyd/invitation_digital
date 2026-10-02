@@ -13,11 +13,11 @@ Lakukan implementasi nyata sampai selesai dan tervalidasi. Jangan berhenti pada 
 Baca dokumen berikut jika tersedia di repository:
 
 - `CLAUDE.md`
-- `DESIGN.md`
-- `ROADMAP.md`
-- `ARCHITECTURE.md`
+- `docs/DESIGN.md`
+- `docs/ROADMAP.md`
+- `docs/ARCHITECTURE.md`
 - `AGENTS.md`
-- `SKILL.md` dan skill relevan yang dirujuk repository
+- `docs/SKILL.md` dan skill relevan yang dirujuk repository
 
 Jika dokumen tidak tersedia, catat kekurangannya dan lanjutkan berdasarkan kode serta instruksi ini; jangan mengarang isi dokumen. Ikuti instruksi repository yang relevan. Untuk scope task ini, instruksi STOP Phase 7 berlaku meskipun roadmap sebelumnya mengarahkan ke Phase 7.
 

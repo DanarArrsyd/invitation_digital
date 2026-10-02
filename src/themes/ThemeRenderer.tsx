@@ -5,7 +5,7 @@ import { UnsupportedTheme } from "./UnsupportedTheme";
 
 /**
  * Single resolution point for theme slug -> component. Routes/pages must
- * never branch on theme slug themselves — see ARCHITECTURE.md section 6.
+ * never branch on theme slug themselves — see docs/ARCHITECTURE.md section 6.
  */
 export function ThemeRenderer({
   invitation,

@@ -408,16 +408,16 @@ Before implementing a feature:
 3. Prefer the simplest maintainable implementation.
 4. Do not silently change product scope.
 5. Do not introduce dependencies merely for convenience.
-6. Keep visual output aligned with `DESIGN.md`.
-7. Keep database changes aligned with `DATABASE.md`.
-8. Keep roadmap boundaries aligned with `ROADMAP.md`.
+6. Keep visual output aligned with `docs/DESIGN.md`.
+7. Keep database changes aligned with `docs/DATABASE.md`.
+8. Keep roadmap boundaries aligned with `docs/ROADMAP.md`.
 
 When requirements conflict, priority is:
 
 ```text
 CLAUDE.md
-→ ARCHITECTURE.md
-→ DATABASE.md
-→ DESIGN.md
-→ ROADMAP.md
+→ docs/ARCHITECTURE.md
+→ docs/DATABASE.md
+→ docs/DESIGN.md
+→ docs/ROADMAP.md
 ```

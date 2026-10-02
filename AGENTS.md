@@ -14,11 +14,11 @@ Before major work, read:
 
 1. `CLAUDE.md`
 2. `docs/PROJECT_MEMORY.md`
-3. `ARCHITECTURE.md`
-4. `DATABASE.md`
-5. `DESIGN.md`
-6. `ROADMAP.md`
-7. `SKILL.md`
+3. `docs/ARCHITECTURE.md`
+4. `docs/DATABASE.md`
+5. `docs/DESIGN.md`
+6. `docs/ROADMAP.md`
+7. `docs/SKILL.md`
 
 For small scoped changes, read the files relevant to the change.
 
@@ -37,7 +37,7 @@ Responsible for:
 - service modules;
 - application conventions.
 
-Must not redesign the visual theme without checking `DESIGN.md`.
+Must not redesign the visual theme without checking `docs/DESIGN.md`.
 
 ### Database Agent
 

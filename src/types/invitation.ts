@@ -95,7 +95,7 @@ export interface InvitationFeatures {
 
 /**
  * Normalized shape handed to a theme component. Themes never see
- * raw database rows or query Supabase directly — see ARCHITECTURE.md sections 5 and 7.
+ * raw database rows or query Supabase directly — see docs/ARCHITECTURE.md sections 5 and 7.
  */
 export interface PublicInvitation {
   id: string;

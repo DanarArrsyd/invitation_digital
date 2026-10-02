@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local-only output and agent scratch state, never source.
+    ".vercel/**",
+    ".superpowers/**",
+    ".codebase-memory/**",
   ]),
 ]);
 
