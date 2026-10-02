@@ -249,17 +249,17 @@ test("Cobalt stays presentation-only and bundles only its approved font families
     .filter((entry) => /\.(ts|tsx)$/.test(entry));
   const source = files.map((entry) => readFileSync(resolve(cobaltRoot, entry), "utf8")).join("\n");
   const registry = readFileSync(resolve(sourceRoot, "themes/registry.ts"), "utf8");
-  const layout = readFileSync(resolve(sourceRoot, "app/layout.tsx"), "utf8");
-  const globals = readFileSync(resolve(sourceRoot, "app/globals.css"), "utf8");
+  const fontsTs = readFileSync(resolve(sourceRoot, "themes/theme-fonts.ts"), "utf8");
+  const fontsCss = readFileSync(resolve(sourceRoot, "themes/cobalt-riviera/fonts.css"), "utf8");
   const packageJson = readFileSync(resolve(sourceRoot, "../package.json"), "utf8");
 
   assert.doesNotMatch(source, /supabase|createSupabase|next\/font\/google|@\/lib\/packages/i);
   assert.doesNotMatch(source, /<img\b/);
   assert.match(registry, /import \{ CobaltRiviera, COBALT_RIVIERA_SECTIONS \} from "\.\/cobalt-riviera"/);
-  assert.match(layout, /@fontsource-variable\/familjen-grotesk/);
-  assert.match(layout, /@fontsource-variable\/newsreader/);
-  assert.match(globals, /--font-cr-display:\s*"Familjen Grotesk Variable"/);
-  assert.match(globals, /--font-cr-body:\s*"Newsreader Variable"/);
+  assert.match(fontsTs, /@fontsource-variable\/familjen-grotesk/);
+  assert.match(fontsTs, /@fontsource-variable\/newsreader/);
+  assert.match(fontsCss, /--font-cr-display:\s*"Familjen Grotesk Variable"/);
+  assert.match(fontsCss, /--font-cr-body:\s*"Newsreader Variable"/);
   assert.match(packageJson, /@fontsource-variable\/familjen-grotesk/);
   assert.match(packageJson, /@fontsource-variable\/newsreader/);
 });

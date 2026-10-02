@@ -161,6 +161,8 @@ test("expired public route renders its expiry state without mounting either them
       if (name === "@/lib/analytics/session") return { getSessionId: async () => { analyticsCalls++; return "session"; } };
       if (name === "@/server/public/analytics") return { trackEvent: () => { analyticsCalls++; } };
       if (name === "@/lib/share/invitation-share") return { getInvitationShareData: () => { throw new Error("No share for expired invitation"); } };
+      // Side-effect CSS import (theme font faces); nothing to evaluate in Node.
+      if (name === "@/themes/theme-fonts") return {};
       if (name === "@/themes/ThemeRenderer") return { ThemeRenderer: () => { themeCalls++; return null; } };
       if (name === "./ExpiredState") return loadSource("app/(public)/[slug]/ExpiredState");
       throw new Error(`Unexpected import ${name}`);

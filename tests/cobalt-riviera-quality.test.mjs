@@ -260,6 +260,8 @@ test("expired public routes stop before theme rendering or analytics", async () 
       if (name === "@/lib/analytics/session") return { getSessionId: async () => { analyticsCalls += 1; return "session"; } };
       if (name === "@/server/public/analytics") return { trackEvent: () => { analyticsCalls += 1; } };
       if (name === "@/lib/share/invitation-share") return { getInvitationShareData: () => { throw new Error("No share for expired invitation"); } };
+      // Side-effect CSS import (theme font faces); nothing to evaluate in Node.
+      if (name === "@/themes/theme-fonts") return {};
       if (name === "@/themes/ThemeRenderer") return { ThemeRenderer: () => { themeCalls += 1; return null; } };
       if (name === "./ExpiredState") return createLoader().load("app/(public)/[slug]/ExpiredState");
       throw new Error(`Unexpected import ${name}`);

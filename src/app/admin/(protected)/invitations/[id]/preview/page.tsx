@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { getInvitationPreview } from "@/server/invitations/preview";
+import "@/themes/theme-fonts";
 import { ThemeRenderer } from "@/themes/ThemeRenderer";
 
 export default async function InvitationPreviewPage({
