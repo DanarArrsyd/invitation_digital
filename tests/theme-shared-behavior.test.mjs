@@ -179,8 +179,11 @@ test("copy feedback remains false when the browser denies clipboard access", asy
   const { useCopyFeedback } = loadShared("use-copy-feedback");
   const hook = await renderHook(() => useCopyFeedback());
   try {
-    await act(async () => hook.current.copy("123456"));
+    let result;
+    await act(async () => { result = await hook.current.copy("123456"); });
+    assert.equal(result, false);
     assert.equal(hook.current.copied, false);
+    assert.equal(hook.current.failed, true, "a blocked clipboard is reported so themes can offer a fallback");
   } finally {
     await hook.cleanup();
     if (clipboardDescriptor) Object.defineProperty(globalThis.navigator, "clipboard", clipboardDescriptor);
