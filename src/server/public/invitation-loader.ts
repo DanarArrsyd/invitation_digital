@@ -57,7 +57,7 @@ function getCachedPublicInvitationContent(slug: string): Promise<CachedInvitatio
 /**
  * Public-facing loader: resolves a slug to normalized invitation data.
  * Uses the service-role client (server-only) so draft/expired can be
- * distinguished from "does not exist" precisely, per ARCHITECTURE.md
+ * distinguished from "does not exist" precisely, per docs/ARCHITECTURE.md
  * section 6 guidance to prefer scoped server credentials over relying on
  * anon RLS for this kind of status-branching read. The theme never touches
  * Supabase directly — only this loader (and the admin preview loader) does.

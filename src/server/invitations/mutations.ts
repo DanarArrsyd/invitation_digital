@@ -161,7 +161,7 @@ export async function updateInvitationFeatures(input: {
 
 /**
  * published_at always refreshes to now(). expires_at is only computed the
- * FIRST time an invitation is published (ARCHITECTURE.md section 10:
+ * FIRST time an invitation is published (docs/ARCHITECTURE.md section 10:
  * "expires_at generated if missing") — an unpublish/republish cycle must not
  * reset the 3-month clock, or the expiration limit becomes meaningless.
  */
@@ -207,7 +207,7 @@ export async function publishInvitation(
 
 /**
  * Unpublish only flips status back to "draft" — published_at/expires_at are
- * left untouched (ROADMAP.md Phase 5's preferred default) so the admin can
+ * left untouched (docs/ROADMAP.md Phase 5's preferred default) so the admin can
  * still see when it was last published. Republishing always recomputes both
  * fields fresh (see publishInvitation), so a stale expires_at from a prior
  * publish cycle never leaks into the next one.
