@@ -10,7 +10,7 @@ export function OrnamentDivider({
   className?: string;
   tone?: "gold" | "light";
 }) {
-  const stroke = tone === "gold" ? "#A98A5C" : "#DCCCB0";
+  const stroke = tone === "gold" ? "#A87A3D" : "#D9C6A5";
 
   return (
     <svg
@@ -36,7 +36,7 @@ export function OrnamentCorner({
   className?: string;
   tone?: "gold" | "light";
 }) {
-  const stroke = tone === "gold" ? "#A98A5C" : "#EFE5D4";
+  const stroke = tone === "gold" ? "#A87A3D" : "#EFE5D4";
 
   return (
     <svg
@@ -66,13 +66,13 @@ export function OrnamentArch({ className = "" }: { className?: string }) {
     >
       <path
         d="M4 456V168C4 80 74 6 160 6s156 74 156 162v288"
-        stroke="#A98A5C"
+        stroke="#A87A3D"
         strokeWidth="1"
         opacity="0.45"
       />
       <path
         d="M18 456V172c0-79 63-144 142-144s142 65 142 144v284"
-        stroke="#A98A5C"
+        stroke="#A87A3D"
         strokeWidth="0.6"
         opacity="0.25"
       />

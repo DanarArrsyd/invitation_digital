@@ -7,16 +7,20 @@
  */
 const CSS = `
 .ni-theme {
-  --ni-ivory: #FCFAF5;
-  --ni-ivory-2: #F7F1E7;
-  --ni-cream: #EFE5D4;
-  --ni-sand: #DCCCB0;
-  --ni-gold: #A98A5C;
-  --ni-gold-soft: #C7AE85;
-  --ni-ink: #241F19;
-  --ni-brown: #4A3F34;
-  --ni-brown-soft: #7C6B58;
-  --ni-espresso: #2A2219;
+  --ni-ivory: #F8F1E4;
+  --ni-ivory-2: #F2E8D6;
+  --ni-cream: #E9DCC4;
+  --ni-sand: #D9C6A5;
+  --ni-gold: #A87A3D;
+  --ni-gold-soft: #C9A15C;
+  --ni-ink: #2B1A10;
+  --ni-brown: #5A3A24;
+  --ni-brown-soft: #74553D;
+  --ni-espresso: #3A2416;
+  /* Surat dari Keraton accents: sogan batik brown, wax-seal brick, deep green. */
+  --ni-sogan: #6B3E26;
+  --ni-bata: #7A2E22;
+  --ni-hijau: #2F4A3A;
 
   --ni-script: var(--font-ni-script), "Snell Roundhand", "Apple Chancery", cursive;
   --ni-display-face: var(--font-ni-display), "Trajan Pro", Georgia, serif;
@@ -30,10 +34,10 @@ const CSS = `
      large sizes, this darker ink stays >= 4.5:1 on every light panel
      (ivory through the cream gradient edge). --ni-gold stays for rules,
      ornaments and display-size type. */
-  --ni-gold-ink: #735B3A;
-  --ni-line-strong: rgba(169,138,92,0.45);
-  --ni-line: rgba(169,138,92,0.3);
-  --ni-line-soft: rgba(169,138,92,0.22);
+  --ni-gold-ink: #7A5A2E;
+  --ni-line-strong: rgba(168,122,61,0.45);
+  --ni-line: rgba(168,122,61,0.3);
+  --ni-line-soft: rgba(168,122,61,0.22);
   --ni-on-dark-muted: rgba(252,250,245,0.62);
   --ni-danger: #8C2F1F;
 
@@ -68,15 +72,16 @@ const CSS = `
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
 }
 
-/* Nusantara lattice — thin geometric rhythm drawn from carving/textile grids. */
+/* Kawung watermark — four-petal palm-fruit motif from Javanese batik, drawn
+   as thin line work so it reads as paper texture, never as a pasted print. */
 .ni-lattice::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0.5;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23A98A5C' stroke-width='0.6' opacity='0.5'%3E%3Cpath d='M0 32 L32 0 L64 32 L32 64 Z'/%3E%3Cpath d='M32 22 L42 32 L32 42 L22 32 Z'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 64px 64px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23A87A3D' stroke-width='0.6' opacity='0.55'%3E%3Cellipse cx='24' cy='12' rx='6' ry='10'/%3E%3Cellipse cx='24' cy='36' rx='6' ry='10'/%3E%3Cellipse cx='12' cy='24' rx='10' ry='6'/%3E%3Cellipse cx='36' cy='24' rx='10' ry='6'/%3E%3Ccircle cx='24' cy='24' r='1.4'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 48px 48px;
 }
 
 .ni-rule {
@@ -126,13 +131,13 @@ const CSS = `
 /* Dark panels get a warm vignette rather than a flat fill. */
 .ni-panel-dark {
   background:
-    radial-gradient(120% 90% at 50% 0%, #3A3025 0%, var(--ni-espresso) 58%, #1E1913 100%);
+    radial-gradient(120% 90% at 50% 0%, #4A2E1C 0%, var(--ni-espresso) 58%, #2A190F 100%);
   color: var(--ni-ivory-2);
 }
 
 .ni-panel-cream {
   background:
-    radial-gradient(90% 70% at 20% 0%, #F6EEE1 0%, var(--ni-cream) 70%, #E7DAC5 100%);
+    radial-gradient(90% 70% at 20% 0%, #F5ECDD 0%, var(--ni-cream) 70%, #E2D3B8 100%);
 }
 
 /* Botanical composition is clipped by each section, never by the page. */
@@ -158,7 +163,7 @@ const CSS = `
 .ni-hero-names { max-width: 12ch; font-size: clamp(3.5rem, 7.5vw, 8rem); line-height: .95; }
 .ni-hero-portrait { width: 100%; max-width: 480px; justify-self: center; min-width: 0; }
 .ni-hero-photo-frame { position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 4 / 5; border-radius: 50% 50% 0 0 / 40% 40% 0 0; border: 1px solid var(--ni-gold-soft); background: var(--ni-ivory-2); box-shadow: 0 18px 50px -36px rgba(74,63,52,.3); }
-.ni-hero-photo-frame::after { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(169,138,92,.2); border-radius: inherit; pointer-events: none; }
+.ni-hero-photo-frame::after { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(168,122,61,.2); border-radius: inherit; pointer-events: none; }
 @media (min-width: 768px) {
   .ni-hero-inner:not(.ni-hero-inner--text) { grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: clamp(2rem,5vw,5rem); }
   .ni-hero-portrait { justify-self: end; }
@@ -196,7 +201,7 @@ const CSS = `
 .ni-panel-dark .ni-monogram-badge-bar { background: var(--ni-gold-soft); }
 .ni-panel-dark .ni-monogram-badge-amp { color: var(--ni-gold-soft); }
 .ni-events-frame { position: relative; border: 1px solid var(--ni-sand); padding: clamp(1.5rem, 4vw, 4rem); background: rgba(252,250,245,.65); }
-.ni-events-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(169,138,92,.17); pointer-events: none; }
+.ni-events-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(168,122,61,.17); pointer-events: none; }
 .ni-event-date { border-bottom: 1px solid var(--ni-sand); padding-bottom: 1.5rem; }
 /* Justified rows (GalleryRows.tsx): each item grows in proportion to its
    width/height ratio (--r) from a basis of ratio x row height, so every
@@ -231,7 +236,7 @@ const CSS = `
   width: 3.1rem;
   height: 3.1rem;
   border-radius: 999px;
-  box-shadow: 0 0 0 1px rgba(169,138,92,0.35), 0 6px 16px -10px rgba(74,63,52,0.5);
+  box-shadow: 0 0 0 1px rgba(168,122,61,0.35), 0 6px 16px -10px rgba(74,63,52,0.5);
 }
 .ni-dresscode-hex { font-size: .62rem; letter-spacing: .08em; color: var(--ni-brown-soft); }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
@@ -275,7 +280,7 @@ const CSS = `
   list-style: none;
   pointer-events: auto;
   border-radius: 999px;
-  border: 1px solid rgba(169,138,92,0.35);
+  border: 1px solid rgba(168,122,61,0.35);
   background: rgba(252,250,245,0.86);
   box-shadow: 0 18px 44px -22px rgba(42,34,25,0.38), 0 1px 0 rgba(255,255,255,0.6) inset;
   backdrop-filter: blur(14px);
@@ -317,7 +322,7 @@ const CSS = `
   z-index: 0;
   border-radius: 999px;
   background: linear-gradient(180deg, var(--ni-ivory-2), var(--ni-cream));
-  box-shadow: 0 0 0 1px rgba(169,138,92,0.4) inset, 0 6px 14px -8px rgba(74,63,52,0.45);
+  box-shadow: 0 0 0 1px rgba(168,122,61,0.4) inset, 0 6px 14px -8px rgba(74,63,52,0.45);
 }
 
 .ni-addcal-trigger {

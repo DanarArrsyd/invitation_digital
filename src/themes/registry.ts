@@ -62,7 +62,7 @@ export const themeRegistry: ThemeRegistry = {
     category: "wedding",
     preview: {
       name: "Nusantara Ivory",
-      palette: ["#FCFAF5", "#AA8D61", "#27231F"],
+      palette: ["#F8F1E4", "#A87A3D", "#6B3E26"],
     },
     sections: NUSANTARA_IVORY_SECTIONS,
   },
