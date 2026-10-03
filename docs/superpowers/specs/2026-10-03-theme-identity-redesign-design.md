@@ -53,7 +53,8 @@ Prototypes for every choice are in `.superpowers/brainstorm/74556-1790989646/con
 - **Reduced motion**: with `prefers-reduced-motion: reduce`, the opener resolves
   immediately to the opened state, scroll-linked effects render their final
   state, and celebration effects are skipped while their confirmation text
-  still appears.
+  still appears. The wax seal is a confirmation mark, so under reduced motion
+  it appears instantly instead of being hidden.
 - **Opener contract**: one tap on the cover → `openInvitation()` from
   `useInvitationCover` (music starts in the same user gesture) → theme opener
   animation ≈1–1.4s → content revealed and focused. The opener must not delay
@@ -109,6 +110,10 @@ symbolism, warm ivory paper.
      (`stroke-dashoffset`), replacing the generic fade.
   3. *Cap lilin "Tersalin"* (gift): on successful copy, a brick-red wax seal
      stamps onto the account card. The manual-copy fallback message stays.
+
+**Deferred** (not built in the first Ivory PR): the "Sugeng rawuh" greeting,
+gunungan section markers, the double-line frame for couple photos, and any
+`--ni-hijau` accent usage (the token exists but is unused).
 
 ## 5. Terra Botanica — "Herbarium Cinta"
 

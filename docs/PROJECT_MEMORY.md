@@ -451,6 +451,7 @@ plan in `docs/superpowers/plans/` after the previous one merges.
   on copy (`WaxSeal`). Plan: `docs/superpowers/plans/2026-10-03-ivory-identity.md`.
   `tests/nusantara-ivory-identity.test.mjs` pins contrast, script names,
   gate, rule, melati and seal.
+- Deferred Ivory items: see spec §4 Deferred.
 - Jost stays installed for Midnight; `cormorant-garamond` removed.
 - `tests/font-delivery.test.mjs` fails if two themes map the same family.
 

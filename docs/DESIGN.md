@@ -25,8 +25,8 @@ Use:
 
 - editorial composition;
 - generous negative space;
-- elegant serif typography;
-- clean supporting sans-serif;
+- elegant, theme-specific typography (each theme has its own display/body trio; see `docs/superpowers/specs/2026-10-03-theme-identity-redesign-design.md`);
+- Nusantara Ivory: script face for couple names, inscription display face for headings, book serif for body;
 - strong photography;
 - subtle Indonesian visual references;
 - restrained ornament;
@@ -104,7 +104,9 @@ Rules:
 
 ## 5. Typography
 
-Use two primary type roles.
+Use two primary type roles. Each theme's actual font trio is defined in `docs/superpowers/specs/2026-10-03-theme-identity-redesign-design.md`.
+
+**Nusantara Ivory** overrides the roles below with three: a script face (Great Vibes) for couple names and signatures only, an inscription display face (Cinzel) for headings, eyebrows and dates, and a book serif (Lora) for body copy and forms at 16px or larger.
 
 ### Display Serif
 
@@ -255,7 +257,7 @@ Preferred approaches:
 
 - editorial portrait;
 - alternating image/text composition;
-- large serif names;
+- large names (Ivory: script face, Great Vibes);
 - parents displayed in supporting text;
 - subtle ornament around composition.
 
