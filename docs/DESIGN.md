@@ -139,7 +139,10 @@ Desired qualities:
 - modern;
 - highly readable.
 
-Do not use more than 2 primary font families without a strong reason.
+Do not use more than 2 primary font families without a strong reason. A
+script face reserved for couple names and signatures may be the third
+family; it is never used for body copy, labels or forms. Each theme's trio
+is listed in `docs/superpowers/specs/2026-10-03-theme-identity-redesign-design.md`.
 
 ---
 
