@@ -179,3 +179,24 @@ test("the cover is a two-leaf gunungan gate that opens in the same tap", async (
     await view.cleanup();
   }
 });
+
+test("section headings carry a kawung rule drawn like a canting stroke", () => {
+  const render = (options, props) => {
+    const { CantingRule } = createLoader(options)("components/CantingRule");
+    return new JSDOM(renderToStaticMarkup(React.createElement(CantingRule, props))).window.document;
+  };
+  for (const align of ["center", "left"]) {
+    const doc = render({}, { align });
+    const svg = doc.querySelector("svg[data-ni-canting]");
+    assert.equal(svg.getAttribute("aria-hidden"), "true");
+    assert.equal(svg.getAttribute("data-ni-canting"), "draw");
+    assert.equal(svg.querySelectorAll("ellipse").length, 4, `${align}: kawung centre`);
+    assert.equal(svg.querySelectorAll("path").length, align === "center" ? 2 : 1);
+  }
+  const still = render({ reducedMotion: true }, { align: "center" });
+  assert.equal(still.querySelector("svg").getAttribute("data-ni-canting"), "static");
+
+  const { SectionHeading } = createLoader()("components/SectionHeading");
+  const heading = new JSDOM(renderToStaticMarkup(React.createElement(SectionHeading, { title: "Acara", align: "center" }))).window.document;
+  assert.ok(heading.querySelector("svg[data-ni-canting]"), "SectionHeading renders the canting rule");
+});
