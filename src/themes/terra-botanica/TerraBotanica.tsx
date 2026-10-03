@@ -5,7 +5,7 @@ import { buildThemeViewModel } from "@/themes/shared/view-model";
 import { CoverGate } from "./CoverGate";
 import type { NavItem } from "./components/FloatingNav";
 import { ThemeStyles } from "./ThemeStyles";
-import { bodySans, displaySerif } from "./fonts";
+import { labelFace, scriptFace, textFace } from "./fonts";
 import { HeroSection } from "./sections/HeroSection";
 import { QuoteSection } from "./sections/QuoteSection";
 import { CoupleSection } from "./sections/CoupleSection";
@@ -40,7 +40,7 @@ export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
   const navItems = buildTerraNavItems(invitation);
 
   return (
-    <div className={`tb-theme ${displaySerif.variable} ${bodySans.variable}`}>
+    <div className={`tb-theme ${scriptFace.variable} ${labelFace.variable} ${textFace.variable}`}>
       <ThemeStyles />
       <CoverGate
         invitationId={invitation.id}

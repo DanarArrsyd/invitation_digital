@@ -8,8 +8,10 @@ export function ThemeStyles() {
       --tb-sun: #D6A663;
       --tb-bone: #FBF7F0;
       --tb-gutter: clamp(1.5rem, 6vw, 5rem);
-      --tb-display: var(--font-tb-display), Georgia, serif;
-      --tb-body: var(--font-tb-body), Arial, sans-serif;
+      --tb-script: var(--font-tb-script), "Snell Roundhand", cursive;
+      --tb-label: var(--font-tb-label), "Courier New", monospace;
+      --tb-display: var(--font-tb-text), Georgia, serif;
+      --tb-body: var(--font-tb-text), Georgia, serif;
       background: var(--tb-linen);
       color: var(--tb-cacao);
       font-family: var(--tb-body);
@@ -23,7 +25,11 @@ export function ThemeStyles() {
     .tb-theme *, .tb-theme *::before, .tb-theme *::after { box-sizing: border-box; }
     .tb-theme [hidden] { display: none !important; }
     .tb-theme h1, .tb-theme h2, .tb-theme h3, .tb-theme p { margin: 0; }
-    .tb-theme h1, .tb-theme h2, .tb-theme h3 { font-family: var(--tb-display); font-weight: 400; }
+    .tb-theme h1, .tb-theme h2, .tb-theme h3 { font-family: var(--tb-display); font-weight: 400; font-style: italic; }
+    /* Herbarium voices: ink signatures for names, typewriter for specimen labels. */
+    .tb-theme .tb-script { font-family: var(--tb-script); font-style: normal; font-weight: 400; letter-spacing: 0; }
+    .tb-theme .tb-label { font-family: var(--tb-label); font-style: normal; letter-spacing: .04em; }
+    .tb-theme :is(.tb-journal-label, .tb-cover-date, .tb-event-index, .tb-event-main time, .tb-event-time, .tb-story-date, .tb-gift-provider, .tb-wish-meta time, .tb-gallery-item figcaption, .tb-countdown-units dt, .tb-action, .tb-form-submit, .tb-more-wishes, .tb-nav a) { font-family: var(--tb-label); font-style: normal; letter-spacing: .04em; }
     .tb-theme button, .tb-theme input, .tb-theme textarea, .tb-theme select { font: inherit; }
     .tb-theme button, .tb-theme a { -webkit-tap-highlight-color: transparent; }
     .tb-theme :focus-visible { outline: 3px solid currentColor; outline-offset: 5px; }

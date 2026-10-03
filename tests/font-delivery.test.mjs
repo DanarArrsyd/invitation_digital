@@ -14,8 +14,12 @@ const THEME_FONTS = {
     ],
   },
   "terra-botanica": {
-    packages: [/@fontsource-variable\/fraunces/, /@fontsource-variable\/manrope/],
-    faces: [/--font-tb-display:\s*"Fraunces Variable"/, /--font-tb-body:\s*"Manrope Variable"/],
+    packages: [/@fontsource\/herr-von-muellerhoff/, /@fontsource\/courier-prime/, /@fontsource\/spectral/],
+    faces: [
+      /--font-tb-script:\s*"Herr Von Muellerhoff"/,
+      /--font-tb-label:\s*"Courier Prime"/,
+      /--font-tb-text:\s*"Spectral"/,
+    ],
   },
   "midnight-atelier": {
     packages: [/@fontsource-variable\/bodoni-moda/, /@fontsource\/ibm-plex-sans-condensed/],
@@ -85,4 +89,15 @@ test("Ivory styles consume the script, display and body faces", async () => {
   assert.doesNotMatch(styles, /--font-nusantara-|--ni-sans/);
   assert.match(styles, /\.ni-script\s*\{[^}]*font-family:\s*var\(--ni-script\)/);
   assert.match(styles, /\.ni-caps\s*\{[^}]*font-family:\s*var\(--ni-display-face\)/);
+});
+
+test("Terra styles consume the script, label and text faces", async () => {
+  const styles = await source("src/themes/terra-botanica/ThemeStyles.tsx");
+  assert.match(styles, /--tb-script:\s*var\(--font-tb-script\)/);
+  assert.match(styles, /--tb-label:\s*var\(--font-tb-label\)/);
+  assert.match(styles, /--tb-display:\s*var\(--font-tb-text\)/);
+  assert.match(styles, /--tb-body:\s*var\(--font-tb-text\)/);
+  assert.doesNotMatch(styles, /--font-tb-display|--font-tb-body/);
+  assert.match(styles, /\.tb-script\s*\{[^}]*font-family:\s*var\(--tb-script\)/);
+  assert.match(styles, /\.tb-label\s*\{[^}]*font-family:\s*var\(--tb-label\)/);
 });
