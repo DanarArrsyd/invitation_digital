@@ -10,6 +10,7 @@ const CSS = `
   --ni-ivory: #F8F1E4;
   --ni-ivory-2: #F2E8D6;
   --ni-cream: #E9DCC4;
+  --ni-cream-edge: #E2D3B8;
   --ni-sand: #D9C6A5;
   --ni-gold: #A87A3D;
   --ni-gold-soft: #C9A15C;
@@ -34,7 +35,7 @@ const CSS = `
      large sizes, this darker ink stays >= 4.5:1 on every light panel
      (ivory through the cream gradient edge). --ni-gold stays for rules,
      ornaments and display-size type. */
-  --ni-gold-ink: #7A5A2E;
+  --ni-gold-ink: #72552B;
   --ni-line-strong: rgba(168,122,61,0.45);
   --ni-line: rgba(168,122,61,0.3);
   --ni-line-soft: rgba(168,122,61,0.22);
@@ -137,7 +138,7 @@ const CSS = `
 
 .ni-panel-cream {
   background:
-    radial-gradient(90% 70% at 20% 0%, #F5ECDD 0%, var(--ni-cream) 70%, #E2D3B8 100%);
+    radial-gradient(90% 70% at 20% 0%, #F5ECDD 0%, var(--ni-cream) 70%, var(--ni-cream-edge) 100%);
 }
 
 /* Botanical composition is clipped by each section, never by the page. */

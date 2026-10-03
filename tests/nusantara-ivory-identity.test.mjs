@@ -124,7 +124,7 @@ test("the Surat dari Keraton palette keeps every text pair at WCAG AA", () => {
   assert.equal(token.gold, "#A87A3D");
   for (const [fg, bg, min] of [
     ["ink", "ivory", 7], ["brown", "ivory", 4.5], ["brown-soft", "ivory", 4.5], ["brown-soft", "cream", 4.5],
-    ["gold-ink", "ivory", 4.5], ["gold-ink", "cream", 4.5], ["danger", "ivory", 4.5],
+    ["gold-ink", "ivory", 4.5], ["gold-ink", "cream", 4.5], ["gold-ink", "cream-edge", 4.5], ["brown-soft", "cream-edge", 4.5], ["danger", "ivory", 4.5],
     ["gold-soft", "espresso", 4.5], ["ivory-2", "espresso", 4.5],
   ]) {
     assert.ok(contrast(token[fg], token[bg]) >= min, `--ni-${fg} on --ni-${bg} is ${contrast(token[fg], token[bg]).toFixed(2)}`);
