@@ -152,11 +152,19 @@ const CSS = `
 .ni-theme .ni-panel-dark .ni-eyebrow { color: var(--ni-gold-soft); }
 .ni-cover-stagger { animation: ni-cover-enter .75s cubic-bezier(.22,.61,.36,1) both; }
 @keyframes ni-cover-enter { from { opacity: 0; translate: 0 16px; } to { opacity: 1; translate: 0 0; } }
-.ni-cover-arch { height: calc(100% - 3rem); }
 .ni-cover-content { width: 100%; max-width: 640px; }
 .ni-cover-content > div { max-width: 100%; }
-.ni-cover-floral-left { left: -55px; bottom: -45px; opacity: .45; }
-.ni-cover-floral-right { right: -65px; top: -80px; transform: rotate(180deg); opacity: .3; }
+/* Gunungan gate: two ivory leaves meeting at a gold seam, each clipping half
+   of one centred gunungan. The text layer scrolls independently so short
+   screens keep the gate fixed behind it. */
+.ni-gate { overflow: hidden; }
+.ni-gate-leaf { position: absolute; top: 0; bottom: 0; width: 50%; overflow: hidden; background: var(--ni-ivory); }
+.ni-gate-leaf--left { left: 0; box-shadow: inset -1px 0 0 var(--ni-line-strong); }
+.ni-gate-leaf--right { right: 0; }
+.ni-gate-gunungan { position: absolute; top: 50%; width: min(560px, 118vw); height: auto; color: var(--ni-gold); opacity: .5; transform: translate(-50%, -50%); }
+.ni-gate-leaf--left .ni-gate-gunungan { left: 100%; }
+.ni-gate-leaf--right .ni-gate-gunungan { left: 0; }
+.ni-gate-scroll { position: absolute; inset: 0; z-index: 1; overflow-x: hidden; overflow-y: auto; }
 .ni-hero { min-height: 80svh; display: grid; align-items: center; }
 .ni-hero .ni-hero-floral { width: clamp(280px, 45vw, 620px); left: -8%; right: auto; bottom: -8%; opacity: .13; transform: rotate(-12deg); }
 .ni-hero-inner { position: relative; display: grid; align-items: center; gap: 3rem; width: 100%; max-width: 1440px; margin-inline: auto; padding: clamp(3.5rem, 6vw, 6rem) var(--ni-gutter); }

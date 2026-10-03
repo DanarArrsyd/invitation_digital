@@ -153,3 +153,29 @@ test("couple names use the script face and section titles stay in Cinzel", () =>
   }
   assert.match(document.body.textContent, /Matur Nuwun · Terima Kasih/, "closing carries the Javanese thanks");
 });
+
+test("the cover is a two-leaf gunungan gate that opens in the same tap", async () => {
+  let opens = 0;
+  const cover = { ...OPENED_COVER, opened: false, openInvitation: () => { opens += 1; } };
+  const { CoverGate } = createLoader({ cover })("CoverGate");
+  const view = await mount(React.createElement(CoverGate, {
+    invitationId: "ivory", guestToken: null, eyebrow: "The Wedding Of", displayName: "Alya & Bima",
+    eventDate: "2030-10-20", guestDisplayName: "Bude Sri", musicUrl: null, musicEnabled: false, navItems: [],
+  }, React.createElement("p", null, "isi")));
+  try {
+    const leaves = view.document.querySelectorAll("[data-ni-gate-leaf]");
+    assert.equal(leaves.length, 2);
+    for (const leaf of leaves) {
+      assert.equal(leaf.getAttribute("aria-hidden"), "true");
+      assert.ok(leaf.querySelector("svg.ni-gate-gunungan"), "each leaf carries half of the gunungan");
+    }
+    assert.match(view.document.querySelector("h1.ni-script").textContent, /Alya/);
+    assert.match(view.document.body.textContent, /Bude Sri/);
+    const button = [...view.document.querySelectorAll("button")].find((node) => node.textContent.trim() === "Buka Undangan");
+    assert.ok(button, "the cover keeps a real Buka Undangan button");
+    await act(async () => button.click());
+    assert.equal(opens, 1, "openInvitation runs synchronously in the tap");
+  } finally {
+    await view.cleanup();
+  }
+});
