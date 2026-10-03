@@ -36,7 +36,7 @@ export function HeroSection({ coverImageUrl, displayName, eventDate, venueSummar
         <div className="ni-hero-inner ni-hero-inner--text">
           <Reveal variant="fade"><BotanicalDivider /></Reveal>
           <Reveal delay={0.08}>
-            <h1 className="ni-display ni-hero-names mt-8">{displayName}</h1>
+            <h1 className="ni-script ni-hero-names mt-8">{displayName}</h1>
           </Reveal>
           {formatted ? (
             <Reveal delay={0.16}>
@@ -47,7 +47,7 @@ export function HeroSection({ coverImageUrl, displayName, eventDate, venueSummar
           ) : null}
           {venueSummary ? (
             <Reveal delay={0.2}>
-              <p className="ni-body mt-3 max-w-[40ch] text-[0.95rem]">{venueSummary}</p>
+              <p className="ni-body mt-3 max-w-[40ch] text-base">{venueSummary}</p>
             </Reveal>
           ) : null}
           <Reveal delay={0.26}>
@@ -72,12 +72,12 @@ export function HeroSection({ coverImageUrl, displayName, eventDate, venueSummar
         <div className="relative min-w-0">
           <Reveal variant="fade"><BotanicalDivider /></Reveal>
           <Reveal delay={0.08}>
-            <h1 className="ni-display ni-hero-names my-8">{displayName}</h1>
+            <h1 className="ni-script ni-hero-names my-8">{displayName}</h1>
           </Reveal>
           {formatted || venueSummary ? (
             <Reveal delay={0.16} className="max-w-[34ch] border-t border-[var(--ni-sand)] pt-6">
               {formatted ? <p className="ni-serif text-xl sm:text-2xl">{formatted}</p> : null}
-              {venueSummary ? <p className="ni-body mt-2 text-sm">{venueSummary}</p> : null}
+              {venueSummary ? <p className="ni-body mt-2 text-base">{venueSummary}</p> : null}
             </Reveal>
           ) : null}
         </div>

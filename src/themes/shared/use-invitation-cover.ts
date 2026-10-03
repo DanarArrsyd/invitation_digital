@@ -40,6 +40,7 @@ export function useInvitationCover({
 }: InvitationCoverOptions): InvitationCoverController {
   const contentRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const openedRef = useRef(false);
   const [opened, setOpened] = useState(false);
   const [playing, setPlaying] = useState(false);
   const reducedMotion = useReducedMotion() ?? false;
@@ -50,6 +51,8 @@ export function useInvitationCover({
   }, [opened]);
 
   function openInvitation() {
+    if (openedRef.current) return;
+    openedRef.current = true;
     setOpened(true);
     if (canPlayMusic && audioRef.current) {
       void attemptAudioPlay(audioRef.current).then(setPlaying);

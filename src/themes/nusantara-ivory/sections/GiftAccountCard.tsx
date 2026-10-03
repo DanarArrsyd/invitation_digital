@@ -5,6 +5,8 @@ import { useRef } from "react";
 import { useCopyFeedback } from "@/themes/shared/use-copy-feedback";
 import type { GiftAccount } from "@/types/invitation";
 
+import { WaxSeal } from "../components/WaxSeal";
+
 export function GiftAccountCard({ gift }: { gift: GiftAccount }) {
   const { copied, failed, copy } = useCopyFeedback();
   const numberRef = useRef<HTMLParagraphElement>(null);
@@ -18,6 +20,7 @@ export function GiftAccountCard({ gift }: { gift: GiftAccount }) {
         background: "rgba(252,250,245,0.04)",
       }}
     >
+      <WaxSeal stamped={copied} />
       <div className="flex flex-col gap-3">
         <p className="ni-eyebrow" style={{ color: "var(--ni-gold-soft)" }}>
           {gift.providerName}

@@ -9,9 +9,10 @@
  */
 
 // nusantara-ivory
-import "@fontsource-variable/cormorant-garamond";
-import "@fontsource-variable/cormorant-garamond/wght-italic.css";
-import "@fontsource-variable/jost";
+import "@fontsource/great-vibes/400.css";
+import "@fontsource-variable/cinzel";
+import "@fontsource-variable/lora";
+import "@fontsource-variable/lora/wght-italic.css";
 import "./nusantara-ivory/fonts.css";
 
 // terra-botanica

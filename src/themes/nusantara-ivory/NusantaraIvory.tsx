@@ -4,7 +4,7 @@ import type { ThemeComponentProps } from "@/types/theme";
 import { CoverGate } from "./CoverGate";
 import type { NavItem } from "./components/FloatingNav";
 import { ThemeStyles } from "./ThemeStyles";
-import { bodySans, displaySerif } from "./fonts";
+import { bodyFace, displayFace, scriptFace } from "./fonts";
 import { ClosingSection } from "./sections/ClosingSection";
 import { CountdownSection } from "./sections/CountdownSection";
 import { CoupleSection } from "./sections/CoupleSection";
@@ -57,7 +57,7 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
     .map(({ id, label, icon }) => ({ id, label, icon }));
 
   return (
-    <div className={`ni-theme ${displaySerif.variable} ${bodySans.variable}`}>
+    <div className={`ni-theme ${scriptFace.variable} ${displayFace.variable} ${bodyFace.variable}`}>
       <ThemeStyles />
 
       <CoverGate

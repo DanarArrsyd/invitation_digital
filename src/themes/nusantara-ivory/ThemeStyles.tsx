@@ -7,19 +7,25 @@
  */
 const CSS = `
 .ni-theme {
-  --ni-ivory: #FCFAF5;
-  --ni-ivory-2: #F7F1E7;
-  --ni-cream: #EFE5D4;
-  --ni-sand: #DCCCB0;
-  --ni-gold: #A98A5C;
-  --ni-gold-soft: #C7AE85;
-  --ni-ink: #241F19;
-  --ni-brown: #4A3F34;
-  --ni-brown-soft: #7C6B58;
-  --ni-espresso: #2A2219;
+  --ni-ivory: #F8F1E4;
+  --ni-ivory-2: #F2E8D6;
+  --ni-cream: #E9DCC4;
+  --ni-cream-edge: #E2D3B8;
+  --ni-sand: #D9C6A5;
+  --ni-gold: #A87A3D;
+  --ni-gold-soft: #C9A15C;
+  --ni-ink: #2B1A10;
+  --ni-brown: #5A3A24;
+  --ni-brown-soft: #74553D;
+  --ni-espresso: #3A2416;
+  /* Surat dari Keraton accents: sogan batik brown, wax-seal brick, deep green. */
+  --ni-sogan: #6B3E26;
+  --ni-bata: #7A2E22;
+  --ni-hijau: #2F4A3A;
 
-  --ni-serif: var(--font-nusantara-serif), "Iowan Old Style", Georgia, serif;
-  --ni-sans: var(--font-nusantara-sans), ui-sans-serif, system-ui, sans-serif;
+  --ni-script: var(--font-ni-script), "Snell Roundhand", "Apple Chancery", cursive;
+  --ni-display-face: var(--font-ni-display), "Trajan Pro", Georgia, serif;
+  --ni-serif: var(--font-ni-body), "Iowan Old Style", Georgia, serif;
 
   --ni-gutter: clamp(1.25rem, 5vw, 5rem);
   --ni-section-y: clamp(4rem, 7.5vw, 7rem);
@@ -29,16 +35,16 @@ const CSS = `
      large sizes, this darker ink stays >= 4.5:1 on every light panel
      (ivory through the cream gradient edge). --ni-gold stays for rules,
      ornaments and display-size type. */
-  --ni-gold-ink: #735B3A;
-  --ni-line-strong: rgba(169,138,92,0.45);
-  --ni-line: rgba(169,138,92,0.3);
-  --ni-line-soft: rgba(169,138,92,0.22);
+  --ni-gold-ink: #72552B;
+  --ni-line-strong: rgba(168,122,61,0.45);
+  --ni-line: rgba(168,122,61,0.3);
+  --ni-line-soft: rgba(168,122,61,0.22);
   --ni-on-dark-muted: rgba(252,250,245,0.62);
   --ni-danger: #8C2F1F;
 
   background-color: var(--ni-ivory);
   color: var(--ni-brown);
-  font-family: var(--ni-sans);
+  font-family: var(--ni-serif);
   font-weight: 400;
   letter-spacing: 0.01em;
   /* No overflow clipping here: a clip container on the theme root suppresses
@@ -49,6 +55,12 @@ const CSS = `
 .ni-theme ::selection { background: var(--ni-sand); color: var(--ni-ink); }
 
 .ni-serif { font-family: var(--ni-serif); font-weight: 400; }
+
+/* Couple names and signatures only — never body, labels or forms. */
+.ni-script { font-family: var(--ni-script); font-weight: 400; line-height: 1.05; letter-spacing: 0; text-transform: none; color: var(--ni-ink); }
+
+/* Inscription capitals for dates, buttons and small labels. */
+.ni-caps { font-family: var(--ni-display-face); font-weight: 500; }
 
 /* Paper grain — sits above flat fills, never over photos' focal areas. */
 .ni-grain::after {
@@ -61,15 +73,16 @@ const CSS = `
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
 }
 
-/* Nusantara lattice — thin geometric rhythm drawn from carving/textile grids. */
+/* Kawung watermark — four-petal palm-fruit motif from Javanese batik, drawn
+   as thin line work so it reads as paper texture, never as a pasted print. */
 .ni-lattice::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0.5;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23A98A5C' stroke-width='0.6' opacity='0.5'%3E%3Cpath d='M0 32 L32 0 L64 32 L32 64 Z'/%3E%3Cpath d='M32 22 L42 32 L32 42 L22 32 Z'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 64px 64px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23A87A3D' stroke-width='0.6' opacity='0.55'%3E%3Cellipse cx='24' cy='12' rx='6' ry='10'/%3E%3Cellipse cx='24' cy='36' rx='6' ry='10'/%3E%3Cellipse cx='12' cy='24' rx='10' ry='6'/%3E%3Cellipse cx='36' cy='24' rx='10' ry='6'/%3E%3Ccircle cx='24' cy='24' r='1.4'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 48px 48px;
 }
 
 .ni-rule {
@@ -79,19 +92,19 @@ const CSS = `
 
 /* Editorial eyebrow label */
 .ni-eyebrow {
-  font-family: var(--ni-sans);
+  font-family: var(--ni-display-face);
   font-size: clamp(0.625rem, 1.4vw, 0.7rem);
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.23em;
   text-transform: uppercase;
   color: var(--ni-gold-ink);
 }
 
 .ni-display {
-  font-family: var(--ni-serif);
-  font-weight: 400;
-  line-height: 0.92;
-  letter-spacing: -0.015em;
+  font-family: var(--ni-display-face);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: 0.03em;
   color: var(--ni-ink);
 }
 
@@ -119,13 +132,13 @@ const CSS = `
 /* Dark panels get a warm vignette rather than a flat fill. */
 .ni-panel-dark {
   background:
-    radial-gradient(120% 90% at 50% 0%, #3A3025 0%, var(--ni-espresso) 58%, #1E1913 100%);
+    radial-gradient(120% 90% at 50% 0%, #4A2E1C 0%, var(--ni-espresso) 58%, #2A190F 100%);
   color: var(--ni-ivory-2);
 }
 
 .ni-panel-cream {
   background:
-    radial-gradient(90% 70% at 20% 0%, #F6EEE1 0%, var(--ni-cream) 70%, #E7DAC5 100%);
+    radial-gradient(90% 70% at 20% 0%, #F5ECDD 0%, var(--ni-cream) 70%, var(--ni-cream-edge) 100%);
 }
 
 /* Botanical composition is clipped by each section, never by the page. */
@@ -139,19 +152,27 @@ const CSS = `
 .ni-theme .ni-panel-dark .ni-eyebrow { color: var(--ni-gold-soft); }
 .ni-cover-stagger { animation: ni-cover-enter .75s cubic-bezier(.22,.61,.36,1) both; }
 @keyframes ni-cover-enter { from { opacity: 0; translate: 0 16px; } to { opacity: 1; translate: 0 0; } }
-.ni-cover-arch { height: calc(100% - 3rem); }
 .ni-cover-content { width: 100%; max-width: 640px; }
 .ni-cover-content > div { max-width: 100%; }
-.ni-cover-floral-left { left: -55px; bottom: -45px; opacity: .45; }
-.ni-cover-floral-right { right: -65px; top: -80px; transform: rotate(180deg); opacity: .3; }
+/* Gunungan gate: two ivory leaves meeting at a gold seam, each clipping half
+   of one centred gunungan. The text layer scrolls independently so short
+   screens keep the gate fixed behind it. */
+.ni-gate { overflow: hidden; }
+.ni-gate-leaf { position: absolute; top: 0; bottom: 0; width: 50%; overflow: hidden; background: var(--ni-ivory); }
+.ni-gate-leaf--left { left: 0; box-shadow: inset -1px 0 0 var(--ni-line-strong); }
+.ni-gate-leaf--right { right: 0; }
+.ni-gate-gunungan { position: absolute; top: 50%; width: min(560px, 118vw); height: auto; color: var(--ni-gold); opacity: .5; transform: translate(-50%, -50%); }
+.ni-gate-leaf--left .ni-gate-gunungan { left: 100%; }
+.ni-gate-leaf--right .ni-gate-gunungan { left: 0; }
+.ni-gate-scroll { position: absolute; inset: 0; z-index: 1; overflow-x: hidden; overflow-y: auto; }
 .ni-hero { min-height: 80svh; display: grid; align-items: center; }
 .ni-hero .ni-hero-floral { width: clamp(280px, 45vw, 620px); left: -8%; right: auto; bottom: -8%; opacity: .13; transform: rotate(-12deg); }
 .ni-hero-inner { position: relative; display: grid; align-items: center; gap: 3rem; width: 100%; max-width: 1440px; margin-inline: auto; padding: clamp(3.5rem, 6vw, 6rem) var(--ni-gutter); }
 .ni-hero-inner--text { display: block; max-width: 1180px; }
-.ni-hero-names { max-width: 12ch; font-size: clamp(3.5rem, 7.5vw, 8rem); line-height: .95; }
+.ni-hero-names { max-width: 14ch; font-size: clamp(3.8rem, 8.5vw, 8.5rem); line-height: 1.05; }
 .ni-hero-portrait { width: 100%; max-width: 480px; justify-self: center; min-width: 0; }
 .ni-hero-photo-frame { position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 4 / 5; border-radius: 50% 50% 0 0 / 40% 40% 0 0; border: 1px solid var(--ni-gold-soft); background: var(--ni-ivory-2); box-shadow: 0 18px 50px -36px rgba(74,63,52,.3); }
-.ni-hero-photo-frame::after { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(169,138,92,.2); border-radius: inherit; pointer-events: none; }
+.ni-hero-photo-frame::after { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(168,122,61,.2); border-radius: inherit; pointer-events: none; }
 @media (min-width: 768px) {
   .ni-hero-inner:not(.ni-hero-inner--text) { grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: clamp(2rem,5vw,5rem); }
   .ni-hero-portrait { justify-self: end; }
@@ -177,19 +198,19 @@ const CSS = `
 .ni-monogram-badge { display: inline-flex; align-items: center; gap: .7rem; }
 .ni-monogram-badge-bar { width: 1px; height: 1.5rem; background: var(--ni-gold); opacity: .55; }
 .ni-monogram-badge-letters {
-  font-family: var(--ni-serif);
+  font-family: var(--ni-display-face);
   font-size: 1.15rem;
   letter-spacing: .1em;
   padding: .55rem 1rem;
   border: 1px solid var(--ni-gold);
   color: var(--ni-brown);
 }
-.ni-monogram-badge-amp { display: inline-block; margin: 0 .3em; color: var(--ni-gold); font-style: italic; font-size: .85em; }
+.ni-monogram-badge-amp { display: inline-block; margin: 0 .3em; color: var(--ni-gold); font-size: .85em; }
 .ni-panel-dark .ni-monogram-badge-letters { color: var(--ni-ivory-2); border-color: var(--ni-gold-soft); }
 .ni-panel-dark .ni-monogram-badge-bar { background: var(--ni-gold-soft); }
 .ni-panel-dark .ni-monogram-badge-amp { color: var(--ni-gold-soft); }
 .ni-events-frame { position: relative; border: 1px solid var(--ni-sand); padding: clamp(1.5rem, 4vw, 4rem); background: rgba(252,250,245,.65); }
-.ni-events-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(169,138,92,.17); pointer-events: none; }
+.ni-events-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(168,122,61,.17); pointer-events: none; }
 .ni-event-date { border-bottom: 1px solid var(--ni-sand); padding-bottom: 1.5rem; }
 /* Justified rows (GalleryRows.tsx): each item grows in proportion to its
    width/height ratio (--r) from a basis of ratio x row height, so every
@@ -224,12 +245,12 @@ const CSS = `
   width: 3.1rem;
   height: 3.1rem;
   border-radius: 999px;
-  box-shadow: 0 0 0 1px rgba(169,138,92,0.35), 0 6px 16px -10px rgba(74,63,52,0.5);
+  box-shadow: 0 0 0 1px rgba(168,122,61,0.35), 0 6px 16px -10px rgba(74,63,52,0.5);
 }
 .ni-dresscode-hex { font-size: .62rem; letter-spacing: .08em; color: var(--ni-brown-soft); }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
 .ni-rsvp-option { position: relative; display: block; cursor: pointer; }
-.ni-rsvp-option span { display: flex; min-height: 52px; align-items: center; justify-content: center; padding: 0 1rem; border: 1px solid var(--ni-line); color: var(--ni-brown); font-size: .72rem; letter-spacing: .26em; text-transform: uppercase; text-align: center; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
+.ni-rsvp-option span { display: flex; font-family: var(--ni-display-face); min-height: 52px; align-items: center; justify-content: center; padding: 0 1rem; border: 1px solid var(--ni-line); color: var(--ni-brown); font-size: .72rem; letter-spacing: .26em; text-transform: uppercase; text-align: center; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
 .ni-rsvp-option:hover span { border-color: var(--ni-line-strong); }
 .ni-rsvp-option input:checked + span { background: var(--ni-brown); border-color: var(--ni-brown); color: var(--ni-ivory); }
 .ni-rsvp-option input:focus-visible + span { outline: 2px solid var(--ni-brown); outline-offset: 4px; }
@@ -268,7 +289,7 @@ const CSS = `
   list-style: none;
   pointer-events: auto;
   border-radius: 999px;
-  border: 1px solid rgba(169,138,92,0.35);
+  border: 1px solid rgba(168,122,61,0.35);
   background: rgba(252,250,245,0.86);
   box-shadow: 0 18px 44px -22px rgba(42,34,25,0.38), 0 1px 0 rgba(255,255,255,0.6) inset;
   backdrop-filter: blur(14px);
@@ -310,7 +331,7 @@ const CSS = `
   z-index: 0;
   border-radius: 999px;
   background: linear-gradient(180deg, var(--ni-ivory-2), var(--ni-cream));
-  box-shadow: 0 0 0 1px rgba(169,138,92,0.4) inset, 0 6px 14px -8px rgba(74,63,52,0.45);
+  box-shadow: 0 0 0 1px rgba(168,122,61,0.4) inset, 0 6px 14px -8px rgba(74,63,52,0.45);
 }
 
 .ni-addcal-trigger {
@@ -345,7 +366,7 @@ const CSS = `
   border: none;
   background: transparent;
   text-align: left;
-  font-family: var(--ni-sans);
+  font-family: var(--ni-serif);
   font-size: .78rem;
   letter-spacing: .02em;
   color: var(--ni-ivory-2);
@@ -355,6 +376,46 @@ const CSS = `
 .ni-addcal-item svg { flex-shrink: 0; }
 .ni-addcal-item + .ni-addcal-item { border-top: 1px solid rgba(199,174,133,0.2); }
 .ni-addcal-item:hover, .ni-addcal-item:focus-visible { background: rgba(199,174,133,0.14); color: var(--ni-gold-soft); }
+
+.ni-melati { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ni-melati-petal {
+  position: absolute;
+  top: -24px;
+  opacity: 0;
+  fill: #FFFDF6;
+  stroke: var(--ni-gold-soft);
+  stroke-width: .8;
+  animation-name: ni-melati-fall;
+  animation-timing-function: cubic-bezier(.3,.1,.6,1);
+  animation-fill-mode: forwards;
+}
+.ni-melati-core { fill: #E2C46B; stroke: none; }
+@keyframes ni-melati-fall {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+  12% { opacity: 1; }
+  85% { opacity: .9; }
+  100% { opacity: 0; transform: translate(var(--ni-drift), 520px) rotate(var(--ni-spin)); }
+}
+
+.ni-wax-seal {
+  position: absolute;
+  top: -1.1rem;
+  right: -.6rem;
+  display: grid;
+  place-items: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #9A3E2E, var(--ni-bata) 70%);
+  box-shadow: inset 0 0 0 4px rgba(243,221,184,.2), 0 3px 8px -2px rgba(0,0,0,.45);
+  color: #F3DDB8;
+  opacity: 0;
+  transform: scale(2.2) rotate(-25deg);
+  pointer-events: none;
+}
+.ni-wax-seal-text { font-family: var(--ni-display-face); font-size: .55rem; letter-spacing: .14em; text-transform: uppercase; }
+.ni-wax-seal[data-stamped] { animation: ni-seal-stamp .45s cubic-bezier(.3,1.5,.5,1) forwards; }
+@keyframes ni-seal-stamp { to { opacity: 1; transform: scale(1) rotate(-12deg); } }
 
 @media (prefers-reduced-motion: reduce) {
   .ni-theme *,

@@ -3,6 +3,7 @@
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { useFocusOnSuccess, useRsvpForm } from "@/themes/shared/use-public-forms";
 
+import { MelatiShower } from "../components/MelatiShower";
 import { OrnamentCorner, OrnamentDivider } from "../components/Ornament";
 import { Reveal } from "../components/Reveal";
 import { Section } from "../components/Section";
@@ -28,7 +29,7 @@ export function RsvpSection({
         <div className="md:col-span-4">
           <SectionHeading eyebrow="Konfirmasi Kehadiran" title="RSVP" align="left" />
           <Reveal delay={0.1}>
-            <p className="ni-body mt-6 max-w-[34ch] text-[0.9rem]">
+            <p className="ni-body mt-6 max-w-[34ch] text-base">
               Mohon konfirmasi kehadiran Anda agar kami dapat menyambut dengan sebaik-baiknya.
             </p>
           </Reveal>
@@ -41,6 +42,7 @@ export function RsvpSection({
           >
             <OrnamentCorner className="absolute top-4 left-4 size-8 opacity-60" />
             <OrnamentCorner className="absolute right-4 bottom-4 size-8 rotate-180 opacity-60" />
+            {state.status === "success" && attendance === "attending" ? <MelatiShower /> : null}
 
             {state.status === "success" ? (
               <div
@@ -50,8 +52,8 @@ export function RsvpSection({
                 className="flex flex-col items-center gap-5 py-6 text-center outline-none"
               >
                 <OrnamentDivider />
-                <p className="ni-serif text-[1.5rem] text-[var(--ni-ink)]">Terima kasih</p>
-                <p className="ni-body max-w-[32ch] text-[0.9rem]">
+                <p className="ni-script text-[2.75rem]">Matur nuwun</p>
+                <p className="ni-body max-w-[32ch] text-base">
                   Konfirmasi kehadiran Anda telah kami terima.
                 </p>
               </div>

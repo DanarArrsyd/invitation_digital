@@ -47,7 +47,7 @@ function PersonDetails({
     <div
       className={`flex flex-col gap-3 ${align === "right" ? "md:items-end md:text-right" : "items-start text-left"}`}
     >
-      <h3 className="ni-display text-[clamp(2.1rem,5vw,3.4rem)] break-words">{display}</h3>
+      <h3 className="ni-script text-[clamp(2.6rem,6.5vw,4.2rem)] break-words">{display}</h3>
 
       {hasSubtitle ? (
         <p
@@ -65,12 +65,12 @@ function PersonDetails({
       />
 
       {parents ? (
-        <p className="ni-body max-w-[34ch] text-[0.9rem]">
+        <p className="ni-body max-w-[34ch] text-base">
           {childOf} <span className="text-[var(--ni-brown)]">{parents}</span>
         </p>
       ) : null}
 
-      {person.bio ? <p className="ni-body max-w-[38ch] text-[0.9rem]">{person.bio}</p> : null}
+      {person.bio ? <p className="ni-body max-w-[38ch] text-base">{person.bio}</p> : null}
       {instagram ? (
         <a href={instagram.url} target="_blank" rel="noopener noreferrer" className="ni-social-link" aria-label={`Instagram ${person.fullName}: @${instagram.username} (tab baru)`}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true" focusable="false">

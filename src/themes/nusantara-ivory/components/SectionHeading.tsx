@@ -1,4 +1,4 @@
-import { OrnamentDivider } from "./Ornament";
+import { CantingRule } from "./CantingRule";
 import { Reveal } from "./Reveal";
 
 /**
@@ -32,26 +32,13 @@ export function SectionHeading({
       ) : null}
 
       <h2
-        className="ni-display text-[clamp(2.15rem,5.4vw,3.9rem)]"
+        className="ni-display text-[clamp(1.8rem,4.6vw,3.2rem)]"
         style={tone === "light" ? { color: "var(--ni-ivory)" } : undefined}
       >
         {title}
       </h2>
 
-      {isCenter ? (
-        <OrnamentDivider tone={tone === "light" ? "light" : "gold"} />
-      ) : (
-        <span
-          className="block h-px w-24"
-          aria-hidden="true"
-          style={{
-            background:
-              tone === "light"
-                ? "linear-gradient(90deg, var(--ni-gold-soft), transparent)"
-                : "linear-gradient(90deg, var(--ni-gold), transparent)",
-          }}
-        />
-      )}
+      <CantingRule align={isCenter ? "center" : "left"} tone={tone === "light" ? "light" : "gold"} />
     </Reveal>
   );
 }

@@ -427,9 +427,8 @@ every theme's real gallery and gift components.
 
 Open items:
 
-- Event times are labelled "WIB" and countdown/calendar use UTC+7 in
-  `themes/shared/calendar.ts`. Venues in WITA/WIT need a per-invitation
-  time-zone setting (admin field + shared calendar), not yet decided.
+- Per-invitation time zone (WIB/WITA/WIT) shipped in PR #13
+  (`lib/invitations/time-zones.ts`, `settings.timeZone`).
 - Terra keeps its RSVP pressed-button pair (presentation), Ivory uses
   radios; both submit the same payload through `useRsvpForm`.
 
@@ -438,6 +437,23 @@ invitation from local dev (each visit writes analytics). Use a throwaway
 `src/app/qa-fixture/page.tsx` rendering `ThemeRenderer` with fixture data
 and local SVGs in `public/qa/` (both listed in `.git/info/exclude`), then
 delete them.
+
+### Theme identity redesign (Oct 2026)
+
+Spec: `docs/superpowers/specs/2026-10-03-theme-identity-redesign-design.md`.
+One PR per theme, Ivory → Terra → Midnight → Cobalt; each theme gets its own
+plan in `docs/superpowers/plans/` after the previous one merges.
+
+- Ivory "Surat dari Keraton": Great Vibes / Cinzel / Lora; gading-sogan
+  palette (`--ni-sogan`, `--ni-bata`, `--ni-hijau`, `--ni-cream-edge`);
+  kawung watermark; gunungan gate cover; canting heading rule
+  (`CantingRule`); melati after an attending RSVP (`MelatiShower`); wax seal
+  on copy (`WaxSeal`). Plan: `docs/superpowers/plans/2026-10-03-ivory-identity.md`.
+  `tests/nusantara-ivory-identity.test.mjs` pins contrast, script names,
+  gate, rule, melati and seal.
+- Deferred Ivory items: see spec §4 Deferred.
+- Jost stays installed for Midnight; `cormorant-garamond` removed.
+- `tests/font-delivery.test.mjs` fails if two themes map the same family.
 
 ## Resolved review notes
 

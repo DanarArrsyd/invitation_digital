@@ -30,7 +30,7 @@ function loadShared(name, actions = {}) {
       if (name === "motion/react") return { useReducedMotion: () => false };
       if (name === "@/app/(public)/[slug]/actions") {
         return {
-          trackCoverOpenedAction: async () => undefined,
+          trackCoverOpenedAction: actions.trackCoverOpened ?? (async () => undefined),
           submitRsvpAction: actions.submitRsvp ?? (async () => ({ status: "success" })),
           submitWishAction: actions.submitWish ?? (async () => ({ status: "success" })),
         };
@@ -63,6 +63,7 @@ function loadSection(theme, name, actions = {}) {
       if (moduleName.endsWith("/SectionHeading")) return { SectionHeading: ({ title }) => React.createElement("h2", null, title) };
       if (moduleName.endsWith("/Ornament")) return { OrnamentCorner: inert, OrnamentDivider: inert };
       if (moduleName.endsWith("/Botanical")) return { FloralCorner: inert, BotanicalDivider: inert };
+      if (moduleName.endsWith("/MelatiShower")) return { MelatiShower: () => React.createElement("div", { "data-ni-melati": "" }) };
       return nodeRequire(moduleName);
     },
   });
@@ -170,6 +171,25 @@ test("cover opens and focuses content when autoplay is rejected", async () => {
   }
 });
 
+test("openInvitation is idempotent: repeat calls track and play only once", async () => {
+  let tracked = 0;
+  let played = 0;
+  const { useInvitationCover } = loadShared("use-invitation-cover", { trackCoverOpened: async () => { tracked += 1; } });
+  const hook = await renderHook(
+    () => useInvitationCover({ invitationId: "invitation-1", guestToken: null, musicEnabled: true, musicUrl: "/music.mp3" }),
+  );
+  try {
+    hook.current.audioRef.current = { play: () => { played += 1; return Promise.resolve(); } };
+    const open = hook.current.openInvitation;
+    await act(async () => { open(); open(); });
+    await act(async () => hook.current.openInvitation());
+    assert.equal(tracked, 1);
+    assert.equal(played, 1);
+  } finally {
+    await hook.cleanup();
+  }
+});
+
 test("copy feedback remains false when the browser denies clipboard access", async () => {
   const clipboardDescriptor = Object.getOwnPropertyDescriptor(globalThis.navigator, "clipboard");
   Object.defineProperty(globalThis.navigator, "clipboard", {
@@ -259,6 +279,23 @@ test("shared RSVP behavior reaches the real Ivory form and retains its entered n
     assert.equal(form.elements.namedItem("attendance").value, "attending");
   } finally { await view.cleanup(); }
 });
+
+for (const [attendance, showsMelati] of [["attending", true], ["not_attending", false]]) {
+  test(`Ivory RSVP success (${attendance}) thanks the guest${showsMelati ? " with falling melati" : ""}`, async () => {
+    const view = await mountIvorySection("RsvpSection", { invitationId: "inv-ivory", slug: "ivory", guestToken: "t", guestName: "Bude Sri" }, {
+      submitRsvp: async () => ({ status: "success" }),
+    });
+    try {
+      const form = view.document.querySelector("#ni-rsvp form");
+      await act(async () => form.querySelector(`input[type="radio"][value="${attendance}"]`).click());
+      await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
+      const section = view.document.getElementById("ni-rsvp");
+      assert.match(section.querySelector('[role="status"]').textContent, /Matur nuwun/);
+      assert.match(section.textContent, /Konfirmasi kehadiran Anda telah kami terima/);
+      assert.equal(Boolean(section.querySelector("[data-ni-melati]")), showsMelati);
+    } finally { await view.cleanup(); }
+  });
+}
 
 test("shared wish behavior reaches the real Ivory form and pagination", async () => {
   let resolveAction;

@@ -63,7 +63,7 @@ export function ClosingSection({
 
         <Reveal variant="up" delay={0.16}>
           <p
-            className="ni-serif text-[clamp(2.2rem,7vw,4rem)] leading-tight"
+            className="ni-script text-[clamp(2.8rem,9vw,5rem)] leading-tight"
             style={{ color: "var(--ni-ivory)" }}
           >
             {title}
@@ -81,7 +81,7 @@ export function ClosingSection({
             className="text-[0.62rem] tracking-[0.4em] uppercase"
             style={{ color: "var(--ni-gold-soft)" }}
           >
-            Terima Kasih
+            Matur Nuwun · Terima Kasih
           </p>
         </Reveal>
       </div>

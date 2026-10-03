@@ -140,7 +140,7 @@ export function WishesSection({
                         {formatWishDate(wish.createdAt)}
                       </p>
                     </div>
-                    <p className="ni-body mt-2 text-[0.92rem] break-words whitespace-pre-line">
+                    <p className="ni-body mt-2 text-base break-words whitespace-pre-line">
                       {wish.message}
                     </p>
                   </div>
