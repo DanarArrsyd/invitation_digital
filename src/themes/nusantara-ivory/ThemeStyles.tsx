@@ -205,7 +205,7 @@ const CSS = `
   border: 1px solid var(--ni-gold);
   color: var(--ni-brown);
 }
-.ni-monogram-badge-amp { display: inline-block; margin: 0 .3em; color: var(--ni-gold); font-style: italic; font-size: .85em; }
+.ni-monogram-badge-amp { display: inline-block; margin: 0 .3em; color: var(--ni-gold); font-size: .85em; }
 .ni-panel-dark .ni-monogram-badge-letters { color: var(--ni-ivory-2); border-color: var(--ni-gold-soft); }
 .ni-panel-dark .ni-monogram-badge-bar { background: var(--ni-gold-soft); }
 .ni-panel-dark .ni-monogram-badge-amp { color: var(--ni-gold-soft); }
@@ -383,8 +383,8 @@ const CSS = `
   top: -24px;
   opacity: 0;
   fill: #FFFDF6;
-  stroke: var(--ni-sand);
-  stroke-width: .5;
+  stroke: var(--ni-gold-soft);
+  stroke-width: .8;
   animation-name: ni-melati-fall;
   animation-timing-function: cubic-bezier(.3,.1,.6,1);
   animation-fill-mode: forwards;
