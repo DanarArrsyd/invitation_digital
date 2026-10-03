@@ -36,14 +36,14 @@ const GATE_EASE = [0.65, 0, 0.25, 1] as const;
 function gateVariants(reduced: boolean): Record<"cover" | "content" | "left" | "right", Variants> {
   if (reduced) {
     return {
-      cover: { exit: { opacity: 0, transition: { duration: 0.2 } } },
+      cover: { exit: { opacity: 0, pointerEvents: "none", transition: { duration: 0.2 } } },
       content: {},
       left: {},
       right: {},
     };
   }
   return {
-    cover: { exit: { opacity: 1, transition: { duration: 1.2 } } },
+    cover: { exit: { opacity: 1, pointerEvents: "none", transition: { duration: 1.2 } } },
     content: { exit: { opacity: 0, transition: { duration: 0.25 } } },
     left: { exit: { x: "-101%", transition: { duration: 0.95, delay: 0.2, ease: GATE_EASE } } },
     right: { exit: { x: "101%", transition: { duration: 0.95, delay: 0.2, ease: GATE_EASE } } },

@@ -30,7 +30,7 @@ function loadShared(name, actions = {}) {
       if (name === "motion/react") return { useReducedMotion: () => false };
       if (name === "@/app/(public)/[slug]/actions") {
         return {
-          trackCoverOpenedAction: async () => undefined,
+          trackCoverOpenedAction: actions.trackCoverOpened ?? (async () => undefined),
           submitRsvpAction: actions.submitRsvp ?? (async () => ({ status: "success" })),
           submitWishAction: actions.submitWish ?? (async () => ({ status: "success" })),
         };
@@ -166,6 +166,25 @@ test("cover opens and focuses content when autoplay is rejected", async () => {
     assert.equal(hook.current.opened, true);
     assert.equal(hook.current.playing, false);
     assert.equal(document.activeElement, hook.current.contentRef.current);
+  } finally {
+    await hook.cleanup();
+  }
+});
+
+test("openInvitation is idempotent: repeat calls track and play only once", async () => {
+  let tracked = 0;
+  let played = 0;
+  const { useInvitationCover } = loadShared("use-invitation-cover", { trackCoverOpened: async () => { tracked += 1; } });
+  const hook = await renderHook(
+    () => useInvitationCover({ invitationId: "invitation-1", guestToken: null, musicEnabled: true, musicUrl: "/music.mp3" }),
+  );
+  try {
+    hook.current.audioRef.current = { play: () => { played += 1; return Promise.resolve(); } };
+    const open = hook.current.openInvitation;
+    await act(async () => { open(); open(); });
+    await act(async () => hook.current.openInvitation());
+    assert.equal(tracked, 1);
+    assert.equal(played, 1);
   } finally {
     await hook.cleanup();
   }
