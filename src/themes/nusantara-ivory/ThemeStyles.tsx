@@ -377,6 +377,26 @@ const CSS = `
 .ni-addcal-item + .ni-addcal-item { border-top: 1px solid rgba(199,174,133,0.2); }
 .ni-addcal-item:hover, .ni-addcal-item:focus-visible { background: rgba(199,174,133,0.14); color: var(--ni-gold-soft); }
 
+.ni-melati { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ni-melati-petal {
+  position: absolute;
+  top: -24px;
+  opacity: 0;
+  fill: #FFFDF6;
+  stroke: var(--ni-sand);
+  stroke-width: .5;
+  animation-name: ni-melati-fall;
+  animation-timing-function: cubic-bezier(.3,.1,.6,1);
+  animation-fill-mode: forwards;
+}
+.ni-melati-core { fill: #E2C46B; stroke: none; }
+@keyframes ni-melati-fall {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+  12% { opacity: 1; }
+  85% { opacity: .9; }
+  100% { opacity: 0; transform: translate(var(--ni-drift), 520px) rotate(var(--ni-spin)); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ni-theme *,
   .ni-theme *::before,

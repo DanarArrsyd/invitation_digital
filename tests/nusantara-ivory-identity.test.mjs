@@ -200,3 +200,14 @@ test("section headings carry a kawung rule drawn like a canting stroke", () => {
   const heading = new JSDOM(renderToStaticMarkup(React.createElement(SectionHeading, { title: "Acara", align: "center" }))).window.document;
   assert.ok(heading.querySelector("svg[data-ni-canting]"), "SectionHeading renders the canting rule");
 });
+
+test("melati shower drops twelve blossoms and stays silent under reduced motion", () => {
+  const { MelatiShower } = createLoader()("components/MelatiShower");
+  const doc = new JSDOM(renderToStaticMarkup(React.createElement(MelatiShower))).window.document;
+  const shower = doc.querySelector("[data-ni-melati]");
+  assert.equal(shower.getAttribute("aria-hidden"), "true");
+  assert.equal(shower.querySelectorAll("svg.ni-melati-petal").length, 12);
+
+  const still = createLoader({ reducedMotion: true })("components/MelatiShower").MelatiShower;
+  assert.equal(renderToStaticMarkup(React.createElement(still)), "");
+});

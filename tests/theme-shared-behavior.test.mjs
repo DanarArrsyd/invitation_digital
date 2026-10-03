@@ -63,6 +63,7 @@ function loadSection(theme, name, actions = {}) {
       if (moduleName.endsWith("/SectionHeading")) return { SectionHeading: ({ title }) => React.createElement("h2", null, title) };
       if (moduleName.endsWith("/Ornament")) return { OrnamentCorner: inert, OrnamentDivider: inert };
       if (moduleName.endsWith("/Botanical")) return { FloralCorner: inert, BotanicalDivider: inert };
+      if (moduleName.endsWith("/MelatiShower")) return { MelatiShower: () => React.createElement("div", { "data-ni-melati": "" }) };
       return nodeRequire(moduleName);
     },
   });
@@ -259,6 +260,23 @@ test("shared RSVP behavior reaches the real Ivory form and retains its entered n
     assert.equal(form.elements.namedItem("attendance").value, "attending");
   } finally { await view.cleanup(); }
 });
+
+for (const [attendance, showsMelati] of [["attending", true], ["not_attending", false]]) {
+  test(`Ivory RSVP success (${attendance}) thanks the guest${showsMelati ? " with falling melati" : ""}`, async () => {
+    const view = await mountIvorySection("RsvpSection", { invitationId: "inv-ivory", slug: "ivory", guestToken: "t", guestName: "Bude Sri" }, {
+      submitRsvp: async () => ({ status: "success" }),
+    });
+    try {
+      const form = view.document.querySelector("#ni-rsvp form");
+      await act(async () => form.querySelector(`input[type="radio"][value="${attendance}"]`).click());
+      await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
+      const section = view.document.getElementById("ni-rsvp");
+      assert.match(section.querySelector('[role="status"]').textContent, /Matur nuwun/);
+      assert.match(section.textContent, /Konfirmasi kehadiran Anda telah kami terima/);
+      assert.equal(Boolean(section.querySelector("[data-ni-melati]")), showsMelati);
+    } finally { await view.cleanup(); }
+  });
+}
 
 test("shared wish behavior reaches the real Ivory form and pagination", async () => {
   let resolveAction;
