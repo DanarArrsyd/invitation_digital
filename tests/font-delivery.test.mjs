@@ -6,8 +6,12 @@ const source = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8"
 
 const THEME_FONTS = {
   "nusantara-ivory": {
-    packages: [/@fontsource-variable\/cormorant-garamond/, /@fontsource-variable\/jost/],
-    faces: [/--font-nusantara-serif:\s*"Cormorant Garamond Variable"/, /--font-nusantara-sans:\s*"Jost Variable"/],
+    packages: [/@fontsource\/great-vibes/, /@fontsource-variable\/cinzel/, /@fontsource-variable\/lora/],
+    faces: [
+      /--font-ni-script:\s*"Great Vibes"/,
+      /--font-ni-display:\s*"Cinzel Variable"/,
+      /--font-ni-body:\s*"Lora Variable"/,
+    ],
   },
   "terra-botanica": {
     packages: [/@fontsource-variable\/fraunces/, /@fontsource-variable\/manrope/],
@@ -60,4 +64,25 @@ test("the admin sans token resolves to Geist instead of referencing itself", asy
   // computed time and the browser falls back to its default serif (Times).
   assert.doesNotMatch(globals, /--font-sans:\s*var\(--font-sans\)/);
   assert.match(globals, /--font-sans:\s*var\(--font-geist-sans\)/);
+});
+
+test("no font family is mapped by two themes", async () => {
+  const owners = new Map();
+  for (const theme of Object.keys(THEME_FONTS)) {
+    const css = await source(`src/themes/${theme}/fonts.css`);
+    for (const [, family] of css.matchAll(/--font-[a-z-]+:\s*"([^"]+)"/g)) {
+      assert.equal(owners.get(family) ?? theme, theme, `${family} is mapped by ${owners.get(family)} and ${theme}`);
+      owners.set(family, theme);
+    }
+  }
+});
+
+test("Ivory styles consume the script, display and body faces", async () => {
+  const styles = await source("src/themes/nusantara-ivory/ThemeStyles.tsx");
+  assert.match(styles, /--ni-script:\s*var\(--font-ni-script\)/);
+  assert.match(styles, /--ni-display-face:\s*var\(--font-ni-display\)/);
+  assert.match(styles, /--ni-serif:\s*var\(--font-ni-body\)/);
+  assert.doesNotMatch(styles, /--font-nusantara-|--ni-sans/);
+  assert.match(styles, /\.ni-script\s*\{[^}]*font-family:\s*var\(--ni-script\)/);
+  assert.match(styles, /\.ni-caps\s*\{[^}]*font-family:\s*var\(--ni-display-face\)/);
 });

@@ -1,5 +1,8 @@
-/** Display face — high-contrast serif for names, section titles, numerals. */
-export const displaySerif = { variable: "ni-font-display" } as const;
+/** Script face — couple names and short signatures only. */
+export const scriptFace = { variable: "ni-font-script" } as const;
 
-/** Supporting face — geometric sans for body copy, labels, forms. */
-export const bodySans = { variable: "ni-font-body" } as const;
+/** Display face — inscription capitals for headings, eyebrows, dates. */
+export const displayFace = { variable: "ni-font-display" } as const;
+
+/** Text face — book serif for body copy, forms and long reading. */
+export const bodyFace = { variable: "ni-font-body" } as const;

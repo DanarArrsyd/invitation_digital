@@ -10,7 +10,7 @@ import {
 } from "@/themes/shared/calendar";
 export type { CalendarEventInput } from "@/themes/shared/calendar";
 
-import { bodySans } from "../fonts";
+import { bodyFace } from "../fonts";
 
 /** Matches the CSS min-width so the portaled menu can be edge-clamped without a measure pass. */
 const MENU_WIDTH = 208;
@@ -123,7 +123,7 @@ export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: 
                 <motion.div
                   ref={menuRef}
                   role="menu"
-                  className={`ni-theme ${bodySans.variable} ni-addcal-menu`}
+                  className={`ni-theme ${bodyFace.variable} ni-addcal-menu`}
                   style={{ position: "absolute", top: menuPos.top, left: menuPos.left, width: MENU_WIDTH }}
                   initial={reduced ? false : { opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}

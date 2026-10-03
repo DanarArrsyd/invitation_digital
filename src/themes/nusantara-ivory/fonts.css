@@ -1,7 +1,11 @@
+.ni-font-script {
+  --font-ni-script: "Great Vibes";
+}
+
 .ni-font-display {
-  --font-nusantara-serif: "Cormorant Garamond Variable";
+  --font-ni-display: "Cinzel Variable";
 }
 
 .ni-font-body {
-  --font-nusantara-sans: "Jost Variable";
+  --font-ni-body: "Lora Variable";
 }

@@ -18,8 +18,9 @@ const CSS = `
   --ni-brown-soft: #7C6B58;
   --ni-espresso: #2A2219;
 
-  --ni-serif: var(--font-nusantara-serif), "Iowan Old Style", Georgia, serif;
-  --ni-sans: var(--font-nusantara-sans), ui-sans-serif, system-ui, sans-serif;
+  --ni-script: var(--font-ni-script), "Snell Roundhand", "Apple Chancery", cursive;
+  --ni-display-face: var(--font-ni-display), "Trajan Pro", Georgia, serif;
+  --ni-serif: var(--font-ni-body), "Iowan Old Style", Georgia, serif;
 
   --ni-gutter: clamp(1.25rem, 5vw, 5rem);
   --ni-section-y: clamp(4rem, 7.5vw, 7rem);
@@ -38,7 +39,7 @@ const CSS = `
 
   background-color: var(--ni-ivory);
   color: var(--ni-brown);
-  font-family: var(--ni-sans);
+  font-family: var(--ni-serif);
   font-weight: 400;
   letter-spacing: 0.01em;
   /* No overflow clipping here: a clip container on the theme root suppresses
@@ -49,6 +50,12 @@ const CSS = `
 .ni-theme ::selection { background: var(--ni-sand); color: var(--ni-ink); }
 
 .ni-serif { font-family: var(--ni-serif); font-weight: 400; }
+
+/* Couple names and signatures only — never body, labels or forms. */
+.ni-script { font-family: var(--ni-script); font-weight: 400; line-height: 1.05; letter-spacing: 0; text-transform: none; color: var(--ni-ink); }
+
+/* Inscription capitals for dates, buttons and small labels. */
+.ni-caps { font-family: var(--ni-display-face); font-weight: 500; }
 
 /* Paper grain — sits above flat fills, never over photos' focal areas. */
 .ni-grain::after {
@@ -79,19 +86,19 @@ const CSS = `
 
 /* Editorial eyebrow label */
 .ni-eyebrow {
-  font-family: var(--ni-sans);
+  font-family: var(--ni-display-face);
   font-size: clamp(0.625rem, 1.4vw, 0.7rem);
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.23em;
   text-transform: uppercase;
   color: var(--ni-gold-ink);
 }
 
 .ni-display {
-  font-family: var(--ni-serif);
-  font-weight: 400;
-  line-height: 0.92;
-  letter-spacing: -0.015em;
+  font-family: var(--ni-display-face);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: 0.03em;
   color: var(--ni-ink);
 }
 
@@ -177,7 +184,7 @@ const CSS = `
 .ni-monogram-badge { display: inline-flex; align-items: center; gap: .7rem; }
 .ni-monogram-badge-bar { width: 1px; height: 1.5rem; background: var(--ni-gold); opacity: .55; }
 .ni-monogram-badge-letters {
-  font-family: var(--ni-serif);
+  font-family: var(--ni-display-face);
   font-size: 1.15rem;
   letter-spacing: .1em;
   padding: .55rem 1rem;
@@ -229,7 +236,7 @@ const CSS = `
 .ni-dresscode-hex { font-size: .62rem; letter-spacing: .08em; color: var(--ni-brown-soft); }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
 .ni-rsvp-option { position: relative; display: block; cursor: pointer; }
-.ni-rsvp-option span { display: flex; min-height: 52px; align-items: center; justify-content: center; padding: 0 1rem; border: 1px solid var(--ni-line); color: var(--ni-brown); font-size: .72rem; letter-spacing: .26em; text-transform: uppercase; text-align: center; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
+.ni-rsvp-option span { display: flex; font-family: var(--ni-display-face); min-height: 52px; align-items: center; justify-content: center; padding: 0 1rem; border: 1px solid var(--ni-line); color: var(--ni-brown); font-size: .72rem; letter-spacing: .26em; text-transform: uppercase; text-align: center; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
 .ni-rsvp-option:hover span { border-color: var(--ni-line-strong); }
 .ni-rsvp-option input:checked + span { background: var(--ni-brown); border-color: var(--ni-brown); color: var(--ni-ivory); }
 .ni-rsvp-option input:focus-visible + span { outline: 2px solid var(--ni-brown); outline-offset: 4px; }
@@ -345,7 +352,7 @@ const CSS = `
   border: none;
   background: transparent;
   text-align: left;
-  font-family: var(--ni-sans);
+  font-family: var(--ni-serif);
   font-size: .78rem;
   letter-spacing: .02em;
   color: var(--ni-ivory-2);
