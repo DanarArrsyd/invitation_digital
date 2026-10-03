@@ -47,7 +47,7 @@ function PersonDetails({
     <div
       className={`flex flex-col gap-3 ${align === "right" ? "md:items-end md:text-right" : "items-start text-left"}`}
     >
-      <h3 className="ni-display text-[clamp(2.1rem,5vw,3.4rem)] break-words">{display}</h3>
+      <h3 className="ni-script text-[clamp(2.6rem,6.5vw,4.2rem)] break-words">{display}</h3>
 
       {hasSubtitle ? (
         <p

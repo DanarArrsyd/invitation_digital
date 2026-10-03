@@ -137,3 +137,19 @@ test("the Ivory watermark is a drawn kawung pattern", () => {
   assert.equal((lattice.match(/%3Cellipse/g) ?? []).length, 4, "four kawung petals per tile");
   assert.doesNotMatch(lattice, /\.png|\.jpg/);
 });
+
+test("couple names use the script face and section titles stay in Cinzel", () => {
+  const { NusantaraIvory } = createLoader()("index");
+  const html = renderToStaticMarkup(React.createElement(NusantaraIvory, { invitation: invitation(), guest: null }));
+  const { document } = new JSDOM(html).window;
+  const scripts = [...document.querySelectorAll(".ni-script")].map((node) => node.textContent.trim());
+  assert.ok(scripts.includes("Alya & Bima"), "hero names");
+  assert.ok(scripts.includes("Alya") && scripts.includes("Bima"), "couple names");
+  assert.ok(document.querySelector("#ni-beranda h1.ni-script"), "hero h1 is script");
+  const titles = [...document.querySelectorAll("h2")];
+  assert.ok(titles.length > 0);
+  for (const title of titles) {
+    assert.ok(!title.classList.contains("ni-script"), `section title "${title.textContent}" must not be script`);
+  }
+  assert.match(document.body.textContent, /Matur Nuwun · Terima Kasih/, "closing carries the Javanese thanks");
+});

@@ -161,7 +161,7 @@ const CSS = `
 .ni-hero .ni-hero-floral { width: clamp(280px, 45vw, 620px); left: -8%; right: auto; bottom: -8%; opacity: .13; transform: rotate(-12deg); }
 .ni-hero-inner { position: relative; display: grid; align-items: center; gap: 3rem; width: 100%; max-width: 1440px; margin-inline: auto; padding: clamp(3.5rem, 6vw, 6rem) var(--ni-gutter); }
 .ni-hero-inner--text { display: block; max-width: 1180px; }
-.ni-hero-names { max-width: 12ch; font-size: clamp(3.5rem, 7.5vw, 8rem); line-height: .95; }
+.ni-hero-names { max-width: 14ch; font-size: clamp(3.8rem, 8.5vw, 8.5rem); line-height: 1.05; }
 .ni-hero-portrait { width: 100%; max-width: 480px; justify-self: center; min-width: 0; }
 .ni-hero-photo-frame { position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 4 / 5; border-radius: 50% 50% 0 0 / 40% 40% 0 0; border: 1px solid var(--ni-gold-soft); background: var(--ni-ivory-2); box-shadow: 0 18px 50px -36px rgba(74,63,52,.3); }
 .ni-hero-photo-frame::after { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(168,122,61,.2); border-radius: inherit; pointer-events: none; }

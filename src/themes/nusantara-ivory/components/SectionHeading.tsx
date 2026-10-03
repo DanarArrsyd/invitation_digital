@@ -32,7 +32,7 @@ export function SectionHeading({
       ) : null}
 
       <h2
-        className="ni-display text-[clamp(2.15rem,5.4vw,3.9rem)]"
+        className="ni-display text-[clamp(1.8rem,4.6vw,3.2rem)]"
         style={tone === "light" ? { color: "var(--ni-ivory)" } : undefined}
       >
         {title}
