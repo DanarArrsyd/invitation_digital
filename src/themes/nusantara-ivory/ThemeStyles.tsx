@@ -397,6 +397,26 @@ const CSS = `
   100% { opacity: 0; transform: translate(var(--ni-drift), 520px) rotate(var(--ni-spin)); }
 }
 
+.ni-wax-seal {
+  position: absolute;
+  top: -1.1rem;
+  right: -.6rem;
+  display: grid;
+  place-items: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #9A3E2E, var(--ni-bata) 70%);
+  box-shadow: inset 0 0 0 4px rgba(243,221,184,.2), 0 3px 8px -2px rgba(0,0,0,.45);
+  color: #F3DDB8;
+  opacity: 0;
+  transform: scale(2.2) rotate(-25deg);
+  pointer-events: none;
+}
+.ni-wax-seal-text { font-family: var(--ni-display-face); font-size: .55rem; letter-spacing: .14em; text-transform: uppercase; }
+.ni-wax-seal[data-stamped] { animation: ni-seal-stamp .45s cubic-bezier(.3,1.5,.5,1) forwards; }
+@keyframes ni-seal-stamp { to { opacity: 1; transform: scale(1) rotate(-12deg); } }
+
 @media (prefers-reduced-motion: reduce) {
   .ni-theme *,
   .ni-theme *::before,

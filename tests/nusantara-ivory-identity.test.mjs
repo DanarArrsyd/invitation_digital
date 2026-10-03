@@ -211,3 +211,21 @@ test("melati shower drops twelve blossoms and stays silent under reduced motion"
   const still = createLoader({ reducedMotion: true })("components/MelatiShower").MelatiShower;
   assert.equal(renderToStaticMarkup(React.createElement(still)), "");
 });
+
+test("copying an account number stamps a wax seal and keeps the fallback path", async () => {
+  const { GiftAccountCard } = createLoader()("sections/GiftAccountCard");
+  const gift = { id: "gift", providerType: "bank", providerName: "BCA", accountNumber: "1234567890", accountName: "Alya", logoUrl: null, sortOrder: 0 };
+  const view = await mount(React.createElement(GiftAccountCard, { gift }));
+  try {
+    Object.defineProperty(view.window.navigator, "clipboard", { configurable: true, value: { writeText: async () => {} } });
+    const seal = view.document.querySelector("[data-ni-seal]");
+    assert.equal(seal.getAttribute("aria-hidden"), "true");
+    assert.equal(seal.hasAttribute("data-stamped"), false);
+    const button = [...view.document.querySelectorAll("button")].find((node) => /Salin/.test(node.textContent));
+    await act(async () => button.click());
+    assert.equal(seal.hasAttribute("data-stamped"), true);
+    assert.equal(button.textContent, "Tersalin");
+  } finally {
+    await view.cleanup();
+  }
+});
