@@ -62,12 +62,19 @@ Prototypes for every choice are in `.superpowers/brainstorm/74556-1790989646/con
 - **Signature interactions are presentation**, not new capabilities. They hang
   off existing state: RSVP success (`useRsvpForm`), wish success
   (`useWishForm`), copy success (`useCopyFeedback`), section visibility, and
-  scroll position. Shared mechanics go to `src/themes/shared/`:
-  - `use-in-view-once.ts`: IntersectionObserver, fires once per element.
-  - `use-scroll-progress.ts`: rAF-throttled 0–1 page or element progress,
-    written to a CSS custom property (no React re-render per frame).
-  - `use-celebration.ts`: one-shot trigger keyed on a success transition,
-    respecting reduced motion.
+  scroll position. In-view triggers use Motion's existing `whileInView` /
+  `useInView` (no new hook). Celebrations are components mounted by the
+  success state they celebrate, so they run once per success and return
+  nothing under reduced motion. The only new shared mechanic is
+  `src/themes/shared/use-scroll-progress.ts` (rAF-throttled 0–1 progress
+  written to a CSS custom property, no React re-render per frame); it lands
+  with Terra, the first theme that needs it.
+- **Docs**: `docs/DESIGN.md` §5 ("no more than 2 primary font families")
+  gains the exception that a script face reserved for names is the third
+  family.
+- **Cover rule** (CLAUDE.md): Ivory's cover keeps an ivory background, so the
+  gunungan gate leaves are ivory paper with gold gunungan line art; sogan is
+  used for the gunungan's inner lines and dark panels, not the full cover.
 - **Guardrails** (CLAUDE.md): no neon glow, no purple-blue gradients, no
   generic blobs, no pasted batik PNGs; cultural motifs are drawn as SVG/CSS.
 - **Parity**: every theme keeps every capability. Cross-theme tests prove
@@ -89,9 +96,10 @@ symbolism, warm ivory paper.
   style of a keraton manuscript for couple photos and event cards, sharp
   corners. Small Javanese greetings as accents ("Sugeng rawuh",
   "Matur nuwun").
-- **Opener — Gunungan terbelah**: full-screen sogan gate carrying a gold-line
-  gunungan; on tap the two halves slide apart left/right (≈1s) like a dalang
-  opening the play, revealing the ivory hero.
+- **Opener — Gunungan terbelah**: the cover is a two-leaf ivory gate carrying
+  a gold-line gunungan split down its centre; on tap the cover text fades and
+  the two leaves slide apart left/right (≈1s) like a dalang opening the play,
+  revealing the hero.
 - **Signature interactions**:
   1. *Hujan melati* (RSVP): after a successful "Hadir" RSVP, ~12 jasmine
      blossoms (SVG) drift down, then "Matur nuwun" appears. Not shown for
@@ -215,8 +223,8 @@ event.
 
 ## 10. Testing
 
-- Unit: `use-in-view-once`, `use-scroll-progress`, `use-celebration` (reduced
-  motion short-circuits; fires once per success transition).
+- Unit: `use-scroll-progress` (with Terra); each celebration component
+  renders nothing under reduced motion.
 - Cross-theme behavioural (extends `tests/*.test.mjs` harnesses): each theme's
   cover still exposes an accessible open button and calls `openInvitation`
   once; RSVP/wish confirmations remain visible with celebrations; copy
