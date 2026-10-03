@@ -84,7 +84,7 @@ function EventRow({
                 <p className="ni-serif text-[1.2rem] text-[var(--ni-ink)]">{event.venueName}</p>
               ) : null}
               {event.address ? (
-                <p className="ni-body max-w-[46ch] text-[0.9rem]">{event.address}</p>
+                <p className="ni-body max-w-[46ch] text-base">{event.address}</p>
               ) : null}
             </div>
           ) : null}

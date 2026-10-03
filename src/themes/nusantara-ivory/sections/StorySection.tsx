@@ -55,7 +55,7 @@ export function StorySection({ stories }: { stories: InvitationStory[] }) {
 
                     {story.description ? (
                       <p
-                        className={`ni-body mt-4 text-[0.92rem] ${textRight ? "" : "md:ml-auto"} max-w-[46ch]`}
+                        className={`ni-body mt-4 text-base ${textRight ? "" : "md:ml-auto"} max-w-[46ch]`}
                       >
                         {story.description}
                       </p>

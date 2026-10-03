@@ -29,7 +29,7 @@ export function RsvpSection({
         <div className="md:col-span-4">
           <SectionHeading eyebrow="Konfirmasi Kehadiran" title="RSVP" align="left" />
           <Reveal delay={0.1}>
-            <p className="ni-body mt-6 max-w-[34ch] text-[0.9rem]">
+            <p className="ni-body mt-6 max-w-[34ch] text-base">
               Mohon konfirmasi kehadiran Anda agar kami dapat menyambut dengan sebaik-baiknya.
             </p>
           </Reveal>
@@ -53,7 +53,7 @@ export function RsvpSection({
               >
                 <OrnamentDivider />
                 <p className="ni-script text-[2.75rem]">Matur nuwun</p>
-                <p className="ni-body max-w-[32ch] text-[0.9rem]">
+                <p className="ni-body max-w-[32ch] text-base">
                   Konfirmasi kehadiran Anda telah kami terima.
                 </p>
               </div>

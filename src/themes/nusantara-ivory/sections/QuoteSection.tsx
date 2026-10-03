@@ -54,7 +54,7 @@ export function QuoteSection({
               aria-hidden="true"
               style={{ background: "linear-gradient(90deg, var(--ni-gold), transparent)" }}
             />
-            <p className="ni-body text-[0.95rem]">{openingMessage}</p>
+            <p className="ni-body text-base">{openingMessage}</p>
           </Reveal>
         ) : null}
       </div>

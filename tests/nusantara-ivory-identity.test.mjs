@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -151,6 +151,9 @@ test("couple names use the script face and section titles stay in Cinzel", () =>
   for (const title of titles) {
     assert.ok(!title.classList.contains("ni-script"), `section title "${title.textContent}" must not be script`);
   }
+  const closingScript = document.querySelector(".ni-panel-dark .ni-script");
+  assert.ok(closingScript, "closing panel carries a script title");
+  assert.equal(closingScript.textContent.trim(), "Alya & Bima");
   assert.match(document.body.textContent, /Matur Nuwun · Terima Kasih/, "closing carries the Javanese thanks");
 });
 
@@ -212,7 +215,7 @@ test("melati shower drops twelve blossoms and stays silent under reduced motion"
   assert.equal(renderToStaticMarkup(React.createElement(still)), "");
 });
 
-test("copying an account number stamps a wax seal and keeps the fallback path", async () => {
+test("copying an account number stamps a wax seal", async () => {
   const { GiftAccountCard } = createLoader()("sections/GiftAccountCard");
   const gift = { id: "gift", providerType: "bank", providerName: "BCA", accountNumber: "1234567890", accountName: "Alya", logoUrl: null, sortOrder: 0 };
   const view = await mount(React.createElement(GiftAccountCard, { gift }));
@@ -228,4 +231,22 @@ test("copying an account number stamps a wax seal and keeps the fallback path", 
   } finally {
     await view.cleanup();
   }
+});
+
+test("ni-body copy is never set below 1rem", () => {
+  const offenders = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = resolve(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith(".tsx")) {
+        const source = readFileSync(full, "utf8");
+        for (const match of source.matchAll(/ni-body[^"`]*/g)) {
+          if (/text-(sm|xs|\[0\.)/.test(match[0])) offenders.push(`${entry.name}: ${match[0]}`);
+        }
+      }
+    }
+  };
+  walk(ivoryRoot);
+  assert.deepEqual(offenders, []);
 });

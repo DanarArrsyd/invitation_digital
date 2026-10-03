@@ -19,7 +19,7 @@ export function DressCodeSection({ dressCode }: { dressCode: DressCodeSettings }
 
         {description ? (
           <Reveal variant="up" delay={0.1} className="mt-6">
-            <p className="ni-body text-[0.95rem] leading-[1.8]">{description}</p>
+            <p className="ni-body text-base leading-[1.8]">{description}</p>
           </Reveal>
         ) : null}
 

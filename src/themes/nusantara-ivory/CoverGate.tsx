@@ -175,7 +175,7 @@ export function CoverGate({
                           <p className="ni-serif text-[1.45rem] leading-snug text-[var(--ni-ink)]">
                             {guestDisplayName?.trim() || "Bapak/Ibu/Saudara/i"}
                           </p>
-                          <p className="ni-body mt-1 text-sm">Dengan hormat, kami mengundang Anda untuk hadir.</p>
+                          <p className="ni-body mt-1 text-base">Dengan hormat, kami mengundang Anda untuk hadir.</p>
                         </div>
                       ),
 
