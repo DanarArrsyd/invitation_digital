@@ -16,11 +16,16 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
   guestName: string | null;
 }) {
   const { state, formAction, isPending, attendance, setAttendance, formRef, onSubmit } = useRsvpForm();
-  // The form unmounts on success; keep the name it sent for the dance card.
-  const [sentName, setSentName] = useState<string | null>(null);
+  // The form unmounts on success, and the choice buttons stay live while the
+  // action is pending; keep the name and attendance that were actually sent.
+  const [sent, setSent] = useState<{ name: string | null; attending: boolean }>({ name: null, attending: false });
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    const typed = new FormData(event.currentTarget).get("guestName");
-    setSentName(typeof typed === "string" && typed.trim() ? typed.trim() : null);
+    const data = new FormData(event.currentTarget);
+    const typed = data.get("guestName");
+    setSent({
+      name: typeof typed === "string" && typed.trim() ? typed.trim() : null,
+      attending: data.get("attendance") === "attending",
+    });
     onSubmit(event);
   }
 
@@ -38,7 +43,7 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
               <p>Terima kasih.</p>
               <span>Konfirmasi kehadiran Anda telah kami terima.</span>
             </div>
-            {attendance === "attending" ? <DanceCard name={guestName ?? sentName} /> : null}
+            {sent.attending ? <DanceCard name={guestName ?? sent.name} /> : null}
           </>
         ) : (
           <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="ma-form">

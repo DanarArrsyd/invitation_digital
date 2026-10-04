@@ -808,3 +808,28 @@ test("every guest-facing label speaks Bahasa Indonesia, the dance card included"
   const { document } = new JSDOM(renderToStaticMarkup(React.createElement(MidnightAtelier, { invitation: evening, guest: null }))).window;
   assertIndonesian(guestCopy(document), ["Undangan malam", "Perayaan", "Tuan rumah", "Tandai kalender Anda", "Simpan tanggalnya"]);
 });
+
+test("the dance card follows the attendance that was submitted, not a choice changed while sending", async () => {
+  async function race(submitted, changedTo) {
+    let resolve;
+    const { RsvpSection } = createLoader({ actions: { submitRsvp: () => new Promise((done) => { resolve = done; }) } })("sections/RsvpSection");
+    const view = await mount(React.createElement(RsvpSection, { invitationId: "midnight", slug: "midnight", guestToken: "t", guestName: "Bude Sri" }));
+    const form = view.document.querySelector("#ma-rsvp form");
+    const pick = (label) => [...form.querySelectorAll('button[type="button"]')].find((candidate) => candidate.textContent.trim() === label);
+    await act(async () => pick(submitted).click());
+    await act(async () => { form.dispatchEvent(new view.window.Event("submit", { bubbles: true, cancelable: true })); });
+    await act(async () => pick(changedTo).click());
+    await act(async () => { resolve({ status: "success" }); });
+    return view;
+  }
+
+  const accepted = await race("Hadir", "Tidak Hadir");
+  try {
+    assert.ok(accepted.document.querySelector("[data-ma-dance-card]"), "a stored acceptance keeps its card");
+  } finally { await accepted.cleanup(); }
+
+  const declined = await race("Tidak Hadir", "Hadir");
+  try {
+    assert.equal(declined.document.querySelector("[data-ma-dance-card]"), null, "a stored decline never shows a card");
+  } finally { await declined.cleanup(); }
+});
