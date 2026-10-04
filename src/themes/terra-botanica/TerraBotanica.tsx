@@ -37,7 +37,7 @@ export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
 }
 
 export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
-  const { coupleDisplayName, guestDisplayName, primaryEvent, countdownTarget, dressCode, heroImageUrl, closingImageUrl } = buildThemeViewModel(invitation, guest);
+  const { coupleDisplayName, guestDisplayName, primaryEvent, countdownTarget, calendarEvent, dressCode, heroImageUrl, closingImageUrl } = buildThemeViewModel(invitation, guest);
   const navItems = buildTerraNavItems(invitation);
 
   return (
@@ -58,8 +58,12 @@ export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
         <HeroSection displayName={coupleDisplayName} imageUrl={heroImageUrl} message={invitation.content.openingMessage} />
         <QuoteSection quote={invitation.content.openingQuote} />
         <CoupleSection people={invitation.people} settings={invitation.theme.settings} invitationType={invitation.type} />
-        <EventsSection events={invitation.events} mapsEnabled={invitation.features.maps} coupleDisplayName={coupleDisplayName} invitationId={invitation.id} timeZone={invitation.timeZone} />
-        <CountdownSection target={countdownTarget} />
+        <EventsSection events={invitation.events} mapsEnabled={invitation.features.maps} timeZone={invitation.timeZone} />
+        <CountdownSection
+          target={countdownTarget}
+          calendarEvent={calendarEvent}
+          calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
+        />
         <DressCodeSection dressCode={dressCode} />
         {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
         {invitation.features.gallery ? <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} /> : null}

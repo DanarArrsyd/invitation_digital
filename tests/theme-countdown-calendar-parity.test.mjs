@@ -102,10 +102,10 @@ test("both themes provide calendar actions for the same valid event when countdo
   const normalized = invitation({ features: { ...features, countdown: false } });
   for (const theme of ["ivory", "terra"]) {
     const document = renderTheme(theme, normalized);
-    assert.equal(document.querySelectorAll(".ni-panel-dark .tabular-nums, #tb-countdown").length, 0, theme);
+    assert.equal(document.querySelectorAll(".ni-panel-dark .tabular-nums, #tb-countdown .tb-countdown-units").length, 0, theme);
     const calendar = theme === "ivory"
       ? document.querySelector(".ni-addcal-trigger")
-      : document.querySelector("#tb-acara .tb-calendar-actions a");
+      : document.querySelector("#tb-countdown .tb-calendar-actions a");
     assert.ok(calendar, `${theme} offers the supplied event without countdown`);
   }
 });

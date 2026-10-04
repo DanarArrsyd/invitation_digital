@@ -166,6 +166,7 @@ export function ThemeStyles() {
     .tb-theme .tb-countdown-units > div { display: flex; flex-direction: column; min-width: 0; border-top: 2px solid var(--tb-clay); padding-top: 1rem; }
     .tb-theme .tb-countdown-units dd { margin: 0; font-family: var(--tb-display); font-size: clamp(1.5rem, 4vw, 3.25rem); font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
     .tb-theme .tb-countdown-units dt { order: 2; margin-top: .75rem; font-size: .8125rem; }
+    .tb-theme .tb-countdown .tb-calendar-actions { margin-top: 0; padding-top: .25rem; }
     .tb-theme .tb-dress-code > .tb-section-inner { max-width: 960px; }
     .tb-theme .tb-dress-description { max-width: 56ch; }
     .tb-theme .tb-dress-groups { display: grid; gap: 2.5rem; margin-top: 2.5rem; }
@@ -265,6 +266,7 @@ export function ThemeStyles() {
       .tb-theme .tb-event { grid-template-columns: 3ch minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(1.5rem, 4vw, 4rem); }
       .tb-theme .tb-event-place { grid-column: 3; }
       .tb-theme .tb-countdown > .tb-section-inner { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: end; }
+      .tb-theme .tb-countdown .tb-calendar-actions { grid-column: 2; }
       .tb-theme .tb-dress-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .tb-theme .tb-hero-copy { grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); align-items: end; gap: 4rem; margin-top: 3rem; }
       .tb-theme .tb-quote-sheet { grid-template-columns: 80px minmax(0, 1fr); gap: 3rem; align-items: start; margin-left: max(0px, calc((100% - 1180px) / 2)); }

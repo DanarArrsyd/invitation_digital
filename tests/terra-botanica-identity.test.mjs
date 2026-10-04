@@ -226,7 +226,7 @@ test("a vine along the page edge grows with scroll progress", async () => {
 test("specimen labels type out once in view and keep their full text for readers", async () => {
   const { EventsSection } = createLoader()("sections/EventsSection");
   const event = invitation().events[0];
-  const props = { events: [event], mapsEnabled: false, coupleDisplayName: "Alya & Bima", invitationId: "terra", timeZone: "Asia/Jakarta" };
+  const props = { events: [event], mapsEnabled: false, timeZone: "Asia/Jakarta" };
 
   const idle = await mount(React.createElement(EventsSection, props));
   try {

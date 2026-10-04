@@ -1,6 +1,5 @@
 import type { InvitationEvent } from "@/types/invitation";
 import {
-  calendarEventForEvent,
   normalizedEventTime,
   timeZoneLabel,
   validEventDate,
@@ -8,16 +7,13 @@ import {
 } from "@/themes/shared/calendar";
 import { usableExternalUrl } from "@/themes/shared/external-url";
 
-import { AddToCalendar } from "../components/AddToCalendar";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 import { TypedText } from "../components/TypedText";
 
-export function EventsSection({ events, mapsEnabled, coupleDisplayName, invitationId, timeZone }: {
+export function EventsSection({ events, mapsEnabled, timeZone }: {
   events: InvitationEvent[];
   mapsEnabled: boolean;
-  coupleDisplayName: string;
-  invitationId: string;
   timeZone?: InvitationTimeZone;
 }) {
   if (events.length === 0) return null;
@@ -32,7 +28,6 @@ export function EventsSection({ events, mapsEnabled, coupleDisplayName, invitati
           const dateIsValid = validEventDate(event.eventDate);
           const start = normalizedEventTime(event.startTime);
           const end = normalizedEventTime(event.endTime);
-          const calendarEvent = calendarEventForEvent(event, coupleDisplayName, timeZone);
           const mapUrl = mapsEnabled ? usableExternalUrl(event.mapsUrl) : null;
           return (
             <li key={event.id} data-event-item={event.id} className="tb-event">
@@ -46,7 +41,6 @@ export function EventsSection({ events, mapsEnabled, coupleDisplayName, invitati
                 {event.venueName ? <p className="tb-event-venue">{event.venueName}</p> : null}
                 {event.address ? <p className="tb-event-address">{event.address}</p> : null}
                 {mapUrl ? <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="tb-text-action" aria-label={`Buka Maps untuk ${event.title}`}>Buka Maps <span aria-hidden="true">↗</span></a> : null}
-                {calendarEvent ? <AddToCalendar event={calendarEvent} uid={`${invitationId}-${event.id}`} /> : null}
               </div>
             </li>
           );

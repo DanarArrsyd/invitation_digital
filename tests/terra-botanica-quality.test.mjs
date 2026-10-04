@@ -81,9 +81,10 @@ test("Instagram link accessible name includes its visible @username", () => {
 test("feature-controlled sections render once when enabled and disappear when disabled", () => {
   const enabled = render(fixture());
   const disabled = render(fixture(Object.fromEntries(Object.keys(allFeatures).map((key) => [key, false]))));
-  for (const id of ["tb-countdown", "tb-dress-code", "tb-cerita", "tb-galeri", "tb-livestream", "tb-rsvp", "tb-ucapan", "tb-kado"]) {
-    assert.equal(enabled.querySelectorAll(`#${id}`).length, 1, `${id} enabled exactly once`);
-    assert.equal(disabled.querySelectorAll(`#${id}`).length, 0, `${id} disabled`);
+  // With countdown off the chapter stays as a save-the-date for the calendar; only the clock goes.
+  for (const selector of ["#tb-countdown .tb-countdown-units", "#tb-dress-code", "#tb-cerita", "#tb-galeri", "#tb-livestream", "#tb-rsvp", "#tb-ucapan", "#tb-kado"]) {
+    assert.equal(enabled.querySelectorAll(selector).length, 1, `${selector} enabled exactly once`);
+    assert.equal(disabled.querySelectorAll(selector).length, 0, `${selector} disabled`);
   }
   assert.equal(disabled.querySelector("audio"), null, "disabled music creates no audio element");
   assert.equal(disabled.querySelector("#tb-cover .tb-guest-name").textContent, "Bapak/Ibu/Saudara/i");
@@ -92,17 +93,17 @@ test("feature-controlled sections render once when enabled and disappear when di
 
 test("each disabled feature removes only its own section", () => {
   const sections = new Map([
-    ["countdown", "tb-countdown"], ["dressCode", "tb-dress-code"],
-    ["story", "tb-cerita"], ["gallery", "tb-galeri"],
-    ["livestream", "tb-livestream"], ["rsvp", "tb-rsvp"],
-    ["wishes", "tb-ucapan"], ["gift", "tb-kado"],
+    ["countdown", "#tb-countdown .tb-countdown-units"], ["dressCode", "#tb-dress-code"],
+    ["story", "#tb-cerita"], ["gallery", "#tb-galeri"],
+    ["livestream", "#tb-livestream"], ["rsvp", "#tb-rsvp"],
+    ["wishes", "#tb-ucapan"], ["gift", "#tb-kado"],
   ]);
   for (const [disabledFeature, disabledId] of sections) {
     const document = render(fixture({ ...allFeatures, [disabledFeature]: false }));
-    assert.equal(document.querySelectorAll(`#${disabledId}`).length, 0, `${disabledFeature} removes ${disabledId}`);
+    assert.equal(document.querySelectorAll(disabledId).length, 0, `${disabledFeature} removes ${disabledId}`);
     for (const [otherFeature, otherId] of sections) {
       if (otherFeature === disabledFeature) continue;
-      assert.equal(document.querySelectorAll(`#${otherId}`).length, 1,
+      assert.equal(document.querySelectorAll(otherId).length, 1,
         `${disabledFeature} leaves ${otherFeature} visible exactly once`);
     }
   }
