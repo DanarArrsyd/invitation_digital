@@ -42,9 +42,9 @@
   ```
   (subagents use their own model name in the first line).
 
-## Owner decisions (open — confirm before Task 1)
+## Owner decisions (confirmed 2026-10-04)
 
-Recommended defaults are written into the tasks; change the task if the owner decides otherwise.
+The owner approved all four recommended defaults below; the tasks already implement them.
 
 1. **Postmark on "Tidak Hadir" too?** Default: yes. The postmark is a receipt ("Diterima"), not a celebration, so it stamps every successful RSVP and names the submitted attendance ("HADIR" / "TIDAK HADIR").
 2. **Where does the sun sink?** Default: a small sun in the left page gutter (like Terra's vine), visible through the porcelain chapters and passing behind the opaque cobalt/kolam/tinta laut chapters; it never sits under text.
