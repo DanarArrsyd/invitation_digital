@@ -1,5 +1,6 @@
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
+import { pickNavItems } from "@/themes/shared/nav-priority";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 
 import type { NavItem } from "./components/FloatingNav";
@@ -32,7 +33,7 @@ export function buildMidnightNavItems(invitation: PublicInvitation): NavItem[] {
     features.wishes ? { id: "ma-ucapan", section: "wishes", label: "Ucapan" } : null,
     features.gift && invitation.gifts.length > 0 ? { id: "ma-kado", section: "gift", label: "Kado" } : null,
   ];
-  return candidates.filter((item): item is NavItem => item !== null);
+  return pickNavItems(candidates.filter((item): item is NavItem => item !== null));
 }
 
 export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {

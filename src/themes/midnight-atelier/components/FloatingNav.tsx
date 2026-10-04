@@ -2,13 +2,14 @@
 
 import { useMemo } from "react";
 
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 import { useActiveSection } from "@/themes/shared/use-active-section";
 
-import { NavIcon, type MidnightNavSection } from "./NavIcon";
+import { NavIcon } from "./NavIcon";
 
 export interface NavItem {
   id: `ma-${string}`;
-  section: MidnightNavSection;
+  section: NavSectionKey;
   label: string;
 }
 

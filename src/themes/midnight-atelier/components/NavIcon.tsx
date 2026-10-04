@@ -1,15 +1,10 @@
 import type { ReactNode } from "react";
 
-import type { ThemeSectionKey } from "@/themes/section-contract";
-
-export type MidnightNavSection = Extract<
-  ThemeSectionKey,
-  "hero" | "couple" | "events" | "story" | "gallery" | "rsvp" | "wishes" | "gift"
->;
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 
 // Thin, mitred geometry in the couture / art-deco register: arches, rings,
 // ticket stubs and cut corners rather than rounded UI pictograms.
-const GLYPHS: Record<MidnightNavSection, ReactNode> = {
+const GLYPHS: Record<NavSectionKey, ReactNode> = {
   // Marquee arch with a rising sunburst.
   hero: (
     <>
@@ -74,7 +69,7 @@ const GLYPHS: Record<MidnightNavSection, ReactNode> = {
   ),
 };
 
-export function NavIcon({ section, className }: { section: MidnightNavSection; className?: string }) {
+export function NavIcon({ section, className }: { section: NavSectionKey; className?: string }) {
   return (
     <svg
       className={className}

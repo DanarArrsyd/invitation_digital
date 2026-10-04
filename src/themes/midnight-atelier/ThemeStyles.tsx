@@ -12,6 +12,9 @@ export function ThemeStyles() {
         --ma-champagne: ${colors.champagne};
         --ma-pearl: ${colors.pearl};
         --ma-smoke: ${colors.smoke};
+        /* 52px items + 2x4px list padding + 2x1px border. */
+        --ma-nav-height: 62px;
+        --ma-nav-offset: max(12px, env(safe-area-inset-bottom));
         min-height: 100svh;
         overflow-x: clip;
         background: var(--ma-ink);
@@ -638,13 +641,19 @@ export function ThemeStyles() {
         letter-spacing: 0.16em;
         text-transform: uppercase;
       }
+      .ma-theme :is(a, button, input, textarea, select) { min-height: 48px; }
+      .ma-theme :is(a, button, input, textarea, select):focus-visible {
+        outline: 3px solid var(--ma-champagne);
+        outline-offset: 4px;
+      }
+      /* Mobile bottom bar (DESIGN.md 12a); the 768px+ media query turns it into the side rail.
+         Declared after the generic 48px control rule so the 52px item height wins. */
       .ma-nav {
         position: fixed;
         z-index: 30;
-        right: max(1rem, env(safe-area-inset-right));
-        bottom: max(.75rem, env(safe-area-inset-bottom));
-        left: max(1rem, env(safe-area-inset-left));
-        max-width: calc(100% - 2rem);
+        right: max(12px, env(safe-area-inset-right));
+        bottom: var(--ma-nav-offset);
+        left: max(12px, env(safe-area-inset-left));
         background: var(--ma-pearl);
         color: var(--ma-ink);
         border: 1px solid var(--ma-champagne);
@@ -653,32 +662,44 @@ export function ThemeStyles() {
         display: flex;
         gap: 0;
         margin: 0;
-        padding: .3rem;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
+        padding: 4px;
         list-style: none;
       }
-      .ma-nav li { flex: 0 0 auto; }
+      .ma-nav li { flex: 1 1 0; min-width: 0; }
       .ma-nav a {
         display: grid;
-        min-width: 64px;
-        min-height: 48px;
+        width: 100%;
+        min-width: 0;
+        min-height: 52px;
         place-items: center;
         align-content: center;
-        gap: .2rem;
-        padding: .35rem .7rem;
+        gap: 3px;
+        padding: 4px 2px;
         color: inherit;
         text-decoration: none;
       }
-      .ma-nav-icon { display: block; width: 20px; height: 20px; flex: none; color: var(--ma-oxblood); }
-      .ma-nav-label { font-size: .72rem; line-height: 1.1; white-space: nowrap; }
+      .ma-nav-icon {
+        display: block;
+        width: clamp(18px, 5.2vw, 22px);
+        height: clamp(18px, 5.2vw, 22px);
+        flex: none;
+        color: var(--ma-oxblood);
+      }
+      .ma-nav-label {
+        max-width: 100%;
+        overflow: hidden;
+        font-size: clamp(11px, 3vw, 12px);
+        line-height: 1.2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
       .ma-nav a[aria-current="location"] { background: var(--ma-ink); color: var(--ma-pearl); }
       .ma-nav a[aria-current="location"] .ma-nav-icon { color: var(--ma-champagne); }
       .ma-music {
         position: fixed;
         z-index: 31;
-        right: max(1rem, env(safe-area-inset-right));
-        bottom: calc(5.25rem + env(safe-area-inset-bottom));
+        right: max(12px, env(safe-area-inset-right));
+        bottom: calc(var(--ma-nav-offset) + var(--ma-nav-height) + 12px);
         display: grid;
         width: 48px;
         min-height: 48px;
@@ -690,15 +711,11 @@ export function ThemeStyles() {
         cursor: pointer;
       }
       .ma-music svg { width: 1.1rem; fill: currentColor; }
-      .ma-theme :is(a, button, input, textarea, select) { min-height: 48px; }
-      .ma-theme :is(a, button, input, textarea, select):focus-visible {
-        outline: 3px solid var(--ma-champagne);
-        outline-offset: 4px;
-      }
       @media (max-width: 767px) {
         .ma-cover-frame { grid-template-rows: auto 1fr auto; gap: 2rem; }
         .ma-cover-masthead span:last-child { display: none; }
         .ma-cover-names { font-size: clamp(3.5rem, 20vw, 6.25rem); }
+        .ma-content { padding-bottom: calc(var(--ma-nav-height) + var(--ma-nav-offset)); }
         .ma-hero-copy { min-height: calc(100svh - 62.5vw); margin-top: -1px; align-content: center; }
       }
       @media (min-width: 768px) {
@@ -720,8 +737,10 @@ export function ThemeStyles() {
           max-width: 10rem;
           transform: translateY(-50%);
         }
-        .ma-nav ul { max-height: min(76vh, 38rem); flex-direction: column; overflow-x: hidden; overflow-y: auto; }
-        .ma-nav a { grid-template-columns: 20px minmax(0, 1fr); min-width: 8.5rem; align-items: center; justify-items: start; column-gap: .65rem; text-align: left; }
+        .ma-nav ul { max-height: min(76vh, 38rem); flex-direction: column; padding: .3rem; overflow-x: hidden; overflow-y: auto; }
+        .ma-nav li { flex: none; }
+        .ma-nav a { grid-template-columns: 20px minmax(0, 1fr); min-width: 8.5rem; align-items: center; justify-items: start; column-gap: .65rem; padding: .35rem .7rem; text-align: left; }
+        .ma-nav-icon { width: 20px; height: 20px; }
         .ma-music { top: max(1.25rem, env(safe-area-inset-top)); bottom: auto; }
         .ma-quote-inner { grid-template-columns: 5rem minmax(0, 1fr); }
         .ma-people { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: clamp(2.5rem, 6vw, 6rem); }
