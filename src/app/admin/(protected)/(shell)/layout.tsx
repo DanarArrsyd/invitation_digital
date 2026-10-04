@@ -13,14 +13,21 @@ export default async function AdminShellLayout({ children }: { children: React.R
   } = await supabase.auth.getUser();
 
   return (
-    <SidebarProvider>
+    <SidebarProvider data-admin-theme="">
       <AppSidebar userEmail={user?.email ?? null} logoutAction={logout} />
       <SidebarInset>
-        <header className="sticky top-0 z-20 flex h-12 items-center gap-2 border-b border-border bg-background px-3 sm:px-4">
+        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border bg-background/90 px-3 backdrop-blur sm:px-5">
           <SidebarTrigger aria-label="Buka/tutup navigasi" />
-          <span className="text-sm font-medium text-foreground md:hidden">Invitation Admin</span>
+          <span className="flex items-center gap-2 text-sm font-medium text-foreground md:hidden">
+            <span className="flex size-7 items-center justify-center border border-foreground/20 text-[0.65rem] font-semibold">
+              IP
+            </span>
+            Invitation Platform
+          </span>
         </header>
-        <div className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+        <div className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

@@ -3,19 +3,32 @@ import type { Tables } from "@/types/database";
 
 export type InvitationListItem = Pick<
   Tables<"invitations">,
-  "id" | "title" | "slug" | "type" | "status" | "event_date" | "expires_at"
+  "id" | "title" | "slug" | "type" | "status" | "event_date" | "expires_at" | "published_at" | "cover_image_path"
 > & {
   theme: Pick<Tables<"themes">, "name" | "slug"> | null;
   gallery_items: Pick<Tables<"gallery_items">, "image_path">[];
+  guests: { count: number }[];
+  rsvps: { count: number }[];
+  wishes: { count: number }[];
 };
 
-export async function listInvitations(status?: string): Promise<InvitationListItem[]> {
+/** Case-insensitive match on title or slug; an empty search keeps everything. */
+export function matchesInvitationSearch(
+  invitation: Pick<InvitationListItem, "title" | "slug">,
+  search: string | undefined,
+): boolean {
+  const term = (search ?? "").trim().toLowerCase();
+  if (!term) return true;
+  return invitation.title.toLowerCase().includes(term) || invitation.slug.toLowerCase().includes(term);
+}
+
+export async function listInvitations(status?: string, search?: string): Promise<InvitationListItem[]> {
   const supabase = await createSupabaseServerClient();
 
   let query = supabase
     .from("invitations")
     .select(
-      "id, title, slug, type, status, event_date, expires_at, theme:themes(name, slug), gallery_items(image_path)",
+      "id, title, slug, type, status, event_date, expires_at, published_at, cover_image_path, theme:themes(name, slug), gallery_items(image_path), guests(count), rsvps(count), wishes(count)",
     )
     .order("sort_order", { referencedTable: "gallery_items", ascending: true })
     .limit(1, { foreignTable: "gallery_items" })
@@ -38,7 +51,7 @@ export async function listInvitations(status?: string): Promise<InvitationListIt
     throw new Error(error.message);
   }
 
-  return data;
+  return data.filter((invitation) => matchesInvitationSearch(invitation, search));
 }
 
 export async function listActiveThemes(): Promise<Tables<"themes">[]> {

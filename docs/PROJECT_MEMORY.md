@@ -18,6 +18,15 @@ implementation plans remain the source of truth:
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-05 admin redesign: the admin shell follows the login page palette
+  (forest #1f2b25, paper #f4f5f1, ink #17201b, sage #53634e) through a
+  `:root:has([data-admin-theme])` token override in `globals.css`, so shadcn
+  components and portals restyle without touching public themes. Dashboard =
+  forest banner with key numbers, "Perlu ditindaklanjuti" (expiring, drafts,
+  live without guests) and "Terakhir diubah" with tamu/RSVP/ucapan counts.
+  Invitation list = rows with search (`?q=`, matched in memory on title/slug)
+  and status pills. Editor sections live in `components/admin/editor-sections.ts`;
+  below md they also show as a scrolling tab strip.
 - 2026-10-04: "Rayhana & Febri" (`rayhana-febry`) and `sample-1..3` were demo
   data, never a real customer. The owner had all invitation content, responses
   and analytics deleted; only `themes` (4 rows), `profiles` and the admin auth

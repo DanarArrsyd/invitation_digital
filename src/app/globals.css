@@ -87,6 +87,41 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/*
+ * Admin workspace palette, taken from the login page: forest #1f2b25, paper
+ * #f4f5f1, ink #17201b, sage #53634e. Scoped with :has() so portalled
+ * dialogs, sheets and toasts pick it up too, while public invitation themes
+ * (which never render [data-admin-theme]) keep the defaults.
+ */
+:root:has([data-admin-theme]) {
+  --background: #f4f5f1;
+  --foreground: #17201b;
+  --card: #ffffff;
+  --card-foreground: #17201b;
+  --popover: #ffffff;
+  --popover-foreground: #17201b;
+  --primary: #1f2b25;
+  --primary-foreground: #f4f5f1;
+  --secondary: #e7ebe3;
+  --secondary-foreground: #1f2b25;
+  --muted: #eceee8;
+  --muted-foreground: #5b645e;
+  --accent: #e7ebe3;
+  --accent-foreground: #17201b;
+  --border: #dde1d9;
+  --input: #d2d7ce;
+  --ring: #53634e;
+  --radius: 0.75rem;
+  --sidebar: #1f2b25;
+  --sidebar-foreground: #dfe4dc;
+  --sidebar-primary: #f4f5f1;
+  --sidebar-primary-foreground: #1f2b25;
+  --sidebar-accent: rgb(255 255 255 / 0.08);
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(255 255 255 / 0.1);
+  --sidebar-ring: #9fb197;
+}
+
 
 
 
