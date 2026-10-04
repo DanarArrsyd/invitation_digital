@@ -141,7 +141,7 @@ test("shell navigation candidates require enabled features and available content
   const { buildTerraNavItems } = loadTheme().load("themes/terra-botanica/TerraBotanica");
   assert.equal(typeof buildTerraNavItems, "function");
   assert.deepEqual(Array.from(buildTerraNavItems(fixture()), (item) => item.id), [
-    "tb-beranda", "tb-mempelai", "tb-acara", "tb-cerita", "tb-galeri", "tb-rsvp", "tb-ucapan", "tb-kado",
+    "tb-beranda", "tb-acara", "tb-rsvp", "tb-ucapan", "tb-kado",
   ]);
   const empty = fixture({ people: [], events: [], stories: [], gallery: [], gifts: [], features: { ...features, rsvp: false, wishes: false } });
   assert.deepEqual(Array.from(buildTerraNavItems(empty), (item) => item.id), ["tb-beranda"]);

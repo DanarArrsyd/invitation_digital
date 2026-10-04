@@ -1,5 +1,6 @@
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
+import { pickNavItems } from "@/themes/shared/nav-priority";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 
 import { CoverGate } from "./CoverGate";
@@ -21,6 +22,7 @@ import { RsvpSection } from "./sections/RsvpSection";
 import { WishesSection } from "./sections/WishesSection";
 import { GiftSection } from "./sections/GiftSection";
 
+/** Every section the guest can jump to, narrowed to the five the bottom bar holds (DESIGN.md §12a). */
 export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
   const { features } = invitation;
   const candidates: (NavItem | null)[] = [
@@ -33,7 +35,7 @@ export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
     features.wishes ? { id: "tb-ucapan", section: "wishes", label: "Ucapan" } : null,
     features.gift && invitation.gifts.length > 0 ? { id: "tb-kado", section: "gift", label: "Kado" } : null,
   ];
-  return candidates.filter((item): item is NavItem => item !== null);
+  return pickNavItems(candidates.filter((item): item is NavItem => item !== null));
 }
 
 export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {

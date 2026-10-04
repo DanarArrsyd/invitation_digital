@@ -369,7 +369,7 @@ test("floating nav pairs every visible Courier label with one hidden botanical g
   const { buildTerraNavItems } = load("TerraBotanica");
   const { FloatingNav } = load("components/FloatingNav");
   const items = buildTerraNavItems(navInvitation());
-  assert.deepEqual(Array.from(items, (item) => item.section), ["hero", "couple", "events", "story", "gallery", "rsvp", "wishes", "gift"]);
+  assert.deepEqual(Array.from(items, (item) => item.section), ["hero", "events", "rsvp", "wishes", "gift"]);
   const { document } = new JSDOM(renderToStaticMarkup(React.createElement(FloatingNav, { items }))).window;
   const links = [...document.querySelectorAll(".tb-nav a")];
   assert.equal(links.length, items.length);
@@ -409,14 +409,60 @@ test("every section the nav can emit has a Herbarium glyph", () => {
   for (const forbidden of [/<img/, /querySelector/, /motion\//]) assert.doesNotMatch(icon, forbidden);
 });
 
-test("nav icons sit 20px above the label and keep 48px tap targets and active contrast", () => {
+/** The CSS rules for `selector` outside any @media block (the mobile-first base). */
+function baseRule(css, selector) {
+  const base = css.slice(0, css.indexOf("@media"));
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = base.match(new RegExp(`\\.tb-theme ${escaped} \\{([^}]*)\\}`));
+  assert.ok(match, `missing base rule for ${selector}`);
+  return match[1];
+}
+
+test("the bottom nav keeps at most five items, guest actions first, in page order", () => {
+  const source = readFileSync(resolve(terraRoot, "TerraBotanica.tsx"), "utf8");
+  assert.match(source, /import \{ pickNavItems \} from "@\/themes\/shared\/nav-priority";/);
+  assert.match(source, /return pickNavItems\(/);
+  assert.match(readFileSync(resolve(terraRoot, "components/FloatingNav.tsx"), "utf8"), /section: NavSectionKey;/);
+  const { buildTerraNavItems } = createLoader()("TerraBotanica");
+  const full = buildTerraNavItems(navInvitation());
+  assert.equal(full.length, 5);
+  assert.deepEqual(Array.from(full, (item) => item.label), ["Beranda", "Acara", "RSVP", "Ucapan", "Kado"]);
+  const noGift = navInvitation();
+  noGift.features = { ...noGift.features, gift: false };
+  assert.deepEqual(Array.from(buildTerraNavItems(noGift), (item) => item.section), ["hero", "couple", "events", "rsvp", "wishes"]);
+});
+
+test("below 768px the nav spans the screen in equal, unscrolled items with readable labels", () => {
   const css = styles();
-  assert.match(css, /\.tb-nav a \{[^}]*flex-direction: column;[^}]*min-height: 48px; min-width: 48px;/);
-  assert.match(css, /\.tb-nav-icon \{[^}]*width: 20px; height: 20px;/);
+  const nav = baseRule(css, ".tb-nav");
+  assert.match(nav, /left: max\(12px, env\(safe-area-inset-left\)\); right: max\(12px, env\(safe-area-inset-right\)\);/);
+  assert.match(nav, /bottom: max\(12px, env\(safe-area-inset-bottom\)\);/);
+  assert.doesNotMatch(nav, /fit-content/, "full-width bar on phones");
+  assert.match(nav, /background: var\(--tb-bone\);/, "bone bar");
+  assert.match(nav, /border: 1px solid var\(--tb-moss\);/, "moss hairline");
+  const list = baseRule(css, ".tb-nav ul");
+  assert.match(list, /display: flex;/);
+  assert.doesNotMatch(css, /\.tb-nav ul \{[^}]*overflow-x/, "the bar never scrolls sideways");
+  assert.match(baseRule(css, ".tb-nav li"), /flex: 1 1 0; min-width: 0;/, "items share the width equally");
+  const link = baseRule(css, ".tb-nav a");
+  assert.match(link, /flex-direction: column;/);
+  const minHeight = Number(link.match(/min-height: (\d+)px/)[1]);
+  assert.ok(minHeight >= 52, `item height ${minHeight}px`);
+  assert.match(link, /font-size: clamp\(11px, 3vw, 12px\)/, "label never below 11px");
+  assert.match(baseRule(css, ".tb-nav-icon"), /width: clamp\(18px, 5\.2vw, 22px\); height: clamp\(18px, 5\.2vw, 22px\);/);
+  assert.match(baseRule(css, ".tb-nav-label"), /white-space: nowrap; overflow: hidden; text-overflow: ellipsis;/);
   assert.doesNotMatch(css, /\.tb-nav-icon \{[^}]*(opacity|color):/, "icon inherits the item's text color");
   assert.match(css, /\.tb-nav a\[aria-current="location"\] \{[^}]*background: var\(--tb-moss\); color: var\(--tb-bone\)/);
-  assert.match(css, /\.tb-nav ul \{[^}]*overflow-x: auto/, "nav scrolls within narrow screens");
-  assert.match(css, /\.tb-nav \{[^}]*max-width: calc\(100% - 2rem\)/);
+});
+
+test("page content reserves room for the bar so the last fields are never covered", () => {
+  const css = styles();
+  const space = css.match(/--tb-nav-space: calc\((\d+)px \+ max\(12px, env\(safe-area-inset-bottom\)\)\);/);
+  assert.ok(space, "bar height plus its offset is one token");
+  assert.ok(Number(space[1]) >= 52 + 2, "token covers the item height and the border");
+  assert.match(baseRule(css, ".tb-content"), /padding-bottom: calc\(var\(--tb-nav-space\) \+ [^)]+\);/);
+  assert.match(css, /:is\(input, textarea, button, select\) \{ scroll-margin-bottom: calc\(var\(--tb-nav-space\)/);
+  assert.match(baseRule(css, ".tb-music"), /bottom: calc\(var\(--tb-nav-space\) \+ [^)]+\);/, "music control floats above the bar");
 });
 
 test("floating nav server markup matches the first client render", async () => {
@@ -435,7 +481,7 @@ test("floating nav server markup matches the first client render", async () => {
     container.innerHTML = renderToStaticMarkup(element);
     await act(async () => { root = hydrateRoot(container, element); });
     assert.deepEqual(errors, []);
-    assert.equal(container.querySelectorAll(".tb-nav svg").length, 8);
+    assert.equal(container.querySelectorAll(".tb-nav svg").length, 5);
   } finally {
     console.error = originalError;
     if (root) await act(async () => root.unmount());

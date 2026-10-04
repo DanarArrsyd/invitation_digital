@@ -1,13 +1,14 @@
 "use client";
 
 import { useMemo } from "react";
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 import { useActiveSection } from "@/themes/shared/use-active-section";
 
-import { NavIcon, type TerraNavSection } from "./NavIcon";
+import { NavIcon } from "./NavIcon";
 
 export interface NavItem {
   id: `tb-${string}`;
-  section: TerraNavSection;
+  section: NavSectionKey;
   label: string;
 }
 

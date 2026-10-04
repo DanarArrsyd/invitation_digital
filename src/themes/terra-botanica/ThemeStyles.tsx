@@ -10,6 +10,9 @@ export function ThemeStyles() {
       /* Clay for small text: --tb-clay is ~4:1 on bone, this ink stays AA. */
       --tb-clay-ink: #9A4F2E;
       --tb-gutter: clamp(1.5rem, 6vw, 5rem);
+      /* Bottom bar height (52px item + 3px padding each side + 1px border each
+         side) plus its offset from the screen edge: content reserves this much. */
+      --tb-nav-space: calc(60px + max(12px, env(safe-area-inset-bottom)));
       --tb-script: var(--font-tb-script), "Snell Roundhand", cursive;
       --tb-label: var(--font-tb-label), "Courier New", monospace;
       --tb-display: var(--font-tb-text), Georgia, serif;
@@ -85,7 +88,9 @@ export function ThemeStyles() {
     .tb-theme .tb-cover-recipient .tb-action { margin-top: 1.5rem; }
     .tb-theme .tb-action:hover { background: var(--tb-cacao); border-color: var(--tb-cacao); }
     .tb-theme .tb-action:focus-visible { outline-color: var(--tb-cacao); }
-    .tb-theme .tb-content { min-height: 100svh; padding-bottom: calc(7rem + env(safe-area-inset-bottom)); }
+    .tb-theme .tb-content { min-height: 100svh; padding-bottom: calc(var(--tb-nav-space) + 2.5rem); }
+    /* A focused field scrolls clear of the bar instead of stopping behind it. */
+    .tb-theme .tb-content :is(input, textarea, button, select) { scroll-margin-bottom: calc(var(--tb-nav-space) + 1rem); }
     .tb-theme .tb-content:focus-visible { outline-offset: -6px; }
     .tb-theme .tb-section { padding: clamp(4rem, 10vw, 8rem) var(--tb-gutter); scroll-margin-top: 2rem; }
     .tb-theme .tb-section-inner { max-width: 1180px; margin-inline: auto; min-width: 0; }
@@ -226,14 +231,17 @@ export function ThemeStyles() {
     .tb-theme .tb-closing h2 { max-width: 12ch; font-size: clamp(3rem, 10vw, 6.5rem); line-height: 1.1; letter-spacing: 0; }
     .tb-theme .tb-closing p { margin-top: 2rem; max-width: 42ch; white-space: pre-line; }
     .tb-theme .tb-closing-image { width: 82%; margin-left: auto; border-radius: 0 0 28% 0; }
-    .tb-theme .tb-nav { position: fixed; z-index: 30; bottom: max(.75rem, env(safe-area-inset-bottom)); left: max(1rem, env(safe-area-inset-left)); right: max(1rem, env(safe-area-inset-right)); width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; background: var(--tb-bone); color: var(--tb-cacao); border: 1px solid var(--tb-moss); }
-    .tb-theme .tb-nav ul { display: flex; gap: .25rem; overflow-x: auto; overscroll-behavior-x: contain; list-style: none; padding: .35rem; margin: 0; }
-    .tb-theme .tb-nav li { flex: 0 0 auto; }
-    .tb-theme .tb-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .2rem; min-height: 48px; min-width: 48px; padding: .4rem .7rem; text-decoration: none; font-size: .8125rem; line-height: 1.2; }
-    .tb-theme .tb-nav-icon { display: block; flex: none; width: 20px; height: 20px; }
-    .tb-theme .tb-nav a[aria-current="location"] { background: var(--tb-moss); color: var(--tb-bone); text-decoration: underline; }
+    /* Phones: a full-width bar of up to five equal items; nothing scrolls sideways (DESIGN.md §12a). */
+    .tb-theme .tb-nav { position: fixed; z-index: 30; left: max(12px, env(safe-area-inset-left)); right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); background: var(--tb-bone); color: var(--tb-cacao); border: 1px solid var(--tb-moss); }
+    .tb-theme .tb-nav ul { display: flex; list-style: none; padding: 3px; margin: 0; }
+    .tb-theme .tb-nav li { flex: 1 1 0; min-width: 0; }
+    .tb-theme .tb-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 52px; width: 100%; min-width: 0; padding: 5px 2px; text-decoration: none; font-size: clamp(11px, 3vw, 12px); line-height: 1.2; }
+    .tb-theme .tb-nav-icon { display: block; flex: none; width: clamp(18px, 5.2vw, 22px); height: clamp(18px, 5.2vw, 22px); }
+    /* Courier is wide: dropping the label tracking lets "Mempelai" fit a fifth of a 320px bar. */
+    .tb-theme .tb-nav-label { display: block; max-width: 100%; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tb-theme .tb-nav a[aria-current="location"] { background: var(--tb-moss); color: var(--tb-bone); }
     .tb-theme .tb-nav a:focus-visible { outline-offset: -3px; }
-    .tb-theme .tb-music { position: fixed; z-index: 30; right: max(1rem, env(safe-area-inset-right)); bottom: calc(5.75rem + env(safe-area-inset-bottom)); display: grid; place-items: center; min-width: 48px; min-height: 48px; border: 1px solid var(--tb-moss); background: var(--tb-bone); color: var(--tb-moss); cursor: pointer; }
+    .tb-theme .tb-music { position: fixed; z-index: 30; right: max(1rem, env(safe-area-inset-right)); bottom: calc(var(--tb-nav-space) + .75rem); display: grid; place-items: center; min-width: 48px; min-height: 48px; border: 1px solid var(--tb-moss); background: var(--tb-bone); color: var(--tb-moss); cursor: pointer; }
     /* Climbing vine: fixed to the page edge inside the gutter; its growth is
        a CSS read of --tb-progress, written by useScrollProgress. */
     .tb-theme .tb-vine { position: fixed; z-index: 1; top: 0; bottom: 0; left: max(2px, env(safe-area-inset-left)); width: clamp(18px, 3vw, 36px); pointer-events: none; color: var(--tb-moss); opacity: .55; --tb-progress: 0; }
@@ -261,6 +269,11 @@ export function ThemeStyles() {
     .tb-theme .tb-gallery-grid[data-settle="waiting"] .tb-gallery-item { opacity: 0; transform: translateY(-48px) rotate(calc(var(--tb-tilt, 0deg) * -6)); }
     .tb-theme .tb-gallery-grid[data-settle="settled"] .tb-gallery-item { transition: transform .8s cubic-bezier(.3, 1.3, .5, 1) var(--tb-drop-delay, 0s), opacity .4s ease var(--tb-drop-delay, 0s); }
     @media (min-width: 768px) {
+      /* Wider screens: a compact centred bar, items still equal in width. */
+      .tb-theme .tb-nav { width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; }
+      .tb-theme .tb-nav ul { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: .25rem; padding: .35rem; }
+      .tb-theme .tb-nav a { padding: .4rem .9rem; font-size: .8125rem; }
+      .tb-theme .tb-nav-icon { width: 20px; height: 20px; }
       .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; }
       .tb-theme .tb-wishes > .tb-section-inner { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: start; }
       .tb-theme .tb-wishes-feed { padding-top: clamp(1rem, 7vw, 5rem); }

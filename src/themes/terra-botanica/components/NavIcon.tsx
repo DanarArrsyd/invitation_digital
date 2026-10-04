@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import type { ThemeSectionKey } from "@/themes/section-contract";
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 
-/** Sections the floating nav can link to; `buildTerraNavItems` emits only these. */
-export type TerraNavSection = Extract<ThemeSectionKey, "hero" | "couple" | "events" | "story" | "gallery" | "rsvp" | "wishes" | "gift">;
+/** Sections the floating nav can link to: the shared nav keys, each with a glyph. */
+export type TerraNavSection = NavSectionKey;
 
 // Herbarium Cinta field-journal glyphs: hand-drawn line work on a 24px grid, drawn with currentColor.
 const GLYPHS: Record<TerraNavSection, ReactNode> = {
