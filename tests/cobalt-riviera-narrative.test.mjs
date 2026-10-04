@@ -170,7 +170,7 @@ test("sparse and partial narrative uses intentional horizons, omits blank quote,
   const horizon = document.querySelector("#cr-beranda .cr-hero-horizon");
   assert.equal(horizon?.getAttribute("aria-hidden"), "true");
   assert.match(horizon?.textContent ?? "", /Mira Azzahra.*Raka Mahendra/s);
-  assert.match(horizon?.textContent ?? "", /CR \/ 04/);
+  assert.match(horizon?.textContent ?? "", /Saluti/);
   assert.ok(horizon?.querySelector(".cr-hero-horizon-name"));
   assert.equal(document.querySelector(".cr-quote"), null);
   assert.equal(document.querySelectorAll("#cr-mempelai .cr-person").length, 1);

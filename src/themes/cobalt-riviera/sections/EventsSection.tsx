@@ -34,8 +34,8 @@ export function EventsSection({
   return (
     <Section id="cr-acara" labelledBy="cr-events-heading" tone="porcelain" className="cr-events">
       <header className="cr-chapter-heading cr-events-heading">
-        <p>One celebration, every stop in view.</p>
-        <h2 id="cr-events-heading">Itinerary</h2>
+        <p>Satu perayaan, setiap persinggahan.</p>
+        <h2 id="cr-events-heading">Rangkaian acara</h2>
       </header>
 
       <ol className="cr-event-list">

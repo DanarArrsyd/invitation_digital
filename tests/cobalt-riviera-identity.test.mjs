@@ -645,3 +645,112 @@ test("the bottle sails once: a server refresh of the list never replays it, and 
   assert.match(source, /setTimeout\(/, "a missed animationend still removes the band");
   assert.doesNotMatch(source, /Math\.random\(|querySelector|<img/);
 });
+
+const ENGLISH_LABELS = [
+  "Sunlit invitation", "The wedding of", "CR / 04", "Meet the hosts", "/ Riviera",
+  "One celebration, every stop in view.", "Itinerary", "Next horizon", "Wardrobe coordinates", "Dress code",
+  "Live broadcast", "Join from anywhere", "East / Sun / Celebration", "Travel folio receipts",
+  "With warmth from the Riviera", "AC/0", "Matur nuwun", "Grazie",
+];
+
+/** Every guest-facing string (not CSS): visible text plus aria-labels, placeholders, alt text and titles. */
+function guestCopy(document) {
+  const attributes = [...document.querySelectorAll("[aria-label], [placeholder], [alt], [title]")]
+    .flatMap((element) => ["aria-label", "placeholder", "alt", "title"].map((name) => element.getAttribute(name) ?? ""));
+  const body = document.body.cloneNode(true);
+  for (const code of body.querySelectorAll("style, script")) code.remove();
+  return [body.textContent, ...attributes].join("\n");
+}
+
+function assertIndonesian(copy, expected) {
+  for (const english of ENGLISH_LABELS) assert.ok(!copy.includes(english), `English label left: ${english}`);
+  for (const label of expected) assert.ok(copy.includes(label), `missing Indonesian label: ${label}`);
+}
+
+function assertItalianAccents(document) {
+  const accents = [...document.querySelectorAll("[lang='it']")];
+  assert.ok(accents.length >= 1);
+  for (const accent of accents) {
+    assert.match(accent.textContent, /^Saluti( dalla Costa)?$/, "Italian appears only as the tagged Saluti accent");
+  }
+  // Wherever "Saluti" is written, it sits inside a lang="it" element.
+  const walker = document.createTreeWalker(document.body, 4);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (/Saluti/.test(node.textContent)) assert.ok(node.parentElement.closest("[lang='it']"), "every Saluti is tagged lang=it");
+  }
+}
+
+function fullInvitation() {
+  return invitation({
+    theme: { slug: "cobalt-riviera", settings: { dressCode: { description: "Biru dan putih.", groups: [{ label: "Tamu", colors: ["#1D3E9E"] }] } } },
+    events: [{ ...invitation().events[0], mapsUrl: "https://maps.example.test/a", livestreamUrl: "https://live.example.test/a" }],
+    gifts: [{ id: "gift", providerType: "bank", providerName: "Bank", accountNumber: "123", accountName: "Nadia", logoUrl: null, sortOrder: 0 }],
+    wishes: [{ id: "w", guestName: "Bude Sri", message: "Bahagia selalu", createdAt: "2030-01-02T00:00:00Z" }],
+    content: { openingQuote: "Kutipan.", openingMessage: "Pembuka.", closingMessage: "Penutup." },
+    features: { music: true, countdown: true, maps: true, story: true, gallery: true, dressCode: true,
+      livestream: true, rsvp: true, wishes: true, gift: true, guestPersonalization: true },
+    media: { coverImageUrl: null, musicUrl: "/music.mp3" },
+  });
+}
+
+const WEDDING_LABELS = [
+  "Pernikahan", "Salam dari pesisir", "Yang berbahagia", "Kartu pos 01", "Rangkaian acara",
+  "Satu perayaan, setiap persinggahan.", "Hitung mundur", "Panduan busana", "Saran busana",
+  "Siaran langsung", "Hadir dari mana saja", "Laut / Matahari / Perayaan", "Amplop digital", "Amplop 01",
+  "Salam hangat dari tepi laut", "Google Kalender",
+];
+
+test("every guest-facing label speaks Bahasa Indonesia; Italian stays a tagged accent", async () => {
+  const { CobaltRiviera } = createLoader()("index");
+  const wedding = new JSDOM(renderToStaticMarkup(React.createElement(CobaltRiviera, { invitation: fullInvitation(), guest: null }))).window.document;
+  assertIndonesian(guestCopy(wedding), WEDDING_LABELS);
+  assert.ok(guestCopy(wedding).includes("Cobalt Riviera"), "the theme name stays as the masthead brand mark");
+  assertItalianAccents(wedding);
+  assert.equal(wedding.querySelector(".cr-hero-horizon-route")?.getAttribute("lang"), "it", "the photo-less horizon carries Saluti");
+
+  const party = invitation({ type: "birthday", features: { ...invitation().features, countdown: false } });
+  const birthday = new JSDOM(renderToStaticMarkup(React.createElement(CobaltRiviera, { invitation: party, guest: null }))).window.document;
+  assertIndonesian(guestCopy(birthday), ["Undangan perayaan", "Perayaan", "Tuan rumah", "Tandai kalender Anda", "Simpan tanggalnya"]);
+  assert.ok(!guestCopy(birthday).includes("Pernikahan"), "a birthday is never called a wedding");
+  assertItalianAccents(birthday);
+  assert.equal(birthday.querySelector(".cr-hero-horizon-route")?.getAttribute("lang"), "it", "the photo-less horizon carries Saluti");
+});
+
+test("after opening, an attending RSVP and a sent wish, no English label appears anywhere", async () => {
+  const actions = { submitRsvp: async () => ({ status: "success" }), submitWish: async () => ({ status: "success" }) };
+  class FakeResizeObserver { observe() {} disconnect() {} }
+  const setup = (window) => { window.ResizeObserver = FakeResizeObserver; window.HTMLMediaElement.prototype.play = async () => {}; };
+  const view = await mount(React.createElement(createLoader({ actions })("index").CobaltRiviera, { invitation: fullInvitation(), guest: null }), { setup });
+  try {
+    await act(async () => view.document.querySelector(".cr-cover-open").click());
+    assert.ok(view.document.querySelector(".cr-route-nav"), "the nav is shown once open");
+    assert.ok(view.document.querySelector(".cr-music"), "the music control is shown once open");
+
+    const rsvpForm = view.document.querySelector("#cr-rsvp form");
+    rsvpForm.elements.namedItem("guestName").value = "Bude Sri";
+    await act(async () => pick(rsvpForm, "Hadir").click());
+    await submit(view, rsvpForm);
+    assert.ok(view.document.querySelector("[data-cr-postmark]"), "the postmark is shown");
+
+    const wishForm = view.document.querySelector("#cr-ucapan form");
+    wishForm.elements.namedItem("guestName").value = "Bude Sri";
+    wishForm.elements.namedItem("message").value = "Bahagia selalu";
+    await submit(view, wishForm);
+
+    const copy = guestCopy(view.document);
+    assertIndonesian(copy, [...WEDDING_LABELS, "Navigasi undangan", "DITERIMA", "HADIR", "Terima kasih", "Jeda musik"]);
+    assertItalianAccents(view.document);
+  } finally { await view.cleanup(); }
+});
+
+test("the longer Indonesian labels fit a 320px phone without breaking mid-label", () => {
+  const sheet = css();
+  // "Saluti dalla Costa" + "Undangan perayaan" need ~295px; a 320px cover leaves ~282px.
+  const [masthead] = rules(sheet, ".cr-cover-masthead");
+  assert.match(masthead, /flex-wrap:\s*wrap/, "the masthead drops the label to its own line instead of splitting it");
+  assert.match(rules(sheet, ".cr-cover-masthead > span").join(";"), /white-space:\s*nowrap/);
+  assert.match(rules(sheet, ".cr-cover-masthead > span:last-child").join(";"), /margin-left:\s*auto/, "a wrapped label stays right-aligned");
+  // "Amplop 01" is ~63px; the receipt's route column must size to it.
+  assert.match(rules(sheet, ".cr-gift-route").join(";"), /white-space:\s*nowrap/);
+  assert.doesNotMatch(sheet, /\.cr-gift-receipt\s*\{[^}]*grid-template-columns:\s*3\.5rem/, "no fixed 56px route column");
+});

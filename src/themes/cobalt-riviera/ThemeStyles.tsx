@@ -59,9 +59,10 @@ export function ThemeStyles() {
       .cr-cover-masthead {
         display: flex;
         min-width: 0;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        gap: 1rem;
+        gap: .35rem 1rem;
         border-bottom: 1px solid var(--cr-porcelain);
         padding-bottom: .65rem;
         font-family: var(--cr-label);
@@ -70,6 +71,9 @@ export function ThemeStyles() {
         letter-spacing: .14em;
         text-transform: uppercase;
       }
+      /* At 320px "Undangan perayaan" drops to its own line, whole. */
+      .cr-cover-masthead > span { white-space: nowrap; }
+      .cr-cover-masthead > span:last-child { margin-left: auto; }
       .cr-cover-stage { align-self: center; min-width: 0; }
       .cr-cover-intro {
         margin: 0 0 .65rem;
@@ -843,7 +847,7 @@ export function ThemeStyles() {
         font: 700 .72rem/1 var(--cr-label);
         letter-spacing: .08em;
       }
-      .cr-gift-route { color: var(--cr-sea-ink); }
+      .cr-gift-route { color: var(--cr-sea-ink); white-space: nowrap; }
       .cr-wish-meta { display: flex; min-width: 0; flex-wrap: wrap; justify-content: space-between; gap: .4rem 1rem; }
       .cr-wish-meta strong { font-family: var(--cr-label); }
       .cr-wish-meta time { font-size: .78rem; }
@@ -1061,7 +1065,7 @@ export function ThemeStyles() {
         .cr-wishes-ledger { padding-top: clamp(3rem, 8vw, 7rem); }
         .cr-gift .cr-section-inner { grid-template-columns: minmax(16rem, .55fr) minmax(0, 1.45fr); align-items: start; }
         .cr-gift-list { margin-top: clamp(3rem, 8vw, 7rem); }
-        .cr-gift-receipt { grid-template-columns: 3.5rem minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 2rem); }
+        .cr-gift-receipt { grid-template-columns: max-content minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 2rem); }
         .cr-gift-receipt button { width: auto; min-width: 8.5rem; }
         .cr-closing-layout { grid-template-columns: minmax(18rem, .72fr) minmax(0, 1.28fr); }
         .cr-closing-image, .cr-closing-horizon { grid-column: 2; grid-row: 1; }

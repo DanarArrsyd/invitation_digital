@@ -9,7 +9,7 @@ export function QuoteSection({ quote }: { quote: string | null }) {
       <div className="cr-quote-layout">
         <RouteRule />
         <blockquote id="cr-quote-copy">{quote}</blockquote>
-        <p aria-hidden="true">East / Sun / Celebration</p>
+        <p aria-hidden="true">Laut / Matahari / Perayaan</p>
       </div>
     </Section>
   );

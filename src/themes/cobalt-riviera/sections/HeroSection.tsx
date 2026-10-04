@@ -32,7 +32,7 @@ export function HeroSection({
   const dateLabel = formatDate(eventDate);
   const copy = (
     <div className="cr-hero-copy">
-      <p className="cr-hero-index">CR / 04</p>
+      <p className="cr-hero-index">Salam dari pesisir</p>
       <h2 id="cr-hero-heading" className="cr-script">
         <span id="cr-foundation-title">{displayName}</span>
       </h2>
@@ -76,7 +76,7 @@ export function HeroSection({
             <div className="cr-hero-horizon" aria-hidden="true">
               <span className="cr-hero-horizon-sky" />
               <p className="cr-hero-horizon-name cr-script">{displayName}</p>
-              <span className="cr-hero-horizon-route">CR / 04</span>
+              <span className="cr-hero-horizon-route" lang="it">Saluti</span>
               <span className="cr-hero-horizon-ground" />
             </div>
             {copy}

@@ -17,7 +17,7 @@ export function ClosingSection({ displayName, message, imageUrl, imageAlt }: {
     >
       <div className="cr-closing-layout">
         <div className="cr-closing-copy">
-          <p>With warmth from the Riviera</p>
+          <p>Salam hangat dari tepi laut</p>
           <h2 id="cr-closing-heading" className="cr-script">{displayName}</h2>
           {message?.trim() ? <p>{message}</p> : null}
           <SunMark />

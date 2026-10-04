@@ -24,6 +24,7 @@ interface CoverGateProps {
   invitationId: string;
   guestToken: string | null;
   label: string;
+  intro: string;
   displayName: string;
   eventDate: string | null;
   guestDisplayName: string | null;
@@ -37,6 +38,7 @@ export function CoverGate({
   invitationId,
   guestToken,
   label,
+  intro,
   displayName,
   eventDate,
   guestDisplayName,
@@ -72,7 +74,7 @@ export function CoverGate({
           </header>
 
           <div className="cr-cover-stage">
-            <p className="cr-cover-intro">The wedding of</p>
+            <p className="cr-cover-intro">{intro}</p>
             <h1 className="cr-cover-names cr-script">
               {names.length === 2 ? (
                 <>

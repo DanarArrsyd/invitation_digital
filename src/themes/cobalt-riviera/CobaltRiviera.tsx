@@ -66,7 +66,8 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
       <CoverGate
         invitationId={invitation.id}
         guestToken={guest?.token ?? null}
-        label={invitation.type === "wedding" ? "Cobalt Riviera" : "Sunlit invitation"}
+        label={invitation.type === "wedding" ? "Cobalt Riviera" : "Undangan perayaan"}
+        intro={invitation.type === "wedding" ? "Pernikahan" : "Perayaan"}
         displayName={coupleDisplayName}
         eventDate={invitation.eventDate ?? primaryEvent?.eventDate ?? null}
         guestDisplayName={guestDisplayName}

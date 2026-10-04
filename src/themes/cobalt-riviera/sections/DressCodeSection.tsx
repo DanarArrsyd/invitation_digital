@@ -8,8 +8,8 @@ export function DressCodeSection({ dressCode }: { dressCode: DressCodeSettings |
   return (
     <Section id="cr-dress-code" labelledBy="cr-dress-heading" tone="pool" className="cr-dress-code">
       <header className="cr-chapter-heading cr-dress-heading">
-        <p>Wardrobe coordinates</p>
-        <h2 id="cr-dress-heading">Dress code</h2>
+        <p>Panduan busana</p>
+        <h2 id="cr-dress-heading">Saran busana</h2>
       </header>
       {dressCode.description ? <p className="cr-dress-description">{dressCode.description}</p> : null}
       {dressCode.groups.length > 0 ? (
