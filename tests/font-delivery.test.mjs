@@ -22,8 +22,12 @@ const THEME_FONTS = {
     ],
   },
   "midnight-atelier": {
-    packages: [/@fontsource-variable\/bodoni-moda/, /@fontsource\/ibm-plex-sans-condensed/],
-    faces: [/--font-ma-display:\s*"Bodoni Moda Variable"/, /--font-ma-body:\s*"IBM Plex Sans Condensed"/],
+    packages: [/@fontsource\/imperial-script/, /@fontsource-variable\/bodoni-moda/, /@fontsource-variable\/jost/],
+    faces: [
+      /--font-ma-script:\s*"Imperial Script"/,
+      /--font-ma-display:\s*"Bodoni Moda Variable"/,
+      /--font-ma-text:\s*"Jost Variable"/,
+    ],
   },
   "cobalt-riviera": {
     packages: [/@fontsource-variable\/familjen-grotesk/, /@fontsource-variable\/newsreader/],
@@ -100,4 +104,21 @@ test("Terra styles consume the script, label and text faces", async () => {
   assert.doesNotMatch(styles, /--font-tb-display|--font-tb-body/);
   assert.match(styles, /\.tb-script\s*\{[^}]*font-family:\s*var\(--tb-script\)/);
   assert.match(styles, /\.tb-label\s*\{[^}]*font-family:\s*var\(--tb-label\)/);
+});
+
+test("Midnight styles consume the script, display and text faces", async () => {
+  const [styles, themeFonts] = await Promise.all([
+    source("src/themes/midnight-atelier/ThemeStyles.tsx"),
+    source("src/themes/theme-fonts.ts"),
+  ]);
+  assert.match(styles, /--ma-script:\s*var\(--font-ma-script\)/);
+  assert.match(styles, /--ma-display:\s*var\(--font-ma-display\)/);
+  assert.match(styles, /--ma-body:\s*var\(--font-ma-text\)/);
+  assert.doesNotMatch(styles, /--font-ma-body|var\(--font-ma-display\), serif/);
+  assert.match(styles, /font-family:\s*var\(--ma-body\);\s*font-size:\s*1\.0625rem/, "body text is at least 17px on the dark ground");
+  assert.match(styles, /\.ma-script\s*\{[^}]*font-family:\s*var\(--ma-script\)/);
+  assert.match(styles, /\.ma-label\s*\{[^}]*font-family:\s*var\(--ma-body\)[^}]*text-transform:\s*uppercase/);
+  assert.match(styles, /:is\(h2, h3, blockquote\)\s*\{\s*font-style:\s*italic/);
+  assert.match(themeFonts, /@fontsource-variable\/bodoni-moda\/wght-italic\.css/, "italic headings ship the italic axis");
+  assert.doesNotMatch(themeFonts, /ibm-plex-sans-condensed/);
 });

@@ -26,10 +26,10 @@ import "@fontsource/spectral/700.css";
 import "./terra-botanica/fonts.css";
 
 // midnight-atelier
+import "@fontsource/imperial-script/400.css";
 import "@fontsource-variable/bodoni-moda";
-import "@fontsource/ibm-plex-sans-condensed/400.css";
-import "@fontsource/ibm-plex-sans-condensed/500.css";
-import "@fontsource/ibm-plex-sans-condensed/600.css";
+import "@fontsource-variable/bodoni-moda/wght-italic.css";
+import "@fontsource-variable/jost";
 import "./midnight-atelier/fonts.css";
 
 // cobalt-riviera

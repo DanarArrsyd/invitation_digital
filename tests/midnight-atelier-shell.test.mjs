@@ -117,11 +117,11 @@ async function mountShell(options = {}, invitation = fixture(), width = 390) {
   };
 }
 
-test("photo-free couture cover renders personalized programme data and curtain structure", () => {
+test("photo-free couture cover renders personalized programme data and the champagne toast", () => {
   const document = new JSDOM(renderShell()).window.document;
   assert.equal(document.querySelector("#ma-cover img"), null);
-  assert.equal(document.querySelectorAll(".ma-curtain-panel").length, 2);
-  assert.ok(document.querySelector(".ma-curtain-seam"));
+  assert.equal(document.querySelectorAll("#ma-cover .ma-flute").length, 2);
+  assert.ok(document.querySelector("#ma-cover .ma-toast-ring"));
   assert.equal(document.querySelector(".ma-cover-guest-name")?.textContent, guest.displayName);
   assert.match(document.querySelector(".ma-cover-names")?.textContent ?? "", /Nadia.*Arka/s);
   assert.equal(document.querySelector("time")?.getAttribute("datetime"), "2027-02-14");
@@ -306,14 +306,14 @@ test("reduced motion and disabled music keep the shell operable without audio", 
   }
 });
 
-test("shell CSS defines distinct mobile and desktop navigation with a reduced-motion curtain path", () => {
+test("shell CSS defines distinct mobile and desktop navigation with a reduced-motion opener path", () => {
   const document = new JSDOM(renderShell()).window.document;
   const css = document.querySelector("style")?.textContent ?? "";
-  assert.match(css, /\.ma-curtain-seam/);
-  assert.match(css, /data-opened="true"[^}]*\.ma-curtain-left[^{]*\{[^}]*translateX\(-10[01]%\)/s);
+  assert.match(css, /data-opened="true"\] \.ma-flute-left\s*\{[^}]*animation:/);
+  assert.match(css, /data-reduced-motion="true"\][^{]*\.ma-flute/);
   assert.match(css, /@media\s*\(max-width:\s*767px\)/);
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
   assert.match(css, /safe-area-inset-bottom/);
   assert.match(css, /data-reduced-motion="true"/);
-  assert.doesNotMatch(css, /linear-gradient|radial-gradient/);
+  assert.doesNotMatch(css, /linear-gradient|conic-gradient/); // radial light is confined by midnight-atelier-identity
 });

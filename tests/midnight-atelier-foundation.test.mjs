@@ -163,7 +163,7 @@ test("Midnight base styles encode the approved palette, focus, motion, and mobil
   const document = new JSDOM(renderToStaticMarkup(React.createElement(ThemeStyles))).window.document;
   const css = document.querySelector("style")?.textContent ?? "";
 
-  for (const color of ["#09090B", "#171216", "#541E2B", "#C6A15B", "#F3EEE6", "#AAA3A4"]) {
+  for (const color of ["#14121A", "#1E1A24", "#5E1A22", "#D8C08A", "#EDE6DA", "#6E6873", "#A9A2AD"]) {
     assert.match(css, new RegExp(color, "i"), color);
   }
   assert.match(css, /overflow-x:\s*clip/);
@@ -172,7 +172,7 @@ test("Midnight base styles encode the approved palette, focus, motion, and mobil
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /animation:\s*none\s*!important/);
   assert.match(css, /transition:\s*none\s*!important/);
-  assert.doesNotMatch(css, /linear-gradient|radial-gradient/);
+  assert.doesNotMatch(css, /linear-gradient|conic-gradient/); // radial light is confined by midnight-atelier-identity
 });
 
 test("Midnight source stays presentation-only and uses bundled font families", () => {
@@ -185,8 +185,10 @@ test("Midnight source stays presentation-only and uses bundled font families", (
 
   assert.doesNotMatch(source, /supabase|createSupabase|next\/font\/google/i);
   assert.doesNotMatch(source, /<img\b/);
+  assert.match(fontsTs, /@fontsource\/imperial-script/);
   assert.match(fontsTs, /@fontsource-variable\/bodoni-moda/);
-  assert.match(fontsTs, /@fontsource\/ibm-plex-sans-condensed/);
+  assert.match(fontsTs, /@fontsource-variable\/jost/);
+  assert.match(fontsCss, /--font-ma-script:\s*"Imperial Script"/);
   assert.match(fontsCss, /--font-ma-display:\s*"Bodoni Moda Variable"/);
-  assert.match(fontsCss, /--font-ma-body:\s*"IBM Plex Sans Condensed"/);
+  assert.match(fontsCss, /--font-ma-text:\s*"Jost Variable"/);
 });

@@ -12,6 +12,12 @@ export function ThemeStyles() {
         --ma-champagne: ${colors.champagne};
         --ma-pearl: ${colors.pearl};
         --ma-smoke: ${colors.smoke};
+        --ma-smoke-ink: ${colors.smokeInk};
+        /* Light, used sparingly: the heading spotlight and picture lights. */
+        --ma-light: rgba(216, 192, 138, .16);
+        --ma-light-strong: rgba(216, 192, 138, .32);
+        /* Resting opacity of a heading before its spotlight comes up. */
+        --ma-dim: .55;
         /* 52px items + 2x4px list padding + 2x1px border. */
         --ma-nav-height: 62px;
         --ma-nav-offset: max(12px, env(safe-area-inset-bottom));
@@ -19,7 +25,11 @@ export function ThemeStyles() {
         overflow-x: clip;
         background: var(--ma-ink);
         color: var(--ma-pearl);
-        font-family: var(--font-ma-body), sans-serif;
+        --ma-script: var(--font-ma-script), "Snell Roundhand", cursive;
+        --ma-display: var(--font-ma-display), Didot, Georgia, serif;
+        --ma-body: var(--font-ma-text), Futura, "Century Gothic", Arial, sans-serif;
+        font-family: var(--ma-body);
+        font-size: 1.0625rem;
       }
       .ma-theme, .ma-theme *, .ma-theme *::before, .ma-theme *::after { box-sizing: border-box; }
       .ma-gate { min-height: 100svh; }
@@ -31,33 +41,7 @@ export function ThemeStyles() {
         overflow-y: auto;
         background: var(--ma-ink);
         color: var(--ma-pearl);
-        transition: visibility 0s linear .95s;
       }
-      .ma-curtain { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-      .ma-curtain-panel {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 50.1%;
-        transition: transform .95s cubic-bezier(.77, 0, .175, 1);
-      }
-      .ma-curtain-left { left: 0; background: var(--ma-ink); border-right: 1px solid var(--ma-champagne); }
-      .ma-curtain-right { right: 0; background: var(--ma-lacquer); border-left: 1px solid var(--ma-champagne); }
-      .ma-curtain-seam {
-        position: absolute;
-        z-index: 2;
-        top: 50%;
-        left: 50%;
-        display: grid;
-        width: clamp(4.5rem, 10vw, 7rem);
-        aspect-ratio: 1;
-        place-items: center;
-        border: 1px solid var(--ma-champagne);
-        background: var(--ma-ink);
-        transform: translate(-50%, -50%);
-        transition: opacity .24s ease .18s;
-      }
-      .ma-curtain-seam .ma-mark { width: 55%; }
       .ma-cover-frame {
         position: relative;
         z-index: 3;
@@ -75,26 +59,24 @@ export function ThemeStyles() {
         align-self: start;
         border-bottom: 1px solid var(--ma-champagne);
         padding-bottom: .8rem;
-        color: var(--ma-smoke);
+        color: var(--ma-smoke-ink);
         font-size: .75rem;
         letter-spacing: .08em;
       }
       .ma-cover-stage { align-self: center; min-width: 0; text-align: center; }
-      .ma-cover-intro { margin: 0 0 1.4rem; color: var(--ma-smoke); font-size: .9rem; }
+      .ma-cover-intro { margin: 0 0 1.4rem; color: var(--ma-smoke-ink); font-size: .9rem; }
       .ma-cover-names {
         display: flex;
         flex-direction: column;
         align-items: center;
         min-width: 0;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
-        font-size: clamp(4rem, 15vw, 10rem);
-        font-weight: 500;
-        letter-spacing: -.055em;
-        line-height: .76;
+        font-size: clamp(4.25rem, 17vw, 10.5rem);
+        line-height: 1.02;
         overflow-wrap: anywhere;
       }
       .ma-cover-amp {
+        font-family: var(--ma-display);
         margin-block: .18em;
         color: var(--ma-champagne);
         font-size: .32em;
@@ -115,11 +97,11 @@ export function ThemeStyles() {
         border-top: 1px solid var(--ma-champagne);
         padding-top: 1.25rem;
       }
-      .ma-cover-recipient > p:first-child { margin: 0; color: var(--ma-smoke); font-size: .78rem; }
+      .ma-cover-recipient > p:first-child { margin: 0; color: var(--ma-smoke-ink); font-size: .78rem; }
       .ma-cover-guest-name {
         max-width: 34ch;
         margin: .4rem 0 1.4rem;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(1.25rem, 5vw, 2rem);
         line-height: 1.25;
         overflow-wrap: anywhere;
@@ -140,11 +122,33 @@ export function ThemeStyles() {
         font: inherit;
       }
       .ma-cover-open span:last-child { color: var(--ma-oxblood); font-size: .75rem; }
-      .ma-gate[data-opened="true"] .ma-cover { visibility: hidden; pointer-events: none; }
-      .ma-gate[data-opened="true"] .ma-curtain-left { transform: translateX(-101%); }
-      .ma-gate[data-opened="true"] .ma-curtain-right { transform: translateX(101%); }
-      .ma-gate[data-opened="true"] .ma-curtain-seam { opacity: 0; transition-delay: 0s; }
-      .ma-gate[data-opened="true"] .ma-cover-frame { opacity: 0; transform: scale(.985); }
+      /* Champagne toast: the flutes clink (~.55s), a ring of light pulses and
+         bubbles rise; the cover then fades (1000ms + 400ms). It is inert and
+         stops taking taps the moment it opens. */
+      .ma-gate[data-opened="true"] .ma-cover {
+        opacity: 0; visibility: hidden; pointer-events: none;
+        transition: opacity 400ms ease 1000ms, visibility 0s 1400ms;
+      }
+      .ma-gate[data-opened="true"] :is(.ma-cover-masthead, .ma-cover-recipient) { opacity: 0; transition: opacity .3s ease; }
+      .ma-gate[data-opened="true"] .ma-cover-names { transform: translateY(-6px); transition: transform .8s cubic-bezier(.22, .61, .36, 1) .2s; }
+      .ma-toast { display: block; width: clamp(120px, 34vw, 180px); height: auto; margin: clamp(1.5rem, 5vw, 2.5rem) auto 0; overflow: visible; color: var(--ma-champagne); }
+      /* Short phones: a smaller toast keeps "Buka undangan" above the fold. */
+      @media (max-height: 700px) { .ma-toast { width: clamp(84px, 24vw, 120px); margin-top: 1rem; } }
+      .ma-toast .ma-flute path { stroke: currentColor; stroke-width: 1.2; }
+      .ma-toast .ma-flute .ma-flute-wine { fill: rgba(216, 192, 138, .35); stroke: none; }
+      .ma-flute { transform-box: view-box; }
+      .ma-flute-left { transform-origin: 64px 108px; }
+      .ma-flute-right { transform-origin: 96px 108px; }
+      .ma-toast-ring { stroke: var(--ma-champagne); stroke-width: 1; opacity: 0; transform-box: fill-box; transform-origin: center; }
+      .ma-toast-bubble { fill: var(--ma-champagne); opacity: 0; transform-box: fill-box; }
+      .ma-gate[data-opened="true"] .ma-flute-left { animation: ma-clink-left .55s cubic-bezier(.3, 0, .2, 1) forwards; }
+      .ma-gate[data-opened="true"] .ma-flute-right { animation: ma-clink-right .55s cubic-bezier(.3, 0, .2, 1) forwards; }
+      .ma-gate[data-opened="true"] .ma-toast-ring { animation: ma-ring .6s ease-out .45s forwards; }
+      .ma-gate[data-opened="true"] .ma-toast-bubble { animation: ma-bubble 1s ease-out forwards; }
+      @keyframes ma-clink-left { 60% { transform: rotate(6deg); } 80% { transform: rotate(4.5deg); } 100% { transform: rotate(5deg); } }
+      @keyframes ma-clink-right { 60% { transform: rotate(-6deg); } 80% { transform: rotate(-4.5deg); } 100% { transform: rotate(-5deg); } }
+      @keyframes ma-ring { from { opacity: .9; transform: scale(.4); } to { opacity: 0; transform: scale(2.4); } }
+      @keyframes ma-bubble { 0% { opacity: 0; transform: translate(0, 0); } 20% { opacity: .9; } 100% { opacity: 0; transform: translate(var(--ma-dx), var(--ma-dy)); } }
       .ma-content:focus { outline: none; }
       .ma-section { position: relative; min-height: 100svh; }
       .ma-section-inner {
@@ -159,12 +163,18 @@ export function ThemeStyles() {
       .ma-surface-pearl { background: var(--ma-pearl); color: var(--ma-ink); }
       .ma-display {
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.25rem, 12vw, 9rem);
         font-weight: 500;
         letter-spacing: -0.045em;
         line-height: 0.86;
       }
+      /* Ballroom voices: Imperial Script for names, Bodoni italic for headings,
+         Jost spaced capitals for labels. */
+      .ma-theme :is(h2, h3, blockquote) { font-style: italic; }
+      .ma-theme .ma-script { font-family: var(--ma-script); font-style: normal; font-weight: 400; letter-spacing: 0; }
+      .ma-theme .ma-label { font-family: var(--ma-body); font-size: .75rem; font-style: normal; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; }
+      .ma-theme :is(.ma-cover-masthead, .ma-cover-intro, .ma-cover-recipient > p:first-child, .ma-chapter-heading p, .ma-interaction-heading > p, .ma-countdown-intro p, .ma-livestream-copy > p, .ma-event-type, .ma-countdown-units dt, .ma-gift-provider, .ma-parents p:first-child, .ma-dress-group h3, .ma-form-field > span, .ma-attendance legend, .ma-form-recipient > span) { font-family: var(--ma-body); font-style: normal; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; }
       .ma-mark { display: inline-grid; width: 4rem; color: var(--ma-champagne); }
       .ma-mark svg { display: block; width: 100%; stroke: currentColor; stroke-width: 1; }
       .ma-media { position: relative; overflow: hidden; background: var(--ma-lacquer); }
@@ -180,20 +190,17 @@ export function ThemeStyles() {
         background: var(--ma-oxblood);
       }
       .ma-hero-copy h2 {
-        max-width: 9ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
-        font-size: clamp(3.6rem, 13vw, 10rem);
-        font-weight: 500;
-        letter-spacing: -.055em;
-        line-height: .82;
+        font-size: clamp(3.8rem, 15vw, 10rem);
+        line-height: 1.05;
         overflow-wrap: anywhere;
+        text-wrap: balance;
       }
       .ma-hero-copy p {
         max-width: 44ch;
         margin: clamp(2rem, 6vw, 4rem) 0 0;
         color: var(--ma-pearl);
-        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-size: clamp(1.0625rem, 2vw, 1.25rem);
         line-height: 1.7;
         white-space: pre-line;
       }
@@ -217,7 +224,7 @@ export function ThemeStyles() {
       .ma-quote blockquote {
         max-width: 19ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(2.4rem, 8vw, 6rem);
         font-weight: 500;
         letter-spacing: -.035em;
@@ -234,7 +241,7 @@ export function ThemeStyles() {
       .ma-chapter-heading p { margin: 0; color: var(--ma-oxblood); font-size: .78rem; letter-spacing: .08em; }
       .ma-chapter-heading h2 {
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.25rem, 10vw, 7.5rem);
         font-weight: 500;
         letter-spacing: -.045em;
@@ -245,13 +252,10 @@ export function ThemeStyles() {
       .ma-person-portrait { width: 100%; }
       .ma-person-copy { min-width: 0; overflow-wrap: anywhere; }
       .ma-person-copy h3 {
-        max-width: 11ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
-        font-size: clamp(2.5rem, 8vw, 5rem);
-        font-weight: 500;
-        letter-spacing: -.04em;
-        line-height: .92;
+        font-size: clamp(2.9rem, 9vw, 5.25rem);
+        line-height: 1.1;
+        text-wrap: balance;
       }
       .ma-parents {
         display: grid;
@@ -263,7 +267,7 @@ export function ThemeStyles() {
       }
       .ma-parents p { margin: 0; }
       .ma-parents p:first-child { color: var(--ma-oxblood); font-size: .78rem; }
-      .ma-parents p:last-child { font-family: var(--font-ma-display), serif; font-size: 1.25rem; line-height: 1.4; }
+      .ma-parents p:last-child { font-family: var(--ma-display); font-size: 1.25rem; line-height: 1.4; }
       .ma-parent-join { color: var(--ma-oxblood); }
       .ma-person-bio { max-width: 52ch; margin: 1.75rem 0 0; line-height: 1.75; white-space: pre-line; }
       .ma-instagram {
@@ -279,7 +283,7 @@ export function ThemeStyles() {
       .ma-person-text-only { border-top: 1px solid var(--ma-oxblood); padding-top: clamp(2rem, 6vw, 4rem); }
       .ma-person-monogram {
         color: var(--ma-oxblood);
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(7rem, 28vw, 16rem);
         line-height: .65;
       }
@@ -296,22 +300,22 @@ export function ThemeStyles() {
         overflow-wrap: anywhere;
       }
       .ma-event:last-child { border-bottom: 1px solid color-mix(in srgb, var(--ma-champagne) 58%, transparent); }
-      .ma-event-index { color: var(--ma-champagne); font-family: var(--font-ma-display), serif; font-size: 1.3rem; }
+      .ma-event-index { color: var(--ma-champagne); font-family: var(--ma-display); font-size: 1.3rem; }
       .ma-event-main, .ma-event-place { min-width: 0; }
       .ma-event-type { margin: 0 0 .75rem; color: var(--ma-champagne); font-size: .75rem; letter-spacing: .08em; }
       .ma-event-main h3 {
         max-width: 15ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(2.4rem, 8vw, 5rem);
         font-weight: 500;
         letter-spacing: -.04em;
         line-height: .9;
       }
-      .ma-event-main time { display: block; margin-top: 1.5rem; color: var(--ma-smoke); line-height: 1.55; }
-      .ma-event-time { margin: .35rem 0 0; color: var(--ma-smoke); font-variant-numeric: tabular-nums; }
-      .ma-event-venue { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.15; }
-      .ma-event-address { max-width: 42ch; margin: .8rem 0 0; color: var(--ma-smoke); line-height: 1.65; }
+      .ma-event-main time { display: block; margin-top: 1.5rem; color: var(--ma-smoke-ink); line-height: 1.55; }
+      .ma-event-time { margin: .35rem 0 0; color: var(--ma-smoke-ink); font-variant-numeric: tabular-nums; }
+      .ma-event-venue { margin: 0; font-family: var(--ma-display); font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.15; }
+      .ma-event-address { max-width: 42ch; margin: .8rem 0 0; color: var(--ma-smoke-ink); line-height: 1.65; }
       .ma-event-actions {
         display: flex;
         min-height: 48px;
@@ -345,7 +349,7 @@ export function ThemeStyles() {
       .ma-countdown-intro h2 {
         max-width: 9ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.2rem, 11vw, 8rem);
         font-weight: 500;
         letter-spacing: -.05em;
@@ -356,14 +360,14 @@ export function ThemeStyles() {
       .ma-countdown-units > div { min-width: 0; border-bottom: 1px solid var(--ma-champagne); padding: 1.25rem 0; }
       .ma-countdown-units > div:nth-child(odd) { border-right: 1px solid var(--ma-champagne); padding-right: 1rem; }
       .ma-countdown-units > div:nth-child(even) { padding-left: 1rem; }
-      .ma-countdown-units dd { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(2.8rem, 12vw, 6rem); line-height: .8; font-variant-numeric: tabular-nums; }
+      .ma-countdown-units dd { margin: 0; font-family: var(--ma-display); font-size: clamp(2.8rem, 12vw, 6rem); line-height: .8; font-variant-numeric: tabular-nums; }
       .ma-countdown-units dt { margin-top: .75rem; color: var(--ma-champagne); font-size: .72rem; }
       .ma-countdown-body { display: grid; min-width: 0; align-content: end; gap: clamp(1.75rem, 5vw, 2.5rem); }
       .ma-countdown .ma-calendar-actions { gap: 0 1.5rem; }
       .ma-countdown .ma-calendar-actions :is(a, button) { flex: 1 1 9rem; justify-content: space-between; }
       .ma-countdown-calendar-only .ma-countdown-body { border-top: 1px solid var(--ma-champagne); padding-top: .5rem; }
       .ma-dress-code > .ma-section-inner { display: grid; align-content: start; gap: clamp(3rem, 8vw, 6rem); }
-      .ma-dress-description { max-width: 25ch; margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 5vw, 3.5rem); line-height: 1.12; overflow-wrap: anywhere; }
+      .ma-dress-description { max-width: 25ch; margin: 0; font-family: var(--ma-display); font-size: clamp(1.8rem, 5vw, 3.5rem); line-height: 1.12; overflow-wrap: anywhere; }
       .ma-dress-groups { display: grid; gap: 2.5rem; }
       .ma-dress-group { border-top: 1px solid var(--ma-oxblood); padding-top: 1rem; }
       .ma-dress-group h3 { margin: 0 0 1.5rem; color: var(--ma-oxblood); font-size: .82rem; font-weight: 500; }
@@ -381,13 +385,13 @@ export function ThemeStyles() {
         padding-block: clamp(2.5rem, 8vw, 6rem);
       }
       .ma-story-entry:last-child { border-bottom: 1px solid var(--ma-oxblood); }
-      .ma-story-index { grid-area: index; color: var(--ma-oxblood); font-family: var(--font-ma-display), serif; font-size: 1.3rem; }
+      .ma-story-index { grid-area: index; color: var(--ma-oxblood); font-family: var(--ma-display); font-size: 1.3rem; }
       .ma-story-copy { grid-area: copy; min-width: 0; overflow-wrap: anywhere; }
       .ma-story-date { display: block; margin: 0 0 .8rem; color: var(--ma-oxblood); font-size: .78rem; font-variant-numeric: tabular-nums; }
       .ma-story-copy h3 {
         max-width: 13ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(2.6rem, 8vw, 5.5rem);
         font-weight: 500;
         letter-spacing: -.045em;
@@ -409,7 +413,7 @@ export function ThemeStyles() {
         min-width: 0;
         gap: 1rem;
         margin-top: .9rem;
-        color: var(--ma-smoke);
+        color: var(--ma-smoke-ink);
         font-size: .78rem;
         line-height: 1.5;
         overflow-wrap: anywhere;
@@ -433,7 +437,7 @@ export function ThemeStyles() {
       .ma-interaction-heading h2 {
         max-width: 10ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.2rem, 10vw, 7.5rem);
         font-weight: 500;
         letter-spacing: -.05em;
@@ -444,7 +448,7 @@ export function ThemeStyles() {
         display: block;
         max-width: 42ch;
         margin-top: 1.5rem;
-        color: var(--ma-smoke);
+        color: var(--ma-smoke-ink);
         line-height: 1.7;
       }
       .ma-wishes .ma-interaction-heading > p,
@@ -472,7 +476,7 @@ export function ThemeStyles() {
         font: inherit;
         line-height: 1.5;
       }
-      .ma-form-control::placeholder { color: color-mix(in srgb, var(--ma-smoke) 72%, transparent); opacity: 1; }
+      .ma-form-control::placeholder { color: var(--ma-smoke-ink); opacity: 1; }
       .ma-form-textarea { min-height: 9rem; resize: vertical; }
       .ma-form-recipient {
         display: grid;
@@ -482,7 +486,7 @@ export function ThemeStyles() {
         padding-bottom: 1.25rem;
       }
       .ma-form-recipient strong {
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(1.7rem, 5vw, 2.6rem);
         font-weight: 500;
         line-height: 1.1;
@@ -534,14 +538,14 @@ export function ThemeStyles() {
         padding-block: clamp(2rem, 6vw, 4rem);
         overflow-wrap: anywhere;
       }
-      .ma-form-success p { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(2.5rem, 8vw, 5rem); line-height: .9; }
-      .ma-form-success span { display: block; margin-top: 1.25rem; color: var(--ma-smoke); line-height: 1.7; }
-      .ma-form-success-dark { color: var(--ma-ink); font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.15; }
+      .ma-form-success p { margin: 0; font-family: var(--ma-display); font-size: clamp(2.5rem, 8vw, 5rem); line-height: .9; }
+      .ma-form-success span { display: block; margin-top: 1.25rem; color: var(--ma-smoke-ink); line-height: 1.7; }
+      .ma-form-success-dark { color: var(--ma-ink); font-family: var(--ma-display); font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.15; }
       .ma-form-dark .ma-form-field > span,
       .ma-form-dark .ma-form-recipient > span { color: var(--ma-oxblood); }
       .ma-form-dark .ma-form-control,
       .ma-form-dark .ma-form-recipient { border-color: var(--ma-oxblood); color: var(--ma-ink); }
-      .ma-form-dark .ma-form-control::placeholder { color: color-mix(in srgb, var(--ma-ink) 55%, transparent); }
+      .ma-form-dark .ma-form-control::placeholder { color: color-mix(in srgb, var(--ma-ink) 70%, transparent); }
       .ma-form-dark .ma-form-submit { background: var(--ma-ink); color: var(--ma-pearl); }
       .ma-form-dark .ma-form-error { color: var(--ma-oxblood); }
       .ma-form .cf-turnstile { max-width: 100%; overflow: hidden; }
@@ -551,7 +555,7 @@ export function ThemeStyles() {
         margin: 0;
         border-block: 1px solid var(--ma-oxblood);
         padding-block: 2rem;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(1.6rem, 5vw, 2.8rem);
         line-height: 1.15;
       }
@@ -567,7 +571,7 @@ export function ThemeStyles() {
       }
       .ma-wish-index { color: var(--ma-oxblood); font-size: .72rem; font-variant-numeric: tabular-nums; }
       .ma-wish-meta { display: flex; min-width: 0; flex-wrap: wrap; justify-content: space-between; gap: .35rem 1rem; }
-      .ma-wish-meta strong { font-family: var(--font-ma-display), serif; font-size: 1.25rem; font-weight: 500; }
+      .ma-wish-meta strong { font-family: var(--ma-display); font-size: 1.25rem; font-weight: 500; }
       .ma-wish-meta time { color: var(--ma-oxblood); font-size: .72rem; }
       .ma-wish-entry p { margin: 1rem 0 0; line-height: 1.7; white-space: pre-line; }
       .ma-more-wishes {
@@ -593,9 +597,9 @@ export function ThemeStyles() {
       }
       .ma-gift-index { color: var(--ma-champagne); font-size: .72rem; font-variant-numeric: tabular-nums; }
       .ma-gift-details { min-width: 0; }
-      .ma-gift-provider { margin: 0 0 .75rem; color: var(--ma-smoke); font-size: .76rem; letter-spacing: .08em; }
-      .ma-gift-number { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 6vw, 3.6rem); line-height: 1; }
-      .ma-gift-owner { margin: .8rem 0 0; color: var(--ma-smoke); line-height: 1.6; }
+      .ma-gift-provider { margin: 0 0 .75rem; color: var(--ma-smoke-ink); font-size: .76rem; letter-spacing: .08em; }
+      .ma-gift-number { margin: 0; font-family: var(--ma-display); font-size: clamp(1.8rem, 6vw, 3.6rem); line-height: 1; }
+      .ma-gift-owner { margin: .8rem 0 0; color: var(--ma-smoke-ink); line-height: 1.6; }
       .ma-gift-ledger button {
         min-height: 48px;
         width: fit-content;
@@ -610,23 +614,20 @@ export function ThemeStyles() {
       .ma-livestream > .ma-section-inner { display: grid; align-content: center; gap: clamp(3rem, 9vw, 7rem); }
       .ma-livestream-copy { min-width: 0; }
       .ma-livestream-copy > p { margin: 0 0 .7rem; color: var(--ma-champagne); font-size: .78rem; letter-spacing: .08em; }
-      .ma-livestream-copy h2 { max-width: 9ch; margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(3.2rem, 11vw, 8rem); font-weight: 500; letter-spacing: -.05em; line-height: .85; overflow-wrap: anywhere; }
-      .ma-livestream-copy > span { display: block; max-width: 36ch; margin-top: 1.5rem; color: var(--ma-smoke); line-height: 1.7; }
+      .ma-livestream-copy h2 { max-width: 9ch; margin: 0; font-family: var(--ma-display); font-size: clamp(3.2rem, 11vw, 8rem); font-weight: 500; letter-spacing: -.05em; line-height: .85; overflow-wrap: anywhere; }
+      .ma-livestream-copy > span { display: block; max-width: 36ch; margin-top: 1.5rem; color: var(--ma-smoke-ink); line-height: 1.7; }
       .ma-livestream ul { margin: 0; padding: 0; border-top: 1px solid var(--ma-champagne); list-style: none; }
       .ma-livestream li { border-bottom: 1px solid var(--ma-champagne); }
       .ma-livestream a { display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 2rem; color: var(--ma-pearl); text-decoration: none; overflow-wrap: anywhere; }
       .ma-closing > .ma-section-inner { display: grid; align-items: center; gap: clamp(3rem, 8vw, 7rem); }
       .ma-closing-copy { min-width: 0; overflow-wrap: anywhere; }
       .ma-closing-copy h2 {
-        max-width: 10ch;
         margin: clamp(2rem, 6vw, 4rem) 0 0;
-        font-family: var(--font-ma-display), serif;
-        font-size: clamp(3.4rem, 11vw, 8rem);
-        font-weight: 500;
-        letter-spacing: -.05em;
-        line-height: .85;
+        font-size: clamp(3.6rem, 12vw, 8.5rem);
+        line-height: 1.05;
+        text-wrap: balance;
       }
-      .ma-closing-copy p { max-width: 46ch; margin: 2rem 0 0; color: var(--ma-smoke); line-height: 1.75; white-space: pre-line; }
+      .ma-closing-copy p { max-width: 46ch; margin: 2rem 0 0; color: var(--ma-smoke-ink); line-height: 1.75; white-space: pre-line; }
       .ma-closing-image { width: min(100%, 34rem); justify-self: end; }
       .ma-closing-text-only > .ma-section-inner { grid-template-columns: minmax(0, 1fr); }
       .ma-image-fallback {
@@ -636,8 +637,8 @@ export function ThemeStyles() {
         place-items: center;
         align-content: center;
         gap: 1rem;
-        color: var(--ma-smoke);
-        border: 1px solid color-mix(in srgb, var(--ma-champagne) 50%, transparent);
+        color: var(--ma-smoke-ink);
+        border: 1px solid var(--ma-smoke);
         font-size: 0.75rem;
         letter-spacing: 0.16em;
         text-transform: uppercase;
@@ -712,10 +713,53 @@ export function ThemeStyles() {
         cursor: pointer;
       }
       .ma-music svg { width: 1.1rem; fill: currentColor; }
+      /* Stage spotlight: chapter headings rest dim, then a warm light comes up
+         once they reach the upper stage. Only opacity animates. */
+      .ma-spotlight { position: relative; isolation: isolate; }
+      .ma-spotlight::before { content: ""; position: absolute; z-index: -1; inset: -2.5rem 0 -1rem; background: radial-gradient(ellipse 70% 80% at 25% 35%, var(--ma-light), transparent 70%); pointer-events: none; }
+      .ma-spotlight[data-spot="waiting"]::before { opacity: 0; }
+      .ma-spotlight[data-spot="waiting"] h2 { opacity: var(--ma-dim); }
+      .ma-spotlight[data-spot="lit"]::before { animation: ma-spot-on 1.1s ease-out both; }
+      .ma-spotlight[data-spot="lit"] h2 { transition: opacity .9s ease; }
+      @keyframes ma-spot-on { from { opacity: 0; } }
+      /* Dance card: a pearl card with a gold frame and tassel; entries are
+         written in script. Every animation fills "both", so with animations
+         off (reduced motion) the card simply shows filled in. */
+      .ma-dance-card { position: relative; width: min(100%, 22rem); margin-top: 2rem; border: 1px solid var(--ma-champagne); padding: 1.5rem 1.5rem 1.25rem; background: var(--ma-pearl); color: var(--ma-ink); animation: ma-card-in .7s cubic-bezier(.2, .7, .2, 1) both; }
+      .ma-dance-card::before { content: ""; position: absolute; inset: 5px; border: 1px solid rgba(94, 26, 34, .35); pointer-events: none; }
+      .ma-dance-card > .ma-label { margin: 0 0 .75rem; color: var(--ma-oxblood); }
+      .ma-dance-card dl { margin: 0; }
+      .ma-dance-card dl > div { border-bottom: 1px solid rgba(94, 26, 34, .3); padding-block: .5rem; }
+      .ma-dance-card dt { color: var(--ma-oxblood); }
+      .ma-dance-card dd { margin: .2rem 0 0; font-size: clamp(1.9rem, 8vw, 2.5rem); line-height: 1.15; overflow-wrap: anywhere; animation: ma-write 1.1s ease-in-out var(--ma-write-delay, .5s) both; }
+      .ma-dance-tassel { position: absolute; top: -1.25rem; right: 1.5rem; width: 18px; height: auto; stroke: var(--ma-champagne); stroke-width: 1; transform-origin: 50% 0; animation: ma-tassel 1.6s ease-out .3s both; }
+      @keyframes ma-card-in { from { opacity: 0; transform: translateY(18px) rotate(-2deg); } }
+      @keyframes ma-write { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+      @keyframes ma-tassel { 0% { transform: rotate(14deg); } 40% { transform: rotate(-8deg); } 70% { transform: rotate(4deg); } 100% { transform: rotate(0); } }
+      /* A sent wish rises out of the guest book among champagne bubbles. It
+         starts just above the thank-you, so the confirmation is never covered. */
+      /* The rise has its own clipped band above the thank-you (where the form
+         was), so a long wish never drifts over the section heading. */
+      .ma-wish-sent { position: relative; padding-top: 5rem; }
+      .ma-wish-rise { position: absolute; top: 0; right: 0; left: 0; height: 5rem; overflow: hidden; pointer-events: none; }
+      .ma-wish-ghost { position: absolute; right: 0; bottom: 0; left: 0; margin: 0; color: var(--ma-oxblood); font-family: var(--ma-display); font-size: 1.125rem; font-style: italic; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: ma-ghost-rise 2.4s ease-out forwards; }
+      .ma-bubble { position: absolute; bottom: 0; border: 1px solid var(--ma-champagne); border-radius: 50%; background: rgba(216, 192, 138, .25); opacity: 0; animation: ma-bubble-rise 1.6s ease-out forwards; }
+      @keyframes ma-ghost-rise { from { opacity: .9; transform: translateY(0); } to { opacity: 0; transform: translateY(-3.5rem); } }
+      @keyframes ma-bubble-rise { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: .9; } 100% { opacity: 0; transform: translateY(var(--ma-rise)); } }
+      /* Picture lights: thin gold frames on the dark wall, a brass lamp above
+         each, lit one by one as the gallery enters view. Only opacity animates. */
+      .ma-gallery-item { position: relative; padding-top: 16px; }
+      .ma-gallery-item::before { content: ""; position: absolute; z-index: 2; top: 0; left: 50%; width: 64px; height: 7px; margin-left: -32px; background: var(--ma-champagne); clip-path: polygon(0 0, 100% 0, 86% 100%, 14% 100%); pointer-events: none; }
+      .ma-gallery-item::after { content: ""; position: absolute; z-index: 1; top: 16px; right: 0; left: 0; height: 55%; background: radial-gradient(ellipse 55% 75% at 50% 0%, var(--ma-light-strong), transparent 72%); pointer-events: none; }
+      .ma-theme .ma-gallery-grid .ma-gallery-zoom { padding: 6px; border: 1px solid var(--ma-champagne); }
+      .ma-gallery-grid[data-lights="waiting"] .ma-gallery-zoom { opacity: .35; }
+      .ma-gallery-grid[data-lights="waiting"] .ma-gallery-item::after { opacity: 0; }
+      .ma-gallery-grid[data-lights="lit"] .ma-gallery-zoom { transition: opacity .8s ease var(--ma-light-delay, 0s); }
+      .ma-gallery-grid[data-lights="lit"] .ma-gallery-item::after { transition: opacity .6s ease var(--ma-light-delay, 0s); }
       @media (max-width: 767px) {
         .ma-cover-frame { grid-template-rows: auto 1fr auto; gap: 2rem; }
         .ma-cover-masthead span:last-child { display: none; }
-        .ma-cover-names { font-size: clamp(3.5rem, 20vw, 6.25rem); }
+        .ma-cover-names { font-size: clamp(3.75rem, 19vw, 6.5rem); }
         .ma-content { padding-bottom: calc(var(--ma-nav-height) + var(--ma-nav-offset)); }
         .ma-hero-text-only .ma-hero-copy { min-height: calc(100svh - 62.5vw); margin-top: -1px; align-content: center; }
       }
@@ -741,7 +785,7 @@ export function ThemeStyles() {
           margin-left: clamp(1.25rem, 5vw, 6rem);
           padding: clamp(2.5rem, 5vw, 5.5rem);
         }
-        .ma-hero:not(.ma-hero-text-only) .ma-hero-copy h2 { font-size: clamp(3.6rem, 7vw, 8.5rem); }
+        .ma-hero:not(.ma-hero-text-only) .ma-hero-copy h2 { font-size: clamp(3.8rem, 7.5vw, 8.5rem); }
         .ma-hero-image { grid-column: 7 / -1; grid-row: 1; }
         .ma-nav {
           top: 50%;
@@ -803,16 +847,16 @@ export function ThemeStyles() {
         .ma-hero-text-only .ma-hero-copy { grid-column: 2; grid-row: 1; margin-bottom: clamp(3rem, 7vw, 7rem); }
         .ma-gallery-columns { columns: 3; }
       }
-      .ma-gate[data-reduced-motion="true"] .ma-cover,
-      .ma-gate[data-reduced-motion="true"] .ma-curtain-panel,
-      .ma-gate[data-reduced-motion="true"] .ma-curtain-seam,
-      .ma-gate[data-reduced-motion="true"] .ma-cover-frame { transition: none; }
+      .ma-gate[data-reduced-motion="true"] :is(.ma-cover, .ma-cover-frame, .ma-cover-masthead, .ma-cover-recipient, .ma-cover-names) { transition: none; }
+      .ma-gate[data-reduced-motion="true"] :is(.ma-flute, .ma-toast-ring, .ma-toast-bubble) { animation: none; }
       @media (prefers-reduced-motion: reduce) {
         .ma-theme, .ma-theme *, .ma-theme *::before, .ma-theme *::after {
           animation: none !important;
           scroll-behavior: auto !important;
           transition: none !important;
         }
+        .ma-spotlight[data-spot] h2, .ma-spotlight[data-spot]::before { opacity: 1 !important; }
+        .ma-gallery-grid[data-lights] .ma-gallery-zoom, .ma-gallery-grid[data-lights] .ma-gallery-item::after { opacity: 1 !important; }
       }
   
       /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */
@@ -828,7 +872,7 @@ export function ThemeStyles() {
       .ma-theme .ma-lightbox-caption { margin: 0; font-size: .85rem; overflow-wrap: anywhere; }
       .ma-theme .ma-lightbox-btn { min-width: 44px; min-height: 44px; padding: 0 1rem; border: 1px solid rgba(214, 190, 150, .45); background: transparent; color: var(--ma-pearl); cursor: pointer; }
       .ma-theme .ma-lightbox-btn:focus-visible { outline: 2px solid var(--ma-champagne); outline-offset: 3px; }
-      .ma-theme .ma-gift-copy-status { margin: .5rem 0 0; font-size: .8rem; color: var(--ma-smoke); }
+      .ma-theme .ma-gift-copy-status { margin: .5rem 0 0; font-size: .8rem; color: var(--ma-smoke-ink); }
       .ma-theme .ma-gift-copy-status:empty { margin: 0; }
   `}</style>
   );

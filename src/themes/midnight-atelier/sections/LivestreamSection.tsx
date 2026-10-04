@@ -2,6 +2,7 @@ import type { InvitationEvent } from "@/types/invitation";
 import { usableExternalUrl } from "@/themes/shared/external-url";
 
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 export function LivestreamSection({ events, enabled }: { events: InvitationEvent[]; enabled: boolean }) {
   if (!enabled) return null;
@@ -12,11 +13,11 @@ export function LivestreamSection({ events, enabled }: { events: InvitationEvent
 
   return (
     <Section id="ma-livestream" labelledBy="ma-livestream-heading" tone="lacquer" className="ma-livestream">
-      <div className="ma-livestream-copy">
-        <p>Remote viewing</p>
+      <Spotlight className="ma-livestream-copy">
+        <p>Siaran langsung</p>
         <h2 id="ma-livestream-heading">Dari kejauhan</h2>
         <span>Rayakan bersama kami, dari mana pun Anda berada.</span>
-      </div>
+      </Spotlight>
       <ul>
         {links.map(({ event, url }) => (
           <li key={event.id}>

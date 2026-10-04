@@ -638,23 +638,27 @@ black-and-gold wedding template or a recolored version of another theme. It
 presents the same enabled public capabilities as every registered theme while
 using its own chapter rhythm and visual hierarchy.
 
-Palette: Ink `#09090B` (primary ground), Lacquer `#171216` (layered dark
-surface), Oxblood `#541E2B` (ceremonial accent), Champagne `#C6A15B` (rules and
-small highlights), Pearl `#F3EEE6` (reading surface), and Smoke `#AAA3A4`
-(secondary text). Bodoni Moda provides the high-contrast display voice;
-Barlow Condensed provides compact supporting labels and readable metadata.
+Since October 2026 Midnight follows **Malam di Ballroom** (spec
+`docs/superpowers/specs/2026-10-03-theme-identity-redesign-design.md` §6): a
+black-tie evening ball of crystal light, champagne and oxblood velvet.
 
-Storyboard: a curtain-like opening seam; a cinematic hero; left-aligned
-editorial couple and event spreads; a programme-inspired countdown and event
-chapter; a couture story sequence; a contact-sheet gallery; a Lacquer RSVP
-moment; a Pearl guestbook; a dark ledger for gifts; and a restrained closing.
-Use precise hairline rules, purposeful negative space, strong image crops, and
-small typographic contrasts. Avoid gradients, fake foil effects, star fields,
-repeated ornamental frames, excessive gold, and generic SaaS cards.
+Palette: Tinta `#14121A` (ground), lifted Tinta `#1E1A24` (layered surfaces),
+Oxblood `#5E1A22`, Champagne `#D8C08A` (rules, small highlights, light),
+Mutiara `#EDE6DA` (text on dark, reading surfaces) and Asap `#6E6873` (rules
+only; small secondary text uses `#A9A2AD`). Imperial Script is reserved for
+couple names; Bodoni Moda italic carries headings; Jost carries body text at
+17px or larger and spaced-capital labels.
+
+Storyboard: a champagne-toast cover (two flutes clink, a ring of light,
+rising bubbles); chapter headings lit by a stage spotlight; a dance card after
+an attending RSVP; a sent wish rising with champagne bubbles; framed photos lit
+one by one by picture lights. Light is drawn with warm radial gradients only
+in the spotlight and picture lights. Avoid any other gradient, neon glow, fake
+foil, star fields, repeated ornamental frames, excessive gold and SaaS cards.
 
 Optional content must disappear without leaving dead navigation or accidental
 gaps. Sparse states should still feel composed and must never invent customer
-details. Motion stays cinematic but selective: controlled curtain movement,
+details. Motion stays cinematic but selective: the champagne toast,
 small image reveals, and restrained text transitions. Disable nonessential
 motion under `prefers-reduced-motion`; maintain visible focus, readable
 contrast, stable media dimensions, and usable forms from 320px through desktop.

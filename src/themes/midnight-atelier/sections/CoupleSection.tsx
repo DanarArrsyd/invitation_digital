@@ -3,6 +3,7 @@ import type { InvitationPerson, InvitationType } from "@/types/invitation";
 
 import { AtelierImage } from "../components/AtelierImage";
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 function parentLabel(role: InvitationPerson["role"]): string {
   if (role === "bride") return "Putri dari";
@@ -19,10 +20,10 @@ export function CoupleSection({ people, settings, invitationType }: {
 
   return (
     <Section id="ma-mempelai" labelledBy="ma-couple-heading" tone="pearl" className="ma-couple">
-      <header className="ma-chapter-heading">
-        <p>{invitationType === "wedding" ? "The protagonists" : "Your hosts"}</p>
+      <Spotlight className="ma-chapter-heading">
+        <p>{invitationType === "wedding" ? "Dua insan" : "Tuan rumah"}</p>
         <h2 id="ma-couple-heading">{invitationType === "wedding" ? "Mempelai" : "Yang mengundang"}</h2>
-      </header>
+      </Spotlight>
 
       <div className="ma-people">
         {people.map((person, index) => {
@@ -49,7 +50,7 @@ export function CoupleSection({ people, settings, invitationType }: {
               )}
 
               <div className="ma-person-copy">
-                <h3>{person.fullName}</h3>
+                <h3 className="ma-script">{person.fullName}</h3>
                 {parents.length > 0 ? (
                   <div className="ma-parents">
                     <p>{parentLabel(person.role)}</p>

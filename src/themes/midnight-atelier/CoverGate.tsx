@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { useInvitationCover } from "@/themes/shared/use-invitation-cover";
 
-import { AtelierMark } from "./components/AtelierMark";
+import { ChampagneToast } from "./components/ChampagneToast";
 import { FloatingNav, type NavItem } from "./components/FloatingNav";
 
 function formatEventDate(value: string | null): string | null {
@@ -23,6 +23,7 @@ export function CoverGate({
   invitationId,
   guestToken,
   label,
+  intro,
   displayName,
   eventDate,
   guestDisplayName,
@@ -34,6 +35,7 @@ export function CoverGate({
   invitationId: string;
   guestToken: string | null;
   label: string;
+  intro: string;
   displayName: string;
   eventDate: string | null;
   guestDisplayName: string | null;
@@ -60,26 +62,21 @@ export function CoverGate({
       {canPlayMusic ? <audio ref={audioRef} src={musicUrl ?? undefined} loop preload="none" /> : null}
 
       <div id="ma-cover" className="ma-cover" aria-hidden={opened || undefined} inert={opened}>
-        <div className="ma-curtain" aria-hidden="true">
-          <div className="ma-curtain-panel ma-curtain-left" />
-          <div className="ma-curtain-panel ma-curtain-right" />
-          <div className="ma-curtain-seam"><AtelierMark /></div>
-        </div>
-
         <div className="ma-cover-frame">
           <header className="ma-cover-masthead">
             <span>{label}</span>
-            <span>Private celebration</span>
+            <span>Perayaan terbatas</span>
           </header>
 
           <div className="ma-cover-stage">
-            <p className="ma-cover-intro">The wedding of</p>
-            <h1 className="ma-cover-names">
+            <p className="ma-cover-intro">{intro}</p>
+            <h1 className="ma-cover-names ma-script">
               {names.length === 2 ? (
                 <><span>{names[0]}</span><span className="ma-cover-amp">&amp;</span><span>{names[1]}</span></>
               ) : displayName}
             </h1>
             {dateLabel ? <time dateTime={eventDate ?? undefined}>{dateLabel}</time> : null}
+            <ChampagneToast />
           </div>
 
           <div className="ma-cover-recipient">
@@ -93,7 +90,7 @@ export function CoverGate({
               aria-controls="ma-content"
             >
               <span>Buka undangan</span>
-              <span aria-hidden="true">Open</span>
+              <span aria-hidden="true">→</span>
             </button>
           </div>
         </div>

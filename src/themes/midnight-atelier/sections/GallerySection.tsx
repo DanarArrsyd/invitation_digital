@@ -1,14 +1,20 @@
 "use client";
 
+import { useRef, type CSSProperties } from "react";
+
 import { enlargeLabel, GalleryLightbox } from "@/themes/shared/GalleryLightbox";
 import { useGalleryLightbox } from "@/themes/shared/use-gallery-lightbox";
+import { useInViewOnce } from "@/themes/shared/use-in-view-once";
 import { GALLERY_ASPECT_RATIO_CSS, type GalleryItem } from "@/types/invitation";
 
 import { AtelierImage } from "../components/AtelierImage";
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[]; displayName: string }) {
   const lightbox = useGalleryLightbox(gallery.length);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const { watching, seen } = useInViewOnce(gridRef);
   if (gallery.length === 0) return null;
 
   function frame(item: GalleryItem, index: number, anchor = false) {
@@ -18,6 +24,7 @@ export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[
         data-gallery-item={item.id}
         data-gallery-anchor={anchor ? "true" : undefined}
         className={`ma-gallery-item${anchor ? " ma-gallery-anchor" : ""}`}
+        style={{ "--ma-light-delay": `${(Math.min(index, 8) * 0.18).toFixed(2)}s` } as CSSProperties}
       >
         <button
           type="button"
@@ -44,12 +51,14 @@ export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[
 
   return (
     <Section id="ma-galeri" labelledBy="ma-gallery-heading" tone="lacquer" className="ma-gallery">
-      <header className="ma-chapter-heading ma-chapter-heading-dark">
-        <p>{`${String(gallery.length).padStart(2, "0")} frames / contact sheet`}</p>
+      <Spotlight className="ma-chapter-heading ma-chapter-heading-dark">
+        <p>{`${String(gallery.length).padStart(2, "0")} potret kenangan`}</p>
         <h2 id="ma-gallery-heading">Dalam bingkai</h2>
-      </header>
+      </Spotlight>
 
-      <div className="ma-gallery-grid">
+      {/* Lights only dim a gallery that was first seen off-screen; one already
+          on screen keeps no attribute, so it never flashes dark. */}
+      <div ref={gridRef} className="ma-gallery-grid" data-lights={watching ? (seen ? "lit" : "waiting") : undefined}>
         {frame(gallery[0], 0, true)}
         {gallery.length > 1 ? (
           <div className="ma-gallery-columns">

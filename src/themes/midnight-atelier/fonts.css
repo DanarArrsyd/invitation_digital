@@ -1,7 +1,11 @@
+.ma-font-script {
+  --font-ma-script: "Imperial Script";
+}
+
 .ma-font-display {
   --font-ma-display: "Bodoni Moda Variable";
 }
 
-.ma-font-body {
-  --font-ma-body: "IBM Plex Sans Condensed";
+.ma-font-text {
+  --font-ma-text: "Jost Variable";
 }

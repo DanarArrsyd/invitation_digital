@@ -1,5 +1,10 @@
 # Midnight Atelier — Theme #003 Design Specification
 
+> **Superseded (visual direction only), 2026-10-04:** typography, palette,
+> cover and ornaments now follow `2026-10-03-theme-identity-redesign-design.md`
+> §6 ("Malam di Ballroom"). Data, sections, feature gating and accessibility
+> below remain authoritative.
+
 ## Product role
 
 Midnight Atelier expands the commercial collection with a dark, cinematic
