@@ -738,11 +738,13 @@ export function ThemeStyles() {
       @keyframes ma-tassel { 0% { transform: rotate(14deg); } 40% { transform: rotate(-8deg); } 70% { transform: rotate(4deg); } 100% { transform: rotate(0); } }
       /* A sent wish rises out of the guest book among champagne bubbles. It
          starts just above the thank-you, so the confirmation is never covered. */
-      .ma-wish-sent { position: relative; }
-      .ma-wish-rise { position: absolute; right: 0; bottom: 100%; left: 0; pointer-events: none; }
-      .ma-wish-ghost { position: absolute; right: 0; bottom: 0; left: 0; margin: 0; color: var(--ma-oxblood); font-family: var(--ma-display); font-size: 1.25rem; font-style: italic; line-height: 1.4; overflow-wrap: anywhere; animation: ma-ghost-rise 2.4s ease-out forwards; }
+      /* The rise has its own clipped band above the thank-you (where the form
+         was), so a long wish never drifts over the section heading. */
+      .ma-wish-sent { position: relative; padding-top: 5rem; }
+      .ma-wish-rise { position: absolute; top: 0; right: 0; left: 0; height: 5rem; overflow: hidden; pointer-events: none; }
+      .ma-wish-ghost { position: absolute; right: 0; bottom: 0; left: 0; margin: 0; color: var(--ma-oxblood); font-family: var(--ma-display); font-size: 1.125rem; font-style: italic; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: ma-ghost-rise 2.4s ease-out forwards; }
       .ma-bubble { position: absolute; bottom: 0; border: 1px solid var(--ma-champagne); border-radius: 50%; background: rgba(216, 192, 138, .25); opacity: 0; animation: ma-bubble-rise 1.6s ease-out forwards; }
-      @keyframes ma-ghost-rise { from { opacity: .9; transform: translateY(0); } to { opacity: 0; transform: translateY(-110px); } }
+      @keyframes ma-ghost-rise { from { opacity: .9; transform: translateY(0); } to { opacity: 0; transform: translateY(-3.5rem); } }
       @keyframes ma-bubble-rise { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: .9; } 100% { opacity: 0; transform: translateY(var(--ma-rise)); } }
       @media (max-width: 767px) {
         .ma-cover-frame { grid-template-rows: auto 1fr auto; gap: 2rem; }

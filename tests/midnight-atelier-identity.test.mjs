@@ -670,7 +670,11 @@ test("wish bubbles are decorative, leave once risen, never replay, add no wish c
   const sheet = css();
   assert.match(rules(sheet, ".ma-wish-rise").join(";"), /pointer-events:\s*none/);
   assert.match(rules(sheet, ".ma-wish-rise").join(";"), /left:\s*0/);
-  assert.match(rules(sheet, ".ma-wish-ghost").join(";"), /overflow-wrap:\s*anywhere/);
+  // A long wish stays one ellipsised line inside its own clipped band above
+  // the thank-you, so it never drifts over the section heading.
+  assert.match(rules(sheet, ".ma-wish-ghost").join(";"), /white-space:\s*nowrap;\s*overflow:\s*hidden;\s*text-overflow:\s*ellipsis/);
+  assert.match(rules(sheet, ".ma-wish-rise").join(";"), /top:\s*0;[^}]*height:\s*5rem;\s*overflow:\s*hidden/);
+  assert.match(rules(sheet, ".ma-wish-sent").join(";"), /padding-top:\s*5rem/);
   for (const name of ["ma-ghost-rise", "ma-bubble-rise"]) {
     const body = sheet.match(new RegExp(`@keyframes ${name}\\s*\\{((?:[^{}]*\\{[^}]*\\})*)\\s*\\}`))?.[1];
     assert.ok(body, `@keyframes ${name}`);
