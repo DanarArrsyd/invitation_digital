@@ -665,15 +665,15 @@ export function ThemeStyles() {
         min-height: 48px;
         place-items: center;
         align-content: center;
-        gap: .05rem;
+        gap: .2rem;
         padding: .35rem .7rem;
         color: inherit;
         text-decoration: none;
       }
-      .ma-nav a span:first-child { color: var(--ma-oxblood); font-size: .62rem; font-variant-numeric: tabular-nums; }
-      .ma-nav a span:last-child { font-size: .72rem; }
+      .ma-nav-icon { display: block; width: 20px; height: 20px; flex: none; color: var(--ma-oxblood); }
+      .ma-nav-label { font-size: .72rem; line-height: 1.1; white-space: nowrap; }
       .ma-nav a[aria-current="location"] { background: var(--ma-ink); color: var(--ma-pearl); }
-      .ma-nav a[aria-current="location"] span:first-child { color: var(--ma-champagne); }
+      .ma-nav a[aria-current="location"] .ma-nav-icon { color: var(--ma-champagne); }
       .ma-music {
         position: fixed;
         z-index: 31;
@@ -721,7 +721,7 @@ export function ThemeStyles() {
           transform: translateY(-50%);
         }
         .ma-nav ul { max-height: min(76vh, 38rem); flex-direction: column; overflow-x: hidden; overflow-y: auto; }
-        .ma-nav a { grid-template-columns: 1.5rem minmax(0, 1fr); min-width: 8.5rem; justify-items: start; text-align: left; }
+        .ma-nav a { grid-template-columns: 20px minmax(0, 1fr); min-width: 8.5rem; align-items: center; justify-items: start; column-gap: .65rem; text-align: left; }
         .ma-music { top: max(1.25rem, env(safe-area-inset-top)); bottom: auto; }
         .ma-quote-inner { grid-template-columns: 5rem minmax(0, 1fr); }
         .ma-people { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: clamp(2.5rem, 6vw, 6rem); }

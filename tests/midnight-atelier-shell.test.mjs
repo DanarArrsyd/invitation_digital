@@ -140,6 +140,59 @@ test("navigation candidates require both enabled features and available content"
   assert.deepEqual(Array.from(buildMidnightNavItems(empty), (item) => item.id), ["ma-beranda"]);
 });
 
+test("every navigation section key has a thin art-deco icon", () => {
+  const { buildMidnightNavItems } = loadTheme().load("themes/midnight-atelier/MidnightAtelier");
+  const { NavIcon } = loadTheme().load("themes/midnight-atelier/components/NavIcon");
+  const sections = Array.from(buildMidnightNavItems(fixture()), (item) => item.section);
+  assert.deepEqual(sections, ["hero", "couple", "events", "story", "gallery", "rsvp", "wishes", "gift"]);
+  const markup = new Set();
+  for (const section of sections) {
+    const html = renderToStaticMarkup(React.createElement(NavIcon, { section }));
+    const svg = new JSDOM(html).window.document.querySelector("svg");
+    assert.ok(svg, `${section} renders an svg`);
+    assert.equal(svg.getAttribute("viewBox"), "0 0 24 24", section);
+    assert.equal(svg.getAttribute("aria-hidden"), "true", section);
+    assert.equal(svg.getAttribute("focusable"), "false", section);
+    assert.equal(svg.getAttribute("stroke"), "currentColor", section);
+    assert.equal(svg.getAttribute("stroke-linejoin"), "miter", section);
+    assert.ok(svg.querySelector("path, rect, circle, line, polyline, ellipse"), `${section} draws a glyph`);
+    markup.add(svg.innerHTML);
+  }
+  assert.equal(markup.size, sections.length, "each section has a distinct glyph");
+});
+
+test("opened navigation shows one hidden icon plus a visible label and no numeric index", async () => {
+  const view = await mountShell({}, fixture());
+  try {
+    const { document } = view;
+    await act(async () => document.querySelector(".ma-cover-open").click());
+    const links = [...document.querySelectorAll(".ma-nav a")];
+    assert.deepEqual(links.map((link) => link.textContent), [
+      "Beranda", "Mempelai", "Acara", "Cerita", "Galeri", "RSVP", "Ucapan", "Kado",
+    ]);
+    for (const link of links) {
+      const icons = link.querySelectorAll("svg");
+      assert.equal(icons.length, 1, `${link.textContent} has one icon`);
+      assert.equal(icons[0].getAttribute("aria-hidden"), "true");
+      assert.equal(icons[0].getAttribute("focusable"), "false");
+      assert.doesNotMatch(link.textContent, /\d/, "no numeric index");
+      assert.ok(link.querySelector(".ma-nav-label")?.textContent, "label stays visible text");
+    }
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("navigation CSS stacks icons on mobile and sets them beside labels on the desktop rail", () => {
+  const document = new JSDOM(renderShell()).window.document;
+  const css = document.querySelector("style")?.textContent ?? "";
+  assert.match(css, /\.ma-nav a\s*\{[^}]*min-height:\s*48px/s);
+  assert.match(css, /\.ma-nav-icon\s*\{[^}]*width:\s*(?:1[89]|20)px/s);
+  assert.match(css, /\.ma-nav a\[aria-current="location"\] \.ma-nav-icon\s*\{[^}]*color:\s*var\(--ma-champagne\)/s);
+  assert.match(css, /@media\s*\(min-width:\s*768px\)[\s\S]*\.ma-nav a\s*\{[^}]*grid-template-columns:\s*(?:1[89]|20)px/);
+  assert.doesNotMatch(css, /\.ma-nav a span:first-child/, "numeric index styling is gone");
+});
+
 for (const width of [390, 1440]) {
   test(`cover opens, tracks, focuses, and recovers from rejected audio at ${width}px`, async () => {
     const calls = [];

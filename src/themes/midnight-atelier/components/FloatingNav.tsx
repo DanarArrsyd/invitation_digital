@@ -2,12 +2,13 @@
 
 import { useMemo } from "react";
 
-import type { ThemeSectionKey } from "@/themes/section-contract";
 import { useActiveSection } from "@/themes/shared/use-active-section";
+
+import { NavIcon, type MidnightNavSection } from "./NavIcon";
 
 export interface NavItem {
   id: `ma-${string}`;
-  section: ThemeSectionKey;
+  section: MidnightNavSection;
   label: string;
 }
 
@@ -25,11 +26,11 @@ export function FloatingNav({ items }: { items: NavItem[] }) {
   return (
     <nav className="ma-nav" aria-label="Navigasi undangan">
       <ul>
-        {mountedItems.map((item, index) => (
+        {mountedItems.map((item) => (
           <li key={item.id}>
             <a href={`#${item.id}`} aria-current={activeId === item.id ? "location" : undefined}>
-              <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-              <span>{item.label}</span>
+              <NavIcon section={item.section} className="ma-nav-icon" />
+              <span className="ma-nav-label">{item.label}</span>
             </a>
           </li>
         ))}
