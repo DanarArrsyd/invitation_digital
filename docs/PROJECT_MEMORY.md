@@ -123,6 +123,13 @@ Key boundaries:
     and public data normalizes stored roles to lowercase keys; themes label
     parents "Putri dari"/"Putra dari" from them. Name headings are never
     capped by a `ch` reading measure.
+  - Mobile responsive UI rules (DESIGN.md §9 and §12a): the bottom nav holds
+    at most 5 items picked by `pickNavItems` (`themes/shared/nav-priority.ts`),
+    spans the width with equal items, never scrolls sideways, icon
+    `clamp(18px, 5.2vw, 22px)` over a label of at least 11px, items at least
+    52px tall, safe-area offsets, and content reserves bottom space for it.
+  - Hero: the pre-wedding photo is 3:4 in every template; on mobile the title
+    block comes first and the photo below it.
 - `listActiveThemes()` remains the admin theme source. The registry is not an
   admin catalogue and no second theme list should be introduced.
 
