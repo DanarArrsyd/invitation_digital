@@ -1,6 +1,6 @@
 "use client";
 
-import { FileHeart, LayoutDashboard, LogOut } from "lucide-react";
+import { ArrowLeft, FileHeart, LayoutDashboard, LogOut, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -18,48 +18,15 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
+import { EDITOR_GROUPS, editingInvitationId } from "./editor-sections";
+
+export { editingInvitationId } from "./editor-sections";
+
 const MAIN_NAV = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/invitations", label: "Undangan", icon: FileHeart },
+  { href: "/admin/invitations/new", label: "Undangan baru", icon: Plus },
 ] as const;
-
-const EDITOR_GROUPS = [
-  {
-    label: "Konten",
-    sections: [
-      { slug: "general", label: "Umum" },
-      { slug: "people", label: "Mempelai" },
-      { slug: "events", label: "Acara" },
-      { slug: "content", label: "Teks & Cerita" },
-      { slug: "features", label: "Fitur" },
-    ],
-  },
-  {
-    label: "Media & Hadiah",
-    sections: [
-      { slug: "gallery", label: "Galeri" },
-      { slug: "gifts", label: "Rekening Hadiah" },
-    ],
-  },
-  {
-    label: "Tamu & Respons",
-    sections: [
-      { slug: "guests", label: "Tamu" },
-      { slug: "responses", label: "RSVP & Ucapan" },
-    ],
-  },
-  {
-    label: "Publikasi",
-    sections: [{ slug: "publish", label: "Publikasi" }],
-  },
-] as const;
-
-/** `/admin/invitations/<id>/<section>` → its id, unless it is the "new" form. */
-export function editingInvitationId(pathname: string): string | null {
-  const match = pathname.match(/^\/admin\/invitations\/([^/]+)(?:\/|$)/);
-  if (!match || match[1] === "new") return null;
-  return match[1];
-}
 
 /**
  * One navigation surface for the whole admin. Opening an invitation adds
@@ -84,27 +51,26 @@ export function AppSidebar({
 
   return (
     <Sidebar collapsible="offcanvas">
-      <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
-        <Link
-          href="/admin/dashboard"
-          onClick={closeOnMobile}
-          className="text-sm font-semibold text-sidebar-foreground"
-        >
-          Invitation Admin
+      <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
+        <Link href="/admin/dashboard" onClick={closeOnMobile} className="flex items-center gap-3">
+          <span className="flex size-9 shrink-0 items-center justify-center border border-white/30 text-xs font-semibold tracking-[-0.03em] text-white">
+            IP
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-sm font-medium text-white">Invitation Platform</span>
+            <span className="block truncate text-xs text-white/55">Ruang kerja pengelola</span>
+          </span>
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="py-2">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               {MAIN_NAV.map(({ href, label, icon: Icon }) => {
-                // "Undangan" stays highlighted on the list and the create form;
-                // inside an invitation the editor section carries the highlight.
+                // Inside an invitation the editor section carries the highlight.
                 const isActive =
-                  href === "/admin/invitations"
-                    ? pathname === href || pathname === "/admin/invitations/new"
-                    : pathname.startsWith(href);
+                  href === "/admin/invitations" ? pathname === href : pathname.startsWith(href);
                 return (
                   <SidebarMenuItem key={href}>
                     <SidebarMenuButton
@@ -121,21 +87,29 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {invitationId
-          ? EDITOR_GROUPS.map((group) => (
+        {invitationId ? (
+          <>
+            <div className="mx-4 mt-2 flex items-center gap-2 border-t border-sidebar-border pt-4 text-xs text-white/55">
+              <ArrowLeft aria-hidden="true" className="size-3.5" />
+              <Link href="/admin/invitations" onClick={closeOnMobile} className="hover:text-white">
+                Sedang mengedit undangan
+              </Link>
+            </div>
+            {EDITOR_GROUPS.map((group) => (
               <SidebarGroup key={group.label}>
-                <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+                <SidebarGroupLabel className="text-white/45">{group.label}</SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {group.sections.map((section) => {
-                      const href = `/admin/invitations/${invitationId}/${section.slug}`;
+                    {group.sections.map(({ slug, label, icon: Icon }) => {
+                      const href = `/admin/invitations/${invitationId}/${slug}`;
                       return (
-                        <SidebarMenuItem key={section.slug}>
+                        <SidebarMenuItem key={slug}>
                           <SidebarMenuButton
                             render={<Link href={href} onClick={closeOnMobile} />}
                             isActive={pathname === href}
                           >
-                            {section.label}
+                            <Icon aria-hidden="true" />
+                            <span>{label}</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       );
@@ -143,15 +117,24 @@ export function AppSidebar({
                   </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>
-            ))
-          : null}
+            ))}
+          </>
+        ) : null}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border">
+      <SidebarFooter className="border-t border-sidebar-border p-3">
         {userEmail ? (
-          <p className="truncate px-2 text-xs text-muted-foreground" title={userEmail}>
-            {userEmail}
-          </p>
+          <div className="flex items-center gap-3 px-1 py-1">
+            <span
+              aria-hidden="true"
+              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-semibold uppercase text-white"
+            >
+              {userEmail.charAt(0)}
+            </span>
+            <p className="min-w-0 truncate text-xs text-white/70" title={userEmail}>
+              {userEmail}
+            </p>
+          </div>
         ) : null}
         <form action={logoutAction}>
           <SidebarMenuButton type="submit">
