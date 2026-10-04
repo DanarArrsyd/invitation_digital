@@ -1,3 +1,4 @@
+import { pickNavItems, type NavSectionKey } from "@/themes/shared/nav-priority";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
@@ -20,9 +21,13 @@ import { StorySection } from "./sections/StorySection";
 import { WishesSection } from "./sections/WishesSection";
 import { ThemeStyles } from "./ThemeStyles";
 
+type CobaltRouteCandidate = RivieraRouteItem & { section: NavSectionKey };
+
+// Every candidate already uses a NavSectionKey, so none is remapped or dropped
+// before the shared five-item priority picks the bottom-bar stops.
 export function buildCobaltRouteItems(invitation: PublicInvitation): RivieraRouteItem[] {
   const { features } = invitation;
-  const candidates: (RivieraRouteItem | null)[] = [
+  const candidates: (CobaltRouteCandidate | null)[] = [
     { id: "cr-beranda", section: "hero", label: "Beranda" },
     invitation.people.length > 0 ? { id: "cr-mempelai", section: "couple", label: "Mempelai" } : null,
     invitation.events.length > 0 ? { id: "cr-acara", section: "events", label: "Acara" } : null,
@@ -32,7 +37,7 @@ export function buildCobaltRouteItems(invitation: PublicInvitation): RivieraRout
     features.wishes ? { id: "cr-ucapan", section: "wishes", label: "Ucapan" } : null,
     features.gift && invitation.gifts.length > 0 ? { id: "cr-kado", section: "gift", label: "Kado" } : null,
   ];
-  return candidates.filter((item): item is RivieraRouteItem => item !== null);
+  return pickNavItems(candidates.filter((item): item is CobaltRouteCandidate => item !== null));
 }
 
 export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
