@@ -55,7 +55,7 @@ export function CoupleSection({ people, settings, invitationType }: {
 
               <div className="cr-person-copy">
                 <p className="cr-person-route">{String(index + 1).padStart(2, "0")} / Riviera</p>
-                <h3>{person.fullName}</h3>
+                <h3 className="cr-script">{person.fullName}</h3>
                 {parents.length > 0 ? (
                   <div className="cr-parents">
                     <p>{parentLabel(person.role)}</p>

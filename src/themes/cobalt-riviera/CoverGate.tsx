@@ -76,11 +76,11 @@ export function CoverGate({
 
           <div className="cr-cover-stage">
             <p className="cr-cover-intro">The wedding of</p>
-            <h1 className="cr-cover-names">
+            <h1 className="cr-cover-names cr-script">
               {names.length === 2 ? (
                 <>
                   <span>{names[0]}</span>
-                  <span className="cr-cover-amp">+</span>
+                  <span className="cr-cover-amp">&amp;</span>
                   <span>{names[1]}</span>
                 </>
               ) : displayName}

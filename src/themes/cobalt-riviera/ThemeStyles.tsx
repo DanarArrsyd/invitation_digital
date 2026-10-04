@@ -105,15 +105,12 @@ export function ThemeStyles() {
         flex-wrap: wrap;
         align-items: baseline;
         gap: .05em .2em;
-        font-family: var(--cr-label);
-        font-size: clamp(3.15rem, 17vw, 10rem);
-        font-variation-settings: "wght" 640;
-        letter-spacing: -.065em;
-        line-height: .78;
+        font-size: clamp(3.75rem, 19vw, 10.5rem);
+        line-height: 1;
         overflow-wrap: anywhere;
       }
       .cr-cover-names > span { min-width: 0; overflow-wrap: anywhere; }
-      .cr-cover-amp { color: var(--cr-citron); font-size: .48em; letter-spacing: 0; }
+      .cr-cover-amp { color: var(--cr-citron); font-family: var(--cr-text); font-size: .42em; font-style: italic; font-weight: 400; }
       .cr-cover-stage time {
         display: block;
         margin-top: clamp(1rem, 3svh, 2rem);
@@ -327,11 +324,8 @@ export function ThemeStyles() {
         margin: 0;
         overflow: hidden;
         color: var(--cr-porcelain);
-        font-family: var(--cr-label);
-        font-size: clamp(4.5rem, 19vw, 15rem);
-        font-variation-settings: "wght" 690;
-        letter-spacing: -.075em;
-        line-height: .7;
+        font-size: clamp(4.5rem, 20vw, 15rem);
+        line-height: .95;
         overflow-wrap: anywhere;
         text-overflow: clip;
       }
@@ -360,15 +354,15 @@ export function ThemeStyles() {
         letter-spacing: .12em;
         text-transform: uppercase;
       }
-      .cr-hero-copy h2, .cr-chapter-heading h2, .cr-person-copy h3, .cr-closing-copy h2 {
+      .cr-chapter-heading h2 { margin: 0; overflow-wrap: anywhere; }
+      /* Couple names: Corinthia signatures in a full column, balanced wrap. */
+      .cr-hero-copy h2, .cr-person-copy h3, .cr-closing-copy h2 {
         margin: 0;
-        font-family: var(--cr-label);
-        font-variation-settings: "wght" 620;
-        letter-spacing: -.055em;
-        line-height: .86;
+        line-height: 1.05;
         overflow-wrap: anywhere;
+        text-wrap: balance;
       }
-      .cr-hero-copy h2 { max-width: 11ch; font-size: clamp(3rem, 14vw, 9rem); }
+      .cr-hero-copy h2 { font-size: clamp(3.75rem, 17vw, 9.5rem); }
       .cr-hero-copy time {
         font-family: var(--cr-label);
         font-size: .78rem;
@@ -434,7 +428,7 @@ export function ThemeStyles() {
         border: 1px solid var(--cr-sea-ink);
         background: var(--cr-pool);
         color: var(--cr-cobalt);
-        font: 620 clamp(6rem, 32vw, 15rem)/.7 var(--cr-label);
+        font: 700 clamp(7rem, 36vw, 16rem)/.9 var(--cr-script);
         overflow: hidden;
       }
       .cr-person-copy {
@@ -444,7 +438,7 @@ export function ThemeStyles() {
         gap: 1.25rem;
         overflow-wrap: anywhere;
       }
-      .cr-person-copy h3 { color: var(--cr-cobalt); font-size: clamp(2.6rem, 9vw, 6.5rem); }
+      .cr-person-copy h3 { color: var(--cr-cobalt); font-size: clamp(3rem, 11vw, 6.5rem); }
       .cr-parents { display: grid; gap: .3rem; border-top: 1px solid var(--cr-sea-ink); padding-top: 1rem; }
       .cr-parents p { margin: 0; }
       .cr-parents p:first-child {
@@ -877,7 +871,7 @@ export function ThemeStyles() {
         align-content: center;
         gap: 1.5rem;
       }
-      .cr-closing-copy h2 { max-width: 11ch; font-size: clamp(3rem, 12vw, 8rem); }
+      .cr-closing-copy h2 { font-size: clamp(3.5rem, 14vw, 8.5rem); }
       .cr-closing-copy > p:not(:first-child) { max-width: 48ch; margin: 0; font-size: 1.1rem; line-height: 1.6; }
       .cr-closing-horizon {
         display: grid;
@@ -977,7 +971,7 @@ export function ThemeStyles() {
           padding-bottom: 0;
         }
         .cr-hero-photo .cr-hero-copy { grid-column: 1; grid-row: 2; padding-bottom: clamp(2rem, 7vw, 6rem); }
-        .cr-hero-photo .cr-hero-copy h2 { font-size: clamp(3rem, 8vw, 6.5rem); }
+        .cr-hero-photo .cr-hero-copy h2 { font-size: clamp(3.5rem, 8.5vw, 7rem); }
         .cr-hero-photo .cr-hero-image {
           width: min(calc(100% - var(--cr-hero-gutter)), max(14rem, calc((100svh - 8rem) * .75)));
           margin: clamp(1.5rem, 4vw, 3rem) var(--cr-hero-gutter) clamp(1.5rem, 4vw, 3rem) 0;

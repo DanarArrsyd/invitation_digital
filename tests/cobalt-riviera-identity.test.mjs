@@ -227,3 +227,29 @@ test("text on the porcelain chapters stays AA at every point of the morning-to-s
     assert.ok(contrast(c.cobalt, sky) >= 3, "the focus ring on porcelain chapters stays at least 3:1");
   }
 });
+
+test("couple names are Corinthia signatures and chapter titles stay Newsreader italic", () => {
+  const { CobaltRiviera } = createLoader()("index");
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(CobaltRiviera, { invitation: invitation(), guest: null }))).window;
+  const cover = document.querySelector("#cr-cover h1");
+  assert.ok(cover.classList.contains("cr-script"));
+  assert.match(cover.textContent, /Nadia.*&.*Arka/s, "the names are joined by an ampersand");
+  for (const id of ["cr-hero-heading", "cr-closing-heading"]) {
+    assert.ok(document.getElementById(id).classList.contains("cr-script"), `${id} is script`);
+  }
+  const people = [...document.querySelectorAll(".cr-person-copy h3")];
+  assert.equal(people.length, 2);
+  for (const name of people) assert.ok(name.classList.contains("cr-script"));
+  const chapters = [...document.querySelectorAll("#cr-content section h2")].filter((title) => !title.classList.contains("cr-script"));
+  assert.ok(chapters.length >= 4, `${chapters.length} chapter titles stay Newsreader`);
+
+  const sheet = css();
+  for (const selector of [".cr-hero-copy h2", ".cr-person-copy h3", ".cr-closing-copy h2", ".cr-cover-names", ".cr-hero-horizon-name"]) {
+    for (const body of rules(sheet, selector)) {
+      assert.doesNotMatch(body, /max-width:\s*[\d.]+ch/, `${selector} is a name: never capped by a ch measure`);
+      assert.doesNotMatch(body, /letter-spacing:\s*-/, `${selector}: script needs no negative tracking`);
+    }
+  }
+  assert.match(sheet, /\.cr-cover-amp\s*\{[^}]*font-family:\s*var\(--cr-text\)[^}]*font-style:\s*italic/, "the ampersand is a Newsreader italic accent");
+  assert.match(sheet, /\.cr-person-monogram\s*\{[^}]*font:\s*700 [^;]*var\(--cr-script\)/, "a missing portrait shows a script initial");
+});
