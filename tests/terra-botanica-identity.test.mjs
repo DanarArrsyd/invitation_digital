@@ -349,3 +349,11 @@ test("every action and form label wears the Courier specimen voice", () => {
     assert.ok(rule[1].includes(selector), `${selector} uses Courier`);
   }
 });
+
+test("a text-only couple keeps full-width names instead of a shrunken far-edge column", () => {
+  const css = styles();
+  assert.match(css, /\.tb-person-copy > :not\(h3\) \{ max-width: 42ch; \}/, "measure limits copy, not the name");
+  assert.doesNotMatch(css, /\.tb-person-copy \{[^}]*max-width/);
+  assert.match(css, /\.tb-person-text-only \{ display: block; width: min\(100%, 44rem\); \}/);
+  assert.doesNotMatch(css, /\.tb-person-text-only:nth-child\(even\) \{ margin-left: auto; \}/);
+});

@@ -1,10 +1,11 @@
 import { z } from "zod";
+import { PERSON_ROLES } from "@/lib/invitations/person-role";
 import { normalizeInstagramProfile } from "@/lib/utils/instagram";
 
 export const upsertPersonSchema = z.object({
   id: z.string().uuid().optional().or(z.literal("")),
   invitationId: z.string().uuid(),
-  role: z.string().trim().min(1, "Role wajib diisi").max(50),
+  role: z.string().trim().toLowerCase().pipe(z.enum(PERSON_ROLES, { message: "Pilih peran." })),
   fullName: z.string().trim().min(1, "Nama wajib diisi").max(200),
   nickname: z.string().trim().max(100).optional().or(z.literal("")),
   fatherName: z.string().trim().max(200).optional().or(z.literal("")),

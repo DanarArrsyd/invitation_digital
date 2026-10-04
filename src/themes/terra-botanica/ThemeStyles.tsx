@@ -120,8 +120,11 @@ export function ThemeStyles() {
     .tb-theme .tb-person-portrait { width: 88%; }
     .tb-theme .tb-person:nth-child(even) .tb-person-portrait { margin-left: auto; border-radius: 0 25% 0 0; }
     .tb-theme .tb-person:first-child .tb-person-portrait { border-radius: 25% 0 0 0; }
-    .tb-theme .tb-person-copy { min-width: 0; max-width: 42ch; }
-    .tb-theme .tb-person-copy h3 { font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1.1; letter-spacing: 0; }
+    /* The reading measure applies to the parents and bio, not the script name,
+       so a long name keeps the full column instead of wrapping at ~40ch. */
+    .tb-theme .tb-person-copy { min-width: 0; }
+    .tb-theme .tb-person-copy > :not(h3) { max-width: 42ch; }
+    .tb-theme .tb-person-copy h3 { font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1.1; letter-spacing: 0; overflow-wrap: anywhere; text-wrap: balance; }
     .tb-theme .tb-parents { margin-top: 1.5rem; }
     .tb-theme .tb-parents > p:first-child { font-size: .875rem; margin-bottom: .35rem; }
     .tb-theme .tb-parents > p:last-child > span { display: block; }
@@ -270,8 +273,10 @@ export function ThemeStyles() {
       .tb-theme .tb-person-portrait { width: 100%; }
       .tb-theme .tb-person:nth-child(even) .tb-person-portrait { grid-column: 2; grid-row: 1; }
       .tb-theme .tb-person:nth-child(even) .tb-person-copy { grid-column: 1; grid-row: 1; padding-left: 10%; }
-      .tb-theme .tb-person-text-only { display: block; max-width: 48rem; }
-      .tb-theme .tb-person-text-only:nth-child(even) { margin-left: auto; }
+      /* Explicit width: an auto margin would shrink a grid item to its content
+         and push the second person into a narrow column at the far edge. */
+      .tb-theme .tb-person-text-only { display: block; width: min(100%, 44rem); }
+      .tb-theme .tb-person-text-only:nth-child(even) { justify-self: end; }
       .tb-theme .tb-story-entry { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(2.5rem, 6vw, 6rem); }
       .tb-theme .tb-story-entry:nth-child(even) .tb-media { grid-column: 2; grid-row: 1; }
       .tb-theme .tb-story-entry:nth-child(even) .tb-story-copy { grid-column: 1; grid-row: 1; }

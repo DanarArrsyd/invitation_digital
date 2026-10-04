@@ -5,6 +5,7 @@ import {
   resolveEffectiveInvitationFeatures,
   type PackageKey,
 } from "@/lib/packages/entitlements";
+import { normalizePersonRole } from "@/lib/invitations/person-role";
 import { resolveInvitationTimeZone } from "@/lib/invitations/time-zones";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import type { Database, Tables } from "@/types/database";
@@ -115,7 +116,7 @@ export async function loadNormalizedInvitation(
 
     people: (peopleRes.data ?? []).map((p) => ({
       id: p.id,
-      role: p.role as PublicInvitation["people"][number]["role"],
+      role: normalizePersonRole(p.role) as PublicInvitation["people"][number]["role"],
       fullName: p.full_name,
       nickname: p.nickname,
       fatherName: p.father_name,
