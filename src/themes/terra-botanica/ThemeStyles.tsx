@@ -236,6 +236,12 @@ export function ThemeStyles() {
     .tb-theme .tb-vine-stem { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--tb-progress)); }
     .tb-theme .tb-vine-leaf { fill: currentColor; transform-box: fill-box; transform-origin: center; transform: scale(clamp(0, (var(--tb-progress) - var(--tb-at)) * 12, 1)); }
     .tb-theme .tb-vine-flower { fill: var(--tb-clay); }
+    /* Typewriter labels: hidden only once the observer is armed, then revealed
+       one character step at a time. */
+    .tb-theme .tb-typed { display: inline-block; max-width: 100%; }
+    .tb-theme .tb-typed[data-typed="waiting"] { clip-path: inset(0 100% 0 0); }
+    .tb-theme .tb-typed[data-typed="typed"] { animation: tb-type calc(var(--tb-chars) * 38ms) steps(var(--tb-chars), end) both; }
+    @keyframes tb-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
     @media (min-width: 768px) {
       .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; }
       .tb-theme .tb-wishes > .tb-section-inner { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: start; }
@@ -271,6 +277,7 @@ export function ThemeStyles() {
       .tb-theme *, .tb-theme *::before, .tb-theme *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
       .tb-theme .tb-cover, .tb-theme .tb-gate[data-opened="true"] .tb-cover { transform: none; }
       .tb-theme .tb-vine { --tb-progress: 1 !important; }
+      .tb-theme .tb-typed[data-typed] { clip-path: none !important; }
     }
 
       /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */

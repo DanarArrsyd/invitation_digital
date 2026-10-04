@@ -222,3 +222,35 @@ test("a vine along the page edge grows with scroll progress", async () => {
   assert.match(css, /\.tb-vine-stem\s*\{[^}]*stroke-dashoffset:\s*calc\(1 - var\(--tb-progress\)\)/);
   assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tb-vine\s*\{\s*--tb-progress:\s*1 !important/);
 });
+
+test("specimen labels type out once in view and keep their full text for readers", async () => {
+  const { EventsSection } = createLoader()("sections/EventsSection");
+  const event = invitation().events[0];
+  const props = { events: [event], mapsEnabled: false, coupleDisplayName: "Alya & Bima", invitationId: "terra", timeZone: "Asia/Jakarta" };
+
+  const idle = await mount(React.createElement(EventsSection, props));
+  try {
+    const labels = idle.document.querySelectorAll(".tb-typed");
+    assert.equal(labels.length, 2, "date and time are typed labels");
+    for (const label of labels) assert.equal(label.dataset.typed, "idle", "no observer: stays fully visible");
+    assert.match(idle.document.querySelector(".tb-event-time").textContent, /10:00\s*–\s*12:00 WIB/);
+  } finally { await idle.cleanup(); }
+
+  FakeIntersectionObserver.instances = [];
+  const watched = await mount(React.createElement(EventsSection, props), { intersectionObserver: FakeIntersectionObserver });
+  try {
+    const time = watched.document.querySelector(".tb-event-time .tb-typed");
+    assert.equal(time.dataset.typed, "waiting");
+    assert.equal(time.style.getPropertyValue("--tb-chars"), String(time.textContent.length));
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger()));
+    assert.equal(time.dataset.typed, "typed");
+  } finally { await watched.cleanup(); }
+
+  const { StorySection } = createLoader()("sections/StorySection");
+  const story = new JSDOM(renderToStaticMarkup(React.createElement(StorySection, { stories: invitation().stories }))).window.document;
+  assert.equal(story.querySelector(".tb-story-date .tb-typed").textContent, "2021");
+
+  const css = styles();
+  assert.match(css, /\.tb-typed\[data-typed="typed"\]\s*\{[^}]*steps\(var\(--tb-chars\)/);
+  assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tb-typed\[data-typed\]\s*\{\s*clip-path:\s*none !important/);
+});

@@ -6,6 +6,7 @@ import { GALLERY_ASPECT_RATIO_CSS, type GalleryItem } from "@/types/invitation";
 import { EditorialImage } from "../components/EditorialImage";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
+import { TypedText } from "../components/TypedText";
 
 export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[]; displayName: string }) {
   const lightbox = useGalleryLightbox(gallery.length);
@@ -32,7 +33,7 @@ export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[
                   aspectRatio={GALLERY_ASPECT_RATIO_CSS[item.aspectRatio]}
                 />
               </button>
-              {item.caption?.trim() ? <figcaption>{item.caption}</figcaption> : null}
+              {item.caption?.trim() ? <figcaption><TypedText text={item.caption} /></figcaption> : null}
             </figure>
           );
         })}

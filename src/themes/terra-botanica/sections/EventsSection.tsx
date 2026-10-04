@@ -11,6 +11,7 @@ import { usableExternalUrl } from "@/themes/shared/external-url";
 import { AddToCalendar } from "../components/AddToCalendar";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
+import { TypedText } from "../components/TypedText";
 
 export function EventsSection({ events, mapsEnabled, coupleDisplayName, invitationId, timeZone }: {
   events: InvitationEvent[];
@@ -38,8 +39,8 @@ export function EventsSection({ events, mapsEnabled, coupleDisplayName, invitati
               <div className="tb-event-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</div>
               <div className="tb-event-main">
                 <h3>{event.title}</h3>
-                {dateIsValid ? <time dateTime={event.eventDate}>{new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${event.eventDate}T00:00:00Z`))}</time> : null}
-                {start ? <p className="tb-event-time">{start}{end ? ` – ${end}` : ""} {timeZoneLabel(timeZone)}</p> : null}
+                {dateIsValid ? <time dateTime={event.eventDate}><TypedText text={new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${event.eventDate}T00:00:00Z`))} /></time> : null}
+                {start ? <p className="tb-event-time"><TypedText text={`${start}${end ? ` – ${end}` : ""} ${timeZoneLabel(timeZone)}`} /></p> : null}
               </div>
               <div className="tb-event-place">
                 {event.venueName ? <p className="tb-event-venue">{event.venueName}</p> : null}
