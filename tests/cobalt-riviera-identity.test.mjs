@@ -494,3 +494,61 @@ test("only the porcelain chapters turn transparent, and their text uses colours 
     }
   }
 });
+
+async function rsvp({ guestName = "Bude Sri", choose, changeTo = null, typedName = null }) {
+  let resolve;
+  const { RsvpSection } = createLoader({ actions: { submitRsvp: () => new Promise((done) => { resolve = done; }) } })("sections/RsvpSection");
+  const view = await mount(React.createElement(RsvpSection, { invitationId: "cobalt", slug: "cobalt", guestToken: "t", guestName }));
+  const form = view.document.querySelector("#cr-rsvp form");
+  if (typedName) form.elements.namedItem("guestName").value = typedName;
+  await act(async () => pick(form, choose).click());
+  await submit(view, form);
+  if (changeTo) await act(async () => pick(form, changeTo).click());
+  await act(async () => { resolve({ status: "success" }); });
+  return view;
+}
+
+test("a confirmed RSVP is stamped with an orange 'Diterima' postmark beside the thank-you", async () => {
+  const attending = await rsvp({ choose: "Hadir" });
+  try {
+    const sheetEl = attending.document.querySelector("#cr-rsvp .cr-rsvp-sheet");
+    const status = sheetEl.querySelector('[role="status"]');
+    assert.match(status.textContent, /Terima kasih\..*Konfirmasi kehadiran Anda telah kami terima/s);
+    const mark = sheetEl.querySelector("[data-cr-postmark]");
+    assert.ok(mark, "the postmark is stamped");
+    assert.equal(mark.getAttribute("aria-hidden"), "true", "the status text carries the message");
+    assert.equal(status.contains(mark), false, "the postmark is never inside the confirmation");
+    assert.ok(status.compareDocumentPosition(mark) & 4, "it follows the confirmation in reading order");
+    assert.deepEqual([...mark.querySelectorAll("text")].map((text) => text.textContent), ["DITERIMA", "HADIR"]);
+    assert.ok(mark.querySelectorAll("*").length <= 20);
+  } finally { await attending.cleanup(); }
+
+  const declined = await rsvp({ choose: "Tidak Hadir" });
+  try {
+    assert.match(declined.document.querySelector('#cr-rsvp [role="status"]').textContent, /Terima kasih/);
+    assert.deepEqual([...declined.document.querySelectorAll("[data-cr-postmark] text")].map((text) => text.textContent), ["DITERIMA", "TIDAK HADIR"]);
+  } finally { await declined.cleanup(); }
+
+  const sheet = css();
+  for (const body of rules(sheet, ".cr-postmark")) {
+    assert.doesNotMatch(body, /position:\s*(absolute|fixed)/, "the postmark takes its own row and never overlaps the text");
+  }
+  assert.match(rules(sheet, ".cr-postmark").join(";"), /animation:\s*cr-stamp[^;]*both/, "at rest (and under reduced motion) the stamp shows");
+  assert.match(sheet, /@keyframes cr-stamp\s*\{\s*0%\s*\{\s*opacity:\s*0;\s*transform:/);
+  assert.match(sheet, /\.cr-postmark text\s*\{[^}]*fill:\s*var\(--cr-tangerine-ink\)/);
+  assert.match(sheet, /\.cr-postmark-ring\s*\{[^}]*stroke:\s*var\(--cr-tangerine\)/, "the ring is jeruk orange");
+  const c = tokens();
+  assert.ok(contrast(c.tangerineInk, c.porcelain) >= 4.5, "the postmark lettering is AA on the porcelain card");
+});
+
+test("the postmark names the attendance that was submitted, not a choice changed while sending", async () => {
+  const accepted = await rsvp({ choose: "Hadir", changeTo: "Tidak Hadir" });
+  try {
+    assert.equal(accepted.document.querySelectorAll("[data-cr-postmark] text")[1].textContent, "HADIR", "a stored acceptance reads HADIR");
+  } finally { await accepted.cleanup(); }
+
+  const declined = await rsvp({ choose: "Tidak Hadir", changeTo: "Hadir" });
+  try {
+    assert.equal(declined.document.querySelectorAll("[data-cr-postmark] text")[1].textContent, "TIDAK HADIR", "a stored decline never reads HADIR");
+  } finally { await declined.cleanup(); }
+});

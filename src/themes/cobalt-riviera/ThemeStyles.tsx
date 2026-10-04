@@ -957,6 +957,18 @@ export function ThemeStyles() {
       .cr-sun-dusk { fill: var(--cr-tangerine); opacity: var(--cr-day); }
       .cr-content > main { position: relative; z-index: 1; }
       .cr-content .cr-surface-porcelain { background: transparent; }
+      /* Cap pos "Diterima": an orange postmark in its own row after the
+         confirmation. It fills "both", so with animations off (reduced
+         motion) it simply shows stamped. */
+      .cr-rsvp-receipt { display: grid; min-width: 0; gap: 1.25rem; }
+      .cr-postmark { display: block; width: clamp(8.5rem, 40vw, 10.5rem); height: auto; justify-self: end; overflow: visible; transform: rotate(-10deg); transform-origin: 35% 50%; animation: cr-stamp .55s cubic-bezier(.2, .8, .2, 1) .15s both; }
+      .cr-postmark-ring { fill: none; stroke: var(--cr-tangerine); stroke-width: 3; }
+      .cr-postmark-inner { stroke-width: 1.5; stroke-dasharray: 2 3; }
+      .cr-postmark-cancel { fill: none; stroke: var(--cr-tangerine); stroke-width: 2.5; stroke-linecap: round; }
+      .cr-postmark text { fill: var(--cr-tangerine-ink); font-family: var(--cr-label); font-weight: 700; letter-spacing: .12em; }
+      .cr-postmark-word { font-size: 15px; }
+      .cr-postmark-note { font-size: 10px; }
+      @keyframes cr-stamp { 0% { opacity: 0; transform: scale(1.5) rotate(-22deg); } 70% { opacity: 1; transform: scale(.95) rotate(-9deg); } 100% { opacity: 1; transform: scale(1) rotate(-10deg); } }
       /* Postcard voices: Corinthia for names (.cr-script), Newsreader italic for
          headings and numerals, Familjen Grotesk spaced capitals for labels. */
       .cr-theme :is(h2, h3, blockquote):not(.cr-script) { font-family: var(--cr-text); font-style: italic; font-variation-settings: normal; font-weight: 500; letter-spacing: -.015em; line-height: 1.02; }
