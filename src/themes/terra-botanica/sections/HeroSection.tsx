@@ -13,7 +13,7 @@ export function HeroSection({ displayName, imageUrl, message }: {
         <EditorialImage src={imageUrl} alt={`Potret ${displayName}`} sizes="(min-width: 1360px) 1180px, 88vw" aspectRatio="4 / 3" eager className="tb-hero-image" />
       ) : <Botanical variant="moss" className="tb-hero-botanical" />}
       <div className="tb-hero-copy">
-        <h2 id="tb-hero-heading">{displayName}</h2>
+        <h2 id="tb-hero-heading" className="tb-script">{displayName}</h2>
         {message?.trim() ? <p>{message}</p> : null}
       </div>
     </Section>

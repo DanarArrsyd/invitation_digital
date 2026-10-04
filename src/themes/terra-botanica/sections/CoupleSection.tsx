@@ -21,7 +21,7 @@ export function CoupleSection({ people, settings, invitationType }: {
             <article key={person.id} className={`tb-person${person.photoUrl ? "" : " tb-person-text-only"}`}>
               {person.photoUrl ? <EditorialImage src={person.photoUrl} alt={`Potret ${person.fullName}`} sizes="(min-width: 1360px) 520px, (min-width: 768px) 42vw, 88vw" className="tb-person-portrait" /> : null}
               <div className="tb-person-copy">
-                <h3>{person.fullName}</h3>
+                <h3 className="tb-script">{person.fullName}</h3>
                 {parents.length > 0 ? (
                   <div className="tb-parents">
                     <p>{person.role === "bride" ? "Putri dari" : person.role === "groom" ? "Putra dari" : "Orang tua"}</p>

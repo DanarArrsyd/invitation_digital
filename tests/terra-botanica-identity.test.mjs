@@ -161,3 +161,20 @@ test("paper surfaces carry a drawn dot texture, never a raster", () => {
   assert.match(css, /:is\(\.tb-surface-linen, \.tb-surface-bone, \.tb-cover\)\s*\{[^}]*radial-gradient\(/);
   assert.doesNotMatch(css, /url\([^)]*\.(png|jpe?g|webp)/);
 });
+
+test("couple names are ink signatures and chapter titles stay Spectral", () => {
+  const { TerraBotanica } = createLoader()("index");
+  const html = renderToStaticMarkup(React.createElement(TerraBotanica, { invitation: invitation(), guest: null }));
+  const { document } = new JSDOM(html).window;
+  assert.equal(document.querySelector("h1").textContent, "Alya & Bima", "cover h1 keeps the plain display name");
+  assert.ok(document.querySelector("h1").classList.contains("tb-script"));
+  for (const id of ["tb-hero-heading", "tb-closing-heading"]) {
+    assert.ok(document.getElementById(id).classList.contains("tb-script"), `${id} is script`);
+  }
+  const people = [...document.querySelectorAll(".tb-person-copy h3")];
+  assert.equal(people.length, 2);
+  for (const name of people) assert.ok(name.classList.contains("tb-script"));
+  for (const title of document.querySelectorAll(".tb-section-heading h2")) {
+    assert.ok(!title.classList.contains("tb-script"), `chapter "${title.textContent}" stays Spectral`);
+  }
+});

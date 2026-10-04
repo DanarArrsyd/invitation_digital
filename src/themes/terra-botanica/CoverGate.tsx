@@ -51,7 +51,7 @@ export function CoverGate({
           <div className="tb-cover-layout">
             <div className="tb-cover-title">
               <p className="tb-journal-label">{label}</p>
-              <h1 className="tb-cover-names">
+              <h1 className="tb-cover-names tb-script">
                 {names.length === 2 ? (
                   <><span>{names[0]}</span><span className="tb-cover-amp"> &amp; </span><span>{names[1]}</span></>
                 ) : displayName}

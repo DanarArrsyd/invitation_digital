@@ -59,7 +59,7 @@ export function ThemeStyles() {
     }
     .tb-theme .tb-cover-title, .tb-theme .tb-cover-recipient { min-width: 0; }
     .tb-theme .tb-journal-label { font-size: .875rem; margin-bottom: 2rem; }
-    .tb-theme .tb-cover-names { font-size: clamp(3rem, 13vw, 7rem); line-height: 1.02; letter-spacing: -.055em; max-width: 11ch; }
+    .tb-theme .tb-cover-names { font-size: clamp(3.4rem, 15vw, 7.5rem); line-height: 1; letter-spacing: 0; max-width: 11ch; }
     .tb-theme .tb-cover-names > span { display: block; }
     .tb-theme .tb-cover-names > span:last-child { margin-left: .38em; }
     .tb-theme .tb-cover-names .tb-cover-amp { font-size: .5em; line-height: 1.3; margin-left: 1.2em; color: var(--tb-moss); }
@@ -93,7 +93,7 @@ export function ThemeStyles() {
     .tb-theme .tb-hero { padding-top: clamp(1.5rem, 4vw, 4rem); }
     .tb-theme .tb-hero-image { border-radius: 0 0 20% 0; }
     .tb-theme .tb-hero-copy { display: grid; gap: 1.5rem; margin-top: 2rem; }
-    .tb-theme .tb-hero-copy h2 { max-width: 15ch; font-size: clamp(2.8rem, 9vw, 6.5rem); line-height: 1.05; letter-spacing: -.05em; }
+    .tb-theme .tb-hero-copy h2 { max-width: 15ch; font-size: clamp(3.2rem, 11vw, 7rem); line-height: 1.05; letter-spacing: 0; }
     .tb-theme .tb-hero-copy p { max-width: 38ch; white-space: pre-line; }
     .tb-theme .tb-hero-text-only { padding-top: clamp(4rem, 10vw, 8rem); }
     .tb-theme .tb-hero-botanical { width: clamp(70px, 15vw, 150px); margin-left: auto; margin-bottom: 2rem; color: var(--tb-moss); }
@@ -107,7 +107,7 @@ export function ThemeStyles() {
     .tb-theme .tb-person:nth-child(even) .tb-person-portrait { margin-left: auto; border-radius: 0 25% 0 0; }
     .tb-theme .tb-person:first-child .tb-person-portrait { border-radius: 25% 0 0 0; }
     .tb-theme .tb-person-copy { min-width: 0; max-width: 42ch; }
-    .tb-theme .tb-person-copy h3 { font-size: clamp(2.2rem, 6vw, 4.3rem); line-height: 1.12; letter-spacing: -.035em; }
+    .tb-theme .tb-person-copy h3 { font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1.1; letter-spacing: 0; }
     .tb-theme .tb-parents { margin-top: 1.5rem; }
     .tb-theme .tb-parents > p:first-child { font-size: .875rem; margin-bottom: .35rem; }
     .tb-theme .tb-parents > p:last-child > span { display: block; }
@@ -205,7 +205,7 @@ export function ThemeStyles() {
     .tb-theme .tb-closing > .tb-section-inner { display: grid; gap: 3rem; align-items: center; }
     .tb-theme .tb-closing-copy { min-width: 0; }
     .tb-theme .tb-closing-botanical { width: 60px; margin-bottom: 2rem; color: var(--tb-linen); }
-    .tb-theme .tb-closing h2 { max-width: 12ch; font-size: clamp(2.75rem, 8vw, 6rem); line-height: 1.12; letter-spacing: -.04em; }
+    .tb-theme .tb-closing h2 { max-width: 12ch; font-size: clamp(3rem, 10vw, 6.5rem); line-height: 1.1; letter-spacing: 0; }
     .tb-theme .tb-closing p { margin-top: 2rem; max-width: 42ch; white-space: pre-line; }
     .tb-theme .tb-closing-image { width: 82%; margin-left: auto; border-radius: 0 0 28% 0; }
     .tb-theme .tb-nav { position: fixed; z-index: 30; bottom: max(.75rem, env(safe-area-inset-bottom)); left: max(1rem, env(safe-area-inset-left)); right: max(1rem, env(safe-area-inset-right)); width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; background: var(--tb-bone); color: var(--tb-cacao); border: 1px solid var(--tb-moss); }
