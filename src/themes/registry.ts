@@ -71,7 +71,7 @@ export const themeRegistry: ThemeRegistry = {
     category: "wedding",
     preview: {
       name: "Terra Botanica",
-      palette: ["#F2E7D8", "#B6634B", "#53634E"],
+      palette: ["#F2EBDD", "#B5653E", "#4E5B3A"],
     },
     sections: TERRA_BOTANICA_SECTIONS,
   },

@@ -1,12 +1,14 @@
 export function ThemeStyles() {
   return <style>{`
     .tb-theme {
-      --tb-linen: #F2E7D8;
-      --tb-clay: #B6634B;
-      --tb-moss: #53634E;
-      --tb-cacao: #45372C;
-      --tb-sun: #D6A663;
-      --tb-bone: #FBF7F0;
+      --tb-linen: #F2EBDD;
+      --tb-clay: #B5653E;
+      --tb-moss: #4E5B3A;
+      --tb-cacao: #4A3426;
+      --tb-sun: #D9A441;
+      --tb-bone: #FBF7EE;
+      /* Clay for small text: --tb-clay is ~4:1 on bone, this ink stays AA. */
+      --tb-clay-ink: #9A4F2E;
       --tb-gutter: clamp(1.5rem, 6vw, 5rem);
       --tb-script: var(--font-tb-script), "Snell Roundhand", cursive;
       --tb-label: var(--font-tb-label), "Courier New", monospace;
@@ -78,6 +80,8 @@ export function ThemeStyles() {
     .tb-theme .tb-surface-clay { background: var(--tb-clay); color: var(--tb-cacao); }
     .tb-theme .tb-surface-clay > .tb-section-inner { background: var(--tb-bone); padding: clamp(1.5rem, 5vw, 4rem); }
     .tb-theme .tb-surface-moss { background: var(--tb-moss); color: var(--tb-bone); }
+    /* Herbarium paper: a fine printed dot, drawn in CSS so it costs no request. */
+    .tb-theme :is(.tb-surface-linen, .tb-surface-bone, .tb-cover) { background-image: radial-gradient(rgba(74, 52, 38, .05) 1px, transparent 1px); background-size: 5px 5px; }
     .tb-theme .tb-section-heading { max-width: 48rem; margin-bottom: clamp(2rem, 5vw, 4rem); }
     .tb-theme .tb-section-heading h2 { font-size: clamp(2.25rem, 7vw, 4.5rem); line-height: 1.13; letter-spacing: -.035em; }
     .tb-theme .tb-section-intro { max-width: 62ch; margin-top: 1.5rem; }
@@ -127,7 +131,7 @@ export function ThemeStyles() {
     .tb-theme .tb-event-list { margin: 0; padding: 0; list-style: none; }
     .tb-theme .tb-event { display: grid; grid-template-columns: 3ch minmax(0, 1fr); gap: 1.5rem; padding: clamp(2rem, 5vw, 3.5rem) 0; border-bottom: 1px solid rgba(69, 55, 44, .35); min-width: 0; }
     .tb-theme .tb-event:last-child { border-bottom: 0; padding-bottom: 0; }
-    .tb-theme .tb-event-index { color: var(--tb-clay); font-size: .875rem; font-weight: 700; letter-spacing: .08em; padding-top: .65rem; }
+    .tb-theme .tb-event-index { color: var(--tb-clay-ink); font-size: .875rem; font-weight: 700; letter-spacing: .08em; padding-top: .65rem; }
     .tb-theme .tb-event-main, .tb-theme .tb-event-place { min-width: 0; overflow-wrap: anywhere; }
     .tb-theme .tb-event-main h3 { font-size: clamp(2rem, 7vw, 4rem); line-height: 1.12; letter-spacing: -.035em; }
     .tb-theme .tb-event-main time { display: block; margin-top: 1rem; font-size: .9375rem; font-weight: 700; }
