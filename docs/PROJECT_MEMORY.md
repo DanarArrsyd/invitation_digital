@@ -18,6 +18,11 @@ implementation plans remain the source of truth:
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-04: "Rayhana & Febri" (`rayhana-febry`) and `sample-1..3` were demo
+  data, never a real customer. The owner had all invitation content, responses
+  and analytics deleted; only `themes` (4 rows), `profiles` and the admin auth
+  user remain. The pilot seed migration now only upserts the Nusantara Ivory
+  theme. Older notes below that mention these slugs are history.
 - Packages are named **Intimate**, **Signature**, and **Grand**.
 - Package availability and normalized public data stay upstream of themes.
 - Every public feature or layout added to one registered theme must be
@@ -519,7 +524,20 @@ plan in `docs/superpowers/plans/` after the previous one merges.
   added. `tests/cobalt-riviera-identity.test.mjs` pins contrast (including the
   sky ramp), names, waves, dividers, sky, postmark, bottle and labels.
 
-#### Checkpoint — Cobalt "Surat Cinta dari Mediterania" (PR open, 2026-10-05)
+#### Checkpoint — redesign complete (2026-10-04)
+
+- Cobalt merged in PR #18 (merge `d2666b7`) after one review fix: every
+  theme's RSVP `role="status"` now names the submitted answer ("Tercatat:
+  Hadir." / "Tercatat: Tidak hadir.") because the postmark and dance card are
+  aria-hidden (`eb44c12` Cobalt, `51d150f` Ivory/Terra/Midnight).
+- All four themes now carry their 2026-10-03 identity spec; the branch is
+  reset to `main` `d2666b7`.
+- Open: owner to check each theme on a real phone (`/rayhana-febry` Ivory,
+  `/sample-1` Terra, `/sample-2` Midnight, `/sample-3` Cobalt); Midnight's
+  chandelier stays deferred; the environmental countdown-timezone test should
+  assert on exit status instead of `✔`.
+
+#### Checkpoint — Cobalt "Surat Cinta dari Mediterania" (merged, 2026-10-04)
 
 - Previous merges: Midnight PR #16 (`202c787`); Ivory melati fix and
   "Terima kasih" copy PR #17 (`13d9150`). Branch `design/terra-identity-at0kh3`
