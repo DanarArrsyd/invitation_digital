@@ -81,7 +81,7 @@ export function ClosingSection({
             className="text-[0.62rem] tracking-[0.4em] uppercase"
             style={{ color: "var(--ni-gold-soft)" }}
           >
-            Matur Nuwun · Terima Kasih
+            Terima Kasih
           </p>
         </Reveal>
       </div>

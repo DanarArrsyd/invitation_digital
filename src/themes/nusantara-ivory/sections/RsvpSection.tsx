@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
+
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { useFocusOnSuccess, useRsvpForm } from "@/themes/shared/use-public-forms";
 
@@ -22,6 +24,13 @@ export function RsvpSection({
 }) {
   const { state, formAction, isPending, attendance, setAttendance, formRef, onSubmit } = useRsvpForm();
   const successRef = useFocusOnSuccess(state.status === "success");
+  // The choices stay live while the action is pending; celebrate the
+  // attendance that was actually sent, not the one picked afterwards.
+  const [sentAttending, setSentAttending] = useState(false);
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    setSentAttending(new FormData(event.currentTarget).get("attendance") === "attending");
+    onSubmit(event);
+  }
 
   return (
     <Section id="ni-rsvp" className="ni-rsvp" tone="cream">
@@ -42,7 +51,7 @@ export function RsvpSection({
           >
             <OrnamentCorner className="absolute top-4 left-4 size-8 opacity-60" />
             <OrnamentCorner className="absolute right-4 bottom-4 size-8 rotate-180 opacity-60" />
-            {state.status === "success" && attendance === "attending" ? <MelatiShower /> : null}
+            {state.status === "success" && sentAttending ? <MelatiShower /> : null}
 
             {state.status === "success" ? (
               <div
@@ -52,13 +61,13 @@ export function RsvpSection({
                 className="flex flex-col items-center gap-5 py-6 text-center outline-none"
               >
                 <OrnamentDivider />
-                <p className="ni-script text-[2.75rem]">Matur nuwun</p>
+                <p className="ni-script text-[2.75rem]">Terima kasih</p>
                 <p className="ni-body max-w-[32ch] text-base">
                   Konfirmasi kehadiran Anda telah kami terima.
                 </p>
               </div>
             ) : (
-              <form ref={formRef} action={formAction} onSubmit={onSubmit} className="flex flex-col gap-7">
+              <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="flex flex-col gap-7">
                 <input type="hidden" name="invitationId" value={invitationId} />
                 <input type="hidden" name="slug" value={slug} />
                 <input type="hidden" name="guestToken" value={guestToken ?? ""} />

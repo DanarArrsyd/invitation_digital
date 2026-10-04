@@ -499,7 +499,21 @@ plan in `docs/superpowers/plans/` after the previous one merges.
   `tests/midnight-atelier-identity.test.mjs` pins contrast, light, names,
   toast, spotlight, dance card, bubbles, picture lights and labels.
 
-#### Checkpoint — Midnight "Malam di Ballroom" (PR open, 2026-10-04)
+#### Checkpoint — Cobalt "Surat Cinta dari Mediterania" (next)
+
+- Midnight merged in PR #16 (merge `202c787`, 2026-10-04) after one review
+  fix: the dance card follows the submitted attendance (`17da4b7`).
+- Branch `design/terra-identity-at0kh3` reset to `main` `202c787`.
+- Next: write and run the Cobalt plan from spec §7 (approved: Corinthia /
+  Familjen Grotesk / Newsreader, receding-wave opener, wave dividers,
+  morning-to-sunset scroll, postmark RSVP, message-in-a-bottle wishes).
+  Already done for Cobalt: nautical nav icons, calendar in the countdown,
+  5-item mobile bar, 3:4 title-first hero.
+- Done in PR #17 (`59db030`): Ivory's melati shower now follows the submitted
+  attendance (it read the live choice, like the Midnight dance card bug), and
+  Ivory thanks read "Terima kasih" instead of "Matur nuwun" (owner request).
+
+#### Checkpoint — Midnight "Malam di Ballroom" (merged, 2026-10-04)
 
 - All plan tasks done on `design/terra-identity-at0kh3`: fonts `d359e2a`;
   palette + light tokens + identity harness `5033c89`; light-form
