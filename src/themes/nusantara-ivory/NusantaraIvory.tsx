@@ -1,3 +1,4 @@
+import { pickNavItems } from "@/themes/shared/nav-priority";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 import type { ThemeComponentProps } from "@/types/theme";
 
@@ -33,28 +34,22 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
   } = buildThemeViewModel(invitation, guest);
   const eyebrow = invitation.type === "wedding" ? "The Wedding Of" : null;
 
-  // Page order, each with a priority for the five-slot bar: what guests act
-  // on (event details, RSVP, wishes, gift) wins over browsing sections, so
-  // a full invitation never hides RSVP behind the gallery.
-  const navCandidates: (NavItem & { priority: number } | null)[] = [
-    { id: "ni-beranda", label: "Beranda", icon: "home", priority: 5 },
-    invitation.people.length > 0 ? { id: "ni-mempelai", label: "Mempelai", icon: "heart", priority: 6 } : null,
-    { id: "ni-acara", label: "Acara", icon: "calendar", priority: 1 },
+  // Page order; pickNavItems keeps the five that matter most to guests.
+  const navCandidates: (NavItem | null)[] = [
+    { id: "ni-beranda", label: "Beranda", icon: "home", section: "hero" },
+    invitation.people.length > 0 ? { id: "ni-mempelai", label: "Mempelai", icon: "heart", section: "couple" } : null,
+    { id: "ni-acara", label: "Acara", icon: "calendar", section: "events" },
     features.story && invitation.stories.length > 0
-      ? { id: "ni-cerita", label: "Cerita", icon: "book", priority: 8 }
+      ? { id: "ni-cerita", label: "Cerita", icon: "book", section: "story" }
       : null,
     features.gallery && invitation.gallery.length > 0
-      ? { id: "ni-galeri", label: "Galeri", icon: "gallery", priority: 7 }
+      ? { id: "ni-galeri", label: "Galeri", icon: "gallery", section: "gallery" }
       : null,
-    features.rsvp ? { id: "ni-rsvp", label: "RSVP", icon: "message", priority: 2 } : null,
-    features.wishes ? { id: "ni-ucapan", label: "Ucapan", icon: "pen", priority: 3 } : null,
-    features.gift && invitation.gifts.length > 0 ? { id: "ni-kado", label: "Kado", icon: "gift", priority: 4 } : null,
+    features.rsvp ? { id: "ni-rsvp", label: "RSVP", icon: "message", section: "rsvp" } : null,
+    features.wishes ? { id: "ni-ucapan", label: "Ucapan", icon: "pen", section: "wishes" } : null,
+    features.gift && invitation.gifts.length > 0 ? { id: "ni-kado", label: "Kado", icon: "gift", section: "gift" } : null,
   ];
-  const available = navCandidates.filter((item): item is NavItem & { priority: number } => item !== null);
-  const chosen = new Set([...available].sort((a, b) => a.priority - b.priority).slice(0, 5));
-  const navItems: NavItem[] = available
-    .filter((item) => chosen.has(item))
-    .map(({ id, label, icon }) => ({ id, label, icon }));
+  const navItems = pickNavItems(navCandidates.filter((item): item is NavItem => item !== null));
 
   return (
     <div className={`ni-theme ${scriptFace.variable} ${displayFace.variable} ${bodyFace.variable}`}>

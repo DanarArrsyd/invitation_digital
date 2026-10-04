@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 import { useActiveSection } from "@/themes/shared/use-active-section";
 
 export type NavIcon = "home" | "heart" | "calendar" | "gallery" | "book" | "gift" | "message" | "pen";
@@ -9,6 +10,7 @@ export type NavItem = {
   id: string;
   label: string;
   icon: NavIcon;
+  section: NavSectionKey;
 };
 
 const ICONS: Record<NavIcon, React.ReactNode> = {
@@ -95,7 +97,7 @@ export function FloatingNav({ items }: { items: NavItem[] }) {
         {items.map((item) => {
           const isActive = item.id === active;
           return (
-            <li key={item.id} className="relative">
+            <li key={item.id}>
               <button
                 type="button"
                 onClick={() => handleNavigate(item.id)}

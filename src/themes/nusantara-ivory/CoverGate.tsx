@@ -217,7 +217,9 @@ export function CoverGate({
           tabIndex={-1}
           role="region"
           aria-label="Isi undangan"
-          className="outline-none"
+          className="ni-content outline-none"
+          // The floating nav only renders with 2+ items; reserve room for it then.
+          data-ni-nav={navItems.length >= 2 || undefined}
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1], delay: reduced ? 0 : 0.1 }}
@@ -239,7 +241,7 @@ export function CoverGate({
           style={{
             // Clears the floating nav, which only renders with 2+ items.
             bottom: navItems.length >= 2
-              ? "calc(5.4rem + env(safe-area-inset-bottom))"
+              ? "var(--ni-nav-clearance)"
               : "calc(1.25rem + env(safe-area-inset-bottom))",
             borderColor: "var(--ni-line-strong)",
             background: "rgba(248,241,228,0.88)",
