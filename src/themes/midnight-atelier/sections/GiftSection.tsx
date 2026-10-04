@@ -10,7 +10,7 @@ export function GiftSection({ gifts }: { gifts: GiftAccount[] }) {
   return (
     <Section id="ma-kado" labelledBy="ma-gift-heading" tone="ink" className="ma-gift">
       <Spotlight className="ma-interaction-heading">
-        <p>Gift registry</p>
+        <p>Amplop digital</p>
         <h2 id="ma-gift-heading">Tanda kasih</h2>
         <span>Doa restu Anda adalah hadiah terindah. Informasi berikut tersedia bila Anda berkenan memberi tanda kasih.</span>
       </Spotlight>

@@ -750,3 +750,61 @@ test("a gallery already on screen is simply lit, markup agrees on server and cli
     }
   }
 });
+
+const ENGLISH_LABELS = [
+  "Private celebration", "The wedding of", "Evening invitation", "The protagonists", "Your hosts",
+  "Evening programme", "The night awaits", "Save the evening", "Wardrobe note", "Dress code",
+  "acts in chronology", "contact sheet", "Remote viewing", "Private confirmation", "Dance card",
+  "Guest book", "Gift registry", "Google Calendar", "Open",
+];
+
+/** Every guest-facing string (not CSS): visible text plus aria-labels, placeholders and alt text. */
+function guestCopy(document) {
+  const attributes = [...document.querySelectorAll("[aria-label], [placeholder], [alt], [title]")]
+    .flatMap((element) => ["aria-label", "placeholder", "alt", "title"].map((name) => element.getAttribute(name) ?? ""));
+  const body = document.body.cloneNode(true);
+  for (const code of body.querySelectorAll("style, script")) code.remove();
+  return [body.textContent, ...attributes].join("\n");
+}
+
+function assertIndonesian(copy, expected) {
+  for (const english of ENGLISH_LABELS) {
+    assert.ok(!copy.includes(english), `English label left: ${english}`);
+  }
+  for (const label of expected) assert.ok(copy.includes(label), `missing Indonesian label: ${label}`);
+}
+
+test("every guest-facing label speaks Bahasa Indonesia, the dance card included", async () => {
+  const full = invitation({
+    theme: { slug: "midnight-atelier", settings: { dressCode: { description: "Hitam dan merah anggur.", groups: [{ label: "Tamu", colors: ["#14121A"] }] } } },
+    events: [{ ...invitation().events[0], mapsUrl: "https://maps.example.test/a", livestreamUrl: "https://live.example.test/a" }],
+    gifts: [{ id: "gift", providerType: "bank", providerName: "Bank", accountNumber: "123", accountName: "Nadia", logoUrl: null, sortOrder: 0 }],
+    wishes: [{ id: "w", guestName: "Bude Sri", message: "Bahagia selalu", createdAt: "2030-01-02T00:00:00Z" }],
+    content: { openingQuote: "Kutipan.", openingMessage: "Pembuka.", closingMessage: "Penutup." },
+    features: { music: true, countdown: true, maps: true, story: true, gallery: true, dressCode: true,
+      livestream: true, rsvp: true, wishes: true, gift: true, guestPersonalization: true },
+    media: { coverImageUrl: null, musicUrl: "/music.mp3" },
+  });
+  const load = createLoader({ actions: { submitRsvp: async () => ({ status: "success" }) } });
+  const view = await mount(React.createElement(load("index").MidnightAtelier, { invitation: full, guest: null }), { intersectionObserver: FakeIntersectionObserver });
+  try {
+    await act(async () => view.document.querySelector(".ma-cover-open").click());
+    const form = view.document.querySelector("#ma-rsvp form");
+    form.elements.namedItem("guestName").value = "Pak Joko";
+    const attend = [...form.querySelectorAll('button[type="button"]')].find((button) => button.textContent.trim() === "Hadir");
+    await act(async () => attend.click());
+    await act(async () => form.dispatchEvent(new view.window.Event("submit", { bubbles: true, cancelable: true })));
+    assert.ok(view.document.querySelector("[data-ma-dance-card]"), "the dance card is on the page");
+    assertIndonesian(guestCopy(view.document), [
+      "Perayaan terbatas", "Pernikahan", "Dua insan", "Agenda malam", "Malam yang dinanti", "Untuk malam itu",
+      "Saran busana", "01 babak perjalanan", "03 potret kenangan", "Siaran langsung", "Konfirmasi kehadiran",
+      "Kartu dansa", "Buku tamu", "Amplop digital", "Google Kalender",
+    ]);
+    assert.ok(guestCopy(view.document).includes("Midnight Atelier"), "the theme name stays as the masthead brand mark");
+  } finally { await view.cleanup(); }
+
+  const { MidnightAtelier } = createLoader()("index");
+  const evening = invitation({ type: "birthday", features: { ...invitation().features, countdown: false } });
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(MidnightAtelier, { invitation: evening, guest: null }))).window;
+  assertIndonesian(guestCopy(document), ["Undangan malam", "Perayaan", "Tuan rumah", "Tandai kalender Anda", "Simpan tanggalnya"]);
+});

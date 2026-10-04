@@ -27,7 +27,7 @@ export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: 
         rel="noopener noreferrer"
         aria-label={`Google Kalender untuk ${event.title}`}
       >
-        Google Calendar <span aria-hidden="true">↗</span>
+        Google Kalender <span aria-hidden="true">↗</span>
       </a>
       <button type="button" onClick={downloadIcs} aria-label={`Unduh kalender .ics untuk ${event.title}`}>
         Simpan .ics <span aria-hidden="true">↓</span>

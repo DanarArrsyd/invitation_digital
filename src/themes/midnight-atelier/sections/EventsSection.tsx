@@ -35,7 +35,7 @@ export function EventsSection({
   return (
     <Section id="ma-acara" labelledBy="ma-events-heading" tone="ink" className="ma-events">
       <Spotlight className="ma-chapter-heading ma-chapter-heading-dark">
-        <p>Evening programme</p>
+        <p>Agenda malam</p>
         <h2 id="ma-events-heading">Rangkaian acara</h2>
       </Spotlight>
 

@@ -61,7 +61,7 @@ export function CountdownSection({
       className={`ma-countdown${hasTarget ? "" : " ma-countdown-calendar-only"}`}
     >
       <Spotlight className="ma-countdown-intro">
-        <p>{hasTarget ? "The night awaits" : "Save the evening"}</p>
+        <p>{hasTarget ? "Malam yang dinanti" : "Tandai kalender Anda"}</p>
         <h2 id="ma-countdown-heading">{hasTarget ? "Menuju malam itu" : "Simpan tanggalnya"}</h2>
       </Spotlight>
       <div className="ma-countdown-body">

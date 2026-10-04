@@ -52,7 +52,7 @@ export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[
   return (
     <Section id="ma-galeri" labelledBy="ma-gallery-heading" tone="lacquer" className="ma-gallery">
       <Spotlight className="ma-chapter-heading ma-chapter-heading-dark">
-        <p>{`${String(gallery.length).padStart(2, "0")} frames / contact sheet`}</p>
+        <p>{`${String(gallery.length).padStart(2, "0")} potret kenangan`}</p>
         <h2 id="ma-gallery-heading">Dalam bingkai</h2>
       </Spotlight>
 

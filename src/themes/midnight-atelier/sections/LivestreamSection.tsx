@@ -14,7 +14,7 @@ export function LivestreamSection({ events, enabled }: { events: InvitationEvent
   return (
     <Section id="ma-livestream" labelledBy="ma-livestream-heading" tone="lacquer" className="ma-livestream">
       <Spotlight className="ma-livestream-copy">
-        <p>Remote viewing</p>
+        <p>Siaran langsung</p>
         <h2 id="ma-livestream-heading">Dari kejauhan</h2>
         <span>Rayakan bersama kami, dari mana pun Anda berada.</span>
       </Spotlight>

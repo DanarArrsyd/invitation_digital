@@ -21,7 +21,7 @@ export function CoupleSection({ people, settings, invitationType }: {
   return (
     <Section id="ma-mempelai" labelledBy="ma-couple-heading" tone="pearl" className="ma-couple">
       <Spotlight className="ma-chapter-heading">
-        <p>{invitationType === "wedding" ? "The protagonists" : "Your hosts"}</p>
+        <p>{invitationType === "wedding" ? "Dua insan" : "Tuan rumah"}</p>
         <h2 id="ma-couple-heading">{invitationType === "wedding" ? "Mempelai" : "Yang mengundang"}</h2>
       </Spotlight>
 

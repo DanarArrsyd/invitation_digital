@@ -58,7 +58,8 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
       <CoverGate
         invitationId={invitation.id}
         guestToken={guest?.token ?? null}
-        label={invitation.type === "wedding" ? "Midnight Atelier" : "Evening invitation"}
+        label={invitation.type === "wedding" ? "Midnight Atelier" : "Undangan malam"}
+        intro={invitation.type === "wedding" ? "Pernikahan" : "Perayaan"}
         displayName={coupleDisplayName}
         eventDate={invitation.eventDate ?? primaryEvent?.eventDate ?? null}
         guestDisplayName={guestDisplayName}

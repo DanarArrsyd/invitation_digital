@@ -21,7 +21,7 @@ export function StorySection({ stories }: { stories: InvitationStory[] }) {
   return (
     <Section id="ma-cerita" labelledBy="ma-story-heading" tone="pearl" className="ma-story">
       <Spotlight className="ma-chapter-heading">
-        <p>{`${String(stories.length).padStart(2, "0")} acts in chronology`}</p>
+        <p>{`${String(stories.length).padStart(2, "0")} babak perjalanan`}</p>
         <h2 id="ma-story-heading">Cerita kami</h2>
       </Spotlight>
 

@@ -27,7 +27,7 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
   return (
     <Section id="ma-rsvp" labelledBy="ma-rsvp-heading" tone="lacquer" className="ma-rsvp">
       <Spotlight className="ma-interaction-heading">
-        <p>Private confirmation</p>
+        <p>Konfirmasi kehadiran</p>
         <h2 id="ma-rsvp-heading">Sampai jumpa malam itu</h2>
         <span>Mohon konfirmasi kehadiran Anda agar kami dapat menyambut dengan sebaik-baiknya.</span>
       </Spotlight>

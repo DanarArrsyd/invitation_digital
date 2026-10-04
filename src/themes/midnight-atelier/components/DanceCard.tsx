@@ -19,7 +19,7 @@ export function DanceCard({ name }: { name: string | null }) {
         <path d="M9 32h6l1 26H8Z" />
         <path d="M10 36v20M12 36v22M14 36v20" />
       </svg>
-      <p className="ma-label">Dance card</p>
+      <p className="ma-label">Kartu dansa</p>
       <dl>
         {rows.map((row, index) => (
           <div key={row.label}>

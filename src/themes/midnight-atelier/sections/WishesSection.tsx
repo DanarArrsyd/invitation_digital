@@ -37,7 +37,7 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
     <Section id="ma-ucapan" labelledBy="ma-wishes-heading" tone="pearl" className="ma-wishes">
       <div className="ma-wishes-compose">
         <Spotlight className="ma-interaction-heading">
-          <p>Guest book</p>
+          <p>Buku tamu</p>
           <h2 id="ma-wishes-heading">Doa & ucapan</h2>
           <span>Tinggalkan sepatah kata untuk hari yang kami kenang bersama.</span>
         </Spotlight>

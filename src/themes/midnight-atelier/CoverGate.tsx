@@ -23,6 +23,7 @@ export function CoverGate({
   invitationId,
   guestToken,
   label,
+  intro,
   displayName,
   eventDate,
   guestDisplayName,
@@ -34,6 +35,7 @@ export function CoverGate({
   invitationId: string;
   guestToken: string | null;
   label: string;
+  intro: string;
   displayName: string;
   eventDate: string | null;
   guestDisplayName: string | null;
@@ -63,11 +65,11 @@ export function CoverGate({
         <div className="ma-cover-frame">
           <header className="ma-cover-masthead">
             <span>{label}</span>
-            <span>Private celebration</span>
+            <span>Perayaan terbatas</span>
           </header>
 
           <div className="ma-cover-stage">
-            <p className="ma-cover-intro">The wedding of</p>
+            <p className="ma-cover-intro">{intro}</p>
             <h1 className="ma-cover-names ma-script">
               {names.length === 2 ? (
                 <><span>{names[0]}</span><span className="ma-cover-amp">&amp;</span><span>{names[1]}</span></>
@@ -88,7 +90,7 @@ export function CoverGate({
               aria-controls="ma-content"
             >
               <span>Buka undangan</span>
-              <span aria-hidden="true">Open</span>
+              <span aria-hidden="true">→</span>
             </button>
           </div>
         </div>

@@ -9,8 +9,8 @@ export function DressCodeSection({ dressCode }: { dressCode: DressCodeSettings |
   return (
     <Section id="ma-dress-code" labelledBy="ma-dress-code-heading" tone="pearl" className="ma-dress-code">
       <Spotlight className="ma-chapter-heading">
-        <p>Wardrobe note</p>
-        <h2 id="ma-dress-code-heading">Dress code</h2>
+        <p>Untuk malam itu</p>
+        <h2 id="ma-dress-code-heading">Saran busana</h2>
       </Spotlight>
       {dressCode.description ? <p className="ma-dress-description">{dressCode.description}</p> : null}
       {dressCode.groups.length > 0 ? (
