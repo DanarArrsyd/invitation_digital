@@ -722,6 +722,20 @@ export function ThemeStyles() {
       .ma-spotlight[data-spot="lit"]::before { animation: ma-spot-on 1.1s ease-out both; }
       .ma-spotlight[data-spot="lit"] h2 { transition: opacity .9s ease; }
       @keyframes ma-spot-on { from { opacity: 0; } }
+      /* Dance card: a pearl card with a gold frame and tassel; entries are
+         written in script. Every animation fills "both", so with animations
+         off (reduced motion) the card simply shows filled in. */
+      .ma-dance-card { position: relative; width: min(100%, 22rem); margin-top: 2rem; border: 1px solid var(--ma-champagne); padding: 1.5rem 1.5rem 1.25rem; background: var(--ma-pearl); color: var(--ma-ink); animation: ma-card-in .7s cubic-bezier(.2, .7, .2, 1) both; }
+      .ma-dance-card::before { content: ""; position: absolute; inset: 5px; border: 1px solid rgba(94, 26, 34, .35); pointer-events: none; }
+      .ma-dance-card > .ma-label { margin: 0 0 .75rem; color: var(--ma-oxblood); }
+      .ma-dance-card dl { margin: 0; }
+      .ma-dance-card dl > div { border-bottom: 1px solid rgba(94, 26, 34, .3); padding-block: .5rem; }
+      .ma-dance-card dt { color: var(--ma-oxblood); }
+      .ma-dance-card dd { margin: .2rem 0 0; font-size: clamp(1.9rem, 8vw, 2.5rem); line-height: 1.15; overflow-wrap: anywhere; animation: ma-write 1.1s ease-in-out var(--ma-write-delay, .5s) both; }
+      .ma-dance-tassel { position: absolute; top: -1.25rem; right: 1.5rem; width: 18px; height: auto; stroke: var(--ma-champagne); stroke-width: 1; transform-origin: 50% 0; animation: ma-tassel 1.6s ease-out .3s both; }
+      @keyframes ma-card-in { from { opacity: 0; transform: translateY(18px) rotate(-2deg); } }
+      @keyframes ma-write { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+      @keyframes ma-tassel { 0% { transform: rotate(14deg); } 40% { transform: rotate(-8deg); } 70% { transform: rotate(4deg); } 100% { transform: rotate(0); } }
       @media (max-width: 767px) {
         .ma-cover-frame { grid-template-rows: auto 1fr auto; gap: 2rem; }
         .ma-cover-masthead span:last-child { display: none; }

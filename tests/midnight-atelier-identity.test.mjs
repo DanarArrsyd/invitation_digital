@@ -501,3 +501,92 @@ test("spotlights agree on server and client, light at once when already on stage
     }
   }
 });
+
+test("an attending RSVP writes a tasselled dance card; declining keeps the plain thank-you", async () => {
+  const { RsvpSection } = createLoader({ actions: { submitRsvp: async () => ({ status: "success" }) } })("sections/RsvpSection");
+  async function answer(guestName, choice, typedName) {
+    const view = await mount(React.createElement(RsvpSection, { invitationId: "midnight", slug: "midnight", guestToken: "t", guestName }));
+    const form = view.document.querySelector("#ma-rsvp form");
+    if (typedName) form.elements.namedItem("guestName").value = typedName;
+    const button = [...form.querySelectorAll('button[type="button"]')].find((candidate) => candidate.textContent.trim() === choice);
+    await act(async () => button.click());
+    await act(async () => form.dispatchEvent(new view.window.Event("submit", { bubbles: true, cancelable: true })));
+    return view;
+  }
+
+  const personal = await answer("Bude Sri", "Hadir");
+  try {
+    const section = personal.document.getElementById("ma-rsvp");
+    assert.match(section.querySelector('[role="status"]').textContent, /Konfirmasi kehadiran Anda telah kami terima/);
+    const card = section.querySelector("[data-ma-dance-card]");
+    assert.ok(card, "the dance card appears");
+    assert.equal(card.getAttribute("aria-hidden"), "true", "the status text carries the message");
+    assert.ok(card.querySelector("svg.ma-dance-tassel"));
+    const entries = [...card.querySelectorAll("dd")];
+    assert.deepEqual(entries.map((entry) => entry.textContent), ["Bude Sri", "Hadir"], "name and attendance only; no invented party size");
+    for (const entry of entries) {
+      assert.ok(entry.classList.contains("ma-script"));
+      assert.match(entry.style.getPropertyValue("--ma-write-delay"), /^\d+(\.\d+)?s$/);
+    }
+  } finally { await personal.cleanup(); }
+
+  const typed = await answer(null, "Hadir", "Pak Joko");
+  try {
+    assert.equal(typed.document.querySelector("[data-ma-dance-card] dd").textContent, "Pak Joko", "a typed name is written too");
+  } finally { await typed.cleanup(); }
+
+  const declined = await answer("Bude Sri", "Tidak Hadir");
+  try {
+    assert.match(declined.document.querySelector('#ma-rsvp [role="status"]').textContent, /Terima kasih/);
+    assert.equal(declined.document.querySelector("[data-ma-dance-card]"), null);
+  } finally { await declined.cleanup(); }
+
+  const sheet = css();
+  assert.match(sheet, /@keyframes ma-write\s*\{\s*from\s*\{\s*clip-path:\s*inset\(0 100% 0 0\)/);
+  for (const body of rules(sheet, ".ma-dance-card dd")) {
+    assert.doesNotMatch(body, /clip-path/, "at rest, and under reduced motion, the card is filled in");
+    assert.match(body, /animation:[^;]*both/);
+  }
+});
+
+test("the dance card stays hidden on an error, reads AA on mutiara, wraps long names and only animates compositor properties", async () => {
+  let result = { status: "error", message: "Gagal mengirim." };
+  const { RsvpSection } = createLoader({ actions: { submitRsvp: async () => result } })("sections/RsvpSection");
+  const view = await mount(React.createElement(RsvpSection, { invitationId: "midnight", slug: "midnight", guestToken: "t", guestName: null }));
+  try {
+    const form = () => view.document.querySelector("#ma-rsvp form");
+    const longName = "Raden Ayu Kusumawardhani Prameswari Notonegoro Hadiningrat";
+    form().elements.namedItem("guestName").value = longName;
+    const hadir = [...form().querySelectorAll('button[type="button"]')].find((candidate) => candidate.textContent.trim() === "Hadir");
+    await act(async () => hadir.click());
+    await act(async () => form().dispatchEvent(new view.window.Event("submit", { bubbles: true, cancelable: true })));
+    assert.ok(view.document.querySelector('#ma-rsvp [role="alert"]'), "the error is shown");
+    assert.equal(view.document.querySelector("[data-ma-dance-card]"), null, "no card on an error");
+
+    result = { status: "success" };
+    await act(async () => form().dispatchEvent(new view.window.Event("submit", { bubbles: true, cancelable: true })));
+    assert.ok(view.document.querySelector('#ma-rsvp [role="status"]'), "the confirmation text stays");
+    assert.equal(view.document.querySelector("[data-ma-dance-card] dd").textContent, longName);
+  } finally { await view.cleanup(); }
+
+  const sheet = css();
+  const c = tokens();
+  const [card] = rules(sheet, ".ma-dance-card");
+  assert.match(card, /background:\s*var\(--ma-pearl\)/);
+  assert.match(card, /color:\s*var\(--ma-ink\)/);
+  assert.match(card, /width:\s*min\(100%,/, "never wider than a 320px column");
+  for (const selector of [".ma-dance-card > .ma-label", ".ma-dance-card dt"]) {
+    assert.match(rules(sheet, selector).join(";"), /color:\s*var\(--ma-oxblood\)/, selector);
+  }
+  assert.ok(contrast(c.ink, c.pearl) >= 4.5 && contrast(c.oxblood, c.pearl) >= 4.5, "ink and oxblood are AA on mutiara");
+  assert.match(rules(sheet, ".ma-dance-card dd").join(";"), /overflow-wrap:\s*anywhere/, "a long name wraps");
+
+  for (const name of ["ma-card-in", "ma-write", "ma-tassel"]) {
+    const body = sheet.match(new RegExp(`@keyframes ${name}\\s*\\{((?:[^{}]*\\{[^}]*\\})*)\\s*\\}`))?.[1];
+    assert.ok(body, `@keyframes ${name}`);
+    for (const [, property] of body.matchAll(/([\w-]+)\s*:/g)) {
+      assert.match(property, /^(opacity|transform|clip-path|stroke-dashoffset|--[\w-]+)$/, `${name} animates ${property}`);
+    }
+  }
+  assert.match(sheet, /prefers-reduced-motion: reduce\)\s*\{\s*\.ma-theme, \.ma-theme \*[^{]*\{\s*animation: none !important/, "reduced motion shows the card already filled");
+});

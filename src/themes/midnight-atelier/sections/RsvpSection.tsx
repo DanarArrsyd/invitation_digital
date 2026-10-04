@@ -1,8 +1,11 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
+
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { useRsvpForm } from "@/themes/shared/use-public-forms";
 
+import { DanceCard } from "../components/DanceCard";
 import { Section } from "../components/Section";
 import { Spotlight } from "../components/Spotlight";
 
@@ -13,6 +16,13 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
   guestName: string | null;
 }) {
   const { state, formAction, isPending, attendance, setAttendance, formRef, onSubmit } = useRsvpForm();
+  // The form unmounts on success; keep the name it sent for the dance card.
+  const [sentName, setSentName] = useState<string | null>(null);
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    const typed = new FormData(event.currentTarget).get("guestName");
+    setSentName(typeof typed === "string" && typed.trim() ? typed.trim() : null);
+    onSubmit(event);
+  }
 
   return (
     <Section id="ma-rsvp" labelledBy="ma-rsvp-heading" tone="lacquer" className="ma-rsvp">
@@ -23,12 +33,15 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
       </Spotlight>
       <div className="ma-interaction-panel">
         {state.status === "success" ? (
-          <div className="ma-form-success" role="status">
-            <p>Terima kasih.</p>
-            <span>Konfirmasi kehadiran Anda telah kami terima.</span>
-          </div>
+          <>
+            <div className="ma-form-success" role="status">
+              <p>Terima kasih.</p>
+              <span>Konfirmasi kehadiran Anda telah kami terima.</span>
+            </div>
+            {attendance === "attending" ? <DanceCard name={guestName ?? sentName} /> : null}
+          </>
         ) : (
-          <form ref={formRef} action={formAction} onSubmit={onSubmit} className="ma-form">
+          <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="ma-form">
             <input type="hidden" name="invitationId" value={invitationId} />
             <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="guestToken" value={guestToken ?? ""} />
