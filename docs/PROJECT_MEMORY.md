@@ -25,8 +25,9 @@ implementation plans remain the source of truth:
   contract. Presentation may differ; capability parity may not.
 - Existing themes must remain visually unchanged unless shared behavior
   requires a tested parity fix.
-- Terra Botanica uses the approved **Editorial Garden** direction: Fraunces,
-  Manrope, Linen/Clay/Moss/Cacao/Sun/Bone, asymmetrical editorial composition,
+- Terra Botanica uses the approved **Editorial Garden** direction: Herr Von
+  Muellerhoff / Courier Prime / Spectral, the Herbarium Cinta palette (see the
+  2026-10-03 identity spec), asymmetrical editorial composition,
   restrained custom botanical marks, and no generic SaaS-card styling.
 - Midnight Atelier uses the approved **dark cinematic couture** direction:
   Bodoni Moda, Barlow Condensed, Ink/Lacquer/Oxblood/Champagne/Pearl/Smoke,
@@ -222,12 +223,12 @@ must produce no dead navigation target and no decorative gap.
 
 - Direction: **Editorial Garden** — intimate field journal, contemporary and
   organic, not rustic-boho and not a recolored Ivory clone.
-- Display type: Fraunces for names, chapter headings, quotes, expressive dates,
-  and the primary interaction moment.
-- Supporting type: Manrope for body copy, metadata, controls, inputs, labels,
-  countdown units, and accessibility-critical text.
-- Palette: Linen `#F2E7D8`, Clay `#B6634B`, Moss `#53634E`, Cacao `#45372C`,
-  Sun `#D6A663`, and Bone `#FBF7F0`.
+- Direction since Oct 2026: **Herbarium Cinta** — the couple's pressed-flower
+  herbarium (spec `docs/superpowers/specs/2026-10-03-theme-identity-redesign-design.md` §5).
+- Type: Herr Von Muellerhoff for couple names; Courier Prime for specimen
+  labels, dates, buttons and navigation; Spectral for italic headings and body.
+- Palette: Linen `#F2EBDD`, Lumut `#4E5B3A`, Clay `#B5653E` (small text uses
+  `--tb-clay-ink` `#9A4F2E`), Cacao `#4A3426`, Sun `#D9A441`, Bone `#FBF7EE`.
 - Composition: asymmetrical editorial spreads, alternating portrait/text
   rhythm, deliberate whitespace, stable image crops, and restrained custom SVG
   botanical silhouettes.
@@ -457,51 +458,60 @@ plan in `docs/superpowers/plans/` after the previous one merges.
 - Ivory shipped in PR #14 (merge `07951a4`, production deployed 2026-10-03).
   Owner still to check the live Rayhana & Febri page via admin preview and a
   real phone.
+- Terra "Herbarium Cinta": seed-to-bloom cover, scroll vine (`GrowingVine`,
+  `themes/shared/use-scroll-progress.ts`), typed labels (`TypedText`,
+  `themes/shared/use-in-view-once.ts`), dandelion after a sent wish, taped
+  gallery prints. Plan: `docs/superpowers/plans/2026-10-03-terra-identity.md`.
+  `@fontsource-variable/fraunces` and `manrope` removed.
 
-#### Checkpoint — Terra "Herbarium Cinta" (in progress, 2026-10-04)
+#### Checkpoint — Terra "Herbarium Cinta" (PR open, 2026-10-04)
 
 - Branch `design/terra-identity-at0kh3` (pushed; continues the earlier
-  `design/terra-identity`), based on `main` `07951a4`.
-- Plan: `docs/superpowers/plans/2026-10-03-terra-identity.md` (10 tasks).
-- Done: Task 1 fonts `4deb1c3`; Task 2 palette + paper texture + identity
-  test harness `407aa0c`; Task 3 script names `fb66ae4`; Task 4 shared hooks
-  `f8a6198`; Task 5 seed bloom `0ca3f56`; Task 6 growing vine `38eacac` +
-  fix `8f51e88` (`useScrollProgress` also recomputes on body resize, so the
-  vine is not full-grown after opening); Task 7 typed labels `cf10a0e` + fix
-  `e4d2827` (labels use a `"0px"` root margin so one at the page end cannot
-  stay clipped); Task 8 dandelion `3bce6de`; Task 9 taped photos `7ca0328`
-  (adds a reduced-motion override so photos are settled before the observer
-  fires). Suite 309/310: the one failure is the pre-existing environmental
-  countdown timezone test (nested `node --test` prints TAP, not `✔`, when
-  piped on Node 22); lint and typecheck clean.
-- **Resume at Task 10** (docs, full verification, visual QA, PR). The owner
-  asked to be consulted before continuing past each checkpoint they set, and
-  always before merging.
-- Workflow used so far: superpowers subagent-driven development (fresh
-  implementer per task, spec+quality review per task, whole-branch review
-  before the PR). Local SDD scratch (`.superpowers/`) is gitignored and does
-  not travel; this section is the durable record.
-- Open minor notes to triage in the final review:
-  - Courier label list in `ThemeStyles.tsx` omits `.tb-text-action`, calendar
-    actions, the gift copy button and form legends (they render in Spectral).
+  `design/terra-identity`), based on `main` `07951a4`. All 10 plan tasks
+  done; the PR to `main` waits for the owner's explicit "merge" (merging
+  deploys production).
+- Commits: fonts `4deb1c3`; palette + paper texture + identity harness
+  `407aa0c`; script names `fb66ae4`; shared hooks `f8a6198`; seed bloom
+  `0ca3f56`; growing vine `38eacac`; typed labels `cf10a0e`; dandelion
+  `3bce6de`; taped photos `7ca0328`. Fixes beyond the plan:
+  - `8f51e88` `useScrollProgress` recomputes on body resize, so the vine is
+    not full-grown after the cover opens.
+  - `e4d2827` typed labels use a `"0px"` root margin so one at the page end
+    cannot stay clipped.
+  - Task 9 adds a reduced-motion override so photos show settled before the
+    observer fires.
+  - `useInViewOnce` arms (`watching`) only after the observer first reports
+    the element off-screen; an element already on screen is `seen` without
+    arming and renders as is (no hide-then-reveal flash on restored scroll
+    or `#tb-galeri`).
+  - Courier now covers Maps, calendar, gift copy, attendance legend and
+    choices.
+- Verification: `npm test` 311/312 (the one failure is the pre-existing
+  environmental countdown timezone test: the nested `node --test` prints TAP,
+  not `✔`, when piped on Node 22; its probe passes); lint, typecheck and
+  `npm run build` clean.
+- Visual QA (temporary fixture, Chromium at 320, 375 and 1280): names
+  Herr Von Muellerhoff, labels/actions Courier Prime, headings italic
+  Spectral, body Spectral 16px; one tap opens and the cover is inert at
+  once, lifts by ~1.7s; vine 0 after opening, ~0.5 mid-page, 1 at the end,
+  stays in the left gutter; event labels type out; gallery drops in and
+  settles; no horizontal overflow at any width; reduced motion hides the
+  cover at once, labels unclipped, no dandelion; dandelion is 20 nodes and
+  stays on screen at 320px.
+- Remaining notes (not blocking):
+  - After the seeds fade the bare dandelion stalk and its 120x130 space
+    remain under the thank-you text; on desktop seeds briefly cross the
+    wishes column.
   - Terra test harnesses still mock `next/font/google` Fraunces/Manrope
     (harmless, unused).
-  - Flash: `useInViewOnce` arms (`watching`) right after mount, so typed
-    labels and the gallery hide then reveal if already on screen at mount
-    (restored scroll, `#tb-galeri` deep link). Candidate fix in the shared
-    hook: set `watching` only after the observer's first callback reports
-    not-intersecting; if it reports intersecting, set `seen` directly.
-  - Dandelion: seeds clip at the 320px screen edge (no page overflow; theme
-    root has `overflow-x: clip`); the bare stalk and a 120x130 gap remain
-    after the seeds fade; on desktop seeds drift over the wishes list.
-  - Visual QA to confirm: script names fit at 320px; vine does not overlap
-    section content; bloom timing (cover lifts at ~1.1s, fades 600ms);
-    gallery tilt fits the gutter at 320px.
-- Terra-specific constraints learned while planning: Terra source must not
-  contain `<img` or `querySelector`; the render harness stubs `motion/react`
-  to `useReducedMotion` only, so Terra effects are CSS + the shared
-  `use-in-view-once` / `use-scroll-progress` hooks (Task 4), not Motion
-  components; server and first client markup must match under reduced motion.
+  - The countdown timezone test should assert on the probe's exit status
+    instead of the `✔` glyph (separate fix).
+- Workflow: superpowers subagent-driven development (fresh implementer per
+  task, review per task). Local SDD scratch (`.superpowers/`) is gitignored.
+- Terra-specific constraints learned: Terra source must not contain `<img`
+  or `querySelector`; Terra effects are CSS + the shared
+  `use-in-view-once` / `use-scroll-progress` hooks, not Motion components;
+  server and first client markup must match under reduced motion.
 - After Terra merges: write and run the Midnight plan, then Cobalt, from spec
   §6–7 (choices already approved: Midnight = Imperial Script / Bodoni Moda /
   Jost, champagne-toast opener, spotlight headings, dance card RSVP,

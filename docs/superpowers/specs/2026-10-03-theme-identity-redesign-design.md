@@ -66,10 +66,14 @@ Prototypes for every choice are in `.superpowers/brainstorm/74556-1790989646/con
   scroll position. In-view triggers use Motion's existing `whileInView` /
   `useInView` (no new hook). Celebrations are components mounted by the
   success state they celebrate, so they run once per success and return
-  nothing under reduced motion. The only new shared mechanic is
-  `src/themes/shared/use-scroll-progress.ts` (rAF-throttled 0–1 progress
-  written to a CSS custom property, no React re-render per frame); it lands
-  with Terra, the first theme that needs it.
+  nothing under reduced motion. Terra added two shared mechanics:
+  `use-scroll-progress.ts` (rAF-throttled 0–1 progress written to a CSS
+  custom property, also recomputed when the body resizes, e.g. when the
+  cover reveals the content) and `use-in-view-once.ts` (IntersectionObserver
+  that arms only once the element is reported off-screen, so server and
+  client markup agree and content already on screen never flashes). Terra
+  uses its own hook rather than Motion because Terra stays CSS-driven and
+  its test harnesses stub Motion.
 - **Docs**: `docs/DESIGN.md` §5 ("no more than 2 primary font families")
   gains the exception that a script face reserved for names is the third
   family.
