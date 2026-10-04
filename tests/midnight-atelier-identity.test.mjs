@@ -217,3 +217,8 @@ test("text stays AA under the spotlight wash and a resting heading stays at leas
   }
   assert.ok(rgba(sheet, "--ma-light-strong").alpha > light.alpha, "picture lights are stronger than the heading wash");
 });
+
+test("light-form placeholders stay AA on mutiara (ink at 70% ≈ 6:1)", () => {
+  const css = readFileSync(new URL("../src/themes/midnight-atelier/ThemeStyles.tsx", import.meta.url), "utf8");
+  assert.match(css, /\.ma-form-dark \.ma-form-control::placeholder \{ color: color-mix\(in srgb, var\(--ma-ink\) 70%, transparent\); \}/);
+});

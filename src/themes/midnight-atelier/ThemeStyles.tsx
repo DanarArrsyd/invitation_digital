@@ -557,7 +557,7 @@ export function ThemeStyles() {
       .ma-form-dark .ma-form-recipient > span { color: var(--ma-oxblood); }
       .ma-form-dark .ma-form-control,
       .ma-form-dark .ma-form-recipient { border-color: var(--ma-oxblood); color: var(--ma-ink); }
-      .ma-form-dark .ma-form-control::placeholder { color: color-mix(in srgb, var(--ma-ink) 55%, transparent); }
+      .ma-form-dark .ma-form-control::placeholder { color: color-mix(in srgb, var(--ma-ink) 70%, transparent); }
       .ma-form-dark .ma-form-submit { background: var(--ma-ink); color: var(--ma-pearl); }
       .ma-form-dark .ma-form-error { color: var(--ma-oxblood); }
       .ma-form .cf-turnstile { max-width: 100%; overflow: hidden; }
