@@ -9,10 +9,11 @@ last completed task, where to resume), the commit chain, verification state,
 and open review notes. The linked design spec and implementation plan remain
 authoritative for requirements.
 
-Current work: Terra Botanica "Herbarium Cinta" on branch
-`design/terra-identity-at0kh3`, plan `docs/superpowers/plans/2026-10-03-terra-identity.md`.
-All 10 tasks are done and the PR to `main` is open; it waits for the owner's
-explicit "merge". Ask the user before merging any PR
+Terra Botanica "Herbarium Cinta" shipped in PR #15 (merge `7750e29`,
+production deployed 2026-10-04). Current work: Midnight Atelier "Malam di
+Ballroom" on branch `design/terra-identity-at0kh3` (reset to `main` after the
+merge), plan `docs/superpowers/plans/2026-10-04-midnight-identity.md`. Ask the
+user before merging any PR
 (merges to `main` deploy production).
 
 ## Project Overview

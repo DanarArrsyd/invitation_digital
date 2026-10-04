@@ -483,7 +483,19 @@ plan in `docs/superpowers/plans/` after the previous one merges.
   gallery prints. Plan: `docs/superpowers/plans/2026-10-03-terra-identity.md`.
   `@fontsource-variable/fraunces` and `manrope` removed.
 
-#### Checkpoint — Terra "Herbarium Cinta" (PR open, 2026-10-04)
+#### Checkpoint — Midnight "Malam di Ballroom" (starting, 2026-10-04)
+
+- Terra merged in PR #15 (merge `7750e29`); production deploy
+  `dpl_2Ee2LkVNKNrUBmw8bBinXoqwKGmo` READY on
+  `invitation-digital-delta.vercel.app`; `/admin/login` and `/sample-1`
+  (Terra) return 200. Owner still to check on a real phone.
+- Branch `design/terra-identity-at0kh3` reset to `main` `7750e29` for the
+  Midnight work (the designated branch name is kept).
+- Plan: `docs/superpowers/plans/2026-10-04-midnight-identity.md`. Already done
+  for Midnight before the plan: art-deco nav icons, calendar in the
+  countdown, 5-item mobile nav sizing, 3:4 title-first hero.
+
+#### Checkpoint — Terra "Herbarium Cinta" (merged, 2026-10-04)
 
 - Branch `design/terra-identity-at0kh3` (pushed; continues the earlier
   `design/terra-identity`), based on `main` `07951a4`. All 10 plan tasks
