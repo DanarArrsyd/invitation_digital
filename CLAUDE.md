@@ -9,11 +9,12 @@ last completed task, where to resume), the commit chain, verification state,
 and open review notes. The linked design spec and implementation plan remain
 authoritative for requirements.
 
-Terra Botanica "Herbarium Cinta" shipped in PR #15 (merge `7750e29`) and
-Midnight Atelier "Malam di Ballroom" in PR #16 (merge `202c787`), both
-deployed 2026-10-04. Next: Cobalt Riviera, plan to be written from spec §7 on
-branch `design/terra-identity-at0kh3` (reset to `main` after each merge). Ask
-the user before merging any PR
+Terra shipped in PR #15 (`7750e29`), Midnight in PR #16 (`202c787`) and the
+Ivory melati fix in PR #17 (`13d9150`). Current work: Cobalt Riviera "Surat
+Cinta dari Mediterania" on branch `design/terra-identity-at0kh3`, plan
+`docs/superpowers/plans/2026-10-05-cobalt-identity.md`. All plan tasks are
+done and the PR to `main` waits for the owner's explicit "merge". Ask the
+user before merging any PR
 (merges to `main` deploy production).
 
 ## Project Overview

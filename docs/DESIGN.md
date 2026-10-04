@@ -672,24 +672,32 @@ architectural, and composed like a contemporary Riviera travel folio. It
 presents the same normalized data and all 18 canonical capabilities as every
 registered theme without becoming a generic blue beach or travel template.
 
-Palette: Cobalt `#1646C8` (architectural field), Porcelain `#FFF9EE` (reading
-surface), Sea Ink `#123047` (text), Tangerine `#F06A3C` (active interaction),
-Citron `#F3CF4C` (sun control), and Pool `#81C7D4` (quiet secondary field).
-Familjen Grotesk Variable carries names, chapter titles, and itinerary display;
-Newsreader Variable carries body copy and intimate text.
+Since October 2026 Cobalt follows **Surat Cinta dari Mediterania** (spec
+`docs/superpowers/specs/2026-10-03-theme-identity-redesign-design.md` §7): a
+summer postcard from the coast — majolica blue, lemons, stamps and sea. It is
+the brightest theme.
 
-Storyboard: a photo-free horizon-shutter cover with one labelled Citron sun
-control; a panoramic hero; offset couple and parent editorials; flat itinerary
-rows with visible Maps and calendar actions; a horizon countdown and wardrobe
-strip; chronological story folios; a panoramic-anchor ceramic gallery; large
-attendance color fields; route-separated wishes; travel-folio gift receipts;
-and a restrained Cobalt closing field.
+Palette: Kobalt `#1D3E9E` (sea and architectural chapters), Porselen
+`#F7F4EC` (reading surface, morning sky), Tinta laut `#0E2350` (text, night
+chapters), Jeruk `#E8743B` (fills, rules, postmark ring; text uses `#9A3D14`),
+Citron `#E9D35B` (sun, highlights), Kolam `#8EC5D6` (quiet secondary field)
+and Senja `#F8DCC4` (sunset sky). Corinthia is reserved for couple names;
+Newsreader italic carries headings and numerals; Newsreader carries body text
+at 17px or larger; Familjen Grotesk carries spaced-capital labels.
 
-Use hard rectangular crops, quarter-circle geometry, thin route rules, strong
-left alignment, and flat color chapters. Avoid gradients, glass, shadows,
-rounded card repetition, shells, palms, waves, passport stamps, decorative
-flight paths, and any invented customer data. The horizon cover owns the one
-theatrical motion; all other feedback stays short and functional, and reduced
-motion preserves every action. Empty, malformed, and disabled content must
+Storyboard: a cobalt sea cover whose two foam-edged waves recede to leave the
+names on porcelain sand; two wave lines swaying at each chapter's top edge
+(only while on screen); a sky behind the porcelain chapters that warms from
+morning to sunset as the guest scrolls, with a small sun sinking down the page
+margin; an orange "Diterima" postmark beside the RSVP confirmation; a sent
+wish rolled into a bottle that bobs and drifts away. Small Italian accents
+("Saluti") are tagged `lang="it"`; every label is Bahasa Indonesia.
+
+Use flat colour fields, hard rectangular crops, thin route rules, wave lines
+and strong left alignment. Avoid gradients, glass, shadows, rounded cards,
+shells, palms, decorative flight paths and any invented customer data. The
+receding waves own the one theatrical motion; dividers and the sky are quiet,
+and reduced motion shows the final sky, still waves and the postmark at rest
+while preserving every action. Empty, malformed, and disabled content must
 leave no dead route item or decorative gap, while controls remain at least
 48px and usable from 320px through desktop.
