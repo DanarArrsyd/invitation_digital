@@ -1,3 +1,7 @@
+.cr-font-script {
+  --font-cr-script: "Corinthia";
+}
+
 .cr-font-display {
   --font-cr-display: "Familjen Grotesk Variable";
 }

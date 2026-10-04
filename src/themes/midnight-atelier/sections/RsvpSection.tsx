@@ -42,6 +42,8 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
             <div className="ma-form-success" role="status">
               <p>Terima kasih.</p>
               <span>Konfirmasi kehadiran Anda telah kami terima.</span>
+              {/* The dance card is aria-hidden; the status names the submitted answer. */}
+              <span>Tercatat: {sent.attending ? "Hadir" : "Tidak hadir"}.</span>
             </div>
             {sent.attending ? <DanceCard name={guestName ?? sent.name} /> : null}
           </>

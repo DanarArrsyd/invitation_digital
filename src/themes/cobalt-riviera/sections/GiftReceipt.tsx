@@ -11,7 +11,7 @@ export function GiftReceipt({ gift, index }: { gift: GiftAccount; index: number 
 
   return (
     <li className="cr-gift-receipt">
-      <span className="cr-gift-route" aria-hidden="true">AC/{String(index + 1).padStart(2, "0")}</span>
+      <span className="cr-gift-route" aria-hidden="true">Amplop {String(index + 1).padStart(2, "0")}</span>
       <div className="cr-gift-details">
         <p className="cr-gift-provider">{gift.providerName}</p>
         <p ref={numberRef} className="cr-gift-number">{gift.accountNumber}</p>

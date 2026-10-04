@@ -21,7 +21,7 @@ export function CoupleSection({ people, settings, invitationType }: {
   return (
     <Section id="cr-mempelai" labelledBy="cr-couple-heading" tone="porcelain" className="cr-couple">
       <header className="cr-chapter-heading">
-        <p>Meet the hosts</p>
+        <p>{invitationType === "wedding" ? "Yang berbahagia" : "Tuan rumah"}</p>
         <h2 id="cr-couple-heading">{invitationType === "wedding" ? "Mempelai" : "Yang mengundang"}</h2>
         <CeramicLine />
       </header>
@@ -54,8 +54,8 @@ export function CoupleSection({ people, settings, invitationType }: {
               )}
 
               <div className="cr-person-copy">
-                <p className="cr-person-route">{String(index + 1).padStart(2, "0")} / Riviera</p>
-                <h3>{person.fullName}</h3>
+                <p className="cr-person-route">Kartu pos {String(index + 1).padStart(2, "0")}</p>
+                <h3 className="cr-script">{person.fullName}</h3>
                 {parents.length > 0 ? (
                   <div className="cr-parents">
                     <p>{parentLabel(person.role)}</p>

@@ -60,7 +60,7 @@ export function CountdownSection({
       className={hasTarget ? "cr-countdown" : "cr-countdown cr-countdown-calendar-only"}
     >
       <div className="cr-countdown-heading">
-        <p>Next horizon</p>
+        <p>{hasTarget ? "Hitung mundur" : "Tandai kalender Anda"}</p>
         <h2 id="cr-countdown-heading">{hasTarget ? "Menuju hari bahagia" : "Simpan tanggalnya"}</h2>
       </div>
       <div className="cr-countdown-board">

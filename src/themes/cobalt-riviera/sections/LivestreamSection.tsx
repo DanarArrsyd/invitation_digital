@@ -13,8 +13,8 @@ export function LivestreamSection({ events, enabled }: { events: InvitationEvent
   return (
     <Section id="cr-livestream" labelledBy="cr-livestream-heading" tone="sea-ink" className="cr-livestream">
       <div className="cr-livestream-copy">
-        <p>Live broadcast</p>
-        <h2 id="cr-livestream-heading">Join from anywhere</h2>
+        <p>Siaran langsung</p>
+        <h2 id="cr-livestream-heading">Hadir dari mana saja</h2>
         <span>Rayakan bersama kami dari tempat Anda berada.</span>
       </div>
       <ul>

@@ -190,7 +190,7 @@ test("Cobalt styles encode the approved palette, focus, motion, and hard-edged g
   const document = new JSDOM(renderToStaticMarkup(React.createElement(ThemeStyles))).window.document;
   const css = document.querySelector("style")?.textContent ?? "";
 
-  for (const color of ["#1646C8", "#FFF9EE", "#123047", "#F06A3C", "#F3CF4C", "#81C7D4"]) {
+  for (const color of ["#1D3E9E", "#F7F4EC", "#0E2350", "#E8743B", "#E9D35B", "#8EC5D6", "#9A3D14", "#4A5878", "#F8DCC4"]) {
     assert.match(css, new RegExp(color, "i"), color);
   }
   assert.match(css, /overflow-x:\s*clip/);
@@ -258,6 +258,9 @@ test("Cobalt stays presentation-only and bundles only its approved font families
   assert.match(registry, /import \{ CobaltRiviera, COBALT_RIVIERA_SECTIONS \} from "\.\/cobalt-riviera"/);
   assert.match(fontsTs, /@fontsource-variable\/familjen-grotesk/);
   assert.match(fontsTs, /@fontsource-variable\/newsreader/);
+  assert.match(fontsTs, /@fontsource\/corinthia\/700\.css/);
+  assert.match(fontsCss, /--font-cr-script:\s*"Corinthia"/);
+  assert.match(packageJson, /@fontsource\/corinthia/);
   assert.match(fontsCss, /--font-cr-display:\s*"Familjen Grotesk Variable"/);
   assert.match(fontsCss, /--font-cr-body:\s*"Newsreader Variable"/);
   assert.match(packageJson, /@fontsource-variable\/familjen-grotesk/);

@@ -1,5 +1,10 @@
 # Cobalt Riviera — Theme #004 Design Specification
 
+> **Superseded (visual direction only), 2026-10-05:** typography, palette,
+> cover and ornaments now follow `2026-10-03-theme-identity-redesign-design.md`
+> §7 ("Surat Cinta dari Mediterania"). Data, sections, feature gating and
+> accessibility below remain authoritative.
+
 ## Product role
 
 Cobalt Riviera expands the production collection with a bright destination

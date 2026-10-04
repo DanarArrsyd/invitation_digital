@@ -34,11 +34,14 @@ implementation plans remain the source of truth:
   Jost, the Tinta/Oxblood/Champagne/Mutiara/Asap palette (see the 2026-10-03
   identity spec), programme-led composition, light drawn only as spotlight
   and picture lights, and no generic black-and-gold styling.
-- Cobalt Riviera uses the approved **sunlit destination editorial** direction:
-  wide grotesk display type, Newsreader body text, Cobalt/Porcelain/Sea Ink/
-  Tangerine/Citron/Pool, a horizon-shutter cover, panoramic imagery, flat
-  itinerary rows, and ceramic-grid rhythm. Literal beach/travel props and
-  generic travel cards are outside the approved direction.
+- Cobalt Riviera uses the approved **Surat Cinta dari Mediterania** direction
+  (Oct 2026, replacing the sunlit destination editorial): Corinthia /
+  Familjen Grotesk / Newsreader italic, the Kobalt/Porselen/Tinta laut/Jeruk/
+  Citron/Kolam palette with a Senja sky (see the 2026-10-03 identity spec), a
+  receding-wave cover, wave dividers, a morning-to-sunset sky, a postmark on
+  the RSVP and a message in a bottle for wishes. Flat colour only: no
+  gradients, shadows, glass or rounded cards; shells, palms and flight paths
+  stay out.
 - Sponsorship is only a reserved package entitlement. There is no public
   sponsorship data model or UI in this plan.
 - Themes receive normalized data and never query Supabase directly.
@@ -141,20 +144,25 @@ Key boundaries:
 fourth visual system from the same normalized invitation contract:
 
 ```text
-CoverGate — horizon shutters, guest personalization, music and focus handoff
+CoverGate — receding waves (Ombak surut), guest personalization, music and focus handoff
   ├─ Hero + quote — panoramic or typographic horizon opening
   ├─ Couple + parents — offset resort editorials and social credits
   ├─ Itinerary — events, Maps, countdown + calendar, dress code, livestream
   ├─ Story — ordered folio with complete text-only entries
   ├─ Gallery — panoramic anchor plus ceramic mosaic
-  ├─ RSVP — large checked color fields over shared action state
-  ├─ Wishes — route-separated notes over shared action and pagination
+  ├─ RSVP — large checked color fields; "Diterima" postmark naming the submitted attendance
+  ├─ Wishes — route-separated notes; a sent wish sails away in a bottle
   ├─ Gifts — flat folio receipts with truthful shared clipboard feedback
   └─ Closing — Cobalt conclusion through the shared image fallback chain
 ```
 
-The registry preview uses Cobalt `#1646C8`, Porcelain `#FFF9EE`, and Tangerine
-`#F06A3C`. The catalogue migration is
+Cobalt uses Kobalt `#1D3E9E`, Porselen `#F7F4EC`, Tinta laut `#0E2350`,
+Jeruk `#E8743B` (fills, rules and the postmark ring; text uses
+`--cr-tangerine-ink` `#9A3D14`), Citron `#E9D35B`, Kolam `#8EC5D6`, and Senja
+`#F8DCC4`, the sunset sky behind the porcelain chapters. Corinthia carries
+couple names, Newsreader italic the headings and numerals, Newsreader the body
+(17px) and Familjen Grotesk the spaced-capital labels. The registry preview
+uses Kobalt, Porselen and Jeruk. The catalogue migration is
 `20261002000001_cobalt_riviera_theme.sql`; it is a single slug upsert that
 preserves an existing row ID and all invitation foreign-key references.
 
@@ -499,19 +507,47 @@ plan in `docs/superpowers/plans/` after the previous one merges.
   `tests/midnight-atelier-identity.test.mjs` pins contrast, light, names,
   toast, spotlight, dance card, bubbles, picture lights and labels.
 
-#### Checkpoint — Cobalt "Surat Cinta dari Mediterania" (next)
+- Cobalt "Surat Cinta dari Mediterania": receding-wave cover
+  (`RecedingWaves`, replaces the horizon shutters), swaying chapter dividers
+  (`WaveDivider`, paused off screen by a direct observer), morning-to-sunset
+  sky with a sinking sun (`RivieraSky` over
+  `themes/shared/use-scroll-progress.ts`; only opacity and transform follow
+  the scroll), "Diterima" postmark naming the submitted attendance
+  (`Postmark`), sent wish sailing away in a bottle (`WishBottle`), Bahasa
+  Indonesia labels with a tagged "Saluti" accent. Plan:
+  `docs/superpowers/plans/2026-10-05-cobalt-identity.md`. `@fontsource/corinthia`
+  added. `tests/cobalt-riviera-identity.test.mjs` pins contrast (including the
+  sky ramp), names, waves, dividers, sky, postmark, bottle and labels.
 
-- Midnight merged in PR #16 (merge `202c787`, 2026-10-04) after one review
-  fix: the dance card follows the submitted attendance (`17da4b7`).
-- Branch `design/terra-identity-at0kh3` reset to `main` `202c787`.
-- Next: write and run the Cobalt plan from spec §7 (approved: Corinthia /
-  Familjen Grotesk / Newsreader, receding-wave opener, wave dividers,
-  morning-to-sunset scroll, postmark RSVP, message-in-a-bottle wishes).
-  Already done for Cobalt: nautical nav icons, calendar in the countdown,
-  5-item mobile bar, 3:4 title-first hero.
-- Done in PR #17 (`59db030`): Ivory's melati shower now follows the submitted
-  attendance (it read the live choice, like the Midnight dance card bug), and
-  Ivory thanks read "Terima kasih" instead of "Matur nuwun" (owner request).
+#### Checkpoint — Cobalt "Surat Cinta dari Mediterania" (PR open, 2026-10-05)
+
+- Previous merges: Midnight PR #16 (`202c787`); Ivory melati fix and
+  "Terima kasih" copy PR #17 (`13d9150`). Branch `design/terra-identity-at0kh3`
+  reset to `main` `13d9150` for Cobalt.
+- Owner decisions: postmark on both "Hadir" and "Tidak Hadir"; sun in the
+  left page margin; reduced motion pins the sunset sky; Italian accents only
+  "Saluti dalla Costa" / "Saluti" (`lang="it"`), "+" became "&".
+- Commits: plan `84ef917`/`a98666b`; fonts `698801e`; palette + senja + harness
+  `a3b2f22`; lightbox colours `97910da`; Corinthia names `01cfa27`; receding
+  waves `9592043`; wave dividers `b88e84a`; sky `5836d32`; postmark `68d336f`;
+  bottle `16d01ce`; Bahasa Indonesia labels `400b7dd`.
+- Deviations from the plan, reviewed: the bottle also removes itself after 4s
+  if the animation-end event never fires; its wave line fades out; long-wish
+  truncation keeps emoji whole; the masthead wraps cleanly at 320px.
+- Visual QA (temporary fixture, Chromium 320×640, 360×640, 375×812,
+  1280×860): Corinthia names with an italic "&"; Newsreader italic headings,
+  body 17px; open button on screen at 360×640 (bottom 616px); cover inert on
+  the first tap and the waves recede to the names on sand; sky `--cr-day` 0
+  after opening, 0.5 mid-page, 1 at the end; only on-screen dividers sway;
+  postmark lettering inside its ring at 320px; 5 nav items with icons, no cut
+  labels; no horizontal overflow; no English labels left; reduced motion hides
+  the cover at once, pins the sky to sunset and stills the dividers.
+- Verification: `npm test` 387/388 (only the known environmental countdown
+  timezone failure); lint, typecheck and build clean; no `querySelector`,
+  `<img`, radius, gradient, shadow or backdrop-filter in Cobalt source.
+- Remaining notes: the names-on-sand moment lasts under a second (check on a
+  phone); the bottle's 6rem band stays empty after it leaves; the
+  tangerine-ink on citron pair is 4.57:1, the tightest AA pass.
 
 #### Checkpoint — Midnight "Malam di Ballroom" (merged, 2026-10-04)
 

@@ -253,9 +253,9 @@ test("every itinerary and broadcast control resolves a visible high-contrast foc
     const style = document.defaultView.getComputedStyle(control);
     const surface = control.closest(".cr-surface-porcelain, .cr-surface-sea-ink, .cr-surface-cobalt");
     const dark = surface?.classList.contains("cr-surface-sea-ink") || surface?.classList.contains("cr-surface-cobalt");
-    const expected = dark ? "#F3CF4C" : "#1646C8";
-    const background = surface?.classList.contains("cr-surface-sea-ink") ? "#123047"
-      : surface?.classList.contains("cr-surface-cobalt") ? "#1646C8" : "#FFF9EE";
+    const expected = dark ? "#E9D35B" : "#1D3E9E";
+    const background = surface?.classList.contains("cr-surface-sea-ink") ? "#0E2350"
+      : surface?.classList.contains("cr-surface-cobalt") ? "#1D3E9E" : "#F7F4EC";
     assert.equal(style.getPropertyValue("--cr-focus-ring").trim().toUpperCase(), expected);
     assert.ok(contrast(expected, background) >= 3);
   }

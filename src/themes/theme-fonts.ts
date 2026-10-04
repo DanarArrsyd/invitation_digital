@@ -33,6 +33,8 @@ import "@fontsource-variable/jost";
 import "./midnight-atelier/fonts.css";
 
 // cobalt-riviera
+import "@fontsource/corinthia/700.css";
 import "@fontsource-variable/familjen-grotesk";
 import "@fontsource-variable/newsreader";
+import "@fontsource-variable/newsreader/wght-italic.css";
 import "./cobalt-riviera/fonts.css";

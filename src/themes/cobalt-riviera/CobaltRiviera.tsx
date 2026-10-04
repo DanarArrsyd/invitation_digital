@@ -3,9 +3,10 @@ import { buildThemeViewModel } from "@/themes/shared/view-model";
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
 
+import { RivieraSky } from "./components/RivieraSky";
 import type { RivieraRouteItem } from "./components/RouteNavigation";
 import { CoverGate } from "./CoverGate";
-import { rivieraBody, rivieraDisplay } from "./fonts";
+import { rivieraBody, rivieraDisplay, rivieraScript } from "./fonts";
 import { ClosingSection } from "./sections/ClosingSection";
 import { CountdownSection } from "./sections/CountdownSection";
 import { CoupleSection } from "./sections/CoupleSection";
@@ -58,14 +59,15 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
 
   return (
     <div
-      className={`cr-theme ${rivieraDisplay.variable} ${rivieraBody.variable}`}
+      className={`cr-theme ${rivieraScript.variable} ${rivieraDisplay.variable} ${rivieraBody.variable}`}
       data-theme="cobalt-riviera"
     >
       <ThemeStyles />
       <CoverGate
         invitationId={invitation.id}
         guestToken={guest?.token ?? null}
-        label={invitation.type === "wedding" ? "Cobalt Riviera" : "Sunlit invitation"}
+        label={invitation.type === "wedding" ? "Cobalt Riviera" : "Undangan perayaan"}
+        intro={invitation.type === "wedding" ? "Pernikahan" : "Perayaan"}
         displayName={coupleDisplayName}
         eventDate={invitation.eventDate ?? primaryEvent?.eventDate ?? null}
         guestDisplayName={guestDisplayName}
@@ -73,6 +75,7 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
         musicUrl={invitation.media.musicUrl}
         routeItems={routeItems}
       >
+        <RivieraSky />
         <main>
           <HeroSection
             displayName={coupleDisplayName}

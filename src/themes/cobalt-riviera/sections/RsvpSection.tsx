@@ -1,8 +1,11 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
+
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { useRsvpForm } from "@/themes/shared/use-public-forms";
 
+import { Postmark } from "../components/Postmark";
 import { Section } from "../components/Section";
 
 export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
@@ -12,6 +15,14 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
   guestName: string | null;
 }) {
   const { state, formAction, isPending, attendance, setAttendance, formRef, onSubmit } = useRsvpForm();
+  // The form unmounts on success and the choices stay live while the action
+  // is pending; the postmark names the attendance that was actually sent.
+  const [sentAttendance, setSentAttendance] = useState<"attending" | "not_attending" | null>(null);
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    const sent = new FormData(event.currentTarget).get("attendance");
+    setSentAttendance(sent === "attending" || sent === "not_attending" ? sent : null);
+    onSubmit(event);
+  }
 
   return (
     <Section id="cr-rsvp" labelledBy="cr-rsvp-heading" tone="cobalt" className="cr-rsvp">
@@ -23,15 +34,20 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
 
       <div className="cr-rsvp-sheet">
         {state.status === "success" ? (
-          <div className="cr-form-success" role="status">
-            <span aria-hidden="true">✓</span>
-            <div>
-              <strong>Terima kasih.</strong>
-              <p>Konfirmasi kehadiran Anda telah kami terima.</p>
+          <div className="cr-rsvp-receipt">
+            <div className="cr-form-success" role="status">
+              <span aria-hidden="true">✓</span>
+              <div>
+                <strong>Terima kasih.</strong>
+                <p>Konfirmasi kehadiran Anda telah kami terima.</p>
+                {/* The postmark is decorative (aria-hidden); the status names the submitted answer. */}
+                {sentAttendance ? <p>Tercatat: {sentAttendance === "attending" ? "Hadir" : "Tidak hadir"}.</p> : null}
+              </div>
             </div>
+            {sentAttendance ? <Postmark attendance={sentAttendance} /> : null}
           </div>
         ) : (
-          <form ref={formRef} action={formAction} onSubmit={onSubmit} className="cr-form">
+          <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="cr-form">
             <input type="hidden" name="invitationId" value={invitationId} />
             <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="guestToken" value={guestToken ?? ""} />

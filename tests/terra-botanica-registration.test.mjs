@@ -82,7 +82,7 @@ test("all four registered theme slugs resolve through the real public renderer",
   assert.deepEqual([...themeRegistry["midnight-atelier"].preview.palette], ["#14121A", "#5E1A22", "#D8C08A"]);
   assert.equal(themeRegistry["cobalt-riviera"].preview.name, "Cobalt Riviera");
   assert.equal(themeRegistry["cobalt-riviera"].category, "wedding");
-  assert.deepEqual([...themeRegistry["cobalt-riviera"].preview.palette], ["#1646C8", "#FFF9EE", "#F06A3C"]);
+  assert.deepEqual([...themeRegistry["cobalt-riviera"].preview.palette], ["#1D3E9E", "#F7F4EC", "#E8743B"]);
   const expectedComponents = {
     "cobalt-riviera": "CobaltRiviera",
     "nusantara-ivory": "NusantaraIvory",

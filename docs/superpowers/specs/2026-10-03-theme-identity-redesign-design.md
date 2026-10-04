@@ -215,6 +215,15 @@ The brightest theme.
   4. *Pesan dalam botol* (wishes): the wish rolls into a bottle that bobs and
      drifts away; the wish then appears in the list.
 
+Implementation notes (Cobalt PR): jeruk is 2.7:1 on porselen, so text uses
+`#9A3D14`; the sky is two flat layers (porselen, senja `#F8DCC4`) cross-faded
+by opacity, AA-tested along the whole ramp, and reduced motion pins sunset.
+The sun sinks in the left page gutter. Dividers pause off screen with a direct
+observer (no reveal, so not `use-in-view-once`). The postmark stamps every
+successful RSVP and names the submitted attendance; RSVP has no party size.
+The sent wish reaches the list through server revalidation. Italian accents
+are limited to a tagged "Saluti"; thanks stay "Terima kasih".
+
 ## 8. Font budget
 
 | Theme | Script | Display | Body |

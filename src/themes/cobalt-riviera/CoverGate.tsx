@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { useInvitationCover } from "@/themes/shared/use-invitation-cover";
 
+import { RecedingWaves } from "./components/RecedingWaves";
 import { RouteNavigation, type RivieraRouteItem } from "./components/RouteNavigation";
 import { SunMark } from "./components/SunMark";
 
@@ -23,6 +24,7 @@ interface CoverGateProps {
   invitationId: string;
   guestToken: string | null;
   label: string;
+  intro: string;
   displayName: string;
   eventDate: string | null;
   guestDisplayName: string | null;
@@ -36,6 +38,7 @@ export function CoverGate({
   invitationId,
   guestToken,
   label,
+  intro,
   displayName,
   eventDate,
   guestDisplayName,
@@ -62,25 +65,21 @@ export function CoverGate({
       {canPlayMusic ? <audio ref={audioRef} src={musicUrl ?? undefined} loop preload="none" /> : null}
 
       <div id="cr-cover" className="cr-cover" aria-hidden={opened || undefined} inert={opened}>
-        <div className="cr-horizon" aria-hidden="true">
-          <div className="cr-horizon-shutter cr-shutter-upper" />
-          <div className="cr-horizon-shutter cr-shutter-lower" />
-          <div className="cr-horizon-seam" />
-        </div>
+        <RecedingWaves names={displayName} />
 
         <div className="cr-cover-frame">
           <header className="cr-cover-masthead">
+            <span lang="it">Saluti dalla Costa</span>
             <span>{label}</span>
-            <span>CR / 04</span>
           </header>
 
           <div className="cr-cover-stage">
-            <p className="cr-cover-intro">The wedding of</p>
-            <h1 className="cr-cover-names">
+            <p className="cr-cover-intro">{intro}</p>
+            <h1 className="cr-cover-names cr-script">
               {names.length === 2 ? (
                 <>
                   <span>{names[0]}</span>
-                  <span className="cr-cover-amp">+</span>
+                  <span className="cr-cover-amp">&amp;</span>
                   <span>{names[1]}</span>
                 </>
               ) : displayName}
