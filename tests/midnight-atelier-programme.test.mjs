@@ -5,7 +5,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import vm from "node:vm";
-import React from "react";
+import React, { act } from "react";
+import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { JSDOM } from "jsdom";
 import ts from "typescript";
@@ -114,17 +115,97 @@ test("evening programme renders one through five ordered events without truncati
   }
 });
 
-test("programme exposes safe event-specific maps and calendar actions", () => {
-  const document = render();
+test("programme rows expose safe event-specific maps but no calendar actions", () => {
+  const document = render(fixture({ events: [event(0), event(1)] }));
   const row = document.querySelector("#ma-acara [data-event-item='event-0']");
   const maps = row?.querySelector("a[aria-label^='Buka Maps']");
   assert.equal(maps?.getAttribute("href"), "https://maps.example.test/venue-0");
   assert.equal(maps?.getAttribute("target"), "_blank");
   assert.match(maps?.getAttribute("rel") ?? "", /noopener/);
-  const google = row?.querySelector("a[aria-label^='Google Kalender']");
+  assert.equal(document.querySelector("#ma-acara .ma-calendar-actions"), null);
+  assert.equal(document.querySelector("#ma-acara a[aria-label^='Google Kalender'], #ma-acara button[aria-label^='Unduh kalender']"), null);
+});
+
+test("countdown holds exactly one calendar action set built from the earliest event", () => {
+  const document = render(fixture({ events: [event(1), event(0)] }));
+  assert.equal(document.querySelectorAll(".ma-calendar-actions").length, 1);
+  const actions = document.querySelector("#ma-countdown .ma-calendar-actions");
+  assert.ok(actions, "calendar actions live inside the countdown section");
+  const google = actions.querySelector("a[aria-label^='Google Kalender']");
   assert.match(google?.getAttribute("href") ?? "", /^https:\/\/calendar\.google\.com\/calendar\/render\?/);
   assert.equal(new URL(google?.getAttribute("href") ?? "").searchParams.get("text"), "The Ceremony — Nadia & Arka");
-  assert.ok(row?.querySelector("button[aria-label^='Unduh kalender']"));
+  assert.equal(google?.getAttribute("target"), "_blank");
+  assert.match(google?.getAttribute("rel") ?? "", /noopener/);
+  assert.equal(actions.querySelector("button")?.getAttribute("aria-label"), "Unduh kalender .ics untuk The Ceremony — Nadia & Arka");
+  assert.equal(document.querySelectorAll("#ma-countdown .ma-countdown-units dd").length, 4);
+});
+
+test("calendar actions stay in the countdown section when the countdown is disabled", () => {
+  const document = render(fixture({ features: { ...baseFeatures, countdown: false } }));
+  const section = document.querySelector("#ma-countdown");
+  assert.ok(section, "countdown section remains for the calendar");
+  assert.equal(section.querySelector(".ma-countdown-units"), null, "no clock units without a countdown");
+  assert.equal(section.querySelector("h2")?.textContent, "Simpan tanggalnya");
+  assert.equal(section.getAttribute("aria-labelledby"), section.querySelector("h2")?.id);
+  assert.equal(document.querySelectorAll(".ma-calendar-actions").length, 1);
+  assert.ok(section.querySelector(".ma-calendar-actions a[aria-label^='Google Kalender']"));
+});
+
+test("calendar actions disappear when the earliest event has no valid positive same-day interval", () => {
+  for (const overrides of [{ endTime: null }, { endTime: "17:00:00" }, { startTime: null }, { eventDate: "2030-02-31" }]) {
+    const broken = [event(0, overrides)];
+    const withCountdown = render(fixture({ events: broken }));
+    assert.equal(withCountdown.querySelector(".ma-calendar-actions"), null, JSON.stringify(overrides));
+    const withoutCountdown = render(fixture({ events: broken, features: { ...baseFeatures, countdown: false } }));
+    assert.equal(withoutCountdown.querySelector("#ma-countdown"), null, `${JSON.stringify(overrides)} leaves no empty countdown`);
+  }
+});
+
+test("countdown .ics action downloads the earliest event calendar file", async () => {
+  const dom = new JSDOM("<div id='root'></div>", { pretendToBeVisual: true, url: "https://invitation.test/" });
+  const keys = ["window", "document", "HTMLElement", "IntersectionObserver", "requestAnimationFrame", "IS_REACT_ACT_ENVIRONMENT"];
+  const previous = Object.fromEntries(keys.map((key) => [key, globalThis[key]]));
+  const { createObjectURL, revokeObjectURL } = URL;
+  const blobs = [];
+  const revoked = [];
+  const clicks = [];
+  Object.assign(globalThis, {
+    window: dom.window,
+    document: dom.window.document,
+    HTMLElement: dom.window.HTMLElement,
+    IntersectionObserver: class { observe() {} disconnect() {} },
+    requestAnimationFrame: dom.window.requestAnimationFrame.bind(dom.window),
+    IS_REACT_ACT_ENVIRONMENT: true,
+  });
+  URL.createObjectURL = (blob) => { blobs.push(blob); return "blob:calendar"; };
+  URL.revokeObjectURL = (url) => revoked.push(url);
+  dom.window.HTMLAnchorElement.prototype.click = function click() {
+    clicks.push({ href: this.getAttribute("href"), download: this.getAttribute("download") });
+  };
+  const { MidnightAtelier } = loadTheme().load("themes/midnight-atelier");
+  const root = createRoot(dom.window.document.getElementById("root"));
+  try {
+    await act(async () => root.render(React.createElement(MidnightAtelier, {
+      invitation: fixture({ events: [event(1), event(0)] }), guest: null,
+    })));
+    const button = dom.window.document.querySelector("#ma-countdown button[aria-label^='Unduh kalender']");
+    assert.ok(button);
+    await act(async () => button.click());
+    assert.deepEqual(clicks, [{ href: "blob:calendar", download: "the-ceremony-nadia-arka.ics" }]);
+    assert.deepEqual(revoked, ["blob:calendar"]);
+    assert.equal(blobs.length, 1);
+    const ics = await blobs[0].text();
+    assert.match(ics, /BEGIN:VCALENDAR/);
+    assert.match(ics, /UID:midnight-programme-event-0@invitation\.digital/);
+    assert.match(ics, /SUMMARY:The Ceremony — Nadia & Arka/);
+    assert.match(ics, /DTSTART:20301020T113000Z/);
+  } finally {
+    await act(async () => root.unmount());
+    URL.createObjectURL = createObjectURL;
+    URL.revokeObjectURL = revokeObjectURL;
+    Object.assign(globalThis, previous);
+    dom.window.close();
+  }
 });
 
 test("invalid dates, time intervals, and unsafe URLs never become actions", () => {
@@ -138,7 +219,7 @@ test("invalid dates, time intervals, and unsafe URLs never become actions", () =
   assert.match(row.textContent, /The Ceremony/);
   assert.equal(row.querySelector("time"), null);
   assert.equal(row.querySelector(".ma-event-time"), null);
-  assert.equal(row.querySelector(".ma-calendar-actions"), null);
+  assert.equal(document.querySelector(".ma-calendar-actions"), null);
   assert.equal(row.querySelector("a[aria-label^='Buka Maps']"), null);
   assert.equal(document.querySelector("#ma-livestream"), null);
 });
@@ -165,7 +246,8 @@ test("disabled programme features stay absent while events remain useful", () =>
   const document = render(fixture({ features: { ...baseFeatures, countdown: false, maps: false, dressCode: false, livestream: false } }));
   assert.ok(document.querySelector("#ma-acara"));
   assert.equal(document.querySelector("#ma-acara a[aria-label^='Buka Maps']"), null);
-  assert.equal(document.querySelector("#ma-countdown"), null);
+  assert.equal(document.querySelector("#ma-countdown .ma-countdown-units"), null);
+  assert.ok(document.querySelector("#ma-countdown .ma-calendar-actions"), "calendar survives a disabled countdown");
   assert.equal(document.querySelector("#ma-dress-code"), null);
   assert.equal(document.querySelector("#ma-livestream"), null);
 });

@@ -354,6 +354,10 @@ export function ThemeStyles() {
       .ma-countdown-units > div:nth-child(even) { padding-left: 1rem; }
       .ma-countdown-units dd { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(2.8rem, 12vw, 6rem); line-height: .8; font-variant-numeric: tabular-nums; }
       .ma-countdown-units dt { margin-top: .75rem; color: var(--ma-champagne); font-size: .72rem; }
+      .ma-countdown-body { display: grid; min-width: 0; align-content: end; gap: clamp(1.75rem, 5vw, 2.5rem); }
+      .ma-countdown .ma-calendar-actions { gap: 0 1.5rem; }
+      .ma-countdown .ma-calendar-actions :is(a, button) { flex: 1 1 9rem; justify-content: space-between; }
+      .ma-countdown-calendar-only .ma-countdown-body { border-top: 1px solid var(--ma-champagne); padding-top: .5rem; }
       .ma-dress-code > .ma-section-inner { display: grid; align-content: start; gap: clamp(3rem, 8vw, 6rem); }
       .ma-dress-description { max-width: 25ch; margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 5vw, 3.5rem); line-height: 1.12; overflow-wrap: anywhere; }
       .ma-dress-groups { display: grid; gap: 2.5rem; }
@@ -727,7 +731,10 @@ export function ThemeStyles() {
         .ma-event { grid-template-columns: 3rem minmax(0, 1fr) minmax(15rem, .75fr); gap: clamp(1.5rem, 4vw, 4rem); }
         .ma-event-place { padding-top: 2rem; }
         .ma-countdown > .ma-section-inner { grid-template-columns: minmax(0, 1fr) minmax(24rem, 1fr); }
-        .ma-countdown-units { grid-template-columns: repeat(4, minmax(0, 1fr)); align-self: end; }
+        .ma-countdown-units { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .ma-countdown-body { align-self: end; }
+        .ma-countdown .ma-calendar-actions { justify-content: flex-end; }
+        .ma-countdown .ma-calendar-actions :is(a, button) { flex: 0 1 auto; }
         .ma-countdown-units > div { border-right: 1px solid var(--ma-champagne); padding: 1.25rem; }
         .ma-countdown-units > div:first-child { padding-left: 0; }
         .ma-countdown-units > div:last-child { border-right: 0; padding-right: 0; }

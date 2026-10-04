@@ -43,6 +43,7 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
     heroImageUrl,
     closingImageUrl,
     countdownTarget,
+    calendarEvent,
     dressCode,
   } = buildThemeViewModel(invitation, guest);
   const navItems = buildMidnightNavItems(invitation);
@@ -79,11 +80,13 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
           <EventsSection
             events={invitation.events}
             mapsEnabled={invitation.features.maps}
-            coupleDisplayName={coupleDisplayName}
-            invitationId={invitation.id}
             timeZone={invitation.timeZone}
           />
-          <CountdownSection target={countdownTarget} />
+          <CountdownSection
+            target={countdownTarget}
+            calendarEvent={calendarEvent}
+            calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
+          />
           <DressCodeSection dressCode={dressCode} />
           {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
           {invitation.features.gallery ? (

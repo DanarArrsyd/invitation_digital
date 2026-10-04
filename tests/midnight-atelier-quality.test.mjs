@@ -109,30 +109,36 @@ test("Midnight Instagram link names its visible handle", () => {
 test("feature-controlled Midnight sections render once and disappear when disabled", () => {
   const enabled = render(fixture());
   const disabled = render(fixture(Object.fromEntries(Object.keys(allFeatures).map((key) => [key, false]))));
-  for (const id of ["ma-countdown", "ma-dress-code", "ma-cerita", "ma-galeri", "ma-livestream", "ma-rsvp", "ma-ucapan", "ma-kado"]) {
+  for (const id of ["ma-dress-code", "ma-cerita", "ma-galeri", "ma-livestream", "ma-rsvp", "ma-ucapan", "ma-kado"]) {
     assert.equal(enabled.querySelectorAll(`#${id}`).length, 1, `${id} enabled exactly once`);
     assert.equal(disabled.querySelectorAll(`#${id}`).length, 0, `${id} disabled`);
   }
+  assert.equal(enabled.querySelectorAll("#ma-countdown .ma-countdown-units").length, 1, "countdown clock enabled exactly once");
+  assert.equal(disabled.querySelectorAll("#ma-countdown .ma-countdown-units").length, 0, "countdown clock disabled");
+  assert.equal(disabled.querySelectorAll("#ma-countdown .ma-calendar-actions").length, 1, "calendar outlives the countdown");
   assert.equal(disabled.querySelector("audio"), null, "disabled music creates no audio element");
   assert.equal(disabled.querySelector("#ma-cover .ma-cover-guest-name").textContent, "Bapak/Ibu/Saudara/i");
   assert.equal(disabled.querySelector("#ma-acara a[href*='maps']"), null);
 });
 
 test("each disabled feature removes only its own Midnight section", () => {
+  // The countdown section also carries the calendar actions, so a disabled
+  // countdown removes only its clock units.
   const sections = new Map([
-    ["countdown", "ma-countdown"], ["dressCode", "ma-dress-code"],
-    ["story", "ma-cerita"], ["gallery", "ma-galeri"],
-    ["livestream", "ma-livestream"], ["rsvp", "ma-rsvp"],
-    ["wishes", "ma-ucapan"], ["gift", "ma-kado"],
+    ["countdown", "#ma-countdown .ma-countdown-units"], ["dressCode", "#ma-dress-code"],
+    ["story", "#ma-cerita"], ["gallery", "#ma-galeri"],
+    ["livestream", "#ma-livestream"], ["rsvp", "#ma-rsvp"],
+    ["wishes", "#ma-ucapan"], ["gift", "#ma-kado"],
   ]);
-  for (const [disabledFeature, disabledId] of sections) {
+  for (const [disabledFeature, disabledSelector] of sections) {
     const document = render(fixture({ ...allFeatures, [disabledFeature]: false }));
-    assert.equal(document.querySelectorAll(`#${disabledId}`).length, 0, `${disabledFeature} removes ${disabledId}`);
-    for (const [otherFeature, otherId] of sections) {
+    assert.equal(document.querySelectorAll(disabledSelector).length, 0, `${disabledFeature} removes ${disabledSelector}`);
+    for (const [otherFeature, otherSelector] of sections) {
       if (otherFeature === disabledFeature) continue;
-      assert.equal(document.querySelectorAll(`#${otherId}`).length, 1,
+      assert.equal(document.querySelectorAll(otherSelector).length, 1,
         `${disabledFeature} leaves ${otherFeature} visible exactly once`);
     }
+    assert.equal(document.querySelectorAll("#ma-countdown .ma-calendar-actions").length, 1, `${disabledFeature} keeps the calendar`);
   }
 });
 
