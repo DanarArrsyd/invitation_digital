@@ -53,7 +53,7 @@ export const themeRegistry: ThemeRegistry = {
     category: "wedding",
     preview: {
       name: "Cobalt Riviera",
-      palette: ["#1646C8", "#FFF9EE", "#F06A3C"],
+      palette: ["#1D3E9E", "#F7F4EC", "#E8743B"],
     },
     sections: COBALT_RIVIERA_SECTIONS,
   },

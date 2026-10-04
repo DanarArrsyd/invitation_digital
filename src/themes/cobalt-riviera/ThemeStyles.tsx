@@ -12,6 +12,9 @@ export function ThemeStyles() {
         --cr-tangerine: ${colors.tangerine};
         --cr-citron: ${colors.citron};
         --cr-pool: ${colors.pool};
+        --cr-tangerine-ink: ${colors.tangerineInk};
+        --cr-sea-ink-soft: ${colors.seaInkSoft};
+        --cr-sunset: ${colors.sunset};
         --cr-focus-ring: ${colors.cobalt};
         min-height: 100svh;
         overflow-x: clip;
@@ -451,7 +454,7 @@ export function ThemeStyles() {
         letter-spacing: .1em;
         text-transform: uppercase;
       }
-      .cr-parent-join { color: var(--cr-tangerine); }
+      .cr-parent-join { color: var(--cr-tangerine-ink); }
       .cr-person-bio { max-width: 58ch; margin: 0; font-size: 1.0625rem; line-height: 1.65; }
       .cr-instagram {
         width: fit-content;
@@ -485,7 +488,7 @@ export function ThemeStyles() {
         letter-spacing: .12em;
         text-transform: uppercase;
       }
-      .cr-event-index { color: var(--cr-tangerine); }
+      .cr-event-index { color: var(--cr-tangerine-ink); }
       .cr-event-main, .cr-event-place { display: grid; min-width: 0; align-content: start; gap: .65rem; }
       .cr-event-main h3 {
         margin: 0;
@@ -663,7 +666,7 @@ export function ThemeStyles() {
         overflow-wrap: anywhere;
       }
       .cr-story-index {
-        color: var(--cr-tangerine);
+        color: var(--cr-tangerine-ink);
         font: 700 .75rem/1 var(--cr-label);
         letter-spacing: .1em;
       }
@@ -761,7 +764,7 @@ export function ThemeStyles() {
         color: var(--cr-sea-ink);
         font: 1.0625rem/1.5 var(--cr-text);
       }
-      .cr-form-control::placeholder { color: color-mix(in srgb, var(--cr-sea-ink) 62%, transparent); }
+      .cr-form-control::placeholder { color: var(--cr-sea-ink-soft); opacity: 1; }
       .cr-form-textarea { min-height: 9rem; resize: vertical; }
       .cr-form-recipient { display: grid; min-width: 0; gap: .5rem; border-bottom: 1px solid var(--cr-sea-ink); padding-bottom: 1rem; }
       .cr-form-recipient strong { font-size: clamp(1.2rem, 3vw, 1.65rem); overflow-wrap: anywhere; }
@@ -839,10 +842,11 @@ export function ThemeStyles() {
       }
       .cr-wish-entry:last-child { border-bottom: 1px solid var(--cr-sea-ink); }
       .cr-wish-route, .cr-gift-route {
-        color: var(--cr-tangerine);
+        color: var(--cr-tangerine-ink);
         font: 700 .72rem/1 var(--cr-label);
         letter-spacing: .08em;
       }
+      .cr-gift-route { color: var(--cr-sea-ink); }
       .cr-wish-meta { display: flex; min-width: 0; flex-wrap: wrap; justify-content: space-between; gap: .4rem 1rem; }
       .cr-wish-meta strong { font-family: var(--cr-label); }
       .cr-wish-meta time { font-size: .78rem; }

@@ -62,7 +62,7 @@ test("every registered theme exposes its approved preview metadata", () => {
     name: definition.preview.name,
     palette: [...definition.preview.palette],
   }])), {
-    "cobalt-riviera": { name: "Cobalt Riviera", palette: ["#1646C8", "#FFF9EE", "#F06A3C"] },
+    "cobalt-riviera": { name: "Cobalt Riviera", palette: ["#1D3E9E", "#F7F4EC", "#E8743B"] },
     "nusantara-ivory": { name: "Nusantara Ivory", palette: ["#F8F1E4", "#A87A3D", "#6B3E26"] },
     "terra-botanica": { name: "Terra Botanica", palette: ["#F2EBDD", "#B5653E", "#4E5B3A"] },
     "midnight-atelier": { name: "Midnight Atelier", palette: ["#14121A", "#5E1A22", "#D8C08A"] },
