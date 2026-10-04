@@ -254,3 +254,8 @@ test("specimen labels type out once in view and keep their full text for readers
   assert.match(css, /\.tb-typed\[data-typed="typed"\]\s*\{[^}]*steps\(var\(--tb-chars\)/);
   assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tb-typed\[data-typed\]\s*\{\s*clip-path:\s*none !important/);
 });
+
+test("typed labels reveal on any overlap so a label at the page end never stays clipped", () => {
+  const source = readFileSync(resolve(terraRoot, "components/TypedText.tsx"), "utf8");
+  assert.match(source, /useInViewOnce\(ref, "0px"\)/);
+});

@@ -11,7 +11,8 @@ import { useInViewOnce } from "@/themes/shared/use-in-view-once";
  */
 export function TypedText({ text }: { text: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const { watching, seen } = useInViewOnce(ref);
+  // No bottom inset: a label near the page end must still be able to reveal.
+  const { watching, seen } = useInViewOnce(ref, "0px");
   const state = seen ? "typed" : watching ? "waiting" : "idle";
 
   return (
