@@ -52,7 +52,7 @@
 
 ---
 
-### Task 1: Terra font system
+### Task 1: Terra font system ✅ done (`4deb1c3`)
 
 **Files:**
 - Modify: `package.json`, `package-lock.json`
@@ -63,7 +63,7 @@
 **Interfaces:**
 - Produces: tokens `--tb-script`, `--tb-label`, `--tb-display` (now Spectral), `--tb-body` (Spectral); classes `.tb-script` (names) and `.tb-label` (typewriter labels). Later tasks use these names verbatim.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 In `tests/font-delivery.test.mjs` replace the `"terra-botanica"` entry of `THEME_FONTS` with:
 
@@ -93,19 +93,19 @@ test("Terra styles consume the script, label and text faces", async () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `node --test tests/font-delivery.test.mjs`
 Expected: FAIL — Terra packages missing and "Terra styles consume…" fails.
 
-- [ ] **Step 3: Install the faces**
+- [x] **Step 3: Install the faces**
 
 ```bash
 npm install @fontsource/herr-von-muellerhoff@^5.3.0 @fontsource/courier-prime@^5.3.0 @fontsource/spectral@^5.3.0
 npm uninstall @fontsource-variable/fraunces @fontsource-variable/manrope
 ```
 
-- [ ] **Step 4: Wire the faces**
+- [x] **Step 4: Wire the faces**
 
 In `src/themes/theme-fonts.ts` replace the Terra block with:
 
@@ -160,7 +160,7 @@ import { labelFace, scriptFace, textFace } from "./fonts";
     <div className={`tb-theme ${scriptFace.variable} ${labelFace.variable} ${textFace.variable}`}>
 ```
 
-- [ ] **Step 5: Retarget the Terra type tokens**
+- [x] **Step 5: Retarget the Terra type tokens**
 
 In `src/themes/terra-botanica/ThemeStyles.tsx` replace
 
@@ -194,7 +194,7 @@ with
     .tb-theme :is(.tb-journal-label, .tb-cover-date, .tb-event-index, .tb-event-main time, .tb-event-time, .tb-story-date, .tb-gift-provider, .tb-wish-meta time, .tb-gallery-item figcaption, .tb-countdown-units dt, .tb-action, .tb-form-submit, .tb-more-wishes, .tb-nav a) { font-family: var(--tb-label); font-style: normal; letter-spacing: .04em; }
 ```
 
-- [ ] **Step 6: Run tests to verify they pass**
+- [x] **Step 6: Run tests to verify they pass**
 
 Run: `node --test tests/font-delivery.test.mjs`
 Expected: PASS.
@@ -205,7 +205,7 @@ Expected: no output.
 Run: `npm test`
 Expected: all pass (Terra render/quality tests mock `next/font/google`, which Terra no longer imports; that is harmless).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add package.json package-lock.json src/themes/theme-fonts.ts src/themes/terra-botanica/fonts.css src/themes/terra-botanica/fonts.ts src/themes/terra-botanica/TerraBotanica.tsx src/themes/terra-botanica/ThemeStyles.tsx tests/font-delivery.test.mjs

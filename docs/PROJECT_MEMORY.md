@@ -454,6 +454,42 @@ plan in `docs/superpowers/plans/` after the previous one merges.
 - Deferred Ivory items: see spec §4 Deferred.
 - Jost stays installed for Midnight; `cormorant-garamond` removed.
 - `tests/font-delivery.test.mjs` fails if two themes map the same family.
+- Ivory shipped in PR #14 (merge `07951a4`, production deployed 2026-10-03).
+  Owner still to check the live Rayhana & Febri page via admin preview and a
+  real phone.
+
+#### Checkpoint — Terra "Herbarium Cinta" (in progress, 2026-10-04)
+
+- Branch `design/terra-identity` (pushed), based on `main` `07951a4`.
+- Plan: `docs/superpowers/plans/2026-10-03-terra-identity.md` (10 tasks).
+- Done: Task 1 fonts — commit `4deb1c3` (Herr Von Muellerhoff / Courier
+  Prime / Spectral; Fraunces and Manrope removed). Review clean; 296/296
+  tests, lint and typecheck clean.
+- **Resume at Task 2** (palette, paper texture, `tests/terra-botanica-identity.test.mjs`
+  harness). Tasks 2–9 each: implement test-first, review, then next; Task 10
+  is docs + full verification + visual QA + PR. The owner asked to be
+  consulted before continuing past each checkpoint they set, and always
+  before merging.
+- Workflow used so far: superpowers subagent-driven development (fresh
+  implementer per task, spec+quality review per task, whole-branch review
+  before the PR). Local SDD scratch (`.superpowers/`) is gitignored and does
+  not travel; this section is the durable record.
+- Open minor notes to triage in the final review:
+  - Courier label list in `ThemeStyles.tsx` omits `.tb-text-action`, calendar
+    actions, the gift copy button and form legends (they render in Spectral).
+  - Terra test harnesses still mock `next/font/google` Fraunces/Manrope
+    (harmless, unused).
+- Terra-specific constraints learned while planning: Terra source must not
+  contain `<img` or `querySelector`; the render harness stubs `motion/react`
+  to `useReducedMotion` only, so Terra effects are CSS + the shared
+  `use-in-view-once` / `use-scroll-progress` hooks (Task 4), not Motion
+  components; server and first client markup must match under reduced motion.
+- After Terra merges: write and run the Midnight plan, then Cobalt, from spec
+  §6–7 (choices already approved: Midnight = Imperial Script / Bodoni Moda /
+  Jost, champagne-toast opener, spotlight headings, dance card RSVP,
+  bubbles on wishes, picture lights in gallery; Cobalt = Corinthia /
+  Familjen Grotesk / Newsreader, receding-wave opener, wave dividers,
+  morning-to-sunset scroll, postmark RSVP, message-in-a-bottle wishes).
 
 ## Resolved review notes
 
