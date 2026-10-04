@@ -37,6 +37,13 @@
   ```
   (subagents use their own model name in the first line).
 
+## Owner decisions (2026-10-04)
+
+- `--ma-lacquer` = `#1E1A24` (lifted tinta) — approved.
+- Gold-line chandelier ornament — deferred to a later PR.
+- Spotlight headings light once and stay lit — approved.
+- English eyebrow/labels are translated to Bahasa Indonesia (Task 8b).
+
 ## File Map
 
 | File | Change |
@@ -1635,6 +1642,17 @@ git commit -m "feat(midnight): picture lights in the gallery
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_011pT7SiXwq9HVRhaYt6ogn3"
 ```
+
+---
+
+### Task 8b: Bahasa Indonesia labels
+
+**Files:** Midnight sections/components with English guest-facing copy; the Midnight tests that pin those strings.
+
+- [ ] **Step 1:** `grep -rn` Midnight `.tsx` for guest-facing English strings (eyebrows such as "Private confirmation", "Guest book", "Save the evening", headings, button labels, aria-labels, empty states). Keep proper nouns and the theme name.
+- [ ] **Step 2:** Write a test in `tests/midnight-atelier-identity.test.mjs` that renders the full theme with every feature on and asserts none of the old English strings remain and the Indonesian replacements are present (e.g. "Konfirmasi kehadiran", "Buku tamu", "Simpan tanggalnya"). Run it; expect FAIL.
+- [ ] **Step 3:** Replace the strings with natural Indonesian, matching the tone already used in Ivory/Terra (formal, warm; "Anda"). Update existing tests that pin the old English text.
+- [ ] **Step 4:** `npm test`, `npm run lint`, `npm run typecheck`; commit `feat(midnight): Bahasa Indonesia labels` with the standard trailers.
 
 ---
 
