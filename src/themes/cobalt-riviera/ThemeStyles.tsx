@@ -492,7 +492,7 @@ export function ThemeStyles() {
         align-items: center;
         gap: .35rem 1rem;
       }
-      .cr-event-actions a, .cr-calendar-actions button {
+      .cr-event-actions a {
         border: 0;
         border-bottom: 2px solid var(--cr-tangerine);
         background: transparent;
@@ -501,9 +501,35 @@ export function ThemeStyles() {
         font: 680 .78rem/1 var(--font-cr-display), Arial, sans-serif;
         text-decoration: none;
       }
-      .cr-calendar-actions { display: flex; flex-wrap: wrap; gap: .35rem 1rem; }
       .cr-countdown { min-height: auto; }
       .cr-countdown .cr-section-inner { display: grid; min-height: 78svh; align-content: center; gap: clamp(3rem, 8vw, 6rem); }
+      .cr-countdown-calendar-only .cr-section-inner { min-height: 48svh; }
+      .cr-countdown-board { display: grid; min-width: 0; gap: clamp(1.75rem, 5vw, 3rem); }
+      .cr-calendar-actions {
+        --cr-focus-ring: ${colors.citron};
+        display: flex;
+        min-width: 0;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .25rem clamp(1.25rem, 4vw, 2.5rem);
+        border-top: 1px solid var(--cr-porcelain);
+        padding-top: .75rem;
+      }
+      .cr-countdown-units + .cr-calendar-actions { border-top: 0; padding-top: 0; }
+      .cr-calendar-actions a, .cr-calendar-actions button {
+        gap: .45rem;
+        padding: 0 .1rem;
+        border: 0;
+        border-bottom: 2px solid var(--cr-citron);
+        background: transparent;
+        color: var(--cr-porcelain);
+        cursor: pointer;
+        font: 680 .78rem/1 var(--font-cr-display), Arial, sans-serif;
+        letter-spacing: .08em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+      .cr-calendar-actions button { display: inline-flex; align-items: center; }
       .cr-countdown-heading { display: grid; max-width: 60rem; gap: .75rem; }
       .cr-countdown-heading p, .cr-livestream-copy p {
         margin: 0;
