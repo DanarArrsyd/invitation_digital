@@ -16,7 +16,8 @@ function formatLongDate(date: string | null): string | null {
 }
 
 /**
- * With a prewedding photo: names beside an arched portrait. Without one the
+ * With a prewedding photo: the title block first, then an arched 3:4
+ * portrait (stacked below 768px, beside the names above). Without one the
  * hero becomes a text composition that leads with the date and venue and
  * points to the event details, rather than showing an empty frame.
  */
@@ -87,7 +88,7 @@ export function HeroSection({ coverImageUrl, displayName, eventDate, venueSummar
               <EditorialImage
                 src={coverImageUrl}
                 alt={`Foto prewedding ${displayName}`}
-                sizes="(min-width: 768px) 480px, 92vw"
+                sizes="(min-width: 1200px) 480px, (min-width: 768px) 42vw, 90vw"
                 priority
                 className="ni-photo"
               />

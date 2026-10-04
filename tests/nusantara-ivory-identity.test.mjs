@@ -336,3 +336,26 @@ test("the content wrapper reserves room for the bar only when the bar renders", 
   assert.ok(render(items).querySelector(".ni-content[data-ni-nav]"));
   assert.equal(render(items.slice(0, 1)).querySelector(".ni-content[data-ni-nav]"), null);
 });
+
+test("the hero photo is a 3:4 portrait that follows the title in reading order", () => {
+  const { NusantaraIvory } = createLoader()("index");
+  const html = renderToStaticMarkup(React.createElement(NusantaraIvory, {
+    invitation: invitation({ media: { coverImageUrl: "https://img.test/hero.jpg", musicUrl: null } }), guest: null,
+  }));
+  const { document, Node } = new JSDOM(html).window;
+  const hero = document.querySelector("#ni-beranda");
+  const heading = hero.querySelector("h1");
+  const image = hero.querySelector("img");
+  assert.ok(image, "hero renders the cover photo");
+  assert.equal(image.getAttribute("alt"), "Foto prewedding Alya & Bima");
+  assert.ok(heading.compareDocumentPosition(image) & Node.DOCUMENT_POSITION_FOLLOWING, "title precedes the photo");
+
+  const styles = readFileSync(resolve(ivoryRoot, "ThemeStyles.tsx"), "utf8");
+  assert.match(cssRule(styles, ".ni-hero-photo-frame"), /aspect-ratio:\s*3 \/ 4/);
+  assert.doesNotMatch(styles, /\.ni-hero[^{]*\{[^}]*aspect-ratio:\s*4 \/ 5/, "no 4:5 hero crop remains");
+  const mobile = styles.slice(styles.indexOf("@media (max-width: 767px)"));
+  assert.match(cssRule(mobile, ".ni-hero-portrait"), /max-width:\s*none/, "full content width below 768px");
+
+  const text = renderToStaticMarkup(React.createElement(NusantaraIvory, { invitation: invitation(), guest: null }));
+  assert.equal(new JSDOM(text).window.document.querySelector("#ni-beranda img"), null, "text-only hero has no frame");
+});
