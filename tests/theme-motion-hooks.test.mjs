@@ -56,18 +56,30 @@ test("useInViewOnce stays idle without IntersectionObserver so nothing hides", a
   });
 });
 
-test("useInViewOnce watches after mount, reports the first intersection once, then disconnects", async () => {
+test("useInViewOnce arms only once the element is reported off-screen, then reports the first intersection and disconnects", async () => {
   const { useInViewOnce } = loadShared("use-in-view-once");
   let result;
   function Probe() { const ref = useRef(null); result = useInViewOnce(ref); return React.createElement("span", { ref }); }
   await withDom(FakeIntersectionObserver, async ({ root }) => {
     await act(async () => root.render(React.createElement(Probe)));
-    assert.deepEqual({ ...result }, { watching: true, seen: false });
+    assert.deepEqual({ ...result }, { watching: false, seen: false }, "nothing hides before the observer has reported");
     assert.equal(FakeIntersectionObserver.last.options.rootMargin, "0px 0px -10% 0px");
     await act(async () => FakeIntersectionObserver.last.report(false));
-    assert.equal(result.seen, false, "a non-intersecting report changes nothing");
+    assert.deepEqual({ ...result }, { watching: true, seen: false });
     await act(async () => FakeIntersectionObserver.last.report(true));
     assert.deepEqual({ ...result }, { watching: true, seen: true });
+    assert.equal(FakeIntersectionObserver.last.disconnected, true);
+  });
+});
+
+test("useInViewOnce marks an element already on screen as seen without arming, so nothing flashes", async () => {
+  const { useInViewOnce } = loadShared("use-in-view-once");
+  let result;
+  function Probe() { const ref = useRef(null); result = useInViewOnce(ref); return React.createElement("span", { ref }); }
+  await withDom(FakeIntersectionObserver, async ({ root }) => {
+    await act(async () => root.render(React.createElement(Probe)));
+    await act(async () => FakeIntersectionObserver.last.report(true));
+    assert.deepEqual({ ...result }, { watching: false, seen: true });
     assert.equal(FakeIntersectionObserver.last.disconnected, true);
   });
 });

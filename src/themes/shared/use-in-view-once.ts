@@ -3,10 +3,13 @@
 import { useEffect, useState, type RefObject } from "react";
 
 /**
- * Watches an element until it first scrolls into view. `watching` turns
- * true only after mount and only where IntersectionObserver exists, so the
- * server markup and the first client render always agree and content is
- * never hidden in a browser that could not reveal it again.
+ * Watches an element until it first scrolls into view. Nothing changes
+ * during render, so the server markup and the first client render always
+ * agree. `watching` turns true only once the observer has reported the
+ * element off-screen, so callers may hide it then and reveal it on `seen`.
+ * An element already on screen at its first report is `seen` without ever
+ * `watching`: callers show it as it is, with no hide-then-reveal flash.
+ * Without IntersectionObserver both stay false and nothing is hidden.
  */
 export function useInViewOnce(
   ref: RefObject<Element | null>,
@@ -18,11 +21,12 @@ export function useInViewOnce(
   useEffect(() => {
     const element = ref.current;
     if (!element || typeof IntersectionObserver === "undefined") return;
-    setWatching(true);
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((entry) => entry.isIntersecting)) {
         setSeen(true);
         observer.disconnect();
+      } else {
+        setWatching(true);
       }
     }, { rootMargin });
     observer.observe(element);

@@ -59,13 +59,13 @@ function createLoader({ reducedMotion = false, actions = {} } = {}) {
   return (relative) => load(resolve(terraRoot, relative));
 }
 
-/** Records observed elements; `trigger()` reports them all as intersecting. */
+/** Records observed elements; `trigger(isIntersecting)` reports them all (intersecting by default). */
 class FakeIntersectionObserver {
   static instances = [];
   constructor(callback) { this.callback = callback; this.elements = []; FakeIntersectionObserver.instances.push(this); }
   observe(element) { this.elements.push(element); }
   disconnect() { this.elements = []; }
-  trigger() { this.callback(this.elements.map((target) => ({ target, isIntersecting: true }))); }
+  trigger(isIntersecting = true) { this.callback(this.elements.map((target) => ({ target, isIntersecting }))); }
 }
 
 async function mount(element, { intersectionObserver } = {}) {
@@ -240,11 +240,23 @@ test("specimen labels type out once in view and keep their full text for readers
   const watched = await mount(React.createElement(EventsSection, props), { intersectionObserver: FakeIntersectionObserver });
   try {
     const time = watched.document.querySelector(".tb-event-time .tb-typed");
+    assert.equal(time.dataset.typed, "idle", "visible until the observer reports the label off-screen");
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger(false)));
     assert.equal(time.dataset.typed, "waiting");
     assert.equal(time.style.getPropertyValue("--tb-chars"), String(time.textContent.length));
     await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger()));
     assert.equal(time.dataset.typed, "typed");
   } finally { await watched.cleanup(); }
+
+  // Already on screen when the observer first reports (restored scroll, deep
+  // link): the label is never clipped, so nothing flashes.
+  FakeIntersectionObserver.instances = [];
+  const onScreen = await mount(React.createElement(EventsSection, props), { intersectionObserver: FakeIntersectionObserver });
+  try {
+    const time = onScreen.document.querySelector(".tb-event-time .tb-typed");
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger()));
+    assert.equal(time.dataset.typed, "idle");
+  } finally { await onScreen.cleanup(); }
 
   const { StorySection } = createLoader()("sections/StorySection");
   const story = new JSDOM(renderToStaticMarkup(React.createElement(StorySection, { stories: invitation().stories }))).window.document;
@@ -302,6 +314,8 @@ test("gallery photos drop in and settle, taped and tilted, without losing the li
   const view = await mount(React.createElement(GallerySection, props), { intersectionObserver: FakeIntersectionObserver });
   try {
     const grid = view.document.querySelector(".tb-gallery-grid");
+    assert.equal(grid.hasAttribute("data-settle"), false, "visible until the observer reports the grid off-screen");
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger(false)));
     assert.equal(grid.dataset.settle, "waiting");
     const items = [...grid.querySelectorAll(".tb-gallery-item")];
     assert.equal(items.length, 3);
@@ -313,6 +327,13 @@ test("gallery photos drop in and settle, taped and tilted, without losing the li
     assert.equal(grid.dataset.settle, "settled");
     assert.ok(grid.querySelector("button[aria-label^='Perbesar foto 1 dari 3']"), "lightbox trigger intact");
   } finally { await view.cleanup(); }
+
+  FakeIntersectionObserver.instances = [];
+  const onScreen = await mount(React.createElement(GallerySection, props), { intersectionObserver: FakeIntersectionObserver });
+  try {
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger()));
+    assert.equal(onScreen.document.querySelector(".tb-gallery-grid").hasAttribute("data-settle"), false, "already on screen: no drop-in");
+  } finally { await onScreen.cleanup(); }
 
   const css = styles();
   assert.match(css, /\.tb-gallery-item::before\s*\{[^}]*rgba\(217, 164, 65/, "paper tape");

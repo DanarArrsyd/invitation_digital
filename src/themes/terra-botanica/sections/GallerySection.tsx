@@ -22,7 +22,7 @@ export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[
   return (
     <Section id="tb-galeri" labelledBy="tb-gallery-heading" className="tb-gallery">
       <SectionHeading id="tb-gallery-heading" title="Dalam kenangan" />
-      <div ref={gridRef} className="tb-gallery-grid" data-settle={seen ? "settled" : watching ? "waiting" : undefined}>
+      <div ref={gridRef} className="tb-gallery-grid" data-settle={watching ? (seen ? "settled" : "waiting") : undefined}>
         {gallery.map((item, index) => {
           // A full-width anchor followed by a pair; a final pair never leaves an orphan tile.
           const span = index % 3 === 0 && gallery.length - index !== 2 ? 2 : 1;

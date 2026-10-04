@@ -13,7 +13,9 @@ export function TypedText({ text }: { text: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   // No bottom inset: a label near the page end must still be able to reveal.
   const { watching, seen } = useInViewOnce(ref, "0px");
-  const state = seen ? "typed" : watching ? "waiting" : "idle";
+  // Only a label that was hidden while off-screen types out; one already on
+  // screen stays as it is.
+  const state = watching ? (seen ? "typed" : "waiting") : "idle";
 
   return (
     <span
