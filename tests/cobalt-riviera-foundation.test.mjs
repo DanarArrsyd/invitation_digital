@@ -258,6 +258,9 @@ test("Cobalt stays presentation-only and bundles only its approved font families
   assert.match(registry, /import \{ CobaltRiviera, COBALT_RIVIERA_SECTIONS \} from "\.\/cobalt-riviera"/);
   assert.match(fontsTs, /@fontsource-variable\/familjen-grotesk/);
   assert.match(fontsTs, /@fontsource-variable\/newsreader/);
+  assert.match(fontsTs, /@fontsource\/corinthia\/700\.css/);
+  assert.match(fontsCss, /--font-cr-script:\s*"Corinthia"/);
+  assert.match(packageJson, /@fontsource\/corinthia/);
   assert.match(fontsCss, /--font-cr-display:\s*"Familjen Grotesk Variable"/);
   assert.match(fontsCss, /--font-cr-body:\s*"Newsreader Variable"/);
   assert.match(packageJson, /@fontsource-variable\/familjen-grotesk/);

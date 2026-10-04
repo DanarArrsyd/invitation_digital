@@ -17,7 +17,11 @@ export function ThemeStyles() {
         overflow-x: clip;
         background: var(--cr-porcelain);
         color: var(--cr-sea-ink);
-        font-family: var(--font-cr-body), Georgia, serif;
+        --cr-script: var(--font-cr-script), "Snell Roundhand", cursive;
+        --cr-label: var(--font-cr-display), "Helvetica Neue", Arial, sans-serif;
+        --cr-text: var(--font-cr-body), "Iowan Old Style", Georgia, serif;
+        font-family: var(--cr-text);
+        font-size: 1.0625rem;
       }
       .cr-theme, .cr-theme *, .cr-theme *::before, .cr-theme *::after { box-sizing: border-box; }
       .cr-gate {
@@ -79,7 +83,7 @@ export function ThemeStyles() {
         gap: 1rem;
         border-bottom: 1px solid var(--cr-porcelain);
         padding-bottom: .65rem;
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .7rem;
         font-weight: 650;
         letter-spacing: .14em;
@@ -88,7 +92,7 @@ export function ThemeStyles() {
       .cr-cover-stage { align-self: center; min-width: 0; }
       .cr-cover-intro {
         margin: 0 0 .65rem;
-        font-family: var(--font-cr-body), Georgia, serif;
+        font-family: var(--cr-text);
         font-size: clamp(.9rem, 2.5vw, 1.15rem);
       }
       .cr-cover-names {
@@ -98,7 +102,7 @@ export function ThemeStyles() {
         flex-wrap: wrap;
         align-items: baseline;
         gap: .05em .2em;
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: clamp(3.15rem, 17vw, 10rem);
         font-variation-settings: "wght" 640;
         letter-spacing: -.065em;
@@ -110,7 +114,7 @@ export function ThemeStyles() {
       .cr-cover-stage time {
         display: block;
         margin-top: clamp(1rem, 3svh, 2rem);
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .78rem;
         font-weight: 650;
         letter-spacing: .12em;
@@ -127,7 +131,7 @@ export function ThemeStyles() {
       }
       .cr-cover-recipient p { margin: 0; }
       .cr-cover-recipient > div > p:first-child {
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .68rem;
         font-weight: 650;
         letter-spacing: .12em;
@@ -153,7 +157,7 @@ export function ThemeStyles() {
         background: transparent;
         color: var(--cr-porcelain);
         cursor: pointer;
-        font: 650 .76rem/1.05 var(--font-cr-display), Arial, sans-serif;
+        font: 650 .76rem/1.05 var(--cr-label);
         letter-spacing: .08em;
         text-align: left;
         text-transform: uppercase;
@@ -205,7 +209,7 @@ export function ThemeStyles() {
       .cr-display {
         max-width: 10ch;
         margin: 0;
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: clamp(3.8rem, 16vw, 11rem);
         font-variation-settings: "wght" 610;
         letter-spacing: -.065em;
@@ -229,7 +233,7 @@ export function ThemeStyles() {
       }
       .cr-kicker, .cr-guest {
         margin: 0;
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .8rem;
         font-weight: 600;
         letter-spacing: .12em;
@@ -270,7 +274,7 @@ export function ThemeStyles() {
         gap: 1rem;
         border: 1px solid var(--cr-sea-ink);
         color: var(--cr-sea-ink);
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .75rem;
         letter-spacing: .1em;
         text-transform: uppercase;
@@ -320,7 +324,7 @@ export function ThemeStyles() {
         margin: 0;
         overflow: hidden;
         color: var(--cr-porcelain);
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: clamp(4.5rem, 19vw, 15rem);
         font-variation-settings: "wght" 690;
         letter-spacing: -.075em;
@@ -333,7 +337,7 @@ export function ThemeStyles() {
         top: 1rem;
         right: clamp(1rem, 3vw, 2.5rem);
         color: var(--cr-citron);
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .72rem;
         font-weight: 700;
         letter-spacing: .12em;
@@ -347,7 +351,7 @@ export function ThemeStyles() {
       }
       .cr-hero-index, .cr-person-route, .cr-closing-copy > p:first-child {
         margin: 0;
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .72rem;
         font-weight: 680;
         letter-spacing: .12em;
@@ -355,7 +359,7 @@ export function ThemeStyles() {
       }
       .cr-hero-copy h2, .cr-chapter-heading h2, .cr-person-copy h3, .cr-closing-copy h2 {
         margin: 0;
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-variation-settings: "wght" 620;
         letter-spacing: -.055em;
         line-height: .86;
@@ -363,7 +367,7 @@ export function ThemeStyles() {
       }
       .cr-hero-copy h2 { max-width: 11ch; font-size: clamp(3rem, 14vw, 9rem); }
       .cr-hero-copy time {
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .78rem;
         font-weight: 650;
         letter-spacing: .11em;
@@ -372,7 +376,7 @@ export function ThemeStyles() {
       .cr-hero-copy > p:not(.cr-hero-index):not(.cr-guest) {
         max-width: 52ch;
         margin: 0;
-        font-size: clamp(1.05rem, 2vw, 1.35rem);
+        font-size: clamp(1.0625rem, 2vw, 1.35rem);
         line-height: 1.55;
       }
       .cr-hero-copy .cr-guest { color: var(--cr-cobalt); }
@@ -389,7 +393,7 @@ export function ThemeStyles() {
       .cr-quote blockquote {
         max-width: 32ch;
         margin: 0;
-        font-family: var(--font-cr-body), Georgia, serif;
+        font-family: var(--cr-text);
         font-size: clamp(1.7rem, 5vw, 3.6rem);
         font-variation-settings: "opsz" 48;
         line-height: 1.1;
@@ -397,7 +401,7 @@ export function ThemeStyles() {
       }
       .cr-quote-layout > p {
         margin: 0;
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .68rem;
         font-weight: 650;
         letter-spacing: .14em;
@@ -427,7 +431,7 @@ export function ThemeStyles() {
         border: 1px solid var(--cr-sea-ink);
         background: var(--cr-pool);
         color: var(--cr-cobalt);
-        font: 620 clamp(6rem, 32vw, 15rem)/.7 var(--font-cr-display), Arial, sans-serif;
+        font: 620 clamp(6rem, 32vw, 15rem)/.7 var(--cr-label);
         overflow: hidden;
       }
       .cr-person-copy {
@@ -441,19 +445,19 @@ export function ThemeStyles() {
       .cr-parents { display: grid; gap: .3rem; border-top: 1px solid var(--cr-sea-ink); padding-top: 1rem; }
       .cr-parents p { margin: 0; }
       .cr-parents p:first-child {
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .72rem;
         font-weight: 680;
         letter-spacing: .1em;
         text-transform: uppercase;
       }
       .cr-parent-join { color: var(--cr-tangerine); }
-      .cr-person-bio { max-width: 58ch; margin: 0; font-size: 1.05rem; line-height: 1.65; }
+      .cr-person-bio { max-width: 58ch; margin: 0; font-size: 1.0625rem; line-height: 1.65; }
       .cr-instagram {
         width: fit-content;
         border-bottom: 2px solid var(--cr-tangerine);
         color: var(--cr-sea-ink);
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-weight: 680;
         text-decoration: none;
         overflow-wrap: anywhere;
@@ -475,7 +479,7 @@ export function ThemeStyles() {
       }
       .cr-event-index, .cr-event-type {
         margin: 0;
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .7rem;
         font-weight: 680;
         letter-spacing: .12em;
@@ -486,12 +490,12 @@ export function ThemeStyles() {
       .cr-event-main h3 {
         margin: 0;
         color: var(--cr-cobalt);
-        font: 620 clamp(2.2rem, 8vw, 5rem)/.88 var(--font-cr-display), Arial, sans-serif;
+        font: 620 clamp(2.2rem, 8vw, 5rem)/.88 var(--cr-label);
         letter-spacing: -.05em;
       }
       .cr-event-main time, .cr-event-time {
         margin: 0;
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .82rem;
         font-weight: 620;
         letter-spacing: .04em;
@@ -512,7 +516,7 @@ export function ThemeStyles() {
         background: transparent;
         color: var(--cr-sea-ink);
         cursor: pointer;
-        font: 680 .78rem/1 var(--font-cr-display), Arial, sans-serif;
+        font: 680 .78rem/1 var(--cr-label);
         text-decoration: none;
       }
       .cr-countdown { min-height: auto; }
@@ -538,7 +542,7 @@ export function ThemeStyles() {
         background: transparent;
         color: var(--cr-porcelain);
         cursor: pointer;
-        font: 680 .78rem/1 var(--font-cr-display), Arial, sans-serif;
+        font: 680 .78rem/1 var(--cr-label);
         letter-spacing: .08em;
         text-decoration: none;
         text-transform: uppercase;
@@ -548,7 +552,7 @@ export function ThemeStyles() {
       .cr-countdown-heading p, .cr-livestream-copy p {
         margin: 0;
         color: var(--cr-citron);
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
         font-size: .7rem;
         font-weight: 680;
         letter-spacing: .14em;
@@ -556,7 +560,7 @@ export function ThemeStyles() {
       }
       .cr-countdown-heading h2, .cr-livestream-copy h2 {
         margin: 0;
-        font: 620 clamp(3rem, 10vw, 7rem)/.84 var(--font-cr-display), Arial, sans-serif;
+        font: 620 clamp(3rem, 10vw, 7rem)/.84 var(--cr-label);
         letter-spacing: -.055em;
         overflow-wrap: anywhere;
       }
@@ -570,12 +574,12 @@ export function ThemeStyles() {
       .cr-countdown-units dd {
         margin: 0;
         color: var(--cr-citron);
-        font: 620 clamp(2.5rem, 15vw, 8rem)/.8 var(--font-cr-display), Arial, sans-serif;
+        font: 620 clamp(2.5rem, 15vw, 8rem)/.8 var(--cr-label);
         letter-spacing: -.06em;
       }
       .cr-countdown-units dt {
         margin-top: .5rem;
-        font: 650 .7rem/1 var(--font-cr-display), Arial, sans-serif;
+        font: 650 .7rem/1 var(--cr-label);
         letter-spacing: .1em;
         text-transform: uppercase;
       }
@@ -591,14 +595,14 @@ export function ThemeStyles() {
         gap: 1rem;
         border-bottom: 1px solid var(--cr-sea-ink);
       }
-      .cr-dress-group h3 { margin: 0; font: 680 .78rem/1 var(--font-cr-display), Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+      .cr-dress-group h3 { margin: 0; font: 680 .78rem/1 var(--cr-label); letter-spacing: .1em; text-transform: uppercase; }
       .cr-dress-group ul { display: flex; margin: 0; padding: 0; flex-wrap: wrap; gap: 1rem; list-style: none; }
-      .cr-dress-group li { display: grid; min-width: 5.5rem; grid-template-columns: 2rem minmax(0, 1fr); align-items: center; gap: .55rem; font: 620 .72rem/1 var(--font-cr-display), Arial, sans-serif; }
+      .cr-dress-group li { display: grid; min-width: 5.5rem; grid-template-columns: 2rem minmax(0, 1fr); align-items: center; gap: .55rem; font: 620 .72rem/1 var(--cr-label); }
       .cr-dress-swatch { display: block; width: 2rem; aspect-ratio: 1; border: 1px solid var(--cr-sea-ink); }
       .cr-livestream { --cr-focus-ring: ${colors.citron}; min-height: auto; }
       .cr-livestream .cr-section-inner { display: grid; min-height: 58svh; align-content: center; gap: clamp(2rem, 6vw, 4rem); }
       .cr-livestream-copy { display: grid; max-width: 62rem; gap: .75rem; }
-      .cr-livestream-copy > span { max-width: 48ch; font-size: 1.05rem; line-height: 1.55; }
+      .cr-livestream-copy > span { max-width: 48ch; font-size: 1.0625rem; line-height: 1.55; }
       .cr-livestream ul { margin: 0; padding: 0; border-top: 1px solid var(--cr-porcelain); list-style: none; }
       .cr-livestream li { border-bottom: 1px solid var(--cr-porcelain); }
       .cr-livestream a {
@@ -609,7 +613,7 @@ export function ThemeStyles() {
         justify-content: space-between;
         gap: 1rem;
         color: var(--cr-porcelain);
-        font: 650 clamp(1rem, 3vw, 1.35rem)/1.15 var(--font-cr-display), Arial, sans-serif;
+        font: 650 clamp(1rem, 3vw, 1.35rem)/1.15 var(--cr-label);
         text-decoration: none;
         overflow-wrap: anywhere;
       }
@@ -622,14 +626,14 @@ export function ThemeStyles() {
       }
       .cr-story-heading > p, .cr-gallery-heading > p {
         margin: 0;
-        font: 680 .74rem/1 var(--font-cr-display), Arial, sans-serif;
+        font: 680 .74rem/1 var(--cr-label);
         letter-spacing: .1em;
         text-transform: uppercase;
       }
       .cr-story-heading h2, .cr-gallery-heading h2 {
         max-width: 12ch;
         margin: 0;
-        font: 620 clamp(3rem, 11vw, 8rem)/.82 var(--font-cr-display), Arial, sans-serif;
+        font: 620 clamp(3rem, 11vw, 8rem)/.82 var(--cr-label);
         font-variation-settings: "wght" 620;
         letter-spacing: -.06em;
         overflow-wrap: anywhere;
@@ -660,24 +664,24 @@ export function ThemeStyles() {
       }
       .cr-story-index {
         color: var(--cr-tangerine);
-        font: 700 .75rem/1 var(--font-cr-display), Arial, sans-serif;
+        font: 700 .75rem/1 var(--cr-label);
         letter-spacing: .1em;
       }
       .cr-story-date {
         margin: 0;
-        font: 650 .76rem/1.25 var(--font-cr-display), Arial, sans-serif;
+        font: 650 .76rem/1.25 var(--cr-label);
         letter-spacing: .08em;
         text-transform: uppercase;
       }
       .cr-story-copy h3 {
         max-width: 16ch;
         margin: 0;
-        font: 620 clamp(2.25rem, 8vw, 5.5rem)/.87 var(--font-cr-display), Arial, sans-serif;
+        font: 620 clamp(2.25rem, 8vw, 5.5rem)/.87 var(--cr-label);
         font-variation-settings: "wght" 620;
         letter-spacing: -.055em;
         overflow-wrap: anywhere;
       }
-      .cr-story-description { max-width: 62ch; margin: .4rem 0 0; font-size: 1.05rem; line-height: 1.62; }
+      .cr-story-description { max-width: 62ch; margin: .4rem 0 0; font-size: 1.0625rem; line-height: 1.62; }
       .cr-story-text-only .cr-story-copy { min-height: clamp(21rem, 68vw, 36rem); background: var(--cr-citron); }
       .cr-gallery { min-height: auto; }
       .cr-gallery .cr-section-inner { display: grid; gap: clamp(2.5rem, 7vw, 6rem); }
@@ -694,7 +698,7 @@ export function ThemeStyles() {
       .cr-gallery-image { width: 100%; }
       .cr-gallery-item figcaption {
         padding-top: .65rem;
-        font-size: .95rem;
+        font-size: 1.0625rem;
         line-height: 1.45;
         overflow-wrap: anywhere;
       }
@@ -718,19 +722,19 @@ export function ThemeStyles() {
       .cr-interaction-heading > p {
         margin: 0;
         color: var(--cr-citron);
-        font: 680 .72rem/1 var(--font-cr-display), Arial, sans-serif;
+        font: 680 .72rem/1 var(--cr-label);
         letter-spacing: .12em;
         text-transform: uppercase;
       }
       .cr-interaction-heading h2 {
         max-width: 12ch;
         margin: 0;
-        font: 620 clamp(3rem, 11vw, 8rem)/.82 var(--font-cr-display), Arial, sans-serif;
+        font: 620 clamp(3rem, 11vw, 8rem)/.82 var(--cr-label);
         font-variation-settings: "wght" 620;
         letter-spacing: -.06em;
         overflow-wrap: anywhere;
       }
-      .cr-interaction-heading > span { max-width: 52ch; font-size: 1.05rem; line-height: 1.6; }
+      .cr-interaction-heading > span { max-width: 52ch; font-size: 1.0625rem; line-height: 1.6; }
       .cr-interaction-heading-dark > p { color: var(--cr-cobalt); }
       .cr-rsvp-sheet {
         --cr-focus-ring: var(--cr-cobalt);
@@ -742,7 +746,7 @@ export function ThemeStyles() {
       .cr-form { display: grid; min-width: 0; gap: 1.5rem; }
       .cr-form-field { display: grid; min-width: 0; gap: .55rem; }
       .cr-form-field label, .cr-form-recipient > span, .cr-attendance legend {
-        font: 680 .72rem/1 var(--font-cr-display), Arial, sans-serif;
+        font: 680 .72rem/1 var(--cr-label);
         letter-spacing: .1em;
         text-transform: uppercase;
       }
@@ -755,7 +759,7 @@ export function ThemeStyles() {
         border-bottom: 1px solid var(--cr-sea-ink);
         background: transparent;
         color: var(--cr-sea-ink);
-        font: 1rem/1.5 var(--font-cr-body), Georgia, serif;
+        font: 1.0625rem/1.5 var(--cr-text);
       }
       .cr-form-control::placeholder { color: color-mix(in srgb, var(--cr-sea-ink) 62%, transparent); }
       .cr-form-textarea { min-height: 9rem; resize: vertical; }
@@ -777,7 +781,7 @@ export function ThemeStyles() {
         background: var(--cr-porcelain);
         color: var(--cr-sea-ink);
         cursor: pointer;
-        font: 680 .82rem/1.15 var(--font-cr-display), Arial, sans-serif;
+        font: 680 .82rem/1.15 var(--cr-label);
         text-align: left;
         transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
       }
@@ -801,7 +805,7 @@ export function ThemeStyles() {
         background: transparent;
         color: inherit;
         cursor: pointer;
-        font: 680 .78rem/1 var(--font-cr-display), Arial, sans-serif;
+        font: 680 .78rem/1 var(--cr-label);
       }
       .cr-form-submit { width: 100%; padding: .9rem 1rem; background: var(--cr-cobalt); color: var(--cr-porcelain); }
       .cr-form-submit:disabled { cursor: not-allowed; opacity: .58; }
@@ -815,14 +819,14 @@ export function ThemeStyles() {
         overflow-wrap: anywhere;
       }
       .cr-form-success > span { display: grid; width: 2.5rem; aspect-ratio: 1; place-items: center; background: var(--cr-citron); color: var(--cr-sea-ink); font-weight: 800; }
-      .cr-form-success strong { font: 620 clamp(1.8rem, 5vw, 3rem)/1 var(--font-cr-display), Arial, sans-serif; }
+      .cr-form-success strong { font: 620 clamp(1.8rem, 5vw, 3rem)/1 var(--cr-label); }
       .cr-form-success p { margin: .5rem 0 0; line-height: 1.5; }
       .cr-form-success-dark { display: block; margin: 0; border-top: 1px solid var(--cr-sea-ink); padding-top: 1.25rem; }
       .cr-form .cf-turnstile { max-width: 100%; overflow: hidden; }
       .cr-wishes-compose { display: grid; min-width: 0; align-content: start; gap: clamp(2rem, 5vw, 4rem); }
       .cr-wish-form { --cr-focus-ring: var(--cr-cobalt); }
       .cr-wishes-ledger { min-width: 0; }
-      .cr-wishes-empty { margin: 0; border-block: 1px solid var(--cr-sea-ink); padding: 2rem 0; font-size: 1.05rem; line-height: 1.6; }
+      .cr-wishes-empty { margin: 0; border-block: 1px solid var(--cr-sea-ink); padding: 2rem 0; font-size: 1.0625rem; line-height: 1.6; }
       .cr-wishes-list, .cr-gift-list { min-width: 0; margin: 0; padding: 0; list-style: none; }
       .cr-wish-entry {
         display: grid;
@@ -836,11 +840,11 @@ export function ThemeStyles() {
       .cr-wish-entry:last-child { border-bottom: 1px solid var(--cr-sea-ink); }
       .cr-wish-route, .cr-gift-route {
         color: var(--cr-tangerine);
-        font: 700 .72rem/1 var(--font-cr-display), Arial, sans-serif;
+        font: 700 .72rem/1 var(--cr-label);
         letter-spacing: .08em;
       }
       .cr-wish-meta { display: flex; min-width: 0; flex-wrap: wrap; justify-content: space-between; gap: .4rem 1rem; }
-      .cr-wish-meta strong { font-family: var(--font-cr-display), Arial, sans-serif; }
+      .cr-wish-meta strong { font-family: var(--cr-label); }
       .cr-wish-meta time { font-size: .78rem; }
       .cr-wish-entry p { max-width: 62ch; margin: .65rem 0 0; line-height: 1.6; white-space: pre-wrap; }
       .cr-more-wishes { width: 100%; margin-top: 1.25rem; padding: .9rem 1rem; }
@@ -855,10 +859,10 @@ export function ThemeStyles() {
       }
       .cr-gift-details { display: grid; min-width: 0; gap: .5rem; }
       .cr-gift-provider, .cr-gift-number, .cr-gift-owner { margin: 0; }
-      .cr-gift-provider { font: 680 .78rem/1.25 var(--font-cr-display), Arial, sans-serif; letter-spacing: .05em; }
-      .cr-gift-number { color: var(--cr-cobalt); font: 620 clamp(1.7rem, 7vw, 4.5rem)/.95 var(--font-cr-display), Arial, sans-serif; letter-spacing: -.04em; }
+      .cr-gift-provider { font: 680 .78rem/1.25 var(--cr-label); letter-spacing: .05em; }
+      .cr-gift-number { color: var(--cr-cobalt); font: 620 clamp(1.7rem, 7vw, 4.5rem)/.95 var(--cr-label); letter-spacing: -.04em; }
       .cr-gift-owner { line-height: 1.5; }
-      .cr-gift-owner span { font-family: var(--font-cr-display), Arial, sans-serif; font-size: .72rem; font-weight: 680; letter-spacing: .08em; text-transform: uppercase; }
+      .cr-gift-owner span { font-family: var(--cr-label); font-size: .72rem; font-weight: 680; letter-spacing: .08em; text-transform: uppercase; }
       .cr-gift-receipt button { width: 100%; padding: .85rem 1rem; }
       .cr-closing .cr-section-inner { padding: 0; }
       .cr-closing-layout { display: grid; min-height: 100svh; }
@@ -884,7 +888,7 @@ export function ThemeStyles() {
         z-index: 40;
         background: var(--cr-porcelain);
         color: var(--cr-sea-ink);
-        font-family: var(--font-cr-display), Arial, sans-serif;
+        font-family: var(--cr-label);
       }
       .cr-route-nav ul { display: flex; margin: 0; padding: 0; list-style: none; }
       .cr-route-nav li { flex: 0 0 auto; }
@@ -932,6 +936,13 @@ export function ThemeStyles() {
         outline: 3px solid var(--cr-focus-ring);
         outline-offset: 4px;
       }
+      /* Postcard voices: Corinthia for names (.cr-script), Newsreader italic for
+         headings and numerals, Familjen Grotesk spaced capitals for labels. */
+      .cr-theme :is(h2, h3, blockquote):not(.cr-script) { font-family: var(--cr-text); font-style: italic; font-variation-settings: normal; font-weight: 500; letter-spacing: -.015em; line-height: 1.02; }
+      .cr-theme :is(.cr-countdown-units dd, .cr-gift-number, .cr-form-success strong) { font-family: var(--cr-text); font-style: italic; font-variation-settings: normal; font-weight: 500; letter-spacing: 0; font-variant-numeric: lining-nums; }
+      .cr-theme :is(.cr-chapter-heading > p, .cr-dress-group h3) { font-family: var(--cr-label); font-size: .75rem; font-style: normal; font-weight: 600; letter-spacing: .16em; line-height: 1.2; text-transform: uppercase; }
+      .cr-theme .cr-script { font-family: var(--cr-script); font-style: normal; font-variation-settings: normal; font-weight: 700; letter-spacing: 0; }
+      .cr-theme .cr-label { font-family: var(--cr-label); font-size: .75rem; font-style: normal; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
       @media (max-width: 767px) {
         .cr-cover-frame { max-height: none; }
         .cr-cover-recipient { grid-template-columns: minmax(0, 1fr); align-items: start; }

@@ -5,7 +5,7 @@ import type { ThemeComponentProps } from "@/types/theme";
 
 import type { RivieraRouteItem } from "./components/RouteNavigation";
 import { CoverGate } from "./CoverGate";
-import { rivieraBody, rivieraDisplay } from "./fonts";
+import { rivieraBody, rivieraDisplay, rivieraScript } from "./fonts";
 import { ClosingSection } from "./sections/ClosingSection";
 import { CountdownSection } from "./sections/CountdownSection";
 import { CoupleSection } from "./sections/CoupleSection";
@@ -58,7 +58,7 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
 
   return (
     <div
-      className={`cr-theme ${rivieraDisplay.variable} ${rivieraBody.variable}`}
+      className={`cr-theme ${rivieraScript.variable} ${rivieraDisplay.variable} ${rivieraBody.variable}`}
       data-theme="cobalt-riviera"
     >
       <ThemeStyles />

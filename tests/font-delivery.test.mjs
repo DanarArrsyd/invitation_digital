@@ -30,8 +30,12 @@ const THEME_FONTS = {
     ],
   },
   "cobalt-riviera": {
-    packages: [/@fontsource-variable\/familjen-grotesk/, /@fontsource-variable\/newsreader/],
-    faces: [/--font-cr-display:\s*"Familjen Grotesk Variable"/, /--font-cr-body:\s*"Newsreader Variable"/],
+    packages: [/@fontsource\/corinthia/, /@fontsource-variable\/familjen-grotesk/, /@fontsource-variable\/newsreader/],
+    faces: [
+      /--font-cr-script:\s*"Corinthia"/,
+      /--font-cr-display:\s*"Familjen Grotesk Variable"/,
+      /--font-cr-body:\s*"Newsreader Variable"/,
+    ],
   },
 };
 
@@ -121,4 +125,24 @@ test("Midnight styles consume the script, display and text faces", async () => {
   assert.match(styles, /:is\(h2, h3, blockquote\)\s*\{\s*font-style:\s*italic/);
   assert.match(themeFonts, /@fontsource-variable\/bodoni-moda\/wght-italic\.css/, "italic headings ship the italic axis");
   assert.doesNotMatch(themeFonts, /ibm-plex-sans-condensed/);
+});
+
+test("Cobalt styles consume the script, label and text faces", async () => {
+  const [styles, themeFonts] = await Promise.all([
+    source("src/themes/cobalt-riviera/ThemeStyles.tsx"),
+    source("src/themes/theme-fonts.ts"),
+  ]);
+  assert.match(styles, /--cr-script:\s*var\(--font-cr-script\)/);
+  assert.match(styles, /--cr-label:\s*var\(--font-cr-display\)/);
+  assert.match(styles, /--cr-text:\s*var\(--font-cr-body\)/);
+  assert.doesNotMatch(styles, /var\(--font-cr-(display|body)\), (Arial|Georgia)/, "every rule reads the role tokens");
+  assert.match(styles, /font-family:\s*var\(--cr-text\);\s*font-size:\s*1\.0625rem/, "body text is at least 17px");
+  assert.match(styles, /\.cr-theme \.cr-script\s*\{[^}]*font-family:\s*var\(--cr-script\)[^}]*font-weight:\s*700/);
+  assert.match(styles, /\.cr-theme \.cr-label\s*\{[^}]*font-family:\s*var\(--cr-label\)[^}]*text-transform:\s*uppercase/);
+  assert.match(styles, /\.cr-theme :is\(h2, h3, blockquote\):not\(\.cr-script\)\s*\{\s*font-family:\s*var\(--cr-text\);\s*font-style:\s*italic/);
+  for (const size of styles.matchAll(/font-size:\s*([\d.]+)rem;\s*line-height:\s*1\.[5-6]/g)) {
+    assert.ok(Number(size[1]) >= 1.0625, `reading text at ${size[1]}rem is below 17px`);
+  }
+  assert.match(themeFonts, /@fontsource\/corinthia\/700\.css/, "names use Corinthia Bold");
+  assert.match(themeFonts, /@fontsource-variable\/newsreader\/wght-italic\.css/, "italic headings ship the italic axis");
 });
