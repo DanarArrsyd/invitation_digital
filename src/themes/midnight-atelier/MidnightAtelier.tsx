@@ -5,7 +5,7 @@ import { buildThemeViewModel } from "@/themes/shared/view-model";
 
 import type { NavItem } from "./components/FloatingNav";
 import { CoverGate } from "./CoverGate";
-import { bodyCondensed, displaySerif } from "./fonts";
+import { displayFace, scriptFace, textFace } from "./fonts";
 import { ClosingSection } from "./sections/ClosingSection";
 import { CountdownSection } from "./sections/CountdownSection";
 import { CoupleSection } from "./sections/CoupleSection";
@@ -51,7 +51,7 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
 
   return (
     <div
-      className={`ma-theme ${displaySerif.variable} ${bodyCondensed.variable}`}
+      className={`ma-theme ${scriptFace.variable} ${displayFace.variable} ${textFace.variable}`}
       data-theme="midnight-atelier"
     >
       <ThemeStyles />

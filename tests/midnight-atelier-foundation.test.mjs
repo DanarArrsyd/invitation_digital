@@ -185,8 +185,10 @@ test("Midnight source stays presentation-only and uses bundled font families", (
 
   assert.doesNotMatch(source, /supabase|createSupabase|next\/font\/google/i);
   assert.doesNotMatch(source, /<img\b/);
+  assert.match(fontsTs, /@fontsource\/imperial-script/);
   assert.match(fontsTs, /@fontsource-variable\/bodoni-moda/);
-  assert.match(fontsTs, /@fontsource\/ibm-plex-sans-condensed/);
+  assert.match(fontsTs, /@fontsource-variable\/jost/);
+  assert.match(fontsCss, /--font-ma-script:\s*"Imperial Script"/);
   assert.match(fontsCss, /--font-ma-display:\s*"Bodoni Moda Variable"/);
-  assert.match(fontsCss, /--font-ma-body:\s*"IBM Plex Sans Condensed"/);
+  assert.match(fontsCss, /--font-ma-text:\s*"Jost Variable"/);
 });

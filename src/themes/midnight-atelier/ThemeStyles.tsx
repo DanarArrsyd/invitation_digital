@@ -19,7 +19,11 @@ export function ThemeStyles() {
         overflow-x: clip;
         background: var(--ma-ink);
         color: var(--ma-pearl);
-        font-family: var(--font-ma-body), sans-serif;
+        --ma-script: var(--font-ma-script), "Snell Roundhand", cursive;
+        --ma-display: var(--font-ma-display), Didot, Georgia, serif;
+        --ma-body: var(--font-ma-text), Futura, "Century Gothic", Arial, sans-serif;
+        font-family: var(--ma-body);
+        font-size: 1.0625rem;
       }
       .ma-theme, .ma-theme *, .ma-theme *::before, .ma-theme *::after { box-sizing: border-box; }
       .ma-gate { min-height: 100svh; }
@@ -87,7 +91,7 @@ export function ThemeStyles() {
         align-items: center;
         min-width: 0;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(4rem, 15vw, 10rem);
         font-weight: 500;
         letter-spacing: -.055em;
@@ -119,7 +123,7 @@ export function ThemeStyles() {
       .ma-cover-guest-name {
         max-width: 34ch;
         margin: .4rem 0 1.4rem;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(1.25rem, 5vw, 2rem);
         line-height: 1.25;
         overflow-wrap: anywhere;
@@ -159,12 +163,18 @@ export function ThemeStyles() {
       .ma-surface-pearl { background: var(--ma-pearl); color: var(--ma-ink); }
       .ma-display {
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.25rem, 12vw, 9rem);
         font-weight: 500;
         letter-spacing: -0.045em;
         line-height: 0.86;
       }
+      /* Ballroom voices: Imperial Script for names, Bodoni italic for headings,
+         Jost spaced capitals for labels. */
+      .ma-theme :is(h2, h3, blockquote) { font-style: italic; }
+      .ma-theme .ma-script { font-family: var(--ma-script); font-style: normal; font-weight: 400; letter-spacing: 0; }
+      .ma-theme .ma-label { font-family: var(--ma-body); font-size: .75rem; font-style: normal; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; }
+      .ma-theme :is(.ma-cover-masthead, .ma-cover-intro, .ma-cover-recipient > p:first-child, .ma-chapter-heading p, .ma-interaction-heading > p, .ma-countdown-intro p, .ma-livestream-copy > p, .ma-event-type, .ma-countdown-units dt, .ma-gift-provider, .ma-parents p:first-child, .ma-dress-group h3, .ma-form-field > span, .ma-attendance legend, .ma-form-recipient > span) { font-family: var(--ma-body); font-style: normal; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; }
       .ma-mark { display: inline-grid; width: 4rem; color: var(--ma-champagne); }
       .ma-mark svg { display: block; width: 100%; stroke: currentColor; stroke-width: 1; }
       .ma-media { position: relative; overflow: hidden; background: var(--ma-lacquer); }
@@ -182,7 +192,7 @@ export function ThemeStyles() {
       .ma-hero-copy h2 {
         max-width: 9ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.6rem, 13vw, 10rem);
         font-weight: 500;
         letter-spacing: -.055em;
@@ -193,7 +203,7 @@ export function ThemeStyles() {
         max-width: 44ch;
         margin: clamp(2rem, 6vw, 4rem) 0 0;
         color: var(--ma-pearl);
-        font-size: clamp(1rem, 2vw, 1.2rem);
+        font-size: clamp(1.0625rem, 2vw, 1.25rem);
         line-height: 1.7;
         white-space: pre-line;
       }
@@ -217,7 +227,7 @@ export function ThemeStyles() {
       .ma-quote blockquote {
         max-width: 19ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(2.4rem, 8vw, 6rem);
         font-weight: 500;
         letter-spacing: -.035em;
@@ -234,7 +244,7 @@ export function ThemeStyles() {
       .ma-chapter-heading p { margin: 0; color: var(--ma-oxblood); font-size: .78rem; letter-spacing: .08em; }
       .ma-chapter-heading h2 {
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.25rem, 10vw, 7.5rem);
         font-weight: 500;
         letter-spacing: -.045em;
@@ -247,7 +257,7 @@ export function ThemeStyles() {
       .ma-person-copy h3 {
         max-width: 11ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(2.5rem, 8vw, 5rem);
         font-weight: 500;
         letter-spacing: -.04em;
@@ -263,7 +273,7 @@ export function ThemeStyles() {
       }
       .ma-parents p { margin: 0; }
       .ma-parents p:first-child { color: var(--ma-oxblood); font-size: .78rem; }
-      .ma-parents p:last-child { font-family: var(--font-ma-display), serif; font-size: 1.25rem; line-height: 1.4; }
+      .ma-parents p:last-child { font-family: var(--ma-display); font-size: 1.25rem; line-height: 1.4; }
       .ma-parent-join { color: var(--ma-oxblood); }
       .ma-person-bio { max-width: 52ch; margin: 1.75rem 0 0; line-height: 1.75; white-space: pre-line; }
       .ma-instagram {
@@ -279,7 +289,7 @@ export function ThemeStyles() {
       .ma-person-text-only { border-top: 1px solid var(--ma-oxblood); padding-top: clamp(2rem, 6vw, 4rem); }
       .ma-person-monogram {
         color: var(--ma-oxblood);
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(7rem, 28vw, 16rem);
         line-height: .65;
       }
@@ -296,13 +306,13 @@ export function ThemeStyles() {
         overflow-wrap: anywhere;
       }
       .ma-event:last-child { border-bottom: 1px solid color-mix(in srgb, var(--ma-champagne) 58%, transparent); }
-      .ma-event-index { color: var(--ma-champagne); font-family: var(--font-ma-display), serif; font-size: 1.3rem; }
+      .ma-event-index { color: var(--ma-champagne); font-family: var(--ma-display); font-size: 1.3rem; }
       .ma-event-main, .ma-event-place { min-width: 0; }
       .ma-event-type { margin: 0 0 .75rem; color: var(--ma-champagne); font-size: .75rem; letter-spacing: .08em; }
       .ma-event-main h3 {
         max-width: 15ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(2.4rem, 8vw, 5rem);
         font-weight: 500;
         letter-spacing: -.04em;
@@ -310,7 +320,7 @@ export function ThemeStyles() {
       }
       .ma-event-main time { display: block; margin-top: 1.5rem; color: var(--ma-smoke); line-height: 1.55; }
       .ma-event-time { margin: .35rem 0 0; color: var(--ma-smoke); font-variant-numeric: tabular-nums; }
-      .ma-event-venue { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.15; }
+      .ma-event-venue { margin: 0; font-family: var(--ma-display); font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.15; }
       .ma-event-address { max-width: 42ch; margin: .8rem 0 0; color: var(--ma-smoke); line-height: 1.65; }
       .ma-event-actions {
         display: flex;
@@ -345,7 +355,7 @@ export function ThemeStyles() {
       .ma-countdown-intro h2 {
         max-width: 9ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.2rem, 11vw, 8rem);
         font-weight: 500;
         letter-spacing: -.05em;
@@ -356,14 +366,14 @@ export function ThemeStyles() {
       .ma-countdown-units > div { min-width: 0; border-bottom: 1px solid var(--ma-champagne); padding: 1.25rem 0; }
       .ma-countdown-units > div:nth-child(odd) { border-right: 1px solid var(--ma-champagne); padding-right: 1rem; }
       .ma-countdown-units > div:nth-child(even) { padding-left: 1rem; }
-      .ma-countdown-units dd { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(2.8rem, 12vw, 6rem); line-height: .8; font-variant-numeric: tabular-nums; }
+      .ma-countdown-units dd { margin: 0; font-family: var(--ma-display); font-size: clamp(2.8rem, 12vw, 6rem); line-height: .8; font-variant-numeric: tabular-nums; }
       .ma-countdown-units dt { margin-top: .75rem; color: var(--ma-champagne); font-size: .72rem; }
       .ma-countdown-body { display: grid; min-width: 0; align-content: end; gap: clamp(1.75rem, 5vw, 2.5rem); }
       .ma-countdown .ma-calendar-actions { gap: 0 1.5rem; }
       .ma-countdown .ma-calendar-actions :is(a, button) { flex: 1 1 9rem; justify-content: space-between; }
       .ma-countdown-calendar-only .ma-countdown-body { border-top: 1px solid var(--ma-champagne); padding-top: .5rem; }
       .ma-dress-code > .ma-section-inner { display: grid; align-content: start; gap: clamp(3rem, 8vw, 6rem); }
-      .ma-dress-description { max-width: 25ch; margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 5vw, 3.5rem); line-height: 1.12; overflow-wrap: anywhere; }
+      .ma-dress-description { max-width: 25ch; margin: 0; font-family: var(--ma-display); font-size: clamp(1.8rem, 5vw, 3.5rem); line-height: 1.12; overflow-wrap: anywhere; }
       .ma-dress-groups { display: grid; gap: 2.5rem; }
       .ma-dress-group { border-top: 1px solid var(--ma-oxblood); padding-top: 1rem; }
       .ma-dress-group h3 { margin: 0 0 1.5rem; color: var(--ma-oxblood); font-size: .82rem; font-weight: 500; }
@@ -381,13 +391,13 @@ export function ThemeStyles() {
         padding-block: clamp(2.5rem, 8vw, 6rem);
       }
       .ma-story-entry:last-child { border-bottom: 1px solid var(--ma-oxblood); }
-      .ma-story-index { grid-area: index; color: var(--ma-oxblood); font-family: var(--font-ma-display), serif; font-size: 1.3rem; }
+      .ma-story-index { grid-area: index; color: var(--ma-oxblood); font-family: var(--ma-display); font-size: 1.3rem; }
       .ma-story-copy { grid-area: copy; min-width: 0; overflow-wrap: anywhere; }
       .ma-story-date { display: block; margin: 0 0 .8rem; color: var(--ma-oxblood); font-size: .78rem; font-variant-numeric: tabular-nums; }
       .ma-story-copy h3 {
         max-width: 13ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(2.6rem, 8vw, 5.5rem);
         font-weight: 500;
         letter-spacing: -.045em;
@@ -433,7 +443,7 @@ export function ThemeStyles() {
       .ma-interaction-heading h2 {
         max-width: 10ch;
         margin: 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.2rem, 10vw, 7.5rem);
         font-weight: 500;
         letter-spacing: -.05em;
@@ -482,7 +492,7 @@ export function ThemeStyles() {
         padding-bottom: 1.25rem;
       }
       .ma-form-recipient strong {
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(1.7rem, 5vw, 2.6rem);
         font-weight: 500;
         line-height: 1.1;
@@ -534,9 +544,9 @@ export function ThemeStyles() {
         padding-block: clamp(2rem, 6vw, 4rem);
         overflow-wrap: anywhere;
       }
-      .ma-form-success p { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(2.5rem, 8vw, 5rem); line-height: .9; }
+      .ma-form-success p { margin: 0; font-family: var(--ma-display); font-size: clamp(2.5rem, 8vw, 5rem); line-height: .9; }
       .ma-form-success span { display: block; margin-top: 1.25rem; color: var(--ma-smoke); line-height: 1.7; }
-      .ma-form-success-dark { color: var(--ma-ink); font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.15; }
+      .ma-form-success-dark { color: var(--ma-ink); font-family: var(--ma-display); font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.15; }
       .ma-form-dark .ma-form-field > span,
       .ma-form-dark .ma-form-recipient > span { color: var(--ma-oxblood); }
       .ma-form-dark .ma-form-control,
@@ -551,7 +561,7 @@ export function ThemeStyles() {
         margin: 0;
         border-block: 1px solid var(--ma-oxblood);
         padding-block: 2rem;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(1.6rem, 5vw, 2.8rem);
         line-height: 1.15;
       }
@@ -567,7 +577,7 @@ export function ThemeStyles() {
       }
       .ma-wish-index { color: var(--ma-oxblood); font-size: .72rem; font-variant-numeric: tabular-nums; }
       .ma-wish-meta { display: flex; min-width: 0; flex-wrap: wrap; justify-content: space-between; gap: .35rem 1rem; }
-      .ma-wish-meta strong { font-family: var(--font-ma-display), serif; font-size: 1.25rem; font-weight: 500; }
+      .ma-wish-meta strong { font-family: var(--ma-display); font-size: 1.25rem; font-weight: 500; }
       .ma-wish-meta time { color: var(--ma-oxblood); font-size: .72rem; }
       .ma-wish-entry p { margin: 1rem 0 0; line-height: 1.7; white-space: pre-line; }
       .ma-more-wishes {
@@ -594,7 +604,7 @@ export function ThemeStyles() {
       .ma-gift-index { color: var(--ma-champagne); font-size: .72rem; font-variant-numeric: tabular-nums; }
       .ma-gift-details { min-width: 0; }
       .ma-gift-provider { margin: 0 0 .75rem; color: var(--ma-smoke); font-size: .76rem; letter-spacing: .08em; }
-      .ma-gift-number { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 6vw, 3.6rem); line-height: 1; }
+      .ma-gift-number { margin: 0; font-family: var(--ma-display); font-size: clamp(1.8rem, 6vw, 3.6rem); line-height: 1; }
       .ma-gift-owner { margin: .8rem 0 0; color: var(--ma-smoke); line-height: 1.6; }
       .ma-gift-ledger button {
         min-height: 48px;
@@ -610,7 +620,7 @@ export function ThemeStyles() {
       .ma-livestream > .ma-section-inner { display: grid; align-content: center; gap: clamp(3rem, 9vw, 7rem); }
       .ma-livestream-copy { min-width: 0; }
       .ma-livestream-copy > p { margin: 0 0 .7rem; color: var(--ma-champagne); font-size: .78rem; letter-spacing: .08em; }
-      .ma-livestream-copy h2 { max-width: 9ch; margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(3.2rem, 11vw, 8rem); font-weight: 500; letter-spacing: -.05em; line-height: .85; overflow-wrap: anywhere; }
+      .ma-livestream-copy h2 { max-width: 9ch; margin: 0; font-family: var(--ma-display); font-size: clamp(3.2rem, 11vw, 8rem); font-weight: 500; letter-spacing: -.05em; line-height: .85; overflow-wrap: anywhere; }
       .ma-livestream-copy > span { display: block; max-width: 36ch; margin-top: 1.5rem; color: var(--ma-smoke); line-height: 1.7; }
       .ma-livestream ul { margin: 0; padding: 0; border-top: 1px solid var(--ma-champagne); list-style: none; }
       .ma-livestream li { border-bottom: 1px solid var(--ma-champagne); }
@@ -620,7 +630,7 @@ export function ThemeStyles() {
       .ma-closing-copy h2 {
         max-width: 10ch;
         margin: clamp(2rem, 6vw, 4rem) 0 0;
-        font-family: var(--font-ma-display), serif;
+        font-family: var(--ma-display);
         font-size: clamp(3.4rem, 11vw, 8rem);
         font-weight: 500;
         letter-spacing: -.05em;
