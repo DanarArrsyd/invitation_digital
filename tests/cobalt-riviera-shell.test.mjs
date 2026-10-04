@@ -122,11 +122,11 @@ async function mountShell(options = {}, invitation = fixture(), recipient = gues
   };
 }
 
-test("photo-free horizon cover renders normalized names, date, guest, shutters, seam, and labelled sun action", () => {
+test("photo-free sea cover renders normalized names, date, guest, receding waves, and labelled sun action", () => {
   const document = new JSDOM(renderShell()).window.document;
   assert.equal(document.querySelector("#cr-cover img"), null);
-  assert.equal(document.querySelectorAll(".cr-horizon-shutter").length, 2);
-  assert.ok(document.querySelector(".cr-horizon-seam"));
+  assert.equal(document.querySelectorAll("#cr-cover .cr-wave").length, 2);
+  assert.ok(document.querySelector("#cr-cover .cr-wave-front .cr-wave-foam"));
   assert.equal(document.querySelector(".cr-cover-guest-name")?.textContent, guest.displayName);
   assert.match(document.querySelector(".cr-cover-names")?.textContent ?? "", /Mira.*Raka/s);
   assert.equal(document.querySelector("time")?.getAttribute("datetime"), "2027-06-19");
@@ -251,14 +251,13 @@ test("generic guest, reduced motion, and disabled music keep the shell operable 
   }
 });
 
-test("shell CSS defines the approved shutter timing, instant motion fallback, mobile strip, desktop edge index, and safe music offsets", () => {
+test("shell CSS defines the receding-wave timing, instant motion fallback, mobile strip, desktop edge index, and safe music offsets", () => {
   const { COBALT_RIVIERA_TOKENS } = loadTheme().load("themes/cobalt-riviera/tokens");
   const document = new JSDOM(renderShell()).window.document;
   const css = document.querySelector("style")?.textContent ?? "";
-  assert.match(css, /\.cr-horizon-seam/);
-  assert.match(css, /\.cr-horizon-shutter[^}]*transition[^}]*800ms/s);
-  assert.match(css, /data-opened="true"[^}]*\.cr-shutter-upper[^{]*\{[^}]*translateY\(-10[01]%\)/s);
-  assert.match(css, /data-opened="true"[^}]*\.cr-shutter-lower[^{]*\{[^}]*translateY\(10[01]%\)/s);
+  assert.match(css, /\.cr-wave\s*\{[^}]*transition:\s*transform 900ms/);
+  assert.match(css, /data-opened="true"\] \.cr-wave-front\s*\{[^}]*translateY\(-112%\)/);
+  assert.match(css, /data-opened="true"\] \.cr-wave-back\s*\{[^}]*translateY\(-112%\)/);
   assert.match(css, /@media\s*\(max-width:\s*767px\)/);
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
   assert.match(css, /safe-area-inset-bottom/);

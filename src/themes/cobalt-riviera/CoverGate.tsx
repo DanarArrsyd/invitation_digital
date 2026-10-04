@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { useInvitationCover } from "@/themes/shared/use-invitation-cover";
 
+import { RecedingWaves } from "./components/RecedingWaves";
 import { RouteNavigation, type RivieraRouteItem } from "./components/RouteNavigation";
 import { SunMark } from "./components/SunMark";
 
@@ -62,16 +63,12 @@ export function CoverGate({
       {canPlayMusic ? <audio ref={audioRef} src={musicUrl ?? undefined} loop preload="none" /> : null}
 
       <div id="cr-cover" className="cr-cover" aria-hidden={opened || undefined} inert={opened}>
-        <div className="cr-horizon" aria-hidden="true">
-          <div className="cr-horizon-shutter cr-shutter-upper" />
-          <div className="cr-horizon-shutter cr-shutter-lower" />
-          <div className="cr-horizon-seam" />
-        </div>
+        <RecedingWaves names={displayName} />
 
         <div className="cr-cover-frame">
           <header className="cr-cover-masthead">
+            <span lang="it">Saluti dalla Costa</span>
             <span>{label}</span>
-            <span>CR / 04</span>
           </header>
 
           <div className="cr-cover-stage">

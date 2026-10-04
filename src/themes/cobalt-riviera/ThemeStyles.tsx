@@ -41,30 +41,8 @@ export function ThemeStyles() {
         min-height: 100svh;
         overflow-x: hidden;
         overflow-y: auto;
-        background: var(--cr-cobalt);
-        color: var(--cr-porcelain);
-        transition: visibility 0s linear 800ms;
-      }
-      .cr-horizon { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-      .cr-horizon-shutter {
-        position: absolute;
-        left: 0;
-        width: 100%;
-        height: 50%;
-        background: var(--cr-cobalt);
-        transition: transform 800ms cubic-bezier(.76, 0, .24, 1);
-        will-change: transform;
-      }
-      .cr-shutter-upper { top: 0; }
-      .cr-shutter-lower { bottom: 0; }
-      .cr-horizon-seam {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        width: 100%;
-        height: 1px;
         background: var(--cr-porcelain);
-        transition: opacity 180ms ease 300ms;
+        color: var(--cr-porcelain);
       }
       .cr-cover-frame {
         position: relative;
@@ -76,7 +54,7 @@ export function ThemeStyles() {
         padding: max(1.25rem, env(safe-area-inset-top)) clamp(1.1rem, 6vw, 6rem) max(1.5rem, env(safe-area-inset-bottom));
         grid-template-rows: auto minmax(0, 1fr) auto;
         gap: clamp(1rem, 4svh, 3rem);
-        transition: opacity 180ms ease, transform 800ms cubic-bezier(.76, 0, .24, 1);
+        transition: opacity 250ms ease;
       }
       .cr-cover-masthead {
         display: flex;
@@ -167,11 +145,34 @@ export function ThemeStyles() {
         transition: transform 800ms cubic-bezier(.76, 0, .24, 1);
       }
       .cr-cover-open:active .cr-sun-mark { transform: translateY(-6px); }
-      .cr-gate[data-opened="true"] .cr-cover { visibility: hidden; pointer-events: none; }
-      .cr-gate[data-opened="true"] .cr-shutter-upper { transform: translateY(-101%); }
-      .cr-gate[data-opened="true"] .cr-shutter-lower { transform: translateY(101%); }
-      .cr-gate[data-opened="true"] .cr-horizon-seam { opacity: 0; }
-      .cr-gate[data-opened="true"] .cr-cover-frame { opacity: 0; transform: translateY(-1rem); }
+      /* Ombak surut: a cobalt wave over a kolam swell. On opening the text
+         fades, both waves recede upward dragging their foam edge, the names
+         settle on the porcelain sand, then the cover fades (1000ms + 400ms).
+         It is inert and stops taking taps the moment it opens. */
+      .cr-sea { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+      .cr-sand-names { position: absolute; right: 0; bottom: 38%; left: 0; margin: 0; padding-inline: clamp(1.1rem, 6vw, 6rem); color: var(--cr-cobalt); font-size: clamp(3.5rem, 16vw, 9rem); line-height: 1; text-align: center; overflow-wrap: anywhere; transform: translateY(12px); }
+      .cr-wave { position: absolute; top: 0; right: 0; left: 0; height: 100%; transition: transform 900ms cubic-bezier(.65, 0, .35, 1); will-change: transform; }
+      .cr-wave-back { background: var(--cr-pool); }
+      .cr-wave-front { background: var(--cr-cobalt); }
+      .cr-wave-edge { position: absolute; top: calc(100% - 1px); left: 0; width: 100%; height: clamp(28px, 7vh, 64px); overflow: visible; }
+      .cr-wave-back .cr-wave-body { fill: var(--cr-pool); }
+      .cr-wave-front .cr-wave-body { fill: var(--cr-cobalt); }
+      .cr-wave-foam { fill: none; stroke: var(--cr-porcelain); stroke-width: 2; vector-effect: non-scaling-stroke; }
+      .cr-gate[data-opened="true"] .cr-cover {
+        opacity: 0; visibility: hidden; pointer-events: none;
+        transition: opacity 400ms ease 1000ms, visibility 0s 1400ms;
+      }
+      .cr-gate[data-opened="true"] .cr-cover-frame { opacity: 0; }
+      .cr-gate[data-opened="true"] .cr-wave-front { transform: translateY(-112%); }
+      .cr-gate[data-opened="true"] .cr-wave-back { transform: translateY(-112%); transition-delay: 150ms; transition-duration: 1000ms; }
+      .cr-gate[data-opened="true"] .cr-sand-names { transform: translateY(0); transition: transform 800ms cubic-bezier(.22, .61, .36, 1) 500ms; }
+      /* Short phones: smaller names keep "Buka undangan" above the fold. */
+      @media (max-height: 700px) {
+        .cr-cover-names { font-size: clamp(3rem, 14vw, 5rem); }
+        .cr-cover-frame { gap: .75rem; }
+        .cr-cover-open { grid-template-columns: 2.75rem minmax(0, 1fr); }
+        .cr-cover-open .cr-sun-mark { width: 2.75rem; }
+      }
       .cr-gate[data-opened="true"] .cr-cover-open .cr-sun-mark { transform: translateY(-20px); }
       .cr-content {
         min-height: 100svh;
@@ -1091,13 +1092,7 @@ export function ThemeStyles() {
         .cr-person { padding-right: 8vw; }
         .cr-person[data-position="right"] { padding-right: 0; padding-left: 8vw; }
       }
-      .cr-gate[data-reduced-motion="true"] .cr-cover,
-      .cr-gate[data-reduced-motion="true"] .cr-horizon-shutter,
-      .cr-gate[data-reduced-motion="true"] .cr-horizon-seam,
-      .cr-gate[data-reduced-motion="true"] .cr-cover-frame,
-      .cr-gate[data-reduced-motion="true"] .cr-cover-open .cr-sun-mark {
-        transition: none;
-      }
+      .cr-gate[data-reduced-motion="true"] :is(.cr-cover, .cr-cover-frame, .cr-wave, .cr-sand-names, .cr-cover-open .cr-sun-mark) { transition: none; }
       @media (prefers-reduced-motion: reduce) {
         .cr-theme, .cr-theme *, .cr-theme *::before, .cr-theme *::after {
           animation: none !important;

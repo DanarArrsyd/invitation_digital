@@ -253,3 +253,86 @@ test("couple names are Corinthia signatures and chapter titles stay Newsreader i
   assert.match(sheet, /\.cr-cover-amp\s*\{[^}]*font-family:\s*var\(--cr-text\)[^}]*font-style:\s*italic/, "the ampersand is a Newsreader italic accent");
   assert.match(sheet, /\.cr-person-monogram\s*\{[^}]*font:\s*700 [^;]*var\(--cr-script\)/, "a missing portrait shows a script initial");
 });
+
+test("the cover is a cobalt sea whose two foam-edged waves recede on the first tap", async () => {
+  const { CobaltRiviera } = createLoader()("index");
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(CobaltRiviera, { invitation: invitation(), guest: null }))).window;
+  assert.equal(document.querySelector(".cr-horizon-shutter, .cr-horizon-seam"), null, "the horizon shutters are retired");
+  const sea = document.querySelector("#cr-cover .cr-sea");
+  assert.ok(sea, "the cover carries the sea");
+  assert.equal(sea.getAttribute("aria-hidden"), "true");
+  const waves = [...sea.querySelectorAll(".cr-wave")];
+  assert.deepEqual(waves.map((wave) => wave.classList.contains("cr-wave-front")), [false, true], "the kolam swell lies under the cobalt wave");
+  for (const wave of waves) {
+    assert.equal(wave.querySelectorAll(".cr-wave-edge .cr-wave-foam").length, 1, "each wave drags a foam edge");
+  }
+  assert.ok(sea.querySelectorAll("*").length <= 20, `${sea.querySelectorAll("*").length} nodes`);
+  const sand = sea.querySelector(".cr-sand-names");
+  assert.ok(sand.classList.contains("cr-script"));
+  assert.equal(sand.textContent, "Nadia & Arka");
+  assert.ok(sand.compareDocumentPosition(waves[0]) & 4, "the waves cover the sand until they recede");
+  const greeting = document.querySelector("#cr-cover .cr-cover-masthead [lang='it']");
+  assert.equal(greeting?.textContent, "Saluti dalla Costa");
+  const open = document.querySelector("#cr-cover button");
+  assert.equal(open.className, "cr-cover-open");
+  assert.match(open.textContent, /Buka undangan/);
+  assert.equal(open.getAttribute("aria-controls"), "cr-content");
+  assert.ok(open.querySelector(".cr-sun-mark"));
+
+  const calls = [];
+  const load = createLoader({ actions: { trackCoverOpened: async (...args) => { calls.push(args); } } });
+  const withMusic = invitation({
+    features: { ...invitation().features, music: true },
+    media: { coverImageUrl: null, musicUrl: "/music.mp3" },
+  });
+  const view = await mount(React.createElement(load("index").CobaltRiviera, { invitation: withMusic, guest: null }));
+  try {
+    let plays = 0;
+    view.document.querySelector("audio").play = async () => { plays += 1; };
+    await act(async () => view.document.querySelector(".cr-cover-open").click());
+    assert.equal(plays, 1, "music starts in the same tap");
+    assert.deepEqual(calls, [["cobalt", null]]);
+    assert.equal(view.document.getElementById("cr-content").hidden, false);
+    assert.equal(view.document.getElementById("cr-cover").hasAttribute("inert"), true, "the cover stops taking taps at once");
+  } finally { await view.cleanup(); }
+
+  const sheet = css();
+  assert.match(sheet, /\.cr-cover\s*\{[^}]*background:\s*var\(--cr-porcelain\)/, "under the waves lies porcelain sand");
+  assert.match(sheet, /\.cr-wave\s*\{[^}]*transition:\s*transform 900ms/);
+  assert.match(sheet, /\[data-opened="true"\] \.cr-wave-front\s*\{[^}]*transform:\s*translateY\(-112%\)/);
+  assert.match(sheet, /\[data-opened="true"\] \.cr-wave-back\s*\{[^}]*transform:\s*translateY\(-112%\)[^}]*transition-delay:\s*150ms/);
+  assert.match(sheet, /\[data-opened="true"\] \.cr-cover\s*\{[^}]*transition:[^}]*opacity 400ms ease 1000ms/, "the cover lingers for the tide, then fades");
+  assert.match(sheet, /data-reduced-motion="true"\] :is\([^)]*\.cr-wave[^)]*\)\s*\{\s*transition:\s*none/);
+  assert.match(sheet, /@media \(max-height: 700px\)\s*\{\s*\.cr-cover-names\s*\{\s*font-size:/, "short phones keep the open button on screen");
+  for (const selector of [".cr-wave", ".cr-sand-names", ".cr-cover-frame"]) {
+    for (const body of rules(sheet, selector)) {
+      const transition = body.match(/transition:\s*([^;]+)/)?.[1];
+      if (transition) for (const part of transition.split(/,(?![^(]*\))/)) assert.match(part.trim(), /^(opacity|transform|none)\b/, `${selector}: ${part}`);
+    }
+  }
+});
+
+test("the wave cover hydrates without mismatch when the browser prefers reduced motion", async () => {
+  const { CobaltRiviera } = createLoader({ reducedMotion: true })("index");
+  const element = React.createElement(CobaltRiviera, {
+    invitation: invitation({ features: { ...invitation().features, countdown: false } }),
+    guest: null,
+  });
+  const view = await mount(React.createElement("div"));
+  const errors = [];
+  const originalError = console.error;
+  console.error = (...args) => errors.push(args.map(String).join(" "));
+  let root;
+  try {
+    const container = view.document.createElement("div");
+    view.document.body.append(container);
+    container.innerHTML = renderToString(element);
+    await act(async () => { root = hydrateRoot(container, element); });
+    assert.deepEqual(errors, []);
+    assert.ok(container.querySelector(".cr-sea .cr-wave-front"));
+  } finally {
+    console.error = originalError;
+    if (root) await act(async () => root.unmount());
+    await view.cleanup();
+  }
+});
