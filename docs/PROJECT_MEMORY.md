@@ -142,7 +142,7 @@ fourth visual system from the same normalized invitation contract:
 CoverGate — horizon shutters, guest personalization, music and focus handoff
   ├─ Hero + quote — panoramic or typographic horizon opening
   ├─ Couple + parents — offset resort editorials and social credits
-  ├─ Itinerary — events, Maps, calendar, countdown, dress code, livestream
+  ├─ Itinerary — events, Maps, countdown + calendar, dress code, livestream
   ├─ Story — ordered folio with complete text-only entries
   ├─ Gallery — panoramic anchor plus ceramic mosaic
   ├─ RSVP — large checked color fields over shared action state
@@ -191,7 +191,7 @@ distinct couture programme from the same canonical capabilities:
 CoverGate — curtain seam, guest personalization, music and focus handoff
   ├─ Hero — cinematic image or intentional dark sparse state
   ├─ Couple + parents — left-aligned editorial portrait spread
-  ├─ Programme — events, maps, calendar, countdown, dress code, livestream
+  ├─ Programme — events, maps, countdown + calendar, dress code, livestream
   ├─ Story — couture narrative sequence, including text-only entries
   ├─ Gallery — contact-sheet composition for sparse or full collections
   ├─ RSVP — Lacquer interaction using shared action state and Turnstile
@@ -517,6 +517,20 @@ plan in `docs/superpowers/plans/` after the previous one merges.
   settles; no horizontal overflow at any width; reduced motion hides the
   cover at once, labels unclipped, no dandelion; dandelion is 20 nodes and
   stays on screen at 320px.
+- Owner revisions after the first preview (2026-10-04/05), all on this
+  branch and in PR #15:
+  - Groom showed "Orang tua": stored role "Groom"; roles now normalized in
+    public data and a fixed admin choice (`b8ecf78`, loaders `5c232f2`).
+  - Terra text-only couple squeezed to a far-right column; fixed (`b8ecf78`).
+  - Calendar moved into the countdown in Terra, Midnight, Cobalt (Ivory
+    already did it); themed SVG nav icons in all three.
+  - Shared `pickNavItems` (≤5) and the mobile bar/hero rules (`6fd4cb4`)
+    applied to all four themes; hero photo 3:4 with the title first on
+    mobile.
+  - Browser QA at 320/375/1280 for all four themes: no overflow, 5 nav items
+    each with an icon, no cut labels, ≥52px items on phones, title before a
+    3:4 photo (Ivory's arch frame is 3:4; its image bleeds for parallax),
+    calendar only in the countdown, groom reads "Putra dari".
 - Remaining notes (not blocking):
   - After the seeds fade the bare dandelion stalk and its 120x130 space
     remain under the thank-you text; on desktop seeds briefly cross the
