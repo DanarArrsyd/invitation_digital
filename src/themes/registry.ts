@@ -80,7 +80,7 @@ export const themeRegistry: ThemeRegistry = {
     category: "wedding",
     preview: {
       name: "Midnight Atelier",
-      palette: ["#09090B", "#541E2B", "#C6A15B"],
+      palette: ["#14121A", "#5E1A22", "#D8C08A"],
     },
     sections: MIDNIGHT_ATELIER_SECTIONS,
   },

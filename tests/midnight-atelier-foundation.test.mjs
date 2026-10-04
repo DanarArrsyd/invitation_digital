@@ -163,7 +163,7 @@ test("Midnight base styles encode the approved palette, focus, motion, and mobil
   const document = new JSDOM(renderToStaticMarkup(React.createElement(ThemeStyles))).window.document;
   const css = document.querySelector("style")?.textContent ?? "";
 
-  for (const color of ["#09090B", "#171216", "#541E2B", "#C6A15B", "#F3EEE6", "#AAA3A4"]) {
+  for (const color of ["#14121A", "#1E1A24", "#5E1A22", "#D8C08A", "#EDE6DA", "#6E6873", "#A9A2AD"]) {
     assert.match(css, new RegExp(color, "i"), color);
   }
   assert.match(css, /overflow-x:\s*clip/);

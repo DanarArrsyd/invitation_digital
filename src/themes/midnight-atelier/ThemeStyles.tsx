@@ -12,6 +12,12 @@ export function ThemeStyles() {
         --ma-champagne: ${colors.champagne};
         --ma-pearl: ${colors.pearl};
         --ma-smoke: ${colors.smoke};
+        --ma-smoke-ink: ${colors.smokeInk};
+        /* Light, used sparingly: the heading spotlight and picture lights. */
+        --ma-light: rgba(216, 192, 138, .16);
+        --ma-light-strong: rgba(216, 192, 138, .32);
+        /* Resting opacity of a heading before its spotlight comes up. */
+        --ma-dim: .55;
         /* 52px items + 2x4px list padding + 2x1px border. */
         --ma-nav-height: 62px;
         --ma-nav-offset: max(12px, env(safe-area-inset-bottom));
@@ -79,12 +85,12 @@ export function ThemeStyles() {
         align-self: start;
         border-bottom: 1px solid var(--ma-champagne);
         padding-bottom: .8rem;
-        color: var(--ma-smoke);
+        color: var(--ma-smoke-ink);
         font-size: .75rem;
         letter-spacing: .08em;
       }
       .ma-cover-stage { align-self: center; min-width: 0; text-align: center; }
-      .ma-cover-intro { margin: 0 0 1.4rem; color: var(--ma-smoke); font-size: .9rem; }
+      .ma-cover-intro { margin: 0 0 1.4rem; color: var(--ma-smoke-ink); font-size: .9rem; }
       .ma-cover-names {
         display: flex;
         flex-direction: column;
@@ -119,7 +125,7 @@ export function ThemeStyles() {
         border-top: 1px solid var(--ma-champagne);
         padding-top: 1.25rem;
       }
-      .ma-cover-recipient > p:first-child { margin: 0; color: var(--ma-smoke); font-size: .78rem; }
+      .ma-cover-recipient > p:first-child { margin: 0; color: var(--ma-smoke-ink); font-size: .78rem; }
       .ma-cover-guest-name {
         max-width: 34ch;
         margin: .4rem 0 1.4rem;
@@ -318,10 +324,10 @@ export function ThemeStyles() {
         letter-spacing: -.04em;
         line-height: .9;
       }
-      .ma-event-main time { display: block; margin-top: 1.5rem; color: var(--ma-smoke); line-height: 1.55; }
-      .ma-event-time { margin: .35rem 0 0; color: var(--ma-smoke); font-variant-numeric: tabular-nums; }
+      .ma-event-main time { display: block; margin-top: 1.5rem; color: var(--ma-smoke-ink); line-height: 1.55; }
+      .ma-event-time { margin: .35rem 0 0; color: var(--ma-smoke-ink); font-variant-numeric: tabular-nums; }
       .ma-event-venue { margin: 0; font-family: var(--ma-display); font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.15; }
-      .ma-event-address { max-width: 42ch; margin: .8rem 0 0; color: var(--ma-smoke); line-height: 1.65; }
+      .ma-event-address { max-width: 42ch; margin: .8rem 0 0; color: var(--ma-smoke-ink); line-height: 1.65; }
       .ma-event-actions {
         display: flex;
         min-height: 48px;
@@ -419,7 +425,7 @@ export function ThemeStyles() {
         min-width: 0;
         gap: 1rem;
         margin-top: .9rem;
-        color: var(--ma-smoke);
+        color: var(--ma-smoke-ink);
         font-size: .78rem;
         line-height: 1.5;
         overflow-wrap: anywhere;
@@ -454,7 +460,7 @@ export function ThemeStyles() {
         display: block;
         max-width: 42ch;
         margin-top: 1.5rem;
-        color: var(--ma-smoke);
+        color: var(--ma-smoke-ink);
         line-height: 1.7;
       }
       .ma-wishes .ma-interaction-heading > p,
@@ -482,7 +488,7 @@ export function ThemeStyles() {
         font: inherit;
         line-height: 1.5;
       }
-      .ma-form-control::placeholder { color: color-mix(in srgb, var(--ma-smoke) 72%, transparent); opacity: 1; }
+      .ma-form-control::placeholder { color: var(--ma-smoke-ink); opacity: 1; }
       .ma-form-textarea { min-height: 9rem; resize: vertical; }
       .ma-form-recipient {
         display: grid;
@@ -545,7 +551,7 @@ export function ThemeStyles() {
         overflow-wrap: anywhere;
       }
       .ma-form-success p { margin: 0; font-family: var(--ma-display); font-size: clamp(2.5rem, 8vw, 5rem); line-height: .9; }
-      .ma-form-success span { display: block; margin-top: 1.25rem; color: var(--ma-smoke); line-height: 1.7; }
+      .ma-form-success span { display: block; margin-top: 1.25rem; color: var(--ma-smoke-ink); line-height: 1.7; }
       .ma-form-success-dark { color: var(--ma-ink); font-family: var(--ma-display); font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.15; }
       .ma-form-dark .ma-form-field > span,
       .ma-form-dark .ma-form-recipient > span { color: var(--ma-oxblood); }
@@ -603,9 +609,9 @@ export function ThemeStyles() {
       }
       .ma-gift-index { color: var(--ma-champagne); font-size: .72rem; font-variant-numeric: tabular-nums; }
       .ma-gift-details { min-width: 0; }
-      .ma-gift-provider { margin: 0 0 .75rem; color: var(--ma-smoke); font-size: .76rem; letter-spacing: .08em; }
+      .ma-gift-provider { margin: 0 0 .75rem; color: var(--ma-smoke-ink); font-size: .76rem; letter-spacing: .08em; }
       .ma-gift-number { margin: 0; font-family: var(--ma-display); font-size: clamp(1.8rem, 6vw, 3.6rem); line-height: 1; }
-      .ma-gift-owner { margin: .8rem 0 0; color: var(--ma-smoke); line-height: 1.6; }
+      .ma-gift-owner { margin: .8rem 0 0; color: var(--ma-smoke-ink); line-height: 1.6; }
       .ma-gift-ledger button {
         min-height: 48px;
         width: fit-content;
@@ -621,7 +627,7 @@ export function ThemeStyles() {
       .ma-livestream-copy { min-width: 0; }
       .ma-livestream-copy > p { margin: 0 0 .7rem; color: var(--ma-champagne); font-size: .78rem; letter-spacing: .08em; }
       .ma-livestream-copy h2 { max-width: 9ch; margin: 0; font-family: var(--ma-display); font-size: clamp(3.2rem, 11vw, 8rem); font-weight: 500; letter-spacing: -.05em; line-height: .85; overflow-wrap: anywhere; }
-      .ma-livestream-copy > span { display: block; max-width: 36ch; margin-top: 1.5rem; color: var(--ma-smoke); line-height: 1.7; }
+      .ma-livestream-copy > span { display: block; max-width: 36ch; margin-top: 1.5rem; color: var(--ma-smoke-ink); line-height: 1.7; }
       .ma-livestream ul { margin: 0; padding: 0; border-top: 1px solid var(--ma-champagne); list-style: none; }
       .ma-livestream li { border-bottom: 1px solid var(--ma-champagne); }
       .ma-livestream a { display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 2rem; color: var(--ma-pearl); text-decoration: none; overflow-wrap: anywhere; }
@@ -636,7 +642,7 @@ export function ThemeStyles() {
         letter-spacing: -.05em;
         line-height: .85;
       }
-      .ma-closing-copy p { max-width: 46ch; margin: 2rem 0 0; color: var(--ma-smoke); line-height: 1.75; white-space: pre-line; }
+      .ma-closing-copy p { max-width: 46ch; margin: 2rem 0 0; color: var(--ma-smoke-ink); line-height: 1.75; white-space: pre-line; }
       .ma-closing-image { width: min(100%, 34rem); justify-self: end; }
       .ma-closing-text-only > .ma-section-inner { grid-template-columns: minmax(0, 1fr); }
       .ma-image-fallback {
@@ -646,8 +652,8 @@ export function ThemeStyles() {
         place-items: center;
         align-content: center;
         gap: 1rem;
-        color: var(--ma-smoke);
-        border: 1px solid color-mix(in srgb, var(--ma-champagne) 50%, transparent);
+        color: var(--ma-smoke-ink);
+        border: 1px solid var(--ma-smoke);
         font-size: 0.75rem;
         letter-spacing: 0.16em;
         text-transform: uppercase;
@@ -838,7 +844,7 @@ export function ThemeStyles() {
       .ma-theme .ma-lightbox-caption { margin: 0; font-size: .85rem; overflow-wrap: anywhere; }
       .ma-theme .ma-lightbox-btn { min-width: 44px; min-height: 44px; padding: 0 1rem; border: 1px solid rgba(214, 190, 150, .45); background: transparent; color: var(--ma-pearl); cursor: pointer; }
       .ma-theme .ma-lightbox-btn:focus-visible { outline: 2px solid var(--ma-champagne); outline-offset: 3px; }
-      .ma-theme .ma-gift-copy-status { margin: .5rem 0 0; font-size: .8rem; color: var(--ma-smoke); }
+      .ma-theme .ma-gift-copy-status { margin: .5rem 0 0; font-size: .8rem; color: var(--ma-smoke-ink); }
       .ma-theme .ma-gift-copy-status:empty { margin: 0; }
   `}</style>
   );
