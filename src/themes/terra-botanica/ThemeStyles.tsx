@@ -43,9 +43,23 @@ export function ThemeStyles() {
       background: var(--tb-linen);
       transition: transform 800ms cubic-bezier(.65, 0, .25, 1), opacity 800ms ease, visibility 0s 800ms;
     }
+    /* The cover stays while the seed blooms (~1.2s), then lifts away. It stops
+       taking taps immediately so the revealed content is usable at once. */
     .tb-theme .tb-gate[data-opened="true"] .tb-cover {
       transform: translateY(-6%); opacity: 0; visibility: hidden; pointer-events: none;
+      transition: transform 600ms cubic-bezier(.65, 0, .25, 1) 1100ms, opacity 600ms ease 1100ms, visibility 0s 1700ms;
     }
+    .tb-theme .tb-bloom { display: block; width: clamp(64px, 16vw, 96px); height: auto; margin-bottom: 1.5rem; color: var(--tb-moss); }
+    .tb-theme .tb-bloom-stem { stroke-dasharray: 1; stroke-dashoffset: 1; }
+    .tb-theme :is(.tb-bloom-leaf, .tb-bloom-petal, .tb-bloom-core) { transform-box: fill-box; transform-origin: center; transform: scale(0); }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-stem { animation: tb-bloom-draw .7s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-leaf { animation: tb-bloom-pop .4s .45s cubic-bezier(.3, 1.4, .5, 1) forwards; }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-leaf--late { animation-delay: .6s; }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-petal { animation: tb-bloom-pop .45s cubic-bezier(.3, 1.4, .5, 1) forwards; }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-core { animation: tb-bloom-pop .3s 1.1s forwards; }
+    @keyframes tb-bloom-draw { to { stroke-dashoffset: 0; } }
+    @keyframes tb-bloom-pop { to { transform: scale(1); } }
+    .tb-theme .tb-specimen { margin-top: 1rem; font-size: .8125rem; color: var(--tb-moss); }
     .tb-theme .tb-cover-sheet { position: relative; min-height: 100svh; }
     .tb-theme .tb-cover-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
     .tb-theme .tb-botanical { display: block; pointer-events: none; }

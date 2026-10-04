@@ -178,3 +178,23 @@ test("couple names are ink signatures and chapter titles stay Spectral", () => {
     assert.ok(!title.classList.contains("tb-script"), `chapter "${title.textContent}" stays Spectral`);
   }
 });
+
+test("the cover carries a seed that blooms when the invitation opens", () => {
+  const { TerraBotanica } = createLoader()("index");
+  const html = renderToStaticMarkup(React.createElement(TerraBotanica, { invitation: invitation(), guest: null }));
+  const { document } = new JSDOM(html).window;
+  const bloom = document.querySelector("#tb-cover svg.tb-bloom");
+  assert.ok(bloom, "bloom sits on the cover");
+  assert.equal(bloom.getAttribute("aria-hidden"), "true");
+  assert.ok(bloom.querySelector(".tb-bloom-seed"));
+  assert.equal(bloom.querySelector(".tb-bloom-stem").getAttribute("pathLength"), "1");
+  assert.equal(bloom.querySelectorAll(".tb-bloom-leaf").length, 2);
+  assert.equal(bloom.querySelectorAll(".tb-bloom-petal").length, 3);
+  assert.ok(bloom.querySelector(".tb-bloom-core"));
+  assert.equal(document.querySelector("#tb-cover button").textContent.trim(), "Buka Undangan");
+  assert.match(document.querySelector("#tb-cover").textContent, /Rosa amoris/, "specimen accent");
+
+  const css = styles();
+  assert.match(css, /\[data-opened="true"\] \.tb-bloom-stem\s*\{[^}]*animation:/);
+  assert.match(css, /\[data-opened="true"\] \.tb-cover\s*\{[^}]*transition:[^}]*1100ms/, "cover waits for the bloom before fading");
+});
