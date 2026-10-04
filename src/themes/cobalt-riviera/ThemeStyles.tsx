@@ -1116,14 +1116,14 @@ export function ThemeStyles() {
       .cr-theme .cr-gallery-zoom { display: block; width: 100%; padding: 0; border: 0; background: none; color: inherit; text-align: inherit; cursor: zoom-in; }
       .cr-theme .cr-gallery-zoom:focus-visible { outline: 2px solid var(--cr-citron); outline-offset: 4px; }
       .cr-theme .cr-lightbox { width: 100vw; max-width: 100vw; height: 100svh; max-height: 100svh; margin: 0; padding: 0; border: 0; background: transparent; color: var(--cr-porcelain); }
-      .cr-theme .cr-lightbox::backdrop { background: rgba(12, 28, 46, .94); }
+      .cr-theme .cr-lightbox::backdrop { background: rgba(14, 35, 80, .94); }
       .cr-theme .cr-lightbox-body { display: flex; height: 100%; flex-direction: column; padding: max(1rem, env(safe-area-inset-top)) clamp(1rem, 5vw, 3rem) max(1rem, env(safe-area-inset-bottom)); pointer-events: none; }
       .cr-theme .cr-lightbox-frame { position: relative; flex: 1; min-height: 0; }
       .cr-theme .cr-lightbox-frame > * { position: absolute; inset: 0; background: transparent; }
       .cr-theme .cr-lightbox-frame img { object-fit: contain; }
       .cr-theme .cr-lightbox-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding-top: 1rem; pointer-events: auto; }
       .cr-theme .cr-lightbox-caption { margin: 0; font-size: .85rem; overflow-wrap: anywhere; }
-      .cr-theme .cr-lightbox-btn { min-width: 44px; min-height: 44px; padding: 0 1rem; border: 1px solid rgba(255, 249, 238, .45); background: transparent; color: var(--cr-porcelain); cursor: pointer; }
+      .cr-theme .cr-lightbox-btn { min-width: 44px; min-height: 44px; padding: 0 1rem; border: 1px solid rgba(247, 244, 236, .45); background: transparent; color: var(--cr-porcelain); cursor: pointer; }
       .cr-theme .cr-lightbox-btn:focus-visible { outline: 2px solid var(--cr-citron); outline-offset: 3px; }
       .cr-theme .cr-gift-copy-status { margin: .5rem 0 0; font-size: .8rem; color: currentColor; }
       .cr-theme .cr-gift-copy-status:empty { margin: 0; }
