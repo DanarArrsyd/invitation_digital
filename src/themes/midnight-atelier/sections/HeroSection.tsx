@@ -14,22 +14,21 @@ export function HeroSection({ displayName, imageUrl, message }: {
       tone="lacquer"
       className={`ma-hero${imageUrl ? "" : " ma-hero-text-only"}`}
     >
-      {imageUrl ? (
-        <AtelierImage
-          src={imageUrl}
-          alt={`Potret ${displayName}`}
-          sizes="(min-width: 1440px) 1320px, 100vw"
-          aspectRatio="16 / 10"
-          eager
-          className="ma-hero-image"
-        />
-      ) : (
-        <AtelierMark className="ma-hero-mark" />
-      )}
+      {imageUrl ? null : <AtelierMark className="ma-hero-mark" />}
       <div className="ma-hero-copy">
         <h2 id="ma-hero-heading">{displayName}</h2>
         {message?.trim() ? <p>{message}</p> : null}
       </div>
+      {imageUrl ? (
+        <AtelierImage
+          src={imageUrl}
+          alt={`Potret ${displayName}`}
+          sizes="(min-width: 768px) 45vw, 100vw"
+          aspectRatio="3 / 4"
+          eager
+          className="ma-hero-image"
+        />
+      ) : null}
     </Section>
   );
 }

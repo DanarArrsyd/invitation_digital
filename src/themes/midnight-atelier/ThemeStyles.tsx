@@ -170,7 +170,8 @@ export function ThemeStyles() {
       .ma-media { position: relative; overflow: hidden; background: var(--ma-lacquer); }
       .ma-media img { object-fit: cover; }
       .ma-hero > .ma-section-inner { display: grid; width: 100%; max-width: none; padding: 0; align-content: start; }
-      .ma-hero-image { width: 100%; aspect-ratio: 16 / 10; min-height: 18rem; align-self: start; }
+      /* DESIGN.md 9: title block first, then the 3:4 portrait. */
+      .ma-hero-image { width: 100%; aspect-ratio: 3 / 4; align-self: start; }
       .ma-hero-copy {
         position: relative;
         z-index: 1;
@@ -716,7 +717,7 @@ export function ThemeStyles() {
         .ma-cover-masthead span:last-child { display: none; }
         .ma-cover-names { font-size: clamp(3.5rem, 20vw, 6.25rem); }
         .ma-content { padding-bottom: calc(var(--ma-nav-height) + var(--ma-nav-offset)); }
-        .ma-hero-copy { min-height: calc(100svh - 62.5vw); margin-top: -1px; align-content: center; }
+        .ma-hero-text-only .ma-hero-copy { min-height: calc(100svh - 62.5vw); margin-top: -1px; align-content: center; }
       }
       @media (min-width: 768px) {
         .ma-cover-frame {
@@ -728,6 +729,20 @@ export function ThemeStyles() {
         .ma-cover-stage { align-self: center; text-align: left; }
         .ma-cover-names { align-items: flex-start; }
         .ma-cover-recipient { align-self: end; margin-bottom: 1rem; }
+        .ma-hero:not(.ma-hero-text-only) > .ma-section-inner {
+          grid-template-columns: repeat(12, minmax(0, 1fr));
+          align-content: center;
+          align-items: center;
+          padding: clamp(3rem, 6vw, 6rem) clamp(8rem, 13vw, 12rem) clamp(3rem, 6vw, 6rem) 0;
+        }
+        .ma-hero:not(.ma-hero-text-only) .ma-hero-copy {
+          grid-column: 1 / 8;
+          grid-row: 1;
+          margin-left: clamp(1.25rem, 5vw, 6rem);
+          padding: clamp(2.5rem, 5vw, 5.5rem);
+        }
+        .ma-hero:not(.ma-hero-text-only) .ma-hero-copy h2 { font-size: clamp(3.6rem, 7vw, 8.5rem); }
+        .ma-hero-image { grid-column: 7 / -1; grid-row: 1; }
         .ma-nav {
           top: 50%;
           right: max(1rem, env(safe-area-inset-right));
@@ -783,12 +798,9 @@ export function ThemeStyles() {
         .ma-closing > .ma-section-inner { grid-template-columns: minmax(0, 1.1fr) minmax(18rem, .9fr); }
       }
       @media (min-width: 1100px) {
-        .ma-hero > .ma-section-inner { grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: end; }
-        .ma-hero-image { grid-column: 1 / 10; grid-row: 1; min-height: 42rem; }
-        .ma-hero-copy { grid-column: 8 / -1; grid-row: 1; margin-bottom: clamp(3rem, 7vw, 7rem); padding: clamp(3rem, 5vw, 5.5rem); }
         .ma-hero-text-only > .ma-section-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(24rem, .65fr); align-items: end; }
         .ma-hero-text-only .ma-hero-mark { align-self: start; }
-        .ma-hero-text-only .ma-hero-copy { grid-column: 2; }
+        .ma-hero-text-only .ma-hero-copy { grid-column: 2; grid-row: 1; margin-bottom: clamp(3rem, 7vw, 7rem); }
         .ma-gallery-columns { columns: 3; }
       }
       .ma-gate[data-reduced-motion="true"] .ma-cover,
