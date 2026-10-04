@@ -8,6 +8,7 @@ import {
 import { usableExternalUrl } from "@/themes/shared/external-url";
 
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 function eventDate(value: string): string | null {
   if (!validEventDate(value)) return null;
@@ -33,10 +34,10 @@ export function EventsSection({
 
   return (
     <Section id="ma-acara" labelledBy="ma-events-heading" tone="ink" className="ma-events">
-      <header className="ma-chapter-heading ma-chapter-heading-dark">
+      <Spotlight className="ma-chapter-heading ma-chapter-heading-dark">
         <p>Evening programme</p>
         <h2 id="ma-events-heading">Rangkaian acara</h2>
-      </header>
+      </Spotlight>
 
       <ol className="ma-event-list">
         {events.map((event, index) => {

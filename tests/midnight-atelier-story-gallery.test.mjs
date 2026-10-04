@@ -215,5 +215,5 @@ test("story and contact-sheet CSS protects long content, crop intent, and target
   assert.match(css, /\.ma-gallery-columns[^}]*columns:\s*3/s);
   assert.match(css, /@media\s*\(max-width:\s*767px\)/);
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
-  assert.doesNotMatch(css, /linear-gradient|radial-gradient/);
+  assert.doesNotMatch(css, /linear-gradient|conic-gradient/); // radial light is confined by midnight-atelier-identity
 });

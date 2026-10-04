@@ -5,6 +5,7 @@ import { useWishForm, useWishPagination } from "@/themes/shared/use-public-forms
 import type { Wish } from "@/types/invitation";
 
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 const PAGE_SIZE = 5;
 
@@ -25,11 +26,11 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
   return (
     <Section id="ma-ucapan" labelledBy="ma-wishes-heading" tone="pearl" className="ma-wishes">
       <div className="ma-wishes-compose">
-        <header className="ma-interaction-heading">
+        <Spotlight className="ma-interaction-heading">
           <p>Guest book</p>
           <h2 id="ma-wishes-heading">Doa & ucapan</h2>
           <span>Tinggalkan sepatah kata untuk hari yang kami kenang bersama.</span>
-        </header>
+        </Spotlight>
         {state.status === "success" ? (
           <p className="ma-form-success ma-form-success-dark" role="status">Terima kasih atas ucapan dan doanya.</p>
         ) : (

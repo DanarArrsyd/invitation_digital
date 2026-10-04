@@ -6,6 +6,7 @@ import type { CalendarEventInput } from "@/themes/shared/calendar";
 
 import { AddToCalendar } from "../components/AddToCalendar";
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 function CountdownClock({ target }: { target: number }) {
   const [remaining, setRemaining] = useState(() => Math.max(0, target - Date.now()));
@@ -59,10 +60,10 @@ export function CountdownSection({
       tone="oxblood"
       className={`ma-countdown${hasTarget ? "" : " ma-countdown-calendar-only"}`}
     >
-      <div className="ma-countdown-intro">
+      <Spotlight className="ma-countdown-intro">
         <p>{hasTarget ? "The night awaits" : "Save the evening"}</p>
         <h2 id="ma-countdown-heading">{hasTarget ? "Menuju malam itu" : "Simpan tanggalnya"}</h2>
-      </div>
+      </Spotlight>
       <div className="ma-countdown-body">
         {hasTarget ? <CountdownClock target={target} /> : null}
         {calendarEvent ? <AddToCalendar event={calendarEvent} uid={calendarUid} /> : null}

@@ -1,16 +1,17 @@
 import type { DressCodeSettings } from "@/lib/utils/dressCode";
 
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 export function DressCodeSection({ dressCode }: { dressCode: DressCodeSettings | null }) {
   if (!dressCode) return null;
 
   return (
     <Section id="ma-dress-code" labelledBy="ma-dress-code-heading" tone="pearl" className="ma-dress-code">
-      <header className="ma-chapter-heading">
+      <Spotlight className="ma-chapter-heading">
         <p>Wardrobe note</p>
         <h2 id="ma-dress-code-heading">Dress code</h2>
-      </header>
+      </Spotlight>
       {dressCode.description ? <p className="ma-dress-description">{dressCode.description}</p> : null}
       {dressCode.groups.length > 0 ? (
         <div className="ma-dress-groups">

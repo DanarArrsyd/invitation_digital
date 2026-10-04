@@ -713,6 +713,15 @@ export function ThemeStyles() {
         cursor: pointer;
       }
       .ma-music svg { width: 1.1rem; fill: currentColor; }
+      /* Stage spotlight: chapter headings rest dim, then a warm light comes up
+         once they reach the upper stage. Only opacity animates. */
+      .ma-spotlight { position: relative; isolation: isolate; }
+      .ma-spotlight::before { content: ""; position: absolute; z-index: -1; inset: -2.5rem 0 -1rem; background: radial-gradient(ellipse 70% 80% at 25% 35%, var(--ma-light), transparent 70%); pointer-events: none; }
+      .ma-spotlight[data-spot="waiting"]::before { opacity: 0; }
+      .ma-spotlight[data-spot="waiting"] h2 { opacity: var(--ma-dim); }
+      .ma-spotlight[data-spot="lit"]::before { animation: ma-spot-on 1.1s ease-out both; }
+      .ma-spotlight[data-spot="lit"] h2 { transition: opacity .9s ease; }
+      @keyframes ma-spot-on { from { opacity: 0; } }
       @media (max-width: 767px) {
         .ma-cover-frame { grid-template-rows: auto 1fr auto; gap: 2rem; }
         .ma-cover-masthead span:last-child { display: none; }
@@ -812,6 +821,7 @@ export function ThemeStyles() {
           scroll-behavior: auto !important;
           transition: none !important;
         }
+        .ma-spotlight[data-spot] h2, .ma-spotlight[data-spot]::before { opacity: 1 !important; }
       }
   
       /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */

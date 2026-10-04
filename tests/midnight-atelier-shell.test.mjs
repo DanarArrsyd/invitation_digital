@@ -315,5 +315,5 @@ test("shell CSS defines distinct mobile and desktop navigation with a reduced-mo
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
   assert.match(css, /safe-area-inset-bottom/);
   assert.match(css, /data-reduced-motion="true"/);
-  assert.doesNotMatch(css, /linear-gradient|radial-gradient/);
+  assert.doesNotMatch(css, /linear-gradient|conic-gradient/); // radial light is confined by midnight-atelier-identity
 });

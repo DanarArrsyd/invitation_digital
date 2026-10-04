@@ -259,5 +259,5 @@ test("empty events omit programme-dependent sections and CSS protects compact vi
   assert.match(css, /\.ma-event[^}]*overflow-wrap:\s*anywhere/s);
   assert.match(css, /\.ma-event-actions[^}]*min-height:\s*48px/s);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.doesNotMatch(css, /linear-gradient|radial-gradient/);
+  assert.doesNotMatch(css, /linear-gradient|conic-gradient/); // radial light is confined by midnight-atelier-identity
 });

@@ -6,6 +6,7 @@ import { GALLERY_ASPECT_RATIO_CSS, type GalleryItem } from "@/types/invitation";
 
 import { AtelierImage } from "../components/AtelierImage";
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[]; displayName: string }) {
   const lightbox = useGalleryLightbox(gallery.length);
@@ -44,10 +45,10 @@ export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[
 
   return (
     <Section id="ma-galeri" labelledBy="ma-gallery-heading" tone="lacquer" className="ma-gallery">
-      <header className="ma-chapter-heading ma-chapter-heading-dark">
+      <Spotlight className="ma-chapter-heading ma-chapter-heading-dark">
         <p>{`${String(gallery.length).padStart(2, "0")} frames / contact sheet`}</p>
         <h2 id="ma-gallery-heading">Dalam bingkai</h2>
-      </header>
+      </Spotlight>
 
       <div className="ma-gallery-grid">
         {frame(gallery[0], 0, true)}

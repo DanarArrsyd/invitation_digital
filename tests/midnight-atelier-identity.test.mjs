@@ -324,3 +324,180 @@ test("the toast shrinks on short phones so the open button stays above the fold"
   const css = readFileSync(new URL("../src/themes/midnight-atelier/ThemeStyles.tsx", import.meta.url), "utf8");
   assert.match(css, /@media \(max-height: 700px\) \{ \.ma-toast \{ width: clamp\(84px, 24vw, 120px\); margin-top: 1rem; \} \}/);
 });
+
+test("chapter headings rest dim and a stage spotlight lights them once in view", async () => {
+  const load = createLoader();
+  const { MidnightAtelier } = load("index");
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(MidnightAtelier, { invitation: invitation(), guest: null }))).window;
+  const headings = [...document.querySelectorAll("#ma-content section h2")].filter((heading) => !heading.classList.contains("ma-script"));
+  assert.ok(headings.length >= 6, `${headings.length} chapter headings`);
+  for (const heading of headings) {
+    const spot = heading.closest(".ma-spotlight");
+    assert.ok(spot, `"${heading.textContent}" stands in a spotlight`);
+    assert.equal(spot.hasAttribute("data-spot"), false, "server markup is lit and unarmed");
+  }
+
+  const { EventsSection } = load("sections/EventsSection");
+  const props = { events: invitation().events, mapsEnabled: false, timeZone: "Asia/Jakarta" };
+  FakeIntersectionObserver.instances = [];
+  const view = await mount(React.createElement(EventsSection, props), { intersectionObserver: FakeIntersectionObserver });
+  try {
+    const spot = view.document.querySelector("#ma-acara .ma-spotlight");
+    assert.equal(spot.hasAttribute("data-spot"), false, "nothing dims before the observer reports");
+    assert.equal(FakeIntersectionObserver.instances[0].options.rootMargin, "0px 0px -40% 0px");
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger(false)));
+    assert.equal(spot.dataset.spot, "waiting");
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger(true)));
+    assert.equal(spot.dataset.spot, "lit");
+    assert.equal(spot.querySelector("h2").textContent, "Rangkaian acara");
+  } finally { await view.cleanup(); }
+
+  const sheet = css();
+  assert.match(sheet, /\.ma-spotlight\[data-spot="waiting"\] h2\s*\{[^}]*opacity:\s*var\(--ma-dim\)/);
+  assert.match(sheet, /\.ma-spotlight::before\s*\{[^}]*radial-gradient\([^)]*var\(--ma-light\)/);
+  assert.match(sheet, /prefers-reduced-motion: reduce\)[\s\S]*\.ma-spotlight\[data-spot\] h2[^{]*\{\s*opacity:\s*1 !important/);
+});
+
+test("radial light appears only in the spotlight and picture lights, never as a page gradient", () => {
+  const sheet = css();
+  assert.doesNotMatch(sheet, /linear-gradient|conic-gradient/);
+  const owners = [...sheet.matchAll(/([^{}]+)\{[^{}]*radial-gradient\(/g)].map(([, selector]) => selector.trim());
+  assert.ok(owners.length >= 1);
+  for (const selector of owners) assert.match(selector, /^\.ma-(spotlight|gallery-item)::(before|after)$/, selector);
+});
+
+/** Every section that carries a spotlight heading, switched on. */
+function everySpotlight() {
+  const base = invitation();
+  return invitation({
+    theme: { slug: "midnight-atelier", settings: { dressCode: { description: "Hitam formal.", groups: [] } } },
+    events: base.events.map((event) => ({ ...event, livestreamUrl: "https://live.test/resepsi" })),
+    gifts: [{ id: "gift", providerType: "bank", providerName: "Bank", accountNumber: "123", accountName: "Nadia", logoUrl: null, sortOrder: 0 }],
+    features: { ...base.features, dressCode: true, livestream: true, gift: true },
+  });
+}
+
+/** Selector → declaration bodies, with comma lists split (later rules win). */
+function ruleMap(sheet) {
+  const map = new Map();
+  for (const [, selectors, body] of sheet.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    for (const selector of selectors.split(",").map((s) => s.trim().replace(/\s+/g, " "))) {
+      map.set(selector, [...(map.get(selector) ?? []), body]);
+    }
+  }
+  return map;
+}
+
+/**
+ * The `--ma-*` token colouring `element` inside `spot`: the most specific
+ * section/heading rule that sets a colour, else the surface's own text colour.
+ */
+function resolveColour(map, spot, element) {
+  const tag = element.tagName.toLowerCase();
+  const section = spot.closest("section");
+  const own = [...section.classList].filter((name) => /^ma-/.test(name) && !/^ma-(section|surface-)/.test(name));
+  const heads = [...spot.classList].filter((name) => name !== "ma-spotlight").reverse();
+  const candidates = [
+    ...own.flatMap((s) => heads.flatMap((h) => [`.${s} .${h} > ${tag}`, `.${s} .${h} ${tag}`])),
+    ...heads.flatMap((h) => [`.${h} > ${tag}`, `.${h} ${tag}`]),
+  ];
+  for (const selector of candidates) {
+    const colour = (map.get(selector) ?? []).map((body) => body.match(/(?:^|[;\s])color:\s*var\(--ma-([\w-]+)\)/)?.[1]).filter(Boolean).at(-1);
+    if (colour) return { colour, from: selector };
+  }
+  const surface = section.className.match(/ma-surface-(\w+)/)[1];
+  const colour = (map.get(`.ma-surface-${surface}`) ?? []).map((body) => body.match(/(?:^|[;\s])color:\s*var\(--ma-([\w-]+)\)/)?.[1]).filter(Boolean).at(-1);
+  return { colour, from: `.ma-surface-${surface}` };
+}
+
+const tokenKey = (name) => name.replace(/-(\w)/g, (_, letter) => letter.toUpperCase());
+
+test("every line of small text inside a spotlight stays AA over the wash on its own surface", () => {
+  const c = tokens();
+  const sheet = css();
+  const map = ruleMap(sheet);
+  const light = rgba(sheet, "--ma-light");
+  const { MidnightAtelier } = createLoader()("index");
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(MidnightAtelier, { invitation: everySpotlight(), guest: null }))).window;
+  const spots = [...document.querySelectorAll("#ma-content .ma-spotlight")];
+  assert.equal(spots.length, 10, "couple, events, countdown, dress code, story, gallery, livestream, RSVP, wishes, gift");
+  const surfaces = new Set();
+  const seen = [];
+  for (const spot of spots) {
+    const surface = spot.closest("section").className.match(/ma-surface-(\w+)/)[1];
+    surfaces.add(surface);
+    // The wash spills 2.5rem above the heading; nothing may sit there.
+    assert.equal(spot.previousElementSibling, null, `${spot.closest("section").id}: the heading opens its column`);
+    const lit = mix(light.hex, c[surface], light.alpha);
+    for (const element of spot.querySelectorAll("*")) {
+      if (element.tagName === "H2" || !element.textContent.trim()) continue;
+      const { colour, from } = resolveColour(map, spot, element);
+      const fg = c[tokenKey(colour)];
+      assert.ok(fg, `${from} resolves to a palette colour (${colour})`);
+      const ratio = contrast(fg, lit);
+      seen.push(`${surface}/${colour}=${ratio.toFixed(2)}`);
+      assert.ok(ratio >= 4.5, `${spot.closest("section").id} ${element.tagName.toLowerCase()} (${colour} via ${from}) on lit ${surface} is ${ratio.toFixed(2)}`);
+      if (surface === "oxblood") assert.ok(["champagne", "pearl"].includes(colour), `small text on lit oxblood is champagne or mutiara, not ${colour}`);
+    }
+  }
+  assert.deepEqual([...surfaces].sort(), ["ink", "lacquer", "oxblood", "pearl"]);
+  assert.ok(seen.length >= 13, seen.join(" "));
+  // Asap ink on lit oxblood would be ≈3.7:1 — the reason oxblood intros stay champagne.
+  assert.ok(contrast(c.smokeInk, mix(light.hex, c.oxblood, light.alpha)) < 4.5);
+});
+
+test("a resting heading keeps at least 3:1 on every surface, oxblood on mutiara included", () => {
+  const c = tokens();
+  const sheet = css();
+  const map = ruleMap(sheet);
+  const dim = Number(sheet.match(/--ma-dim:\s*([\d.]+)/)?.[1]);
+  const { MidnightAtelier } = createLoader()("index");
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(MidnightAtelier, { invitation: everySpotlight(), guest: null }))).window;
+  const spots = [...document.querySelectorAll("#ma-content .ma-spotlight")];
+  assert.equal(spots.length, 10);
+  for (const spot of spots) {
+    const surface = spot.closest("section").className.match(/ma-surface-(\w+)/)[1];
+    const { colour, from } = resolveColour(map, spot, spot.querySelector("h2"));
+    const fg = c[tokenKey(colour)];
+    const ratio = contrast(mix(fg, c[surface], dim), c[surface]);
+    assert.ok(ratio >= 3, `${spot.closest("section").id} dim ${colour} (${from}) on ${surface} is ${ratio.toFixed(2)}`);
+  }
+  // Explicitly: should a mutiara heading ever turn oxblood, it still clears 3:1 (≈3.19).
+  assert.ok(contrast(mix(c.oxblood, c.pearl, dim), c.pearl) >= 3);
+});
+
+test("spotlights agree on server and client, light at once when already on stage, and never stay dim without an observer", async () => {
+  const markup = (reducedMotion) => {
+    const { MidnightAtelier } = createLoader({ reducedMotion })("index");
+    const { document } = new JSDOM(renderToStaticMarkup(React.createElement(MidnightAtelier, { invitation: everySpotlight(), guest: null }))).window;
+    return [...document.querySelectorAll(".ma-spotlight")].map((spot) => spot.outerHTML);
+  };
+  assert.deepEqual(markup(true), markup(false), "no reduced-motion branching in the markup");
+
+  const { EventsSection } = createLoader()("sections/EventsSection");
+  const props = { events: invitation().events, mapsEnabled: false, timeZone: "Asia/Jakarta" };
+
+  FakeIntersectionObserver.instances = [];
+  const onStage = await mount(React.createElement(EventsSection, props), { intersectionObserver: FakeIntersectionObserver });
+  try {
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger(true)));
+    assert.equal(onStage.document.querySelector(".ma-spotlight").hasAttribute("data-spot"), false, "a heading already lit is left alone: no dim, no wash restart");
+  } finally { await onStage.cleanup(); }
+
+  const noObserver = await mount(React.createElement(EventsSection, props));
+  try {
+    assert.equal(noObserver.document.querySelector(".ma-spotlight").hasAttribute("data-spot"), false);
+  } finally { await noObserver.cleanup(); }
+
+  const sheet = css();
+  const keyframes = sheet.match(/@keyframes ma-spot-on\s*\{([\s\S]*?)\}\s*\}/)?.[1] ?? sheet.match(/@keyframes ma-spot-on\s*\{([^}]*\})/)?.[1];
+  assert.ok(keyframes, "spotlight keyframes");
+  for (const [, property] of keyframes.matchAll(/([\w-]+)\s*:/g)) assert.equal(property, "opacity");
+  for (const [selector, bodies] of ruleMap(sheet)) {
+    if (!selector.includes(".ma-spotlight")) continue;
+    for (const body of bodies) {
+      const transition = body.match(/transition:\s*([^;]+)/)?.[1];
+      if (transition) for (const part of transition.split(",")) assert.match(part.trim(), /^(opacity|transform|--[\w-]+|none)\b/, `${selector}: ${part}`);
+    }
+  }
+});

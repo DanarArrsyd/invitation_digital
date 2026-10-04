@@ -4,6 +4,7 @@ import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { useRsvpForm } from "@/themes/shared/use-public-forms";
 
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
   invitationId: string;
@@ -15,11 +16,11 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
 
   return (
     <Section id="ma-rsvp" labelledBy="ma-rsvp-heading" tone="lacquer" className="ma-rsvp">
-      <header className="ma-interaction-heading">
+      <Spotlight className="ma-interaction-heading">
         <p>Private confirmation</p>
         <h2 id="ma-rsvp-heading">Sampai jumpa malam itu</h2>
         <span>Mohon konfirmasi kehadiran Anda agar kami dapat menyambut dengan sebaik-baiknya.</span>
-      </header>
+      </Spotlight>
       <div className="ma-interaction-panel">
         {state.status === "success" ? (
           <div className="ma-form-success" role="status">

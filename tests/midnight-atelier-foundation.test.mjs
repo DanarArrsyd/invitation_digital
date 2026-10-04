@@ -172,7 +172,7 @@ test("Midnight base styles encode the approved palette, focus, motion, and mobil
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /animation:\s*none\s*!important/);
   assert.match(css, /transition:\s*none\s*!important/);
-  assert.doesNotMatch(css, /linear-gradient|radial-gradient/);
+  assert.doesNotMatch(css, /linear-gradient|conic-gradient/); // radial light is confined by midnight-atelier-identity
 });
 
 test("Midnight source stays presentation-only and uses bundled font families", () => {

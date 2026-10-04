@@ -3,6 +3,7 @@ import type { InvitationStory } from "@/types/invitation";
 
 import { AtelierImage } from "../components/AtelierImage";
 import { Section } from "../components/Section";
+import { Spotlight } from "../components/Spotlight";
 
 function storyDateLabel(value: string | null): string | null {
   if (!value || !validEventDate(value)) return null;
@@ -19,10 +20,10 @@ export function StorySection({ stories }: { stories: InvitationStory[] }) {
 
   return (
     <Section id="ma-cerita" labelledBy="ma-story-heading" tone="pearl" className="ma-story">
-      <header className="ma-chapter-heading">
+      <Spotlight className="ma-chapter-heading">
         <p>{`${String(stories.length).padStart(2, "0")} acts in chronology`}</p>
         <h2 id="ma-story-heading">Cerita kami</h2>
-      </header>
+      </Spotlight>
 
       <ol className="ma-story-list">
         {stories.map((story, index) => {
