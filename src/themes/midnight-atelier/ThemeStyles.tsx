@@ -746,6 +746,16 @@ export function ThemeStyles() {
       .ma-bubble { position: absolute; bottom: 0; border: 1px solid var(--ma-champagne); border-radius: 50%; background: rgba(216, 192, 138, .25); opacity: 0; animation: ma-bubble-rise 1.6s ease-out forwards; }
       @keyframes ma-ghost-rise { from { opacity: .9; transform: translateY(0); } to { opacity: 0; transform: translateY(-3.5rem); } }
       @keyframes ma-bubble-rise { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: .9; } 100% { opacity: 0; transform: translateY(var(--ma-rise)); } }
+      /* Picture lights: thin gold frames on the dark wall, a brass lamp above
+         each, lit one by one as the gallery enters view. Only opacity animates. */
+      .ma-gallery-item { position: relative; padding-top: 16px; }
+      .ma-gallery-item::before { content: ""; position: absolute; z-index: 2; top: 0; left: 50%; width: 64px; height: 7px; margin-left: -32px; background: var(--ma-champagne); clip-path: polygon(0 0, 100% 0, 86% 100%, 14% 100%); pointer-events: none; }
+      .ma-gallery-item::after { content: ""; position: absolute; z-index: 1; top: 16px; right: 0; left: 0; height: 55%; background: radial-gradient(ellipse 55% 75% at 50% 0%, var(--ma-light-strong), transparent 72%); pointer-events: none; }
+      .ma-theme .ma-gallery-grid .ma-gallery-zoom { padding: 6px; border: 1px solid var(--ma-champagne); }
+      .ma-gallery-grid[data-lights="waiting"] .ma-gallery-zoom { opacity: .35; }
+      .ma-gallery-grid[data-lights="waiting"] .ma-gallery-item::after { opacity: 0; }
+      .ma-gallery-grid[data-lights="lit"] .ma-gallery-zoom { transition: opacity .8s ease var(--ma-light-delay, 0s); }
+      .ma-gallery-grid[data-lights="lit"] .ma-gallery-item::after { transition: opacity .6s ease var(--ma-light-delay, 0s); }
       @media (max-width: 767px) {
         .ma-cover-frame { grid-template-rows: auto 1fr auto; gap: 2rem; }
         .ma-cover-masthead span:last-child { display: none; }
@@ -846,6 +856,7 @@ export function ThemeStyles() {
           transition: none !important;
         }
         .ma-spotlight[data-spot] h2, .ma-spotlight[data-spot]::before { opacity: 1 !important; }
+        .ma-gallery-grid[data-lights] .ma-gallery-zoom, .ma-gallery-grid[data-lights] .ma-gallery-item::after { opacity: 1 !important; }
       }
   
       /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */

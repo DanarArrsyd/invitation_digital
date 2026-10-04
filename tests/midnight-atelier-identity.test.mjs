@@ -685,3 +685,68 @@ test("wish bubbles are decorative, leave once risen, never replay, add no wish c
   const source = readFileSync(resolve(midnightRoot, "components/WishBubbles.tsx"), "utf8");
   assert.doesNotMatch(source, /<img|querySelector|Math\.random\(/);
 });
+
+test("framed photos on the dark wall are lit one by one by picture lights, lightbox intact", async () => {
+  const { GallerySection } = createLoader()("sections/GallerySection");
+  const props = { gallery: invitation().gallery, displayName: "Nadia & Arka" };
+
+  const plain = await mount(React.createElement(GallerySection, props));
+  try {
+    assert.equal(plain.document.querySelector(".ma-gallery-grid").hasAttribute("data-lights"), false, "no observer: photos simply show");
+  } finally { await plain.cleanup(); }
+
+  FakeIntersectionObserver.instances = [];
+  const view = await mount(React.createElement(GallerySection, props), { intersectionObserver: FakeIntersectionObserver });
+  try {
+    const grid = view.document.querySelector(".ma-gallery-grid");
+    assert.equal(grid.hasAttribute("data-lights"), false, "nothing dims before the observer reports");
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger(false)));
+    assert.equal(grid.dataset.lights, "waiting");
+    const delays = [...grid.querySelectorAll(".ma-gallery-item")].map((item) => item.style.getPropertyValue("--ma-light-delay"));
+    assert.deepEqual(delays, ["0.00s", "0.18s", "0.36s"], "lit one by one, in order");
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger(true)));
+    assert.equal(grid.dataset.lights, "lit");
+    assert.ok(grid.querySelector("button[aria-label^='Perbesar foto 1 dari 3']"), "lightbox trigger intact");
+  } finally { await view.cleanup(); }
+
+  const sheet = css();
+  assert.match(sheet, /\.ma-gallery-item::after\s*\{[^}]*radial-gradient\([^)]*var\(--ma-light-strong\)/);
+  assert.match(sheet, /\.ma-gallery-item::before\s*\{[^}]*background:\s*var\(--ma-champagne\)/, "a brass picture lamp above each frame");
+  assert.match(rules(sheet, '.ma-gallery-grid[data-lights="waiting"] .ma-gallery-zoom').join(";"), /opacity:/);
+  assert.match(sheet, /prefers-reduced-motion: reduce\)[\s\S]*\.ma-gallery-grid\[data-lights\] \.ma-gallery-zoom[^{]*\{\s*opacity:\s*1 !important/);
+});
+
+test("a gallery already on screen is simply lit, markup agrees on server and client, and only opacity animates", async () => {
+  const { GallerySection } = createLoader()("sections/GallerySection");
+  const gallery = Array.from({ length: 12 }, (_, index) => ({
+    id: `p${index}`, imageUrl: `/p${index}.jpg`, caption: index === 0 ? "Malam pertama" : null, altText: null,
+    aspectRatio: index % 2 ? "landscape_16_9" : "portrait_4_5", sortOrder: index,
+  }));
+  const props = { gallery, displayName: "Nadia & Arka" };
+
+  const markup = (reducedMotion) => renderToStaticMarkup(React.createElement(createLoader({ reducedMotion })("sections/GallerySection").GallerySection, props));
+  assert.equal(markup(true), markup(false), "no reduced-motion branching in the markup");
+  assert.doesNotMatch(markup(false), /data-lights/, "server markup never dims a frame");
+
+  FakeIntersectionObserver.instances = [];
+  const onScreen = await mount(React.createElement(GallerySection, props), { intersectionObserver: FakeIntersectionObserver });
+  try {
+    const grid = onScreen.document.querySelector(".ma-gallery-grid");
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger(true)));
+    assert.equal(grid.hasAttribute("data-lights"), false, "already on screen: no dark-then-lit flash");
+    const items = [...grid.querySelectorAll(".ma-gallery-item")];
+    assert.equal(items.length, 12, "every photo keeps its frame");
+    assert.equal(grid.querySelectorAll("button.ma-gallery-zoom").length, 12, "every photo still opens the lightbox");
+    assert.equal(items.at(-1).style.getPropertyValue("--ma-light-delay"), "1.44s", "the lamp delay is capped at eight steps");
+  } finally { await onScreen.cleanup(); }
+
+  const sheet = css();
+  for (const [selector, bodies] of ruleMap(sheet)) {
+    if (!selector.includes(".ma-gallery")) continue;
+    for (const body of bodies) {
+      const transition = body.match(/transition:\s*([^;]+)/)?.[1];
+      if (transition) for (const part of transition.split(/,(?![^(]*\))/)) assert.match(part.trim(), /^(opacity|transform|--[\w-]+|none)\b/, `${selector}: ${part}`);
+      assert.doesNotMatch(body, /animation:/, `${selector} adds no keyframe animation`);
+    }
+  }
+});
