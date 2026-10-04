@@ -99,16 +99,16 @@ symbolism, warm ivory paper.
 - **Motifs/elements**: kawung (faint watermark + divider centre), gunungan
   (opener and section markers), single gold rule; thin double-line frame in the
   style of a keraton manuscript for couple photos and event cards, sharp
-  corners. Small Javanese greetings as accents ("Sugeng rawuh",
-  "Matur nuwun").
+  corners. Small Javanese greetings as accents ("Sugeng rawuh"). Thanks are
+  written "Terima kasih" (owner decision, Oct 2026: no "Matur nuwun").
 - **Opener — Gunungan terbelah**: the cover is a two-leaf ivory gate carrying
   a gold-line gunungan split down its centre; on tap the cover text fades and
   the two leaves slide apart left/right (≈1s) like a dalang opening the play,
   revealing the hero.
 - **Signature interactions**:
   1. *Hujan melati* (RSVP): after a successful "Hadir" RSVP, ~12 jasmine
-     blossoms (SVG) drift down, then "Matur nuwun" appears. Not shown for
-     "Tidak Hadir".
+     blossoms (SVG) drift down, then "Terima kasih" appears. Not shown for
+     "Tidak Hadir", judged by the attendance that was submitted.
   2. *Garis canting* (all section headings): when a heading enters view, its
      gold rule and kawung centre are drawn like a canting stroke
      (`stroke-dashoffset`), replacing the generic fade.

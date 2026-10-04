@@ -281,6 +281,23 @@ test("shared RSVP behavior reaches the real Ivory form and retains its entered n
   } finally { await view.cleanup(); }
 });
 
+test("Ivory melati follows the attendance that was submitted, not a choice changed while sending", async () => {
+  for (const [submitted, changedTo, showsMelati] of [["attending", "not_attending", true], ["not_attending", "attending", false]]) {
+    let resolve;
+    const view = await mountIvorySection("RsvpSection", { invitationId: "inv-ivory", slug: "ivory", guestToken: "t", guestName: "Bude Sri" }, {
+      submitRsvp: () => new Promise((done) => { resolve = done; }),
+    });
+    try {
+      const form = view.document.querySelector("#ni-rsvp form");
+      await act(async () => form.querySelector(`input[type="radio"][value="${submitted}"]`).click());
+      await act(async () => { form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })); });
+      await act(async () => form.querySelector(`input[type="radio"][value="${changedTo}"]`).click());
+      await act(async () => { resolve({ status: "success" }); });
+      assert.equal(Boolean(view.document.querySelector("[data-ni-melati]")), showsMelati, `submitted ${submitted}, then picked ${changedTo}`);
+    } finally { await view.cleanup(); }
+  }
+});
+
 for (const [attendance, showsMelati] of [["attending", true], ["not_attending", false]]) {
   test(`Ivory RSVP success (${attendance}) thanks the guest${showsMelati ? " with falling melati" : ""}`, async () => {
     const view = await mountIvorySection("RsvpSection", { invitationId: "inv-ivory", slug: "ivory", guestToken: "t", guestName: "Bude Sri" }, {
@@ -291,7 +308,8 @@ for (const [attendance, showsMelati] of [["attending", true], ["not_attending", 
       await act(async () => form.querySelector(`input[type="radio"][value="${attendance}"]`).click());
       await act(async () => form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })));
       const section = view.document.getElementById("ni-rsvp");
-      assert.match(section.querySelector('[role="status"]').textContent, /Matur nuwun/);
+      assert.match(section.querySelector('[role="status"]').textContent, /Terima kasih/);
+      assert.doesNotMatch(section.textContent, /Matur nuwun/i);
       assert.match(section.textContent, /Konfirmasi kehadiran Anda telah kami terima/);
       assert.equal(Boolean(section.querySelector("[data-ni-melati]")), showsMelati);
     } finally { await view.cleanup(); }

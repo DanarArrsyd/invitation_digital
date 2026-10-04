@@ -154,7 +154,8 @@ test("couple names use the script face and section titles stay in Cinzel", () =>
   const closingScript = document.querySelector(".ni-panel-dark .ni-script");
   assert.ok(closingScript, "closing panel carries a script title");
   assert.equal(closingScript.textContent.trim(), "Alya & Bima");
-  assert.match(document.body.textContent, /Matur Nuwun · Terima Kasih/, "closing carries the Javanese thanks");
+  assert.match(document.body.textContent, /Terima Kasih/, "closing thanks the guests");
+  assert.doesNotMatch(document.body.textContent, /Matur Nuwun/i, "thanks are in Bahasa Indonesia only");
 });
 
 test("the cover is a two-leaf gunungan gate that opens in the same tap", async () => {
