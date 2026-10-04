@@ -288,3 +288,35 @@ test("a sent wish releases dandelion seeds and keeps the thank-you visible", asy
   for (const [, property] of drift[1].matchAll(/([a-z-]+)\s*:/g)) assert.ok(["transform", "opacity"].includes(property), `seed drift animates ${property}`);
   assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tb-dandelion\s*\{\s*display:\s*none/);
 });
+
+test("gallery photos drop in and settle, taped and tilted, without losing the lightbox", async () => {
+  const { GallerySection } = createLoader()("sections/GallerySection");
+  const props = { gallery: invitation().gallery, displayName: "Alya & Bima" };
+
+  const plain = await mount(React.createElement(GallerySection, props));
+  try {
+    assert.equal(plain.document.querySelector(".tb-gallery-grid").hasAttribute("data-settle"), false, "no observer: photos simply show");
+  } finally { await plain.cleanup(); }
+
+  FakeIntersectionObserver.instances = [];
+  const view = await mount(React.createElement(GallerySection, props), { intersectionObserver: FakeIntersectionObserver });
+  try {
+    const grid = view.document.querySelector(".tb-gallery-grid");
+    assert.equal(grid.dataset.settle, "waiting");
+    const items = [...grid.querySelectorAll(".tb-gallery-item")];
+    assert.equal(items.length, 3);
+    for (const item of items) {
+      assert.match(item.style.getPropertyValue("--tb-tilt"), /^-?\d+(\.\d+)?deg$/);
+      assert.match(item.style.getPropertyValue("--tb-drop-delay"), /^\d+(\.\d+)?s$/);
+    }
+    await act(async () => FakeIntersectionObserver.instances.forEach((observer) => observer.trigger()));
+    assert.equal(grid.dataset.settle, "settled");
+    assert.ok(grid.querySelector("button[aria-label^='Perbesar foto 1 dari 3']"), "lightbox trigger intact");
+  } finally { await view.cleanup(); }
+
+  const css = styles();
+  assert.match(css, /\.tb-gallery-item::before\s*\{[^}]*rgba\(217, 164, 65/, "paper tape");
+  assert.match(css, /\[data-settle="waiting"\] \.tb-gallery-item\s*\{[^}]*opacity:\s*0/);
+  // Reduced motion: a waiting print is shown settled rather than held invisible.
+  assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tb-gallery-grid\[data-settle\] \.tb-gallery-item\s*\{\s*opacity:\s*1 !important;\s*transform:\s*rotate\(var\(--tb-tilt, 0deg\)\) !important/);
+});

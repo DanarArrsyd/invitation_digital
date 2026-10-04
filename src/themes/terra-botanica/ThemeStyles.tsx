@@ -248,6 +248,13 @@ export function ThemeStyles() {
     .tb-theme .tb-dandelion-seed { position: absolute; left: 60px; top: 56px; width: 1px; height: 26px; background: rgba(74, 52, 38, .45); transform-origin: 0 0; transform: rotate(var(--tb-angle)); animation: tb-seed-drift 2.6s cubic-bezier(.2, .6, .3, 1) forwards; }
     .tb-theme .tb-dandelion-seed::after { content: ""; position: absolute; top: 22px; left: -6px; width: 12px; height: 12px; border-radius: 50%; border: 1px dotted rgba(74, 52, 38, .55); }
     @keyframes tb-seed-drift { to { transform: translate(var(--tb-dx), var(--tb-dy)) rotate(calc(var(--tb-angle) + 140deg)); opacity: 0; } }
+    /* Herbarium prints: white border, paper tape, a hand-placed tilt; they
+       drop in and settle once the gallery scrolls into view. */
+    .tb-theme .tb-gallery-item { position: relative; transform: rotate(var(--tb-tilt, 0deg)); }
+    .tb-theme .tb-gallery-item .tb-media { border: 6px solid var(--tb-bone); box-shadow: 0 6px 16px -10px rgba(74, 52, 38, .55); }
+    .tb-theme .tb-gallery-item::before { content: ""; position: absolute; z-index: 1; top: -9px; left: 50%; width: 64px; height: 18px; margin-left: -32px; background: rgba(217, 164, 65, .45); transform: rotate(-4deg); pointer-events: none; }
+    .tb-theme .tb-gallery-grid[data-settle="waiting"] .tb-gallery-item { opacity: 0; transform: translateY(-48px) rotate(calc(var(--tb-tilt, 0deg) * -6)); }
+    .tb-theme .tb-gallery-grid[data-settle="settled"] .tb-gallery-item { transition: transform .8s cubic-bezier(.3, 1.3, .5, 1) var(--tb-drop-delay, 0s), opacity .4s ease var(--tb-drop-delay, 0s); }
     @media (min-width: 768px) {
       .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; }
       .tb-theme .tb-wishes > .tb-section-inner { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: start; }
@@ -284,6 +291,7 @@ export function ThemeStyles() {
       .tb-theme .tb-cover, .tb-theme .tb-gate[data-opened="true"] .tb-cover { transform: none; }
       .tb-theme .tb-vine { --tb-progress: 1 !important; }
       .tb-theme .tb-typed[data-typed] { clip-path: none !important; }
+      .tb-theme .tb-gallery-grid[data-settle] .tb-gallery-item { opacity: 1 !important; transform: rotate(var(--tb-tilt, 0deg)) !important; }
       .tb-theme .tb-dandelion { display: none; }
     }
 
