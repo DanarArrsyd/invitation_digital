@@ -129,7 +129,7 @@ Do not perform unrelated refactors during a feature task.
 
 ### MVP
 
-The MVP exists to successfully launch the Rayhana & Febri invitation and form the reusable core for future invitations.
+The MVP exists to launch the first real customer invitation and form the reusable core for future invitations. ("Rayhana & Febri" and `sample-1..3` were demo data, removed 2026-10-04.)
 
 Agents must prioritize:
 
@@ -230,7 +230,7 @@ All public write forms must:
 
 ---
 
-## Unknown Pilot Data
+## Unknown Customer Data
 
 Do not invent:
 

@@ -20,15 +20,13 @@ chandelier. Ask the user before merging any PR
 
 This repository contains a reusable digital invitation platform.
 
-The first production pilot is:
+No customer invitation is live yet. The earlier "Rayhana & Febri" invitation
+and `sample-1..3` were demo data only and were removed from the database on
+2026-10-04; do not treat them as a real customer or recreate them. The
+database keeps only the theme catalogue and the admin account.
 
-- Invitation: Rayhana & Febri
-- Type: Wedding
-- Event date: 20 October 2026
-- Theme: `nusantara-ivory`
-- Venue: Puri Nirwaran Residence
-- Primary visual direction: modern Nusantara editorial, subtle, premium, ivory/cream
-- Invitation lifetime: 3 months after publish
+Reference theme: `nusantara-ivory` (modern Nusantara editorial, subtle,
+premium, ivory/cream). Default invitation lifetime: 3 months after publish.
 
 The product must **not** be architected as a one-off wedding website. The core entity is `invitation`, not `wedding`, because the platform is expected to support other event types later such as birthdays, engagements, aqiqah, graduations, and corporate events.
 
@@ -36,7 +34,7 @@ The product must **not** be architected as a one-off wedding website. The core e
 
 ## Primary Goal
 
-Build an MVP that can be used for the Rayhana & Febri wedding while remaining reusable for future customers and themes.
+Build an MVP that can launch the first real customer invitation while remaining reusable for future customers and themes.
 
 The MVP must allow the admin to:
 
@@ -256,7 +254,7 @@ For `nusantara-ivory`:
 - ivory background;
 - no full-screen photo on initial cover;
 - wedding title;
-- Rayhana & Febri;
+- the couple names from invitation data;
 - date;
 - personalized guest name when available;
 - "Buka Undangan" button.
@@ -297,17 +295,11 @@ The theme must respect these settings.
 
 ---
 
-## Pilot Requirements: Rayhana & Febri
+## Default Wedding Invitation Requirements
 
-Initial data:
+Baseline for a wedding invitation (customer data comes from the admin UI):
 
 ```text
-Couple: Rayhana & Febri
-Event date: 20 October 2026
-Venue: Puri Nirwaran Residence
-Theme: Nusantara Ivory
-Primary colors: Ivory / cream
-Style: Subtle modern Nusantara editorial
 Gallery: 8 photos initially
 Gift: Bank account
 RSVP: Hadir / Tidak Hadir
@@ -383,7 +375,7 @@ Do not paste random batik PNG decorations and call the theme "Nusantara".
 The MVP is done when:
 
 - admin can authenticate;
-- Rayhana & Febri invitation can be created from database content;
+- a wedding invitation can be created from database content;
 - Nusantara Ivory renders through theme engine;
 - opening cover works;
 - music starts after user interaction;
@@ -403,7 +395,7 @@ The MVP is done when:
 - publish status works;
 - expiration works;
 - public page is responsive;
-- no Rayhana/Febri-specific content is hardcoded inside theme components.
+- no customer-specific content is hardcoded inside theme components.
 
 ---
 

@@ -18,6 +18,11 @@ implementation plans remain the source of truth:
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-04: "Rayhana & Febri" (`rayhana-febry`) and `sample-1..3` were demo
+  data, never a real customer. The owner had all invitation content, responses
+  and analytics deleted; only `themes` (4 rows), `profiles` and the admin auth
+  user remain. The pilot seed migration now only upserts the Nusantara Ivory
+  theme. Older notes below that mention these slugs are history.
 - Packages are named **Intimate**, **Signature**, and **Grand**.
 - Package availability and normalized public data stay upstream of themes.
 - Every public feature or layout added to one registered theme must be
