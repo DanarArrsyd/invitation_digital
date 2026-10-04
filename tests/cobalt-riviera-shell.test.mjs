@@ -183,6 +183,52 @@ for (const width of [320, 1440]) {
   });
 }
 
+test("route navigation pairs every visible label with one decorative nautical icon and no numeric index", async () => {
+  const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
+  const items = buildCobaltRouteItems(fixture());
+  const view = await mountShell({}, fixture(), guest, 320);
+  try {
+    await act(async () => view.document.querySelector(".cr-cover-open").click());
+    const links = [...view.document.querySelectorAll(".cr-route-nav a")];
+    assert.equal(links.length, items.length);
+    links.forEach((link, index) => {
+      const item = items[index];
+      const icons = link.querySelectorAll("svg");
+      assert.equal(icons.length, 1, `${item.label} renders exactly one icon`);
+      const icon = icons[0];
+      assert.equal(icon.getAttribute("aria-hidden"), "true");
+      assert.equal(icon.getAttribute("focusable"), "false");
+      assert.equal(icon.getAttribute("viewBox"), "0 0 24 24");
+      assert.equal(icon.getAttribute("stroke"), "currentColor");
+      assert.equal(icon.getAttribute("data-icon"), item.section);
+      assert.equal(icon.textContent, "", "icons carry no text into the accessible name");
+      assert.equal(link.querySelector(".cr-route-label")?.textContent, item.label);
+      assert.equal(link.textContent.trim(), item.label, "accessible name stays the label");
+      assert.doesNotMatch(link.textContent, /\d/, "no numeric index remains");
+    });
+    assert.equal(new Set(links.map((link) => link.querySelector("svg").innerHTML)).size, links.length, "each stop has its own glyph");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("every section key the route builder can emit has a dedicated icon, with a compass fallback", () => {
+  const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
+  const { NavIcon, ROUTE_ICON_GLYPHS } = loadTheme().load("themes/cobalt-riviera/components/NavIcon");
+  const emitted = Array.from(buildCobaltRouteItems(fixture()), (item) => item.section);
+  assert.deepEqual(emitted, ["hero", "couple", "events", "story", "gallery", "rsvp", "wishes", "gift"]);
+  for (const section of emitted) {
+    assert.ok(Object.hasOwn(ROUTE_ICON_GLYPHS, section), `${section} has a dedicated icon`);
+    const svg = new JSDOM(renderToStaticMarkup(React.createElement(NavIcon, { section }))).window.document.querySelector("svg");
+    assert.equal(svg?.getAttribute("data-icon"), section);
+    assert.ok(svg.querySelector("path, circle, rect"), `${section} draws a glyph`);
+    assert.equal(svg.getAttribute("stroke-width"), "1.5");
+  }
+  const fallback = new JSDOM(renderToStaticMarkup(React.createElement(NavIcon, { section: "closing" }))).window.document.querySelector("svg");
+  assert.equal(fallback?.getAttribute("data-icon"), "compass");
+  assert.equal(fallback.getAttribute("aria-hidden"), "true");
+});
+
 test("generic guest, reduced motion, and disabled music keep the shell operable without audio", async () => {
   const invitation = fixture({ features: { ...features, music: false } });
   const view = await mountShell({ reducedMotion: true }, invitation, null, 390);
@@ -250,7 +296,7 @@ test("route links retain their grid composition while ordinary anchors keep the 
   const dom = new JSDOM(
     `${renderToStaticMarkup(React.createElement(ThemeStyles))}
      <div class="cr-theme">
-       <nav class="cr-route-nav"><a id="route-link" href="#cr-beranda"><span>01</span><span>Beranda</span></a></nav>
+       <nav class="cr-route-nav"><a id="route-link" href="#cr-beranda"><svg class="cr-route-glyph" aria-hidden="true"></svg><span class="cr-route-label">Beranda</span></a></nav>
        <a id="ordinary-link" href="#next">Lanjut</a>
      </div>`,
     { pretendToBeVisual: true },
@@ -261,4 +307,9 @@ test("route links retain their grid composition while ordinary anchors keep the 
   assert.equal(routeStyle.minHeight, "48px");
   assert.equal(ordinaryStyle.display, "inline-flex");
   assert.equal(ordinaryStyle.minHeight, "48px");
+  const css = dom.window.document.querySelector("style")?.textContent ?? "";
+  assert.match(css, /\.cr-route-glyph\s*\{[^}]*width:\s*1\.2rem[^}]*height:\s*1\.2rem/s, "icons stay legible at about 19px");
+  assert.match(css, /\.cr-route-accent\s*\{[^}]*stroke:\s*var\(--cr-tangerine\)/s);
+  assert.match(css, /\.cr-route-nav a\[aria-current="location"\] \.cr-route-accent\s*\{[^}]*stroke:\s*var\(--cr-cobalt\)/s);
+  assert.doesNotMatch(css, /\.cr-route-glyph > span/, "the diamond and index glyph are gone");
 });

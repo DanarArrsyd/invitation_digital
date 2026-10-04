@@ -887,21 +887,14 @@ export function ThemeStyles() {
         letter-spacing: .04em;
         text-decoration: none;
       }
-      .cr-route-glyph { display: grid; width: 1.4rem; place-items: center; font-size: .54rem; line-height: 1; }
-      .cr-route-glyph > span:first-child {
-        display: block;
-        width: .5rem;
-        aspect-ratio: 1;
-        margin-bottom: .2rem;
-        background: var(--cr-tangerine);
-        transform: rotate(45deg);
-      }
+      .cr-route-glyph { display: block; width: 1.2rem; height: 1.2rem; flex: none; overflow: visible; }
+      .cr-route-accent { stroke: var(--cr-tangerine); }
       .cr-route-nav a[aria-current="location"] {
         --cr-focus-ring: var(--cr-sea-ink);
         background: var(--cr-citron);
         font-weight: 720;
       }
-      .cr-route-nav a[aria-current="location"] .cr-route-glyph > span:first-child { background: var(--cr-cobalt); }
+      .cr-route-nav a[aria-current="location"] .cr-route-accent { stroke: var(--cr-cobalt); }
       .cr-music {
         --cr-focus-ring: var(--cr-sea-ink);
         position: fixed;
