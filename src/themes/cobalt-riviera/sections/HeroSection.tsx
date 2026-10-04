@@ -30,13 +30,27 @@ export function HeroSection({
   message,
 }: HeroSectionProps) {
   const dateLabel = formatDate(eventDate);
+  const copy = (
+    <div className="cr-hero-copy">
+      <p className="cr-hero-index">CR / 04</p>
+      <h2 id="cr-hero-heading">
+        <span id="cr-foundation-title">{displayName}</span>
+      </h2>
+      <RouteRule />
+      {dateLabel ? <time dateTime={eventDate ?? undefined}>{dateLabel}</time> : null}
+      {message?.trim() ? <p>{message}</p> : null}
+      {guestDisplayName ? <p className="cr-guest">{guestDisplayName}</p> : null}
+    </div>
+  );
 
+  // Hero photo rule (DESIGN 9): the title block leads in reading order and the
+  // photo follows as a 3:4 portrait. Without a photo the horizon field stays.
   return (
     <Section
       id="cr-beranda"
       labelledBy="cr-hero-heading"
       tone="porcelain"
-      className={`cr-hero${imageUrl ? "" : " cr-hero-text-only"}`}
+      className={`cr-hero ${imageUrl ? "cr-hero-photo" : "cr-hero-text-only"}`}
     >
       <div id="cr-foundation" aria-labelledby="cr-foundation-title" className="cr-hero-layout">
         <header className="cr-hero-masthead">
@@ -45,33 +59,28 @@ export function HeroSection({
         </header>
 
         {imageUrl ? (
-          <RivieraImage
-            src={imageUrl}
-            alt={`Panorama perayaan ${displayName}`}
-            sizes="(min-width: 1440px) 1320px, 100vw"
-            aspectRatio="16 / 9"
-            eager
-            className="cr-hero-image"
-          />
+          <>
+            {copy}
+            <RivieraImage
+              src={imageUrl}
+              alt={`Potret ${displayName}`}
+              sizes="(min-width: 1200px) 38vw, (min-width: 768px) 44vw, 100vw"
+              aspectRatio="3 / 4"
+              eager
+              className="cr-hero-image"
+            />
+          </>
         ) : (
-          <div className="cr-hero-horizon" aria-hidden="true">
-            <span className="cr-hero-horizon-sky" />
-            <p className="cr-hero-horizon-name">{displayName}</p>
-            <span className="cr-hero-horizon-route">CR / 04</span>
-            <span className="cr-hero-horizon-ground" />
-          </div>
+          <>
+            <div className="cr-hero-horizon" aria-hidden="true">
+              <span className="cr-hero-horizon-sky" />
+              <p className="cr-hero-horizon-name">{displayName}</p>
+              <span className="cr-hero-horizon-route">CR / 04</span>
+              <span className="cr-hero-horizon-ground" />
+            </div>
+            {copy}
+          </>
         )}
-
-        <div className="cr-hero-copy">
-          <p className="cr-hero-index">CR / 04</p>
-          <h2 id="cr-hero-heading">
-            <span id="cr-foundation-title">{displayName}</span>
-          </h2>
-          <RouteRule />
-          {dateLabel ? <time dateTime={eventDate ?? undefined}>{dateLabel}</time> : null}
-          {message?.trim() ? <p>{message}</p> : null}
-          {guestDisplayName ? <p className="cr-guest">{guestDisplayName}</p> : null}
-        </div>
       </div>
     </Section>
   );

@@ -200,10 +200,10 @@ test("slow media, long content, and mobile-performance contracts remain stable",
   assert.match(css, /@media\s*\(max-width:\s*767px\)/);
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
   assert.match(css, /@media\s*\(min-width:\s*768px\)\s*and\s*\(max-width:\s*1199px\)/);
-  assert.match(css, /@media\s*\(min-width:\s*768px\)\s*and\s*\(max-width:\s*1199px\)[\s\S]*\.cr-hero-layout\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+  assert.match(css, /@media\s*\(min-width:\s*768px\)\s*and\s*\(max-width:\s*1199px\)[\s\S]*\.cr-hero-text-only \.cr-hero-layout\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
   assert.match(css, /@media\s*\(max-width:\s*1199px\)[\s\S]*\.cr-route-nav\s*\{[^}]*bottom:\s*max\(12px,\s*env\(safe-area-inset-bottom\)\)/);
   assert.match(css, /@media\s*\(min-width:\s*900px\)\s*and\s*\(max-width:\s*1199px\)\s*and\s*\(max-height:\s*850px\)[\s\S]*\.cr-hero-horizon\s*\{[^}]*min-height:\s*clamp\(18rem,\s*42svh,\s*22rem\)/);
-  assert.match(css, /@media\s*\(min-width:\s*900px\)\s*and\s*\(max-width:\s*1199px\)\s*and\s*\(max-height:\s*850px\)[\s\S]*\.cr-hero-image\s*\{[^}]*aspect-ratio:\s*auto\s*!important;[^}]*height:\s*clamp\(18rem,\s*42svh,\s*22rem\)/);
+  assert.doesNotMatch(css, /aspect-ratio:\s*auto\s*!important/, "short tablets never break the 3:4 hero crop");
   assert.match(css, /@media\s*\(min-width:\s*1200px\)[\s\S]*\.cr-section-inner\s*\{[^}]*padding-right:\s*max\([^;]*10rem\)/);
   assert.match(css, /@media\s*\(min-width:\s*1200px\)[\s\S]*\.cr-hero-layout\s*\{[^}]*padding-right:\s*8rem/);
   assert.match(css, /\.cr-theme :is\(a, button, input, textarea, select\)\s*\{[^}]*min-height:\s*48px/s);

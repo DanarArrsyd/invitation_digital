@@ -116,7 +116,7 @@ function render(invitation = fixture()) {
   return new JSDOM(renderToStaticMarkup(React.createElement(CobaltRiviera, { invitation, guest: null }))).window.document;
 }
 
-test("full narrative renders a panoramic eager hero, optional quote, safe editorial people, and lazy closing fallback image", () => {
+test("full narrative renders a portrait eager hero, optional quote, safe editorial people, and lazy closing fallback image", () => {
   const document = render();
   const hero = document.getElementById("cr-beranda");
   const couple = document.getElementById("cr-mempelai");
@@ -125,8 +125,21 @@ test("full narrative renders a panoramic eager hero, optional quote, safe editor
   assert.equal(hero?.getAttribute("aria-labelledby"), "cr-hero-heading");
   assert.equal(hero?.querySelector("img")?.getAttribute("src"), "/hero.jpg");
   assert.equal(hero?.querySelector("img")?.getAttribute("loading"), "eager");
-  assert.equal(hero?.querySelector("img")?.getAttribute("alt"), "Panorama perayaan Mira & Raka");
+  assert.equal(hero?.querySelector("img")?.getAttribute("alt"), "Potret Mira & Raka");
   assert.match(hero?.querySelector("img")?.getAttribute("sizes") ?? "", /100vw/);
+  assert.match(hero?.querySelector("img")?.getAttribute("sizes") ?? "", /\(min-width: 768px\) \d+vw/, "side-by-side photo requests a column-sized source");
+  assert.equal(hero?.querySelector(".cr-hero-image")?.style.aspectRatio, "3 / 4");
+  const heading = hero?.querySelector("#cr-hero-heading");
+  const photo = hero?.querySelector(".cr-hero-image");
+  assert.ok(heading && photo);
+  assert.ok(
+    heading.compareDocumentPosition(photo) & heading.ownerDocument.defaultView.Node.DOCUMENT_POSITION_FOLLOWING,
+    "the title block comes before the photo in reading order",
+  );
+  assert.ok(
+    hero.querySelector(".cr-hero-masthead").compareDocumentPosition(photo) & heading.ownerDocument.defaultView.Node.DOCUMENT_POSITION_FOLLOWING,
+  );
+  assert.ok(hero.classList.contains("cr-hero-photo"));
   assert.equal(document.querySelector(".cr-quote blockquote")?.textContent, "Cinta memberi arah, lalu keberanian membawa kita pulang.");
 
   assert.equal(couple?.querySelectorAll(".cr-person").length, 2);
@@ -200,7 +213,7 @@ test("hero, person, and closing failures preserve stable geometry and meaningful
   try {
     await act(async () => root.render(React.createElement(CobaltRiviera, { invitation: fixture(), guest: null })));
     const frames = [
-      ["#cr-beranda .cr-media", "16 / 9", "Panorama perayaan Mira & Raka", "eager"],
+      ["#cr-beranda .cr-media", "3 / 4", "Potret Mira & Raka", "eager"],
       ["#cr-mempelai .cr-media", "4 / 5", "Potret Mira Azzahra", "lazy"],
       ["#cr-penutup .cr-media", "16 / 10", "Mira dan Raka menatap cakrawala", "lazy"],
     ];
@@ -225,6 +238,8 @@ test("narrative CSS encodes responsive offset spreads, long-copy containment, ha
   const css = document.querySelector("style")?.textContent ?? "";
   assert.match(css, /\.cr-hero-layout\s*\{[^}]*display:\s*grid/s);
   assert.match(css, /\.cr-hero-image[^}]*aspect-ratio|\.cr-media/);
+  assert.match(css, /@media\s*\(min-width:\s*768px\)\s*\{[\s\S]*?\.cr-hero-photo \.cr-hero-layout\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*[\d.]+fr\)\s+minmax\([^)]*\)/, "title and photo sit side by side from 768px");
+  assert.match(css, /\.cr-hero-photo \.cr-hero-image\s*\{[^}]*width:\s*min\([^;]*calc\(\(100svh - [\d.]+rem\) \* \.75\)\)\)/, "the side-by-side photo keeps 3:4 within the viewport");
   assert.match(css, /\.cr-person\[data-position="right"\]/);
   assert.match(css, /overflow-wrap:\s*anywhere/);
   assert.match(css, /max-width:\s*72ch/);
