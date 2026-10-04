@@ -11,7 +11,7 @@ export function scrollProgress(scrollTop: number, scrollHeight: number, viewport
 
 /**
  * Writes the page's scroll progress to `property` on `target`, at most once
- * per animation frame. CSS reads the custom property, so scrolling never
+ * per animation frame, and again whenever the page height changes. CSS reads the custom property, so scrolling never
  * re-renders React.
  */
 export function useScrollProgress(target: RefObject<HTMLElement | null>, property: string): void {
@@ -30,9 +30,14 @@ export function useScrollProgress(target: RefObject<HTMLElement | null>, propert
     write();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    // Content revealed behind a cover grows the page without any scroll or
+    // resize event; watching the body catches that change.
+    const bodyObserver = typeof window.ResizeObserver === "function" ? new window.ResizeObserver(schedule) : null;
+    bodyObserver?.observe(document.body);
     return () => {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      bodyObserver?.disconnect();
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, [target, property]);

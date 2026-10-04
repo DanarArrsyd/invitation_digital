@@ -96,3 +96,31 @@ test("useScrollProgress writes progress to a custom property and follows scrolli
     assert.equal(element.style.getPropertyValue("--probe"), "0.7500");
   });
 });
+
+test("useScrollProgress recomputes when the page grows without a scroll, e.g. content revealed by the cover", async () => {
+  const { useScrollProgress } = loadShared("use-scroll-progress");
+  let element;
+  let observed = null;
+  let resized = null;
+  let disconnected = false;
+  class FakeResizeObserver {
+    constructor(callback) { resized = callback; }
+    observe(target) { observed = target; }
+    disconnect() { disconnected = true; }
+  }
+  function Probe() { const ref = useRef(null); useScrollProgress(ref, "--probe"); return React.createElement("div", { ref: (node) => { ref.current = node; element = node; } }); }
+  await withDom(undefined, async ({ dom, root }) => {
+    dom.window.ResizeObserver = FakeResizeObserver;
+    Object.defineProperty(dom.window.document.documentElement, "scrollHeight", { configurable: true, value: 800 });
+    Object.defineProperty(dom.window, "innerHeight", { configurable: true, value: 1000 });
+    await act(async () => root.render(React.createElement(Probe)));
+    assert.equal(element.style.getPropertyValue("--probe"), "1.0000", "a page that cannot scroll yet reads as complete");
+    assert.equal(observed, dom.window.document.body);
+    Object.defineProperty(dom.window.document.documentElement, "scrollHeight", { configurable: true, value: 5000 });
+    resized([]);
+    await act(async () => new Promise((resolve) => dom.window.requestAnimationFrame(() => resolve())));
+    assert.equal(element.style.getPropertyValue("--probe"), "0.0000", "revealed content resets progress to the top");
+    await act(async () => root.unmount());
+    assert.equal(disconnected, true);
+  });
+});
