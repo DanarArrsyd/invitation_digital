@@ -179,6 +179,14 @@ dark theme.
   4. *Lampu pigura* (gallery): framed photos on a dark wall are lit one by one
      by picture lights as the gallery enters view.
 
+Implementation notes (Midnight PR): RSVP collects no party size, so the dance
+card writes the guest's name and attendance only. The new wish reaches the
+list through the existing server revalidation, not an optimistic insert.
+Asap is a rule colour; small secondary text uses `#A9A2AD`. In-view effects
+use `themes/shared/use-in-view-once.ts` (Midnight stays CSS-driven).
+Guest-facing labels are Bahasa Indonesia (owner decision). **Deferred:** the
+gold-line chandelier ornament.
+
 ## 7. Cobalt Riviera — "Surat Cinta dari Mediterania"
 
 A summer postcard from the Amalfi coast: majolica tiles, lemons, stamps, sea.

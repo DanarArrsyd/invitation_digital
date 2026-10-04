@@ -12,8 +12,9 @@ authoritative for requirements.
 Terra Botanica "Herbarium Cinta" shipped in PR #15 (merge `7750e29`,
 production deployed 2026-10-04). Current work: Midnight Atelier "Malam di
 Ballroom" on branch `design/terra-identity-at0kh3` (reset to `main` after the
-merge), plan `docs/superpowers/plans/2026-10-04-midnight-identity.md`. Ask the
-user before merging any PR
+merge), plan `docs/superpowers/plans/2026-10-04-midnight-identity.md`. All
+plan tasks are done and the PR to `main` waits for the owner's explicit
+"merge". Ask the user before merging any PR
 (merges to `main` deploy production).
 
 ## Project Overview

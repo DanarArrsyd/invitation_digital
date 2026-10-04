@@ -29,9 +29,11 @@ implementation plans remain the source of truth:
   Muellerhoff / Courier Prime / Spectral, the Herbarium Cinta palette (see the
   2026-10-03 identity spec), asymmetrical editorial composition,
   restrained custom botanical marks, and no generic SaaS-card styling.
-- Midnight Atelier uses the approved **dark cinematic couture** direction:
-  Bodoni Moda, Barlow Condensed, Ink/Lacquer/Oxblood/Champagne/Pearl/Smoke,
-  programme-led editorial composition, and no generic black-and-gold styling.
+- Midnight Atelier uses the approved **Malam di Ballroom** direction (Oct 2026,
+  replacing dark cinematic couture): Imperial Script / Bodoni Moda italic /
+  Jost, the Tinta/Oxblood/Champagne/Mutiara/Asap palette (see the 2026-10-03
+  identity spec), programme-led composition, light drawn only as spotlight
+  and picture lights, and no generic black-and-gold styling.
 - Cobalt Riviera uses the approved **sunlit destination editorial** direction:
   wide grotesk display type, Newsreader body text, Cobalt/Porcelain/Sea Ink/
   Tangerine/Citron/Pool, a horizon-shutter cover, panoramic imagery, flat
@@ -188,7 +190,7 @@ Never solve parity by copying shared business logic between theme folders.
 distinct couture programme from the same canonical capabilities:
 
 ```text
-CoverGate — curtain seam, guest personalization, music and focus handoff
+CoverGate — champagne toast, guest personalization, music and focus handoff
   ├─ Hero — cinematic image or intentional dark sparse state
   ├─ Couple + parents — left-aligned editorial portrait spread
   ├─ Programme — events, maps, countdown + calendar, dress code, livestream
@@ -200,10 +202,13 @@ CoverGate — curtain seam, guest personalization, music and focus handoff
   └─ Closing — restrained cinematic conclusion
 ```
 
-Midnight uses Ink `#09090B`, Lacquer `#171216`, Oxblood `#541E2B`, Champagne
-`#C6A15B`, Pearl `#F3EEE6`, and Smoke `#AAA3A4`. Bodoni Moda carries display
-type and Barlow Condensed carries supporting type. Avoid gradients, fake foil,
-stars, repeated ornamental frames, excessive gold, and SaaS cards. Optional
+Midnight uses Tinta `#14121A`, a lifted Tinta `#1E1A24` for layered
+surfaces, Oxblood `#5E1A22`, Champagne `#D8C08A`, Mutiara `#EDE6DA` and Asap
+`#6E6873` (rules only; small secondary text uses `--ma-smoke-ink` `#A9A2AD`).
+Imperial Script carries couple names, Bodoni Moda italic the headings, Jost
+the body (17px) and spaced-capital labels. Radial light appears only in the
+heading spotlight and the gallery picture lights; no other gradients, fake
+foil, stars or SaaS cards. Guest-facing labels are Bahasa Indonesia. Optional
 content must disappear cleanly, and nonessential motion must honor reduced
 motion preferences.
 
@@ -483,7 +488,41 @@ plan in `docs/superpowers/plans/` after the previous one merges.
   gallery prints. Plan: `docs/superpowers/plans/2026-10-03-terra-identity.md`.
   `@fontsource-variable/fraunces` and `manrope` removed.
 
-#### Checkpoint — Midnight "Malam di Ballroom" (starting, 2026-10-04)
+- Midnight "Malam di Ballroom": champagne-toast cover (`ChampagneToast`,
+  replaces the curtain seam), spotlight chapter headings (`Spotlight` over
+  `themes/shared/use-in-view-once.ts`), dance card after an attending RSVP
+  (`DanceCard`; name and attendance only — RSVP has no party size), sent
+  wish rising with champagne bubbles (`WishBubbles`), picture lights in the
+  gallery, Bahasa Indonesia labels. Plan:
+  `docs/superpowers/plans/2026-10-04-midnight-identity.md`.
+  `@fontsource/ibm-plex-sans-condensed` removed; Jost now belongs to Midnight.
+  `tests/midnight-atelier-identity.test.mjs` pins contrast, light, names,
+  toast, spotlight, dance card, bubbles, picture lights and labels.
+
+#### Checkpoint — Midnight "Malam di Ballroom" (PR open, 2026-10-04)
+
+- All plan tasks done on `design/terra-identity-at0kh3`: fonts `d359e2a`;
+  palette + light tokens + identity harness `5033c89`; light-form
+  placeholder AA `f118444`; Imperial Script names `200e16a`; champagne toast
+  `2cf88f0` + short-phone size `43f50a0`; spotlight headings `311cb07`;
+  dance card `647bed0`; wish bubbles `8e77303` + contained rise band
+  `bdc51a1`; picture lights `68162ea`; Bahasa Indonesia labels `840919c`.
+- Deviations from the plan, all reviewed: data attributes use
+  `watching ? (seen ? lit : waiting) : undefined` so on-screen headings and
+  galleries never blink; spotlight contrast tested per surface (grey text is
+  never inside a lit oxblood area; dim headings ≥3.88:1); the sent-wish rise
+  is one ellipsised line in its own clipped band so it never covers the
+  heading; the toast shrinks below 700px viewport height.
+- Visual QA (temporary fixture, Chromium 320×640, 360×640, 375×812,
+  1280×860): Imperial Script names with a Bodoni italic "&", Bodoni italic
+  headings, Jost body 17px; open button on screen at 360×640 (bottom 631px);
+  cover inert on the first tap, toast clinks, cover gone by ~1.5s; spotlight
+  headings wait then light; gallery frames light in order; 5 nav items with
+  icons, ≥52px; no horizontal overflow; reduced motion hides the cover at once.
+- Verification: `npm test` 368/369 (only the known environmental countdown
+  timezone failure); lint, typecheck and build clean; no `querySelector` or
+  `<img` in Midnight source.
+- Deferred: the gold-line chandelier ornament (owner decision).
 
 - Terra merged in PR #15 (merge `7750e29`); production deploy
   `dpl_2Ee2LkVNKNrUBmw8bBinXoqwKGmo` READY on
