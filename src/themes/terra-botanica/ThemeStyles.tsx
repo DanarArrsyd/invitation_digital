@@ -242,6 +242,12 @@ export function ThemeStyles() {
     .tb-theme .tb-typed[data-typed="waiting"] { clip-path: inset(0 100% 0 0); }
     .tb-theme .tb-typed[data-typed="typed"] { animation: tb-type calc(var(--tb-chars) * 38ms) steps(var(--tb-chars), end) both; }
     @keyframes tb-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+    /* Dandelion: seeds drift off after a sent wish; the root's overflow-x: clip keeps them from widening the page. */
+    .tb-theme .tb-dandelion { position: relative; width: 120px; height: 130px; margin-top: 1.5rem; pointer-events: none; }
+    .tb-theme .tb-dandelion-stalk { position: absolute; left: 59px; top: 56px; width: 1.5px; height: 74px; background: var(--tb-moss); }
+    .tb-theme .tb-dandelion-seed { position: absolute; left: 60px; top: 56px; width: 1px; height: 26px; background: rgba(74, 52, 38, .45); transform-origin: 0 0; transform: rotate(var(--tb-angle)); animation: tb-seed-drift 2.6s cubic-bezier(.2, .6, .3, 1) forwards; }
+    .tb-theme .tb-dandelion-seed::after { content: ""; position: absolute; top: 22px; left: -6px; width: 12px; height: 12px; border-radius: 50%; border: 1px dotted rgba(74, 52, 38, .55); }
+    @keyframes tb-seed-drift { to { transform: translate(var(--tb-dx), var(--tb-dy)) rotate(calc(var(--tb-angle) + 140deg)); opacity: 0; } }
     @media (min-width: 768px) {
       .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; }
       .tb-theme .tb-wishes > .tb-section-inner { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: start; }
@@ -278,6 +284,7 @@ export function ThemeStyles() {
       .tb-theme .tb-cover, .tb-theme .tb-gate[data-opened="true"] .tb-cover { transform: none; }
       .tb-theme .tb-vine { --tb-progress: 1 !important; }
       .tb-theme .tb-typed[data-typed] { clip-path: none !important; }
+      .tb-theme .tb-dandelion { display: none; }
     }
 
       /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */

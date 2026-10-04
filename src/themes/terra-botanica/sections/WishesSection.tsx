@@ -4,6 +4,7 @@ import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { useWishForm, useWishPagination } from "@/themes/shared/use-public-forms";
 import type { Wish } from "@/types/invitation";
 
+import { DandelionRelease } from "../components/DandelionRelease";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 
@@ -30,7 +31,10 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
           <p>Tinggalkan pesan untuk hari yang kami kenang bersama.</p>
         </SectionHeading>
         {state.status === "success" ? (
-          <p className="tb-form-success" role="status">Terima kasih atas ucapan dan doanya.</p>
+          <div className="tb-wish-sent">
+            <p className="tb-form-success" role="status">Terima kasih atas ucapan dan doanya.</p>
+            <DandelionRelease />
+          </div>
         ) : (
           <form ref={formRef} action={formAction} onSubmit={onSubmit} className="tb-form">
             <input type="hidden" name="invitationId" value={invitationId} />

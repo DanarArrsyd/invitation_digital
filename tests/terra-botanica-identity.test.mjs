@@ -259,3 +259,32 @@ test("typed labels reveal on any overlap so a label at the page end never stays 
   const source = readFileSync(resolve(terraRoot, "components/TypedText.tsx"), "utf8");
   assert.match(source, /useInViewOnce\(ref, "0px"\)/);
 });
+
+test("a sent wish releases dandelion seeds and keeps the thank-you visible", async () => {
+  const { DandelionRelease } = createLoader()("components/DandelionRelease");
+  const head = new JSDOM(renderToStaticMarkup(React.createElement(DandelionRelease))).window.document.querySelector("[data-tb-dandelion]");
+  assert.equal(head.getAttribute("aria-hidden"), "true");
+  assert.equal(head.querySelectorAll(".tb-dandelion-seed").length, 18);
+  assert.equal(head.querySelectorAll(".tb-dandelion-stalk").length, 1);
+  assert.ok(head.querySelectorAll("*").length <= 20, "particle effects stay within 20 nodes");
+  const still = createLoader({ reducedMotion: true })("components/DandelionRelease").DandelionRelease;
+  assert.equal(renderToStaticMarkup(React.createElement(still)), "");
+
+  const { WishesSection } = createLoader({ actions: { submitWish: async () => ({ status: "success" }) } })("sections/WishesSection");
+  const view = await mount(React.createElement(WishesSection, { invitationId: "terra", slug: "terra", guestToken: "t", guestName: "Bude Sri", wishes: [] }));
+  try {
+    const form = view.document.querySelector("#tb-ucapan form");
+    form.elements.namedItem("message").value = "Bahagia selalu";
+    await act(async () => form.dispatchEvent(new view.window.Event("submit", { bubbles: true, cancelable: true })));
+    const section = view.document.getElementById("tb-ucapan");
+    assert.match(section.querySelector('[role="status"]').textContent, /Terima kasih atas ucapan dan doanya/);
+    assert.ok(section.querySelector("[data-tb-dandelion]"));
+  } finally { await view.cleanup(); }
+
+  const css = styles();
+  assert.match(css, /\.tb-dandelion\s*\{[^}]*pointer-events:\s*none/);
+  const drift = css.match(/@keyframes tb-seed-drift\s*\{([\s\S]*?\})\s*\}/);
+  assert.ok(drift, "seed drift keyframes exist");
+  for (const [, property] of drift[1].matchAll(/([a-z-]+)\s*:/g)) assert.ok(["transform", "opacity"].includes(property), `seed drift animates ${property}`);
+  assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tb-dandelion\s*\{\s*display:\s*none/);
+});
