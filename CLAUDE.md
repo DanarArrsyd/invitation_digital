@@ -9,12 +9,11 @@ last completed task, where to resume), the commit chain, verification state,
 and open review notes. The linked design spec and implementation plan remain
 authoritative for requirements.
 
-Terra shipped in PR #15 (`7750e29`), Midnight in PR #16 (`202c787`) and the
-Ivory melati fix in PR #17 (`13d9150`). Current work: Cobalt Riviera "Surat
-Cinta dari Mediterania" on branch `design/terra-identity-at0kh3`, plan
-`docs/superpowers/plans/2026-10-05-cobalt-identity.md`. All plan tasks are
-done and the PR to `main` waits for the owner's explicit "merge". Ask the
-user before merging any PR
+The theme identity redesign is complete and live: Ivory (PR #14), Terra
+(PR #15, `7750e29`), Midnight (PR #16, `202c787`), Ivory melati fix (PR #17,
+`13d9150`) and Cobalt (PR #18, `d2666b7`). Branch `design/terra-identity-at0kh3`
+is reset to `main` after each merge. Deferred: Midnight's gold-line
+chandelier. Ask the user before merging any PR
 (merges to `main` deploy production).
 
 ## Project Overview
