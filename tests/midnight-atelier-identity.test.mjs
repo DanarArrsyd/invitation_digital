@@ -319,3 +319,8 @@ test("the toast cover hydrates without mismatch when the browser prefers reduced
     await view.cleanup();
   }
 });
+
+test("the toast shrinks on short phones so the open button stays above the fold", () => {
+  const css = readFileSync(new URL("../src/themes/midnight-atelier/ThemeStyles.tsx", import.meta.url), "utf8");
+  assert.match(css, /@media \(max-height: 700px\) \{ \.ma-toast \{ width: clamp\(84px, 24vw, 120px\); margin-top: 1rem; \} \}/);
+});

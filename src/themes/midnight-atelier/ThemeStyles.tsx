@@ -132,6 +132,8 @@ export function ThemeStyles() {
       .ma-gate[data-opened="true"] :is(.ma-cover-masthead, .ma-cover-recipient) { opacity: 0; transition: opacity .3s ease; }
       .ma-gate[data-opened="true"] .ma-cover-names { transform: translateY(-6px); transition: transform .8s cubic-bezier(.22, .61, .36, 1) .2s; }
       .ma-toast { display: block; width: clamp(120px, 34vw, 180px); height: auto; margin: clamp(1.5rem, 5vw, 2.5rem) auto 0; overflow: visible; color: var(--ma-champagne); }
+      /* Short phones: a smaller toast keeps "Buka undangan" above the fold. */
+      @media (max-height: 700px) { .ma-toast { width: clamp(84px, 24vw, 120px); margin-top: 1rem; } }
       .ma-toast .ma-flute path { stroke: currentColor; stroke-width: 1.2; }
       .ma-toast .ma-flute .ma-flute-wine { fill: rgba(216, 192, 138, .35); stroke: none; }
       .ma-flute { transform-box: view-box; }
