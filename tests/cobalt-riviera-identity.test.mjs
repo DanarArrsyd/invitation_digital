@@ -83,8 +83,9 @@ class FakeIntersectionObserver {
   trigger(isIntersecting = true) { this.callback(this.elements.map((target) => ({ target, isIntersecting }))); }
 }
 
-async function mount(element, { intersectionObserver = NoopObserver } = {}) {
+async function mount(element, { intersectionObserver = NoopObserver, setup = () => {} } = {}) {
   const dom = new JSDOM("<div id='root'></div>", { url: "https://invitation.test/", pretendToBeVisual: true });
+  setup(dom.window);
   const prior = {
     window: globalThis.window, document: globalThis.document, FormData: globalThis.FormData, HTMLElement: globalThis.HTMLElement,
     IntersectionObserver: globalThis.IntersectionObserver,
@@ -386,4 +387,110 @@ test("two wave lines divide the chapters and sway only while on screen", async (
     }
   }
   assert.match(sheet, /\.cr-section-inner\s*\{[^}]*position:\s*relative[^}]*z-index:\s*1/, "chapter content stays above the divider");
+});
+
+test("the sky warms from morning to sunset with scroll and the sun sinks down the margin", async () => {
+  const load = createLoader();
+  const { RivieraSky } = load("components/RivieraSky");
+  const view = await mount(React.createElement(RivieraSky));
+  try {
+    const sky = view.document.querySelector(".cr-sky");
+    assert.equal(sky.getAttribute("aria-hidden"), "true");
+    assert.ok(sky.querySelector(".cr-sky-dusk"));
+    assert.ok(sky.querySelector("svg.cr-sun .cr-sun-day") && sky.querySelector("svg.cr-sun .cr-sun-dusk"));
+    assert.ok(sky.querySelectorAll("*").length <= 20);
+    assert.equal(sky.style.getPropertyValue("--cr-day"), "1.0000", "jsdom cannot scroll, so the day has ended");
+  } finally { await view.cleanup(); }
+
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(load("index").CobaltRiviera, { invitation: invitation(), guest: null }))).window;
+  assert.ok(document.querySelector("#cr-content > .cr-sky"), "the sky belongs to the opened invitation");
+  assert.equal(document.querySelector("#cr-cover .cr-sky"), null);
+  assert.equal(document.querySelector(".cr-sky").getAttribute("style"), null, "server markup carries no scroll state");
+
+  const sheet = css();
+  assert.match(sheet, /\.cr-sky\s*\{[^}]*--cr-day:\s*0[^}]*position:\s*fixed[^}]*background:\s*var\(--cr-porcelain\)/, "morning is the porcelain");
+  assert.match(sheet, /\.cr-sky-dusk\s*\{[^}]*background:\s*var\(--cr-sunset\)[^}]*opacity:\s*var\(--cr-day\)[^}]*will-change:\s*opacity/, "sunset is the senja layer at --cr-day");
+  assert.match(sheet, /\.cr-sun\s*\{[^}]*transform:\s*translateY\(calc\(var\(--cr-day\) \* [^)]+\)\)[^}]*will-change:\s*transform/);
+  for (const [, selector, body] of sheet.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    for (const declaration of body.split(";").map((part) => part.trim())) {
+      if (declaration.includes("var(--cr-day)")) {
+        assert.match(declaration, /^(opacity|transform):/, `${selector.trim()}: only opacity and transform follow the scroll (${declaration})`);
+      }
+    }
+  }
+  assert.match(sheet, /\.cr-content > main\s*\{[^}]*position:\s*relative[^}]*z-index:\s*1/);
+  assert.match(sheet, /\.cr-content \.cr-surface-porcelain\s*\{\s*background:\s*transparent/, "porcelain chapters show the sky");
+  assert.match(sheet, /prefers-reduced-motion: reduce\)[\s\S]*\.cr-sky\s*\{\s*--cr-day:\s*1 !important/, "reduced motion pins one palette");
+});
+
+test("the sky starts at morning once the cover opens, sits behind the content and never takes a tap", async () => {
+  let resized = null;
+  class FakeResizeObserver {
+    constructor(callback) { resized = callback; }
+    observe() {}
+    disconnect() {}
+  }
+  const setup = (window) => {
+    window.ResizeObserver = FakeResizeObserver;
+    Object.defineProperty(window.document.documentElement, "scrollHeight", { configurable: true, value: 640 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 640 });
+  };
+  const view = await mount(React.createElement(createLoader()("index").CobaltRiviera, { invitation: invitation(), guest: null }), { setup });
+  const frame = () => act(async () => new Promise((done) => view.window.requestAnimationFrame(() => done())));
+  try {
+    const sky = view.document.querySelector("#cr-content > .cr-sky");
+    assert.equal(sky.nextElementSibling.tagName, "MAIN", "the sky lies directly under main");
+    assert.equal(sky.style.getPropertyValue("--cr-day"), "1.0000", "behind the cover nothing scrolls yet");
+    await act(async () => view.document.querySelector(".cr-cover-open").click());
+    Object.defineProperty(view.document.documentElement, "scrollHeight", { configurable: true, value: 6400 });
+    resized([]);
+    await frame();
+    assert.equal(sky.style.getPropertyValue("--cr-day"), "0.0000", "the opened invitation starts in the morning");
+    Object.defineProperty(view.window, "scrollY", { configurable: true, value: 2880 });
+    view.window.dispatchEvent(new view.window.Event("scroll"));
+    await frame();
+    assert.equal(sky.style.getPropertyValue("--cr-day"), "0.5000");
+  } finally { await view.cleanup(); }
+
+  const sheet = css();
+  const [sky] = rules(sheet, ".cr-sky");
+  assert.match(sky, /pointer-events:\s*none/, "the sky never intercepts a tap");
+  assert.match(sky, /z-index:\s*0/);
+  assert.doesNotMatch(sky, /will-change/, "the sky itself is painted once");
+  const [sun] = rules(sheet, ".cr-sun");
+  assert.match(sun, /left:\s*max\(4px, env\(safe-area-inset-left\)\)/, "the sun keeps to the left margin");
+  assert.match(sun, /width:\s*clamp\(12px, 2vw, 24px\)/, "at 320px the 12px sun fits the 20px gutter");
+});
+
+test("only the porcelain chapters turn transparent, and their text uses colours proven on the sky ramp", () => {
+  const full = invitation({
+    content: { openingQuote: "Laut mengajari kami sabar.", openingMessage: "Dengan hormat.", closingMessage: "Sampai jumpa." },
+    features: { ...invitation().features, gift: true, livestream: true, dressCode: true },
+    gifts: [{ id: "gift", bankName: "Bank", accountName: "Nadia", accountNumber: "123", sortOrder: 0 }],
+    wishes: [{ id: "w", guestName: "Tamu", message: "Selamat!", createdAt: "2030-01-02T00:00:00Z" }],
+  });
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(createLoader()("index").CobaltRiviera, { invitation: full, guest: null }))).window;
+  const porcelain = [...document.querySelectorAll("#cr-content main > section.cr-surface-porcelain")].map((section) => section.id);
+  assert.deepEqual(porcelain, ["cr-beranda", "cr-mempelai", "cr-acara", "cr-galeri", "cr-ucapan"], "the chapters that show the sky");
+
+  // Every text colour any porcelain chapter can carry is one of the four the
+  // ramp test proves at AA, or the element brings its own opaque background.
+  const proven = new Set(["sea-ink", "cobalt", "tangerine-ink", "sea-ink-soft"]);
+  const sheet = css();
+  const classes = new Set();
+  for (const id of porcelain) {
+    for (const node of document.getElementById(id).querySelectorAll("[class]")) {
+      for (const name of node.classList) classes.add(name);
+    }
+  }
+  for (const [, selector, body] of sheet.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const color = body.match(/(?:^|[;\s])color:\s*var\(--cr-([a-z-]+)\)/)?.[1];
+    if (!color || proven.has(color) || /background:\s*var\(--cr-(?!porcelain)/.test(body)) continue;
+    for (const part of selector.trim().split(/,(?![^(]*\))/)) {
+      const subject = part.trim().split(/\s+|>/).filter(Boolean).at(-1) ?? "";
+      if (/\.cr-(surface|cover|gate|rsvp|livestream|closing|countdown|quote|story|dress|gift|route|music|lightbox|hero-horizon)/.test(part)) continue;
+      const named = [...subject.matchAll(/\.([\w-]+)/g)].map((match) => match[1]);
+      assert.ok(!named.some((name) => classes.has(name)), `${part.trim()} colours porcelain-chapter text with --cr-${color}`);
+    }
+  }
 });

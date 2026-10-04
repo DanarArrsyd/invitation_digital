@@ -3,6 +3,7 @@ import { buildThemeViewModel } from "@/themes/shared/view-model";
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
 
+import { RivieraSky } from "./components/RivieraSky";
 import type { RivieraRouteItem } from "./components/RouteNavigation";
 import { CoverGate } from "./CoverGate";
 import { rivieraBody, rivieraDisplay, rivieraScript } from "./fonts";
@@ -73,6 +74,7 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
         musicUrl={invitation.media.musicUrl}
         routeItems={routeItems}
       >
+        <RivieraSky />
         <main>
           <HeroSection
             displayName={coupleDisplayName}

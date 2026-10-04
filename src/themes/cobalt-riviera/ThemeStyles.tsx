@@ -946,6 +946,17 @@ export function ThemeStyles() {
       .cr-divider-line-b { stroke: var(--cr-tangerine); animation-duration: 9s; animation-delay: -3s; }
       .cr-divider[data-sway="on"] .cr-divider-line { animation-play-state: running; }
       @keyframes cr-sway { from { transform: translateX(0); } to { transform: translateX(-25%); } }
+      /* Pagi ke senja: a fixed sky behind the porcelain chapters. --cr-day
+         (0–1, from useScrollProgress) drives only the senja layer's opacity
+         and the sun's transform, so a scroll frame composites and repaints
+         nothing. Opaque cobalt, kolam and tinta laut chapters are the sea. */
+      .cr-sky { --cr-day: 0; position: fixed; z-index: 0; inset: 0; background: var(--cr-porcelain); pointer-events: none; }
+      .cr-sky-dusk { position: absolute; inset: 0; background: var(--cr-sunset); opacity: var(--cr-day); will-change: opacity; }
+      .cr-sun { position: absolute; top: 16svh; left: max(4px, env(safe-area-inset-left)); width: clamp(12px, 2vw, 24px); height: auto; transform: translateY(calc(var(--cr-day) * 62svh)); will-change: transform; }
+      .cr-sun-day { fill: var(--cr-citron); }
+      .cr-sun-dusk { fill: var(--cr-tangerine); opacity: var(--cr-day); }
+      .cr-content > main { position: relative; z-index: 1; }
+      .cr-content .cr-surface-porcelain { background: transparent; }
       /* Postcard voices: Corinthia for names (.cr-script), Newsreader italic for
          headings and numerals, Familjen Grotesk spaced capitals for labels. */
       .cr-theme :is(h2, h3, blockquote):not(.cr-script) { font-family: var(--cr-text); font-style: italic; font-variation-settings: normal; font-weight: 500; letter-spacing: -.015em; line-height: 1.02; }
@@ -1110,6 +1121,7 @@ export function ThemeStyles() {
           scroll-behavior: auto !important;
           transition: none !important;
         }
+        .cr-sky { --cr-day: 1 !important; }
       }
   
       /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */
