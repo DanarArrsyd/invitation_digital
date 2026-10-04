@@ -553,6 +553,19 @@ test("the postmark names the attendance that was submitted, not a choice changed
   } finally { await declined.cleanup(); }
 });
 
+test("the status text announces the submitted attendance, since the postmark is aria-hidden", async () => {
+  for (const [choose, changeTo, expected] of [["Hadir", "Tidak Hadir", "Hadir"], ["Tidak Hadir", "Hadir", "Tidak hadir"]]) {
+    const view = await rsvp({ choose, changeTo });
+    try {
+      const status = view.document.querySelector('#cr-rsvp [role="status"]');
+      assert.ok(status, "a status region confirms the RSVP");
+      assert.match(status.textContent, /Konfirmasi kehadiran Anda telah kami terima/);
+      assert.match(status.textContent, new RegExp(`Tercatat: ${expected}\\.`), `screen readers hear the submitted "${expected}"`);
+      assert.equal(status.closest("[aria-hidden]"), null);
+    } finally { await view.cleanup(); }
+  }
+});
+
 test("a sent wish rolls into a bottle that drifts away inside its own band; the thank-you stays", async () => {
   const { WishBottle } = createLoader()("components/WishBottle");
   const band = new JSDOM(renderToStaticMarkup(React.createElement(WishBottle, { message: "Bahagia selalu" }))).window.document.querySelector("[data-cr-bottle]");

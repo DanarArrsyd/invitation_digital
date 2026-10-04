@@ -40,6 +40,8 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
               <div>
                 <strong>Terima kasih.</strong>
                 <p>Konfirmasi kehadiran Anda telah kami terima.</p>
+                {/* The postmark is decorative (aria-hidden); the status names the submitted answer. */}
+                {sentAttendance ? <p>Tercatat: {sentAttendance === "attending" ? "Hadir" : "Tidak hadir"}.</p> : null}
               </div>
             </div>
             {sentAttendance ? <Postmark attendance={sentAttendance} /> : null}
