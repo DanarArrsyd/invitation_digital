@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { useInvitationCover } from "@/themes/shared/use-invitation-cover";
 
-import { AtelierMark } from "./components/AtelierMark";
+import { ChampagneToast } from "./components/ChampagneToast";
 import { FloatingNav, type NavItem } from "./components/FloatingNav";
 
 function formatEventDate(value: string | null): string | null {
@@ -60,12 +60,6 @@ export function CoverGate({
       {canPlayMusic ? <audio ref={audioRef} src={musicUrl ?? undefined} loop preload="none" /> : null}
 
       <div id="ma-cover" className="ma-cover" aria-hidden={opened || undefined} inert={opened}>
-        <div className="ma-curtain" aria-hidden="true">
-          <div className="ma-curtain-panel ma-curtain-left" />
-          <div className="ma-curtain-panel ma-curtain-right" />
-          <div className="ma-curtain-seam"><AtelierMark /></div>
-        </div>
-
         <div className="ma-cover-frame">
           <header className="ma-cover-masthead">
             <span>{label}</span>
@@ -80,6 +74,7 @@ export function CoverGate({
               ) : displayName}
             </h1>
             {dateLabel ? <time dateTime={eventDate ?? undefined}>{dateLabel}</time> : null}
+            <ChampagneToast />
           </div>
 
           <div className="ma-cover-recipient">

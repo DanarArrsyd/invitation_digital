@@ -248,3 +248,74 @@ test("couple names are Imperial Script signatures and chapter titles stay Bodoni
   }
   assert.match(sheet, /\.ma-cover-amp\s*\{[^}]*font-family:\s*var\(--ma-display\)/, "the ampersand stays a Bodoni italic accent");
 });
+
+test("the cover toasts with two champagne flutes and still opens on the first tap", async () => {
+  const { MidnightAtelier } = createLoader()("index");
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(MidnightAtelier, { invitation: invitation(), guest: null }))).window;
+  assert.equal(document.querySelector(".ma-curtain"), null, "the curtain seam is retired");
+  const toast = document.querySelector("#ma-cover .ma-cover-stage svg.ma-toast");
+  assert.ok(toast, "the flutes stand on the cover stage");
+  assert.equal(toast.getAttribute("aria-hidden"), "true");
+  assert.ok(document.querySelector("#ma-cover h1").compareDocumentPosition(toast) & 4, "the names sit above the flutes");
+  assert.equal(toast.querySelectorAll(".ma-flute").length, 2);
+  assert.ok(toast.querySelector(".ma-flute-left") && toast.querySelector(".ma-flute-right"));
+  assert.equal(toast.querySelectorAll(".ma-toast-ring").length, 1);
+  assert.ok(toast.querySelectorAll(".ma-toast-bubble").length >= 6);
+  assert.ok(toast.querySelectorAll("*").length <= 20, `${toast.querySelectorAll("*").length} nodes`);
+  const open = document.querySelector("#ma-cover button");
+  assert.equal(open.className, "ma-cover-open");
+  assert.match(open.textContent, /Buka undangan/);
+  assert.equal(open.getAttribute("aria-controls"), "ma-content");
+
+  const calls = [];
+  const load = createLoader({ actions: { trackCoverOpened: async (...args) => { calls.push(args); } } });
+  const withMusic = invitation({
+    features: { ...invitation().features, music: true },
+    media: { coverImageUrl: null, musicUrl: "/music.mp3" },
+  });
+  const view = await mount(
+    React.createElement(load("index").MidnightAtelier, { invitation: withMusic, guest: null }),
+    { intersectionObserver: FakeIntersectionObserver },
+  );
+  try {
+    let plays = 0;
+    view.document.querySelector("audio").play = async () => { plays += 1; };
+    await act(async () => view.document.querySelector(".ma-cover-open").click());
+    assert.equal(plays, 1, "music starts in the same tap");
+    assert.deepEqual(calls, [["midnight", null]]);
+    assert.equal(view.document.getElementById("ma-content").hidden, false);
+    assert.equal(view.document.getElementById("ma-cover").hasAttribute("inert"), true, "the cover stops taking taps at once");
+  } finally { await view.cleanup(); }
+
+  const sheet = css();
+  assert.match(sheet, /\[data-opened="true"\] \.ma-flute-left\s*\{[^}]*animation:/);
+  assert.match(sheet, /\[data-opened="true"\] \.ma-toast-ring\s*\{[^}]*animation:/);
+  assert.match(sheet, /\[data-opened="true"\] \.ma-cover\s*\{[^}]*transition:[^}]*opacity[^}]*1000ms/, "the cover lingers for the toast, then fades");
+  assert.match(sheet, /data-reduced-motion="true"\] :is\([^)]*\.ma-flute[^)]*\)\s*\{[^}]*animation:\s*none/);
+  assert.doesNotMatch(sheet, /ma-curtain/);
+});
+
+test("the toast cover hydrates without mismatch when the browser prefers reduced motion", async () => {
+  const { MidnightAtelier } = createLoader({ reducedMotion: true })("index");
+  const element = React.createElement(MidnightAtelier, {
+    invitation: invitation({ features: { ...invitation().features, countdown: false } }),
+    guest: null,
+  });
+  const view = await mount(React.createElement("div"));
+  const errors = [];
+  const originalError = console.error;
+  console.error = (...args) => errors.push(args.map(String).join(" "));
+  let root;
+  try {
+    const container = view.document.createElement("div");
+    view.document.body.append(container);
+    container.innerHTML = renderToString(element);
+    await act(async () => { root = hydrateRoot(container, element); });
+    assert.deepEqual(errors, []);
+    assert.ok(container.querySelector("svg.ma-toast"));
+  } finally {
+    console.error = originalError;
+    if (root) await act(async () => root.unmount());
+    await view.cleanup();
+  }
+});

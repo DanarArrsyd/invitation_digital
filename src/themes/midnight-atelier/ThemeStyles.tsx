@@ -41,33 +41,7 @@ export function ThemeStyles() {
         overflow-y: auto;
         background: var(--ma-ink);
         color: var(--ma-pearl);
-        transition: visibility 0s linear .95s;
       }
-      .ma-curtain { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-      .ma-curtain-panel {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 50.1%;
-        transition: transform .95s cubic-bezier(.77, 0, .175, 1);
-      }
-      .ma-curtain-left { left: 0; background: var(--ma-ink); border-right: 1px solid var(--ma-champagne); }
-      .ma-curtain-right { right: 0; background: var(--ma-lacquer); border-left: 1px solid var(--ma-champagne); }
-      .ma-curtain-seam {
-        position: absolute;
-        z-index: 2;
-        top: 50%;
-        left: 50%;
-        display: grid;
-        width: clamp(4.5rem, 10vw, 7rem);
-        aspect-ratio: 1;
-        place-items: center;
-        border: 1px solid var(--ma-champagne);
-        background: var(--ma-ink);
-        transform: translate(-50%, -50%);
-        transition: opacity .24s ease .18s;
-      }
-      .ma-curtain-seam .ma-mark { width: 55%; }
       .ma-cover-frame {
         position: relative;
         z-index: 3;
@@ -148,11 +122,31 @@ export function ThemeStyles() {
         font: inherit;
       }
       .ma-cover-open span:last-child { color: var(--ma-oxblood); font-size: .75rem; }
-      .ma-gate[data-opened="true"] .ma-cover { visibility: hidden; pointer-events: none; }
-      .ma-gate[data-opened="true"] .ma-curtain-left { transform: translateX(-101%); }
-      .ma-gate[data-opened="true"] .ma-curtain-right { transform: translateX(101%); }
-      .ma-gate[data-opened="true"] .ma-curtain-seam { opacity: 0; transition-delay: 0s; }
-      .ma-gate[data-opened="true"] .ma-cover-frame { opacity: 0; transform: scale(.985); }
+      /* Champagne toast: the flutes clink (~.55s), a ring of light pulses and
+         bubbles rise; the cover then fades (1000ms + 400ms). It is inert and
+         stops taking taps the moment it opens. */
+      .ma-gate[data-opened="true"] .ma-cover {
+        opacity: 0; visibility: hidden; pointer-events: none;
+        transition: opacity 400ms ease 1000ms, visibility 0s 1400ms;
+      }
+      .ma-gate[data-opened="true"] :is(.ma-cover-masthead, .ma-cover-recipient) { opacity: 0; transition: opacity .3s ease; }
+      .ma-gate[data-opened="true"] .ma-cover-names { transform: translateY(-6px); transition: transform .8s cubic-bezier(.22, .61, .36, 1) .2s; }
+      .ma-toast { display: block; width: clamp(120px, 34vw, 180px); height: auto; margin: clamp(1.5rem, 5vw, 2.5rem) auto 0; overflow: visible; color: var(--ma-champagne); }
+      .ma-toast .ma-flute path { stroke: currentColor; stroke-width: 1.2; }
+      .ma-toast .ma-flute .ma-flute-wine { fill: rgba(216, 192, 138, .35); stroke: none; }
+      .ma-flute { transform-box: view-box; }
+      .ma-flute-left { transform-origin: 64px 108px; }
+      .ma-flute-right { transform-origin: 96px 108px; }
+      .ma-toast-ring { stroke: var(--ma-champagne); stroke-width: 1; opacity: 0; transform-box: fill-box; transform-origin: center; }
+      .ma-toast-bubble { fill: var(--ma-champagne); opacity: 0; transform-box: fill-box; }
+      .ma-gate[data-opened="true"] .ma-flute-left { animation: ma-clink-left .55s cubic-bezier(.3, 0, .2, 1) forwards; }
+      .ma-gate[data-opened="true"] .ma-flute-right { animation: ma-clink-right .55s cubic-bezier(.3, 0, .2, 1) forwards; }
+      .ma-gate[data-opened="true"] .ma-toast-ring { animation: ma-ring .6s ease-out .45s forwards; }
+      .ma-gate[data-opened="true"] .ma-toast-bubble { animation: ma-bubble 1s ease-out forwards; }
+      @keyframes ma-clink-left { 60% { transform: rotate(6deg); } 80% { transform: rotate(4.5deg); } 100% { transform: rotate(5deg); } }
+      @keyframes ma-clink-right { 60% { transform: rotate(-6deg); } 80% { transform: rotate(-4.5deg); } 100% { transform: rotate(-5deg); } }
+      @keyframes ma-ring { from { opacity: .9; transform: scale(.4); } to { opacity: 0; transform: scale(2.4); } }
+      @keyframes ma-bubble { 0% { opacity: 0; transform: translate(0, 0); } 20% { opacity: .9; } 100% { opacity: 0; transform: translate(var(--ma-dx), var(--ma-dy)); } }
       .ma-content:focus { outline: none; }
       .ma-section { position: relative; min-height: 100svh; }
       .ma-section-inner {
@@ -808,10 +802,8 @@ export function ThemeStyles() {
         .ma-hero-text-only .ma-hero-copy { grid-column: 2; grid-row: 1; margin-bottom: clamp(3rem, 7vw, 7rem); }
         .ma-gallery-columns { columns: 3; }
       }
-      .ma-gate[data-reduced-motion="true"] .ma-cover,
-      .ma-gate[data-reduced-motion="true"] .ma-curtain-panel,
-      .ma-gate[data-reduced-motion="true"] .ma-curtain-seam,
-      .ma-gate[data-reduced-motion="true"] .ma-cover-frame { transition: none; }
+      .ma-gate[data-reduced-motion="true"] :is(.ma-cover, .ma-cover-frame, .ma-cover-masthead, .ma-cover-recipient, .ma-cover-names) { transition: none; }
+      .ma-gate[data-reduced-motion="true"] :is(.ma-flute, .ma-toast-ring, .ma-toast-bubble) { animation: none; }
       @media (prefers-reduced-motion: reduce) {
         .ma-theme, .ma-theme *, .ma-theme *::before, .ma-theme *::after {
           animation: none !important;
