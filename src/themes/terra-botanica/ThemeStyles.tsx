@@ -229,7 +229,8 @@ export function ThemeStyles() {
     .tb-theme .tb-nav { position: fixed; z-index: 30; bottom: max(.75rem, env(safe-area-inset-bottom)); left: max(1rem, env(safe-area-inset-left)); right: max(1rem, env(safe-area-inset-right)); width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; background: var(--tb-bone); color: var(--tb-cacao); border: 1px solid var(--tb-moss); }
     .tb-theme .tb-nav ul { display: flex; gap: .25rem; overflow-x: auto; overscroll-behavior-x: contain; list-style: none; padding: .35rem; margin: 0; }
     .tb-theme .tb-nav li { flex: 0 0 auto; }
-    .tb-theme .tb-nav a { display: flex; align-items: center; justify-content: center; min-height: 48px; min-width: 48px; padding: .5rem .85rem; text-decoration: none; font-size: .8125rem; }
+    .tb-theme .tb-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .2rem; min-height: 48px; min-width: 48px; padding: .4rem .7rem; text-decoration: none; font-size: .8125rem; line-height: 1.2; }
+    .tb-theme .tb-nav-icon { display: block; flex: none; width: 20px; height: 20px; }
     .tb-theme .tb-nav a[aria-current="location"] { background: var(--tb-moss); color: var(--tb-bone); text-decoration: underline; }
     .tb-theme .tb-nav a:focus-visible { outline-offset: -3px; }
     .tb-theme .tb-music { position: fixed; z-index: 30; right: max(1rem, env(safe-area-inset-right)); bottom: calc(5.75rem + env(safe-area-inset-bottom)); display: grid; place-items: center; min-width: 48px; min-height: 48px; border: 1px solid var(--tb-moss); background: var(--tb-bone); color: var(--tb-moss); cursor: pointer; }

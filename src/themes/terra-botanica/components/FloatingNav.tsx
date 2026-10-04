@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo } from "react";
-import type { ThemeSectionKey } from "@/themes/section-contract";
 import { useActiveSection } from "@/themes/shared/use-active-section";
+
+import { NavIcon, type TerraNavSection } from "./NavIcon";
 
 export interface NavItem {
   id: `tb-${string}`;
-  section: ThemeSectionKey;
+  section: TerraNavSection;
   label: string;
 }
 
@@ -20,7 +21,10 @@ export function FloatingNav({ items }: { items: NavItem[] }) {
       <ul>
         {items.map((item) => (
           <li key={item.id}>
-            <a href={`#${item.id}`} aria-current={activeId === item.id ? "location" : undefined}>{item.label}</a>
+            <a href={`#${item.id}`} aria-current={activeId === item.id ? "location" : undefined}>
+              <NavIcon section={item.section} />
+              <span className="tb-nav-label">{item.label}</span>
+            </a>
           </li>
         ))}
       </ul>

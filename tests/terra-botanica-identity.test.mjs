@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import vm from "node:vm";
 import React, { act } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { JSDOM } from "jsdom";
 import ts from "typescript";
@@ -356,4 +356,89 @@ test("a text-only couple keeps full-width names instead of a shrunken far-edge c
   assert.doesNotMatch(css, /\.tb-person-copy \{[^}]*max-width/);
   assert.match(css, /\.tb-person-text-only \{ display: block; width: min\(100%, 44rem\); \}/);
   assert.doesNotMatch(css, /\.tb-person-text-only:nth-child\(even\) \{ margin-left: auto; \}/);
+});
+
+function navInvitation() {
+  const gifts = [{ id: "gift", providerType: "bank", providerName: "Bank", accountNumber: "123", accountName: "Alya", logoUrl: null, sortOrder: 0 }];
+  const base = invitation({ gifts });
+  return { ...base, features: { ...base.features, rsvp: true, wishes: true, gift: true } };
+}
+
+test("floating nav pairs every visible Courier label with one hidden botanical glyph", () => {
+  const load = createLoader();
+  const { buildTerraNavItems } = load("TerraBotanica");
+  const { FloatingNav } = load("components/FloatingNav");
+  const items = buildTerraNavItems(navInvitation());
+  assert.deepEqual(Array.from(items, (item) => item.section), ["hero", "couple", "events", "story", "gallery", "rsvp", "wishes", "gift"]);
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(FloatingNav, { items }))).window;
+  const links = [...document.querySelectorAll(".tb-nav a")];
+  assert.equal(links.length, items.length);
+  const glyphs = new Set();
+  for (const [index, link] of links.entries()) {
+    const icons = link.querySelectorAll("svg");
+    assert.equal(icons.length, 1, `${items[index].label} has one icon`);
+    const [icon] = icons;
+    assert.equal(icon.getAttribute("aria-hidden"), "true");
+    assert.equal(icon.getAttribute("focusable"), "false");
+    assert.equal(icon.getAttribute("stroke"), "currentColor");
+    assert.equal(icon.getAttribute("viewBox"), "0 0 24 24");
+    assert.ok(icon.querySelector("path, circle"), "glyph has drawn line work");
+    assert.equal(link.textContent.trim(), items[index].label, "accessible name stays the visible label");
+    assert.equal(link.hasAttribute("aria-label"), false);
+    assert.equal(link.querySelector(".tb-nav-label").textContent, items[index].label);
+    assert.ok(icon.compareDocumentPosition(link.querySelector(".tb-nav-label")) & 4, "icon sits before (above) the label");
+    glyphs.add(icon.innerHTML);
+  }
+  assert.equal(glyphs.size, items.length, "each section has its own glyph");
+  const active = document.querySelector('.tb-nav a[aria-current="location"]');
+  assert.ok(active?.querySelector("svg"), "the active item keeps its icon");
+});
+
+test("every section the nav can emit has a Herbarium glyph", () => {
+  const source = readFileSync(resolve(terraRoot, "TerraBotanica.tsx"), "utf8");
+  const builder = source.match(/export function buildTerraNavItems[\s\S]*?\n}\n/)[0];
+  const sections = [...builder.matchAll(/section: "([a-zA-Z]+)"/g)].map(([, key]) => key);
+  assert.ok(sections.length >= 8);
+  const { NavIcon } = createLoader()("components/NavIcon");
+  for (const section of sections) {
+    const svg = new JSDOM(renderToStaticMarkup(React.createElement(NavIcon, { section }))).window.document.querySelector("svg");
+    assert.ok(svg?.querySelector("path, circle"), `${section} has an icon`);
+    assert.equal(svg.getAttribute("stroke-width"), "1.4");
+  }
+  const icon = readFileSync(resolve(terraRoot, "components/NavIcon.tsx"), "utf8");
+  for (const forbidden of [/<img/, /querySelector/, /motion\//]) assert.doesNotMatch(icon, forbidden);
+});
+
+test("nav icons sit 20px above the label and keep 48px tap targets and active contrast", () => {
+  const css = styles();
+  assert.match(css, /\.tb-nav a \{[^}]*flex-direction: column;[^}]*min-height: 48px; min-width: 48px;/);
+  assert.match(css, /\.tb-nav-icon \{[^}]*width: 20px; height: 20px;/);
+  assert.doesNotMatch(css, /\.tb-nav-icon \{[^}]*(opacity|color):/, "icon inherits the item's text color");
+  assert.match(css, /\.tb-nav a\[aria-current="location"\] \{[^}]*background: var\(--tb-moss\); color: var\(--tb-bone\)/);
+  assert.match(css, /\.tb-nav ul \{[^}]*overflow-x: auto/, "nav scrolls within narrow screens");
+  assert.match(css, /\.tb-nav \{[^}]*max-width: calc\(100% - 2rem\)/);
+});
+
+test("floating nav server markup matches the first client render", async () => {
+  const load = createLoader();
+  const { buildTerraNavItems } = load("TerraBotanica");
+  const { FloatingNav } = load("components/FloatingNav");
+  const element = React.createElement(FloatingNav, { items: buildTerraNavItems(navInvitation()) });
+  const view = await mount(React.createElement("div"));
+  const errors = [];
+  const originalError = console.error;
+  console.error = (...args) => errors.push(args.map(String).join(" "));
+  let root;
+  try {
+    const container = view.document.createElement("div");
+    view.document.body.append(container);
+    container.innerHTML = renderToStaticMarkup(element);
+    await act(async () => { root = hydrateRoot(container, element); });
+    assert.deepEqual(errors, []);
+    assert.equal(container.querySelectorAll(".tb-nav svg").length, 8);
+  } finally {
+    console.error = originalError;
+    if (root) await act(async () => root.unmount());
+    await view.cleanup();
+  }
 });
