@@ -222,3 +222,29 @@ test("light-form placeholders stay AA on mutiara (ink at 70% ≈ 6:1)", () => {
   const css = readFileSync(new URL("../src/themes/midnight-atelier/ThemeStyles.tsx", import.meta.url), "utf8");
   assert.match(css, /\.ma-form-dark \.ma-form-control::placeholder \{ color: color-mix\(in srgb, var\(--ma-ink\) 70%, transparent\); \}/);
 });
+
+test("couple names are Imperial Script signatures and chapter titles stay Bodoni italic", () => {
+  const { MidnightAtelier } = createLoader()("index");
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(MidnightAtelier, { invitation: invitation(), guest: null }))).window;
+  const cover = document.querySelector("#ma-cover h1");
+  assert.ok(cover.classList.contains("ma-script"));
+  assert.match(cover.textContent, /Nadia.*Arka/s);
+  for (const id of ["ma-hero-heading", "ma-closing-heading"]) {
+    assert.ok(document.getElementById(id).classList.contains("ma-script"), `${id} is script`);
+  }
+  const people = [...document.querySelectorAll(".ma-person-copy h3")];
+  assert.equal(people.length, 2);
+  for (const name of people) assert.ok(name.classList.contains("ma-script"));
+  for (const title of document.querySelectorAll(".ma-chapter-heading h2, .ma-interaction-heading h2, .ma-countdown-intro h2")) {
+    assert.ok(!title.classList.contains("ma-script"), `chapter "${title.textContent}" stays Bodoni`);
+  }
+
+  const sheet = css();
+  for (const selector of [".ma-hero-copy h2", ".ma-person-copy h3", ".ma-closing-copy h2", ".ma-cover-names"]) {
+    for (const body of rules(sheet, selector)) {
+      assert.doesNotMatch(body, /max-width:\s*[\d.]+ch/, `${selector} is a name: never capped by a ch measure`);
+      assert.doesNotMatch(body, /letter-spacing:\s*-/, `${selector}: script needs no negative tracking`);
+    }
+  }
+  assert.match(sheet, /\.ma-cover-amp\s*\{[^}]*font-family:\s*var\(--ma-display\)/, "the ampersand stays a Bodoni italic accent");
+});

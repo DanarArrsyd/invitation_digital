@@ -49,7 +49,7 @@ export function CoupleSection({ people, settings, invitationType }: {
               )}
 
               <div className="ma-person-copy">
-                <h3>{person.fullName}</h3>
+                <h3 className="ma-script">{person.fullName}</h3>
                 {parents.length > 0 ? (
                   <div className="ma-parents">
                     <p>{parentLabel(person.role)}</p>

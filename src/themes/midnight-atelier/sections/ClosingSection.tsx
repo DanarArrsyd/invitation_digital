@@ -17,7 +17,7 @@ export function ClosingSection({ displayName, message, imageUrl, imageAlt }: {
     >
       <div className="ma-closing-copy">
         <AtelierMark />
-        <h2 id="ma-closing-heading">{displayName}</h2>
+        <h2 id="ma-closing-heading" className="ma-script">{displayName}</h2>
         {message?.trim() ? <p>{message}</p> : null}
       </div>
       {imageUrl ? (

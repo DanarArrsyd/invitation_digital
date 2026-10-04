@@ -97,14 +97,12 @@ export function ThemeStyles() {
         align-items: center;
         min-width: 0;
         margin: 0;
-        font-family: var(--ma-display);
-        font-size: clamp(4rem, 15vw, 10rem);
-        font-weight: 500;
-        letter-spacing: -.055em;
-        line-height: .76;
+        font-size: clamp(4.25rem, 17vw, 10.5rem);
+        line-height: 1.02;
         overflow-wrap: anywhere;
       }
       .ma-cover-amp {
+        font-family: var(--ma-display);
         margin-block: .18em;
         color: var(--ma-champagne);
         font-size: .32em;
@@ -196,14 +194,11 @@ export function ThemeStyles() {
         background: var(--ma-oxblood);
       }
       .ma-hero-copy h2 {
-        max-width: 9ch;
         margin: 0;
-        font-family: var(--ma-display);
-        font-size: clamp(3.6rem, 13vw, 10rem);
-        font-weight: 500;
-        letter-spacing: -.055em;
-        line-height: .82;
+        font-size: clamp(3.8rem, 15vw, 10rem);
+        line-height: 1.05;
         overflow-wrap: anywhere;
+        text-wrap: balance;
       }
       .ma-hero-copy p {
         max-width: 44ch;
@@ -261,13 +256,10 @@ export function ThemeStyles() {
       .ma-person-portrait { width: 100%; }
       .ma-person-copy { min-width: 0; overflow-wrap: anywhere; }
       .ma-person-copy h3 {
-        max-width: 11ch;
         margin: 0;
-        font-family: var(--ma-display);
-        font-size: clamp(2.5rem, 8vw, 5rem);
-        font-weight: 500;
-        letter-spacing: -.04em;
-        line-height: .92;
+        font-size: clamp(2.9rem, 9vw, 5.25rem);
+        line-height: 1.1;
+        text-wrap: balance;
       }
       .ma-parents {
         display: grid;
@@ -634,13 +626,10 @@ export function ThemeStyles() {
       .ma-closing > .ma-section-inner { display: grid; align-items: center; gap: clamp(3rem, 8vw, 7rem); }
       .ma-closing-copy { min-width: 0; overflow-wrap: anywhere; }
       .ma-closing-copy h2 {
-        max-width: 10ch;
         margin: clamp(2rem, 6vw, 4rem) 0 0;
-        font-family: var(--ma-display);
-        font-size: clamp(3.4rem, 11vw, 8rem);
-        font-weight: 500;
-        letter-spacing: -.05em;
-        line-height: .85;
+        font-size: clamp(3.6rem, 12vw, 8.5rem);
+        line-height: 1.05;
+        text-wrap: balance;
       }
       .ma-closing-copy p { max-width: 46ch; margin: 2rem 0 0; color: var(--ma-smoke-ink); line-height: 1.75; white-space: pre-line; }
       .ma-closing-image { width: min(100%, 34rem); justify-self: end; }
@@ -731,7 +720,7 @@ export function ThemeStyles() {
       @media (max-width: 767px) {
         .ma-cover-frame { grid-template-rows: auto 1fr auto; gap: 2rem; }
         .ma-cover-masthead span:last-child { display: none; }
-        .ma-cover-names { font-size: clamp(3.5rem, 20vw, 6.25rem); }
+        .ma-cover-names { font-size: clamp(3.75rem, 19vw, 6.5rem); }
         .ma-content { padding-bottom: calc(var(--ma-nav-height) + var(--ma-nav-offset)); }
         .ma-hero-text-only .ma-hero-copy { min-height: calc(100svh - 62.5vw); margin-top: -1px; align-content: center; }
       }
@@ -757,7 +746,7 @@ export function ThemeStyles() {
           margin-left: clamp(1.25rem, 5vw, 6rem);
           padding: clamp(2.5rem, 5vw, 5.5rem);
         }
-        .ma-hero:not(.ma-hero-text-only) .ma-hero-copy h2 { font-size: clamp(3.6rem, 7vw, 8.5rem); }
+        .ma-hero:not(.ma-hero-text-only) .ma-hero-copy h2 { font-size: clamp(3.8rem, 7.5vw, 8.5rem); }
         .ma-hero-image { grid-column: 7 / -1; grid-row: 1; }
         .ma-nav {
           top: 50%;

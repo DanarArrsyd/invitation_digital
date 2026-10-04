@@ -16,7 +16,7 @@ export function HeroSection({ displayName, imageUrl, message }: {
     >
       {imageUrl ? null : <AtelierMark className="ma-hero-mark" />}
       <div className="ma-hero-copy">
-        <h2 id="ma-hero-heading">{displayName}</h2>
+        <h2 id="ma-hero-heading" className="ma-script">{displayName}</h2>
         {message?.trim() ? <p>{message}</p> : null}
       </div>
       {imageUrl ? (

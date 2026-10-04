@@ -74,7 +74,7 @@ export function CoverGate({
 
           <div className="ma-cover-stage">
             <p className="ma-cover-intro">The wedding of</p>
-            <h1 className="ma-cover-names">
+            <h1 className="ma-cover-names ma-script">
               {names.length === 2 ? (
                 <><span>{names[0]}</span><span className="ma-cover-amp">&amp;</span><span>{names[1]}</span></>
               ) : displayName}
