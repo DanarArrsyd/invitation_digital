@@ -110,8 +110,9 @@ export function ThemeStyles() {
     .tb-theme .tb-image-fallback { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 1rem; color: var(--tb-moss); text-align: center; font-size: .8125rem; }
     .tb-theme .tb-image-fallback .tb-botanical { width: min(24%, 100px); max-height: 50%; }
     .tb-theme .tb-hero { padding-top: clamp(1.5rem, 4vw, 4rem); }
-    .tb-theme .tb-hero-image { border-radius: 0 0 20% 0; }
-    .tb-theme .tb-hero-copy { display: grid; gap: 1.5rem; margin-top: 2rem; }
+    .tb-theme .tb-hero-image { margin-top: 2.5rem; border-radius: 0 0 20% 0; }
+    .tb-theme .tb-hero-copy { display: grid; gap: 1.5rem; }
+    .tb-theme .tb-hero-text-only .tb-hero-copy { margin-top: 2rem; }
     .tb-theme .tb-hero-copy h2 { max-width: 15ch; font-size: clamp(3.2rem, 11vw, 7rem); line-height: 1.05; letter-spacing: 0; }
     .tb-theme .tb-hero-copy p { max-width: 38ch; white-space: pre-line; }
     .tb-theme .tb-hero-text-only { padding-top: clamp(4rem, 10vw, 8rem); }
@@ -282,7 +283,10 @@ export function ThemeStyles() {
       .tb-theme .tb-countdown > .tb-section-inner { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: end; }
       .tb-theme .tb-countdown .tb-calendar-actions { grid-column: 2; }
       .tb-theme .tb-dress-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .tb-theme .tb-hero-copy { grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); align-items: end; gap: 4rem; margin-top: 3rem; }
+      .tb-theme .tb-hero-text-only .tb-hero-copy { grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); align-items: end; gap: 4rem; margin-top: 3rem; }
+      /* Title and 3:4 portrait side by side; the photo takes ~5/12. */
+      .tb-theme .tb-hero:not(.tb-hero-text-only) > .tb-section-inner { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(2.5rem, 5vw, 5rem); align-items: center; }
+      .tb-theme .tb-hero-image { margin-top: 0; }
       .tb-theme .tb-quote-sheet { grid-template-columns: 80px minmax(0, 1fr); gap: 3rem; align-items: start; margin-left: max(0px, calc((100% - 1180px) / 2)); }
       .tb-theme .tb-quote-botanical { width: 80px; }
       .tb-theme .tb-person { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(3rem, 7vw, 7rem); }

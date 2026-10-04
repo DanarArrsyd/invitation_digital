@@ -488,3 +488,31 @@ test("floating nav server markup matches the first client render", async () => {
     await view.cleanup();
   }
 });
+
+test("the hero photo is a 3:4 portrait placed after the title block", () => {
+  const { TerraBotanica } = createLoader()("index");
+  const withPhoto = invitation({
+    media: { coverImageUrl: "/hero.jpg", musicUrl: null },
+    content: { openingQuote: null, openingMessage: "Dengan memohon rahmat-Nya.", closingMessage: null },
+  });
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(TerraBotanica, { invitation: withPhoto, guest: null }))).window;
+  const hero = document.getElementById("tb-beranda");
+  const frame = hero.querySelector(".tb-hero-image");
+  assert.equal(frame.style.aspectRatio, "3 / 4");
+  const heading = document.getElementById("tb-hero-heading");
+  const copy = heading.closest(".tb-hero-copy");
+  assert.ok(copy.querySelector("p"), "opening message stays in the title block");
+  assert.ok(heading.compareDocumentPosition(frame.querySelector("img")) & 4, "names come before the photo in reading order");
+  assert.ok(copy.compareDocumentPosition(frame) & 4, "the whole title block precedes the photo");
+
+  const textOnly = new JSDOM(renderToStaticMarkup(React.createElement(TerraBotanica, { invitation: invitation(), guest: null }))).window.document.getElementById("tb-beranda");
+  assert.ok(textOnly.classList.contains("tb-hero-text-only"));
+  assert.equal(textOnly.querySelector(".tb-media"), null, "no placeholder frame without a photo");
+  assert.ok(textOnly.querySelector(".tb-hero-botanical").compareDocumentPosition(textOnly.querySelector(".tb-hero-copy")) & 4);
+
+  const source = readFileSync(resolve(terraRoot, "sections/HeroSection.tsx"), "utf8");
+  assert.match(source, /sizes="\(min-width: 1360px\) 492px, \(min-width: 768px\) 40vw, 88vw"/, "sizes match the 5/12 desktop column");
+  const css = styles();
+  const desktop = css.slice(css.indexOf("@media (min-width: 768px)"));
+  assert.match(desktop, /\.tb-hero:not\(\.tb-hero-text-only\) > \.tb-section-inner \{[^}]*grid-template-columns: minmax\(0, 7fr\) minmax\(0, 5fr\);/, "side by side, photo ~5/12");
+});
