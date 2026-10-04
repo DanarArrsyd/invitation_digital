@@ -590,3 +590,94 @@ test("the dance card stays hidden on an error, reads AA on mutiara, wraps long n
   }
   assert.match(sheet, /prefers-reduced-motion: reduce\)\s*\{\s*\.ma-theme, \.ma-theme \*[^{]*\{\s*animation: none !important/, "reduced motion shows the card already filled");
 });
+
+test("a sent wish rises away with champagne bubbles and the thank-you stays", async () => {
+  const { WishBubbles } = createLoader()("components/WishBubbles");
+  const rise = new JSDOM(renderToStaticMarkup(React.createElement(WishBubbles, { message: "Bahagia selalu" }))).window.document.querySelector("[data-ma-bubbles]");
+  assert.equal(rise.getAttribute("aria-hidden"), "true");
+  assert.equal(rise.querySelector(".ma-wish-ghost").textContent, "Bahagia selalu");
+  assert.ok(rise.querySelectorAll(".ma-bubble").length >= 6);
+  assert.ok(rise.querySelectorAll("*").length <= 20, `${rise.querySelectorAll("*").length} nodes`);
+  const long = new JSDOM(renderToStaticMarkup(React.createElement(WishBubbles, { message: "doa ".repeat(100) }))).window.document;
+  assert.ok(long.querySelector(".ma-wish-ghost").textContent.length <= 140);
+  const still = createLoader({ reducedMotion: true })("components/WishBubbles").WishBubbles;
+  assert.equal(renderToStaticMarkup(React.createElement(still, { message: "Bahagia selalu" })), "");
+
+  const { WishesSection } = createLoader({ actions: { submitWish: async () => ({ status: "success" }) } })("sections/WishesSection");
+  const view = await mount(React.createElement(WishesSection, { invitationId: "midnight", slug: "midnight", guestToken: "t", guestName: "Bude Sri", wishes: [] }));
+  try {
+    const form = view.document.querySelector("#ma-ucapan form");
+    form.elements.namedItem("message").value = "Bahagia selalu";
+    await act(async () => form.dispatchEvent(new view.window.Event("submit", { bubbles: true, cancelable: true })));
+    const section = view.document.getElementById("ma-ucapan");
+    assert.match(section.querySelector('[role="status"]').textContent, /Terima kasih atas ucapan dan doanya/);
+    assert.equal(section.querySelector("[data-ma-bubbles] .ma-wish-ghost").textContent, "Bahagia selalu");
+  } finally { await view.cleanup(); }
+
+  const reduced = createLoader({ reducedMotion: true, actions: { submitWish: async () => ({ status: "success" }) } })("sections/WishesSection").WishesSection;
+  const calm = await mount(React.createElement(reduced, { invitationId: "midnight", slug: "midnight", guestToken: "t", guestName: "Bude Sri", wishes: [] }));
+  try {
+    const form = calm.document.querySelector("#ma-ucapan form");
+    form.elements.namedItem("message").value = "Bahagia selalu";
+    await act(async () => form.dispatchEvent(new calm.window.Event("submit", { bubbles: true, cancelable: true })));
+    assert.match(calm.document.querySelector('#ma-ucapan [role="status"]').textContent, /Terima kasih/);
+    assert.equal(calm.document.querySelector("[data-ma-bubbles]"), null, "no bubbles under reduced motion");
+  } finally { await calm.cleanup(); }
+});
+
+test("wish bubbles are decorative, leave once risen, never replay, add no wish client-side and animate only compositor properties", async () => {
+  const { WishesSection } = createLoader({ actions: { submitWish: async () => ({ status: "success" }) } })("sections/WishesSection");
+  const props = { invitationId: "midnight", slug: "midnight", guestToken: "t", guestName: "Bude Sri", wishes: [] };
+  // No bubbles in the server markup or before a submit.
+  assert.doesNotMatch(renderToString(React.createElement(WishesSection, props)), /data-ma-bubbles/);
+  let setWishes;
+  function Host() {
+    const [wishes, update] = React.useState([]);
+    setWishes = update;
+    return React.createElement(WishesSection, { ...props, wishes });
+  }
+  const view = await mount(React.createElement(Host));
+  try {
+    assert.equal(view.document.querySelector("[data-ma-bubbles]"), null);
+    const form = view.document.querySelector("#ma-ucapan form");
+    form.elements.namedItem("message").value = "Semoga sakinah";
+    await act(async () => form.dispatchEvent(new view.window.Event("submit", { bubbles: true, cancelable: true })));
+    const rise = view.document.querySelector("[data-ma-bubbles]");
+    assert.ok(rise);
+    assert.ok(rise.querySelectorAll("*").length <= 12, `${rise.querySelectorAll("*").length} nodes`);
+    assert.equal(view.document.querySelector(".ma-wishes-list"), null, "the sent wish is not inserted client-side");
+    assert.ok(view.document.querySelector(".ma-wishes-empty"));
+
+    const end = (target, animationName) => {
+      const event = new view.window.Event("animationend", { bubbles: true });
+      Object.defineProperty(event, "animationName", { value: animationName });
+      target.dispatchEvent(event);
+    };
+    await act(async () => end(rise.querySelector(".ma-bubble"), "ma-bubble-rise"));
+    assert.ok(view.document.querySelector("[data-ma-bubbles]"), "a bubble ending early does not remove the rise");
+    await act(async () => end(rise.querySelector(".ma-wish-ghost"), "ma-ghost-rise"));
+    assert.equal(view.document.querySelector("[data-ma-bubbles]"), null, "removed once the wish has risen away");
+    assert.match(view.document.querySelector('#ma-ucapan [role="status"]').textContent, /Terima kasih atas ucapan dan doanya/);
+
+    // The server refresh brings the wish in; the bubbles do not replay.
+    const wish = { id: "w1", guestName: "Bude Sri", message: "Semoga sakinah", createdAt: "2030-01-02T00:00:00Z" };
+    await act(async () => setWishes([wish]));
+    assert.equal(view.document.querySelector(".ma-wish-entry p").textContent, "Semoga sakinah");
+    assert.equal(view.document.querySelector("[data-ma-bubbles]"), null, "an unrelated re-render does not replay the bubbles");
+    assert.ok(view.document.querySelector('#ma-ucapan [role="status"]'));
+  } finally { await view.cleanup(); }
+
+  const sheet = css();
+  assert.match(rules(sheet, ".ma-wish-rise").join(";"), /pointer-events:\s*none/);
+  assert.match(rules(sheet, ".ma-wish-rise").join(";"), /left:\s*0/);
+  assert.match(rules(sheet, ".ma-wish-ghost").join(";"), /overflow-wrap:\s*anywhere/);
+  for (const name of ["ma-ghost-rise", "ma-bubble-rise"]) {
+    const body = sheet.match(new RegExp(`@keyframes ${name}\\s*\\{((?:[^{}]*\\{[^}]*\\})*)\\s*\\}`))?.[1];
+    assert.ok(body, `@keyframes ${name}`);
+    for (const [, property] of body.matchAll(/([\w-]+)\s*:/g)) {
+      assert.match(property, /^(opacity|transform|--[\w-]+)$/, `${name} animates ${property}`);
+    }
+  }
+  const source = readFileSync(resolve(midnightRoot, "components/WishBubbles.tsx"), "utf8");
+  assert.doesNotMatch(source, /<img|querySelector|Math\.random\(/);
+});
