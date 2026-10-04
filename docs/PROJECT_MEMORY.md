@@ -460,16 +460,23 @@ plan in `docs/superpowers/plans/` after the previous one merges.
 
 #### Checkpoint — Terra "Herbarium Cinta" (in progress, 2026-10-04)
 
-- Branch `design/terra-identity` (pushed), based on `main` `07951a4`.
+- Branch `design/terra-identity-at0kh3` (pushed; continues the earlier
+  `design/terra-identity`), based on `main` `07951a4`.
 - Plan: `docs/superpowers/plans/2026-10-03-terra-identity.md` (10 tasks).
-- Done: Task 1 fonts — commit `4deb1c3` (Herr Von Muellerhoff / Courier
-  Prime / Spectral; Fraunces and Manrope removed). Review clean; 296/296
-  tests, lint and typecheck clean.
-- **Resume at Task 2** (palette, paper texture, `tests/terra-botanica-identity.test.mjs`
-  harness). Tasks 2–9 each: implement test-first, review, then next; Task 10
-  is docs + full verification + visual QA + PR. The owner asked to be
-  consulted before continuing past each checkpoint they set, and always
-  before merging.
+- Done: Task 1 fonts `4deb1c3`; Task 2 palette + paper texture + identity
+  test harness `407aa0c`; Task 3 script names `fb66ae4`; Task 4 shared hooks
+  `f8a6198`; Task 5 seed bloom `0ca3f56`; Task 6 growing vine `38eacac` +
+  fix `8f51e88` (`useScrollProgress` also recomputes on body resize, so the
+  vine is not full-grown after opening); Task 7 typed labels `cf10a0e` + fix
+  `e4d2827` (labels use a `"0px"` root margin so one at the page end cannot
+  stay clipped); Task 8 dandelion `3bce6de`; Task 9 taped photos `7ca0328`
+  (adds a reduced-motion override so photos are settled before the observer
+  fires). Suite 309/310: the one failure is the pre-existing environmental
+  countdown timezone test (nested `node --test` prints TAP, not `✔`, when
+  piped on Node 22); lint and typecheck clean.
+- **Resume at Task 10** (docs, full verification, visual QA, PR). The owner
+  asked to be consulted before continuing past each checkpoint they set, and
+  always before merging.
 - Workflow used so far: superpowers subagent-driven development (fresh
   implementer per task, spec+quality review per task, whole-branch review
   before the PR). Local SDD scratch (`.superpowers/`) is gitignored and does
@@ -479,6 +486,17 @@ plan in `docs/superpowers/plans/` after the previous one merges.
     actions, the gift copy button and form legends (they render in Spectral).
   - Terra test harnesses still mock `next/font/google` Fraunces/Manrope
     (harmless, unused).
+  - Flash: `useInViewOnce` arms (`watching`) right after mount, so typed
+    labels and the gallery hide then reveal if already on screen at mount
+    (restored scroll, `#tb-galeri` deep link). Candidate fix in the shared
+    hook: set `watching` only after the observer's first callback reports
+    not-intersecting; if it reports intersecting, set `seen` directly.
+  - Dandelion: seeds clip at the 320px screen edge (no page overflow; theme
+    root has `overflow-x: clip`); the bare stalk and a 120x130 gap remain
+    after the seeds fade; on desktop seeds drift over the wishes list.
+  - Visual QA to confirm: script names fit at 320px; vine does not overlap
+    section content; bloom timing (cover lifts at ~1.1s, fades 600ms);
+    gallery tilt fits the gutter at 320px.
 - Terra-specific constraints learned while planning: Terra source must not
   contain `<img` or `querySelector`; the render harness stubs `motion/react`
   to `useReducedMotion` only, so Terra effects are CSS + the shared
