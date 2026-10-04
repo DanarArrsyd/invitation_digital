@@ -202,6 +202,7 @@ function loadNormalizer() {
         if (name === "@/lib/packages/entitlements") return load("lib/packages/entitlements");
         if (name === "@/lib/supabase/storage") return { getMediaPublicUrl: () => null };
         if (name === "@/lib/invitations/time-zones") return load("lib/invitations/time-zones");
+      if (name === "@/lib/invitations/person-role") return load("lib/invitations/person-role");
         throw new Error(`Unexpected normalization import: ${name}`);
       },
     });
