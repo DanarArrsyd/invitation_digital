@@ -31,7 +31,7 @@ export function ThemeStyles() {
     /* Herbarium voices: ink signatures for names, typewriter for specimen labels. */
     .tb-theme .tb-script { font-family: var(--tb-script); font-style: normal; font-weight: 400; letter-spacing: 0; }
     .tb-theme .tb-label { font-family: var(--tb-label); font-style: normal; letter-spacing: .04em; }
-    .tb-theme :is(.tb-journal-label, .tb-cover-date, .tb-event-index, .tb-event-main time, .tb-event-time, .tb-story-date, .tb-gift-provider, .tb-wish-meta time, .tb-gallery-item figcaption, .tb-countdown-units dt, .tb-action, .tb-form-submit, .tb-more-wishes, .tb-nav a) { font-family: var(--tb-label); font-style: normal; letter-spacing: .04em; }
+    .tb-theme :is(.tb-journal-label, .tb-cover-date, .tb-event-index, .tb-event-main time, .tb-event-time, .tb-story-date, .tb-gift-provider, .tb-wish-meta time, .tb-gallery-item figcaption, .tb-countdown-units dt, .tb-action, .tb-form-submit, .tb-more-wishes, .tb-nav a, .tb-text-action, .tb-calendar-actions :is(a, button), .tb-gift-account > button, .tb-attendance legend, .tb-attendance-choices button) { font-family: var(--tb-label); font-style: normal; letter-spacing: .04em; }
     .tb-theme button, .tb-theme input, .tb-theme textarea, .tb-theme select { font: inherit; }
     .tb-theme button, .tb-theme a { -webkit-tap-highlight-color: transparent; }
     .tb-theme :focus-visible { outline: 3px solid currentColor; outline-offset: 5px; }

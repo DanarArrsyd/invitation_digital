@@ -341,3 +341,11 @@ test("gallery photos drop in and settle, taped and tilted, without losing the li
   // Reduced motion: a waiting print is shown settled rather than held invisible.
   assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tb-gallery-grid\[data-settle\] \.tb-gallery-item\s*\{\s*opacity:\s*1 !important;\s*transform:\s*rotate\(var\(--tb-tilt, 0deg\)\) !important/);
 });
+
+test("every action and form label wears the Courier specimen voice", () => {
+  const rule = styles().match(/\.tb-theme :is\(([^{]*)\)\s*\{\s*font-family:\s*var\(--tb-label\)/);
+  assert.ok(rule, "Courier label rule exists");
+  for (const selector of [".tb-text-action", ".tb-calendar-actions :is(a, button)", ".tb-gift-account > button", ".tb-attendance legend", ".tb-attendance-choices button"]) {
+    assert.ok(rule[1].includes(selector), `${selector} uses Courier`);
+  }
+});
