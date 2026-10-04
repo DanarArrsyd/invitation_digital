@@ -76,7 +76,7 @@ test("all four registered theme slugs resolve through the real public renderer",
   assert.deepEqual(Object.keys(themeRegistry).sort(), ["cobalt-riviera", "midnight-atelier", "nusantara-ivory", "terra-botanica"]);
   assert.equal(themeRegistry["terra-botanica"].preview.name, "Terra Botanica");
   assert.equal(themeRegistry["terra-botanica"].category, "wedding");
-  assert.deepEqual([...themeRegistry["terra-botanica"].preview.palette], ["#F2E7D8", "#B6634B", "#53634E"]);
+  assert.deepEqual([...themeRegistry["terra-botanica"].preview.palette], ["#F2EBDD", "#B5653E", "#4E5B3A"]);
   assert.equal(themeRegistry["midnight-atelier"].preview.name, "Midnight Atelier");
   assert.equal(themeRegistry["midnight-atelier"].category, "wedding");
   assert.deepEqual([...themeRegistry["midnight-atelier"].preview.palette], ["#09090B", "#541E2B", "#C6A15B"]);
@@ -202,6 +202,7 @@ function loadNormalizer() {
         if (name === "@/lib/packages/entitlements") return load("lib/packages/entitlements");
         if (name === "@/lib/supabase/storage") return { getMediaPublicUrl: () => null };
         if (name === "@/lib/invitations/time-zones") return load("lib/invitations/time-zones");
+      if (name === "@/lib/invitations/person-role") return load("lib/invitations/person-role");
         throw new Error(`Unexpected normalization import: ${name}`);
       },
     });

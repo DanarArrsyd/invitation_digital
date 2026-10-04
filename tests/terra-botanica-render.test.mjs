@@ -141,7 +141,7 @@ test("shell navigation candidates require enabled features and available content
   const { buildTerraNavItems } = loadTheme().load("themes/terra-botanica/TerraBotanica");
   assert.equal(typeof buildTerraNavItems, "function");
   assert.deepEqual(Array.from(buildTerraNavItems(fixture()), (item) => item.id), [
-    "tb-beranda", "tb-mempelai", "tb-acara", "tb-cerita", "tb-galeri", "tb-rsvp", "tb-ucapan", "tb-kado",
+    "tb-beranda", "tb-acara", "tb-rsvp", "tb-ucapan", "tb-kado",
   ]);
   const empty = fixture({ people: [], events: [], stories: [], gallery: [], gifts: [], features: { ...features, rsvp: false, wishes: false } });
   assert.deepEqual(Array.from(buildTerraNavItems(empty), (item) => item.id), ["tb-beranda"]);
@@ -409,7 +409,7 @@ function gatheringFixture(count = 1, overrides = {}) {
   });
 }
 
-// Catches lost event rows, clipped content in markup, wrong calendar input, and duplicate targets.
+// Catches lost event rows, clipped content in markup, calendar actions creeping back into rows, and duplicate targets.
 test("events render one and five individually actionable entries with long venues and addresses", () => {
   for (const count of [1, 5]) {
     const invitation = gatheringFixture(count);
@@ -427,11 +427,9 @@ test("events render one and five individually actionable entries with long venue
       assert.match(row.textContent, /09:30.*11:00.*WIB/);
       assert.equal(row.querySelector("time").dateTime, event.eventDate);
       assert.ok(row.querySelector('a[href="https://maps.google.com/"]'));
-      const calendar = new URL(row.querySelector('a[href^="https://calendar.google.com/"]').href);
-      assert.equal(calendar.searchParams.get("dates"), `203010${20 + index}T023000Z/203010${20 + index}T040000Z`);
-      assert.ok(calendar.searchParams.get("text").includes(event.title));
-      assert.ok(calendar.searchParams.get("location").includes(event.venueName));
+      assert.equal(row.querySelector(".tb-calendar-actions, a[href^='https://calendar.google.com/'], button"), null, "calendar lives in the countdown, not the event row");
     }
+    assert.equal(section.querySelector(".tb-calendar-actions"), null);
     const ids = [...document.querySelectorAll("[id]")].map(element => element.id);
     assert.equal(new Set(ids).size, ids.length, "all addressable targets are unique");
     for (const link of section.querySelectorAll('a[target="_blank"]')) {
@@ -452,7 +450,7 @@ test("events omit missing or unsafe map actions and respect disabled maps", () =
   }
   const document = new JSDOM(renderShell(gatheringFixture(1, { features: { ...features, maps: false } }))).window.document;
   assert.equal(document.querySelector('a[href="https://maps.google.com/"]'), null);
-  assert.ok(document.querySelector('a[href^="https://calendar.google.com/"]'), "calendar remains independent of maps");
+  assert.ok(document.querySelector('#tb-countdown a[href^="https://calendar.google.com/"]'), "calendar remains independent of maps");
 });
 
 test("events preserve partial details but omit invalid calendar dates and an empty chapter", () => {
@@ -461,7 +459,8 @@ test("events preserve partial details but omit invalid calendar dates and an emp
   const document = new JSDOM(renderShell(invitation)).window.document;
   assert.ok(document.getElementById("tb-acara"));
   assert.ok(document.body.textContent.includes(invitation.events[0].venueName));
-  assert.equal(document.querySelector('#tb-acara a[href^="https://calendar.google.com/"]'), null);
+  assert.equal(document.querySelector('a[href^="https://calendar.google.com/"]'), null);
+  assert.equal(document.querySelector(".tb-calendar-actions"), null);
   assert.equal(document.querySelector("#tb-acara time"), null);
   assert.equal(new JSDOM(renderShell(fixture({ events: [], eventDate: null }))).window.document.getElementById("tb-acara"), null);
 });
@@ -474,26 +473,59 @@ test("event actions identify their event and malformed times do not create calen
       assert.match(action.getAttribute("aria-label"), new RegExp(title));
     }
   }
+  const calendarActions = [...document.querySelectorAll("#tb-countdown .tb-calendar-actions :is(a, button)")];
+  assert.equal(calendarActions.length, 2);
+  for (const action of calendarActions) assert.match(action.getAttribute("aria-label"), /untuk Pertemuan keluarga 1\b/,"calendar actions name the earliest event");
   const invalid = gatheringFixture();
   invalid.events[0].startTime = "not-a-time";
   const invalidDocument = new JSDOM(renderShell(invalid)).window.document;
-  assert.equal(invalidDocument.querySelector('#tb-acara a[href^="https://calendar.google.com/"]'), null);
+  assert.equal(invalidDocument.querySelector('a[href^="https://calendar.google.com/"]'), null);
+  assert.equal(invalidDocument.querySelector(".tb-calendar-actions"), null);
   assert.equal(invalidDocument.querySelector("#tb-acara button"), null);
 });
 
-test("events omit calendar actions without a supplied positive same-day interval", () => {
+// The countdown carries the only calendar actions, built from the earliest event regardless of list order.
+test("countdown holds exactly one calendar action set built from the earliest event", () => {
+  for (const count of [1, 5]) {
+    const invitation = gatheringFixture(count);
+    invitation.events.reverse();
+    const earliest = invitation.events.at(-1);
+    for (const countdown of [true, false]) {
+      const document = new JSDOM(renderShell({ ...invitation, features: { ...features, countdown } })).window.document;
+      assert.equal(document.querySelectorAll(".tb-calendar-actions").length, 1, `${count} events, countdown ${countdown}`);
+      assert.equal(document.querySelector("#tb-acara .tb-calendar-actions"), null);
+      const actions = document.querySelector("#tb-countdown .tb-calendar-actions");
+      assert.ok(actions, "calendar actions sit in the countdown");
+      const calendar = new URL(actions.querySelector('a[href^="https://calendar.google.com/"]').href);
+      assert.equal(calendar.searchParams.get("dates"), "20301020T023000Z/20301020T040000Z");
+      assert.ok(calendar.searchParams.get("text").includes(earliest.title));
+      assert.ok(calendar.searchParams.get("location").includes(earliest.venueName.trim()));
+      assert.ok([...actions.querySelectorAll("button")].some(button => /\.ics/.test(button.textContent)));
+      for (const link of actions.querySelectorAll('a[target="_blank"]')) {
+        assert.match(link.rel, /noopener/);
+        assert.match(link.rel, /noreferrer/);
+      }
+    }
+  }
+});
+
+test("calendar actions are omitted without a supplied positive same-day interval", () => {
   for (const [startTime, endTime] of [
     [null, null], ["09:30:00", null], [null, "11:00:00"],
     ["09:30:00", "09:30:00"], ["11:00:00", "09:30:00"], ["23:00:00", "01:00:00"],
   ]) {
-    const invitation = gatheringFixture();
-    Object.assign(invitation.events[0], { startTime, endTime });
-    const row = new JSDOM(renderShell(invitation)).window.document.querySelector("[data-event-item]");
-    assert.ok(row, "partial event details remain visible");
-    assert.match(row.textContent, /Pertemuan keluarga 1/);
-    assert.match(row.textContent, /Kebun Pertemuan Keluarga/);
-    assert.equal(row.querySelector('a[href^="https://calendar.google.com/"]'), null, `${startTime}–${endTime}`);
-    assert.equal(row.querySelector("button"), null, `${startTime}–${endTime}`);
+    for (const countdown of [true, false]) {
+      const invitation = gatheringFixture(1, { features: { ...features, countdown } });
+      Object.assign(invitation.events[0], { startTime, endTime });
+      const document = new JSDOM(renderShell(invitation)).window.document;
+      const row = document.querySelector("[data-event-item]");
+      assert.ok(row, "partial event details remain visible");
+      assert.match(row.textContent, /Pertemuan keluarga 1/);
+      assert.match(row.textContent, /Kebun Pertemuan Keluarga/);
+      assert.equal(document.querySelector('a[href^="https://calendar.google.com/"]'), null, `${startTime}–${endTime}`);
+      assert.equal(document.querySelector(".tb-calendar-actions"), null, `${startTime}–${endTime}`);
+      if (!countdown) assert.equal(document.getElementById("tb-countdown"), null, "nothing to save and nothing to count");
+    }
   }
 });
 
@@ -648,11 +680,13 @@ test("gift copy announces success only after clipboard acceptance", async () => 
 });
 
 test("countdown renders a valid target and omits disabled, missing or invalid targets", () => {
-  const present = new JSDOM(renderShell(gatheringFixture())).window.document;
-  assert.ok(present.getElementById("tb-countdown"));
-  for (const unit of ["Hari", "Jam", "Menit", "Detik"]) assert.ok(present.getElementById("tb-countdown").textContent.includes(unit));
+  const present = new JSDOM(renderShell(gatheringFixture())).window.document.getElementById("tb-countdown");
+  assert.ok(present);
+  assert.equal(present.querySelector("h2").textContent, "Menuju hari itu");
+  assert.ok(present.querySelector(".tb-countdown-units"));
+  for (const unit of ["Hari", "Jam", "Menit", "Detik"]) assert.ok(present.textContent.includes(unit));
+  assert.ok(present.querySelector(".tb-countdown-units ~ .tb-calendar-actions"), "calendar actions follow the clock");
   for (const invitation of [
-    gatheringFixture(1, { features: { ...features, countdown: false } }),
     gatheringFixture(0, { eventDate: null }),
     gatheringFixture(0, { eventDate: "invalid" }),
   ]) {
@@ -660,7 +694,12 @@ test("countdown renders a valid target and omits disabled, missing or invalid ta
     assert.equal(document.getElementById("tb-countdown"), null);
   }
   const withoutCountdown = new JSDOM(renderShell(gatheringFixture(1, { features: { ...features, countdown: false } }))).window.document;
-  assert.ok(withoutCountdown.querySelector('#tb-acara a[href^="https://calendar.google.com/"]'), "calendar works when countdown is off");
+  const saveTheDate = withoutCountdown.getElementById("tb-countdown");
+  assert.ok(saveTheDate, "a valid event still offers its calendar when countdown is off");
+  assert.equal(saveTheDate.querySelector("h2").textContent, "Simpan tanggalnya");
+  assert.equal(withoutCountdown.getElementById(saveTheDate.getAttribute("aria-labelledby")), saveTheDate.querySelector("h2"));
+  assert.equal(saveTheDate.querySelector(".tb-countdown-units, dd"), null, "no clock without a countdown");
+  assert.ok(saveTheDate.querySelector('.tb-calendar-actions a[href^="https://calendar.google.com/"]'), "calendar works when countdown is off");
 });
 
 test("countdown reaches zero without negative values and stops its interval", async (t) => {
@@ -791,7 +830,7 @@ test("event navigation destinations exist once and empty optional chapters leave
   } finally { await view.cleanup(); }
 });
 
-test("event calendar download uses shared WIB times and a fresh UI timestamp", async (t) => {
+test("countdown calendar download uses shared WIB times and a fresh UI timestamp", async (t) => {
   t.mock.timers.enable({ apis: ["Date"], now: Date.parse("2029-09-12T00:00:00Z") });
   const view = await mountShell({}, gatheringFixture());
   try {
@@ -799,7 +838,8 @@ test("event calendar download uses shared WIB times and a fresh UI timestamp", a
     const create = t.mock.method(URL, "createObjectURL", blob => { downloaded = blob; return "blob:test-calendar"; });
     const revoke = t.mock.method(URL, "revokeObjectURL", () => {});
     const click = t.mock.method(view.document.defaultView.HTMLAnchorElement.prototype, "click", function () { assert.match(this.download, /\.ics$/); });
-    const button = [...view.document.querySelectorAll("#tb-acara button")].find(node => /\.ics/.test(node.textContent));
+    assert.equal(view.document.querySelector("#tb-acara button"), null);
+    const button = [...view.document.querySelectorAll("#tb-countdown button")].find(node => /\.ics/.test(node.textContent));
     assert.ok(button);
     await act(async () => button.click());
     assert.equal(create.mock.callCount(), 1);
@@ -809,7 +849,7 @@ test("event calendar download uses shared WIB times and a fresh UI timestamp", a
     assert.match(text, /DTSTAMP:20290912T000000Z/);
     assert.match(text, /DTSTART:20301020T023000Z/);
     assert.match(text, /DTEND:20301020T040000Z/);
-    assert.match(text, /UID:terra-test-gathering-0/);
+    assert.match(text, /UID:terra-test-gathering-0@invitation\.digital/);
     assert.match(text, /SUMMARY:Pertemuan keluarga 1/);
   } finally { await view.cleanup(); }
 });

@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { CalendarEventInput } from "@/themes/shared/calendar";
+
+import { AddToCalendar } from "../components/AddToCalendar";
 
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
@@ -42,13 +45,19 @@ function CountdownClock({ target }: { target: number }) {
   );
 }
 
-export function CountdownSection({ target }: { target: number | null }) {
-  if (target === null) return null;
+/** The countdown chapter also carries the primary event's calendar; without a target it is a save-the-date. */
+export function CountdownSection({ target, calendarEvent, calendarUid }: {
+  target: number | null;
+  calendarEvent: CalendarEventInput | null;
+  calendarUid: string;
+}) {
+  if (target === null && !calendarEvent) return null;
 
   return (
     <Section id="tb-countdown" labelledBy="tb-countdown-heading" tone="bone" className="tb-countdown">
-      <SectionHeading id="tb-countdown-heading" title="Menuju hari itu" />
-      <CountdownClock target={target} />
+      <SectionHeading id="tb-countdown-heading" title={target !== null ? "Menuju hari itu" : "Simpan tanggalnya"} />
+      {target !== null ? <CountdownClock target={target} /> : null}
+      {calendarEvent ? <AddToCalendar event={calendarEvent} uid={calendarUid} /> : null}
     </Section>
   );
 }

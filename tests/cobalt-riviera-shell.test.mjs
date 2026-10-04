@@ -140,8 +140,12 @@ test("route candidates require usable content and enabled features after registr
   const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
   const { themeRegistry } = loadTheme().load("themes/registry");
   assert.deepEqual(Array.from(buildCobaltRouteItems(fixture()), (item) => item.id), [
-    "cr-beranda", "cr-mempelai", "cr-acara", "cr-cerita", "cr-galeri", "cr-rsvp", "cr-ucapan", "cr-kado",
-  ]);
+    "cr-beranda", "cr-acara", "cr-rsvp", "cr-ucapan", "cr-kado",
+  ], "eight candidates collapse to five guest-action stops in page order");
+  const browsing = fixture({ features: { ...features, rsvp: false, wishes: false } });
+  assert.deepEqual(Array.from(buildCobaltRouteItems(browsing), (item) => item.id), [
+    "cr-beranda", "cr-mempelai", "cr-acara", "cr-galeri", "cr-kado",
+  ], "freed slots go to couple, then gallery, before story");
   const sparse = fixture({
     people: [], events: [], stories: [], gallery: [], gifts: [],
     features: { ...features, story: false, gallery: false, rsvp: false, wishes: false, gift: false },
@@ -174,7 +178,7 @@ for (const width of [320, 1440]) {
       }
       assert.deepEqual(
         Array.from(document.querySelectorAll(".cr-route-nav a"), (link) => link.getAttribute("href")),
-        ["#cr-beranda", "#cr-mempelai", "#cr-acara", "#cr-cerita", "#cr-galeri", "#cr-rsvp", "#cr-ucapan", "#cr-kado"],
+        ["#cr-beranda", "#cr-acara", "#cr-rsvp", "#cr-ucapan", "#cr-kado"],
       );
       assert.ok(document.querySelector('.cr-route-nav a[aria-current="location"]'));
     } finally {
@@ -182,6 +186,54 @@ for (const width of [320, 1440]) {
     }
   });
 }
+
+test("route navigation pairs every visible label with one decorative nautical icon and no numeric index", async () => {
+  const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
+  const items = buildCobaltRouteItems(fixture());
+  const view = await mountShell({}, fixture(), guest, 320);
+  try {
+    await act(async () => view.document.querySelector(".cr-cover-open").click());
+    const links = [...view.document.querySelectorAll(".cr-route-nav a")];
+    assert.equal(links.length, items.length);
+    links.forEach((link, index) => {
+      const item = items[index];
+      const icons = link.querySelectorAll("svg");
+      assert.equal(icons.length, 1, `${item.label} renders exactly one icon`);
+      const icon = icons[0];
+      assert.equal(icon.getAttribute("aria-hidden"), "true");
+      assert.equal(icon.getAttribute("focusable"), "false");
+      assert.equal(icon.getAttribute("viewBox"), "0 0 24 24");
+      assert.equal(icon.getAttribute("stroke"), "currentColor");
+      assert.equal(icon.getAttribute("data-icon"), item.section);
+      assert.equal(icon.textContent, "", "icons carry no text into the accessible name");
+      assert.equal(link.querySelector(".cr-route-label")?.textContent, item.label);
+      assert.equal(link.textContent.trim(), item.label, "accessible name stays the label");
+      assert.doesNotMatch(link.textContent, /\d/, "no numeric index remains");
+    });
+    assert.equal(new Set(links.map((link) => link.querySelector("svg").innerHTML)).size, links.length, "each stop has its own glyph");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("every section key the route builder can emit has a dedicated icon, with a compass fallback", () => {
+  const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
+  const { NavIcon, ROUTE_ICON_GLYPHS } = loadTheme().load("themes/cobalt-riviera/components/NavIcon");
+  const { NAV_SECTION_PRIORITY, MAX_NAV_ITEMS } = loadTheme().load("themes/shared/nav-priority");
+  const emitted = Array.from(buildCobaltRouteItems(fixture()), (item) => item.section);
+  assert.deepEqual(emitted, ["hero", "events", "rsvp", "wishes", "gift"]);
+  assert.ok(emitted.length <= MAX_NAV_ITEMS);
+  for (const section of Object.keys(NAV_SECTION_PRIORITY)) {
+    assert.ok(Object.hasOwn(ROUTE_ICON_GLYPHS, section), `${section} has a dedicated icon`);
+    const svg = new JSDOM(renderToStaticMarkup(React.createElement(NavIcon, { section }))).window.document.querySelector("svg");
+    assert.equal(svg?.getAttribute("data-icon"), section);
+    assert.ok(svg.querySelector("path, circle, rect"), `${section} draws a glyph`);
+    assert.equal(svg.getAttribute("stroke-width"), "1.5");
+  }
+  const fallback = new JSDOM(renderToStaticMarkup(React.createElement(NavIcon, { section: "closing" }))).window.document.querySelector("svg");
+  assert.equal(fallback?.getAttribute("data-icon"), "compass");
+  assert.equal(fallback.getAttribute("aria-hidden"), "true");
+});
 
 test("generic guest, reduced motion, and disabled music keep the shell operable without audio", async () => {
   const invitation = fixture({ features: { ...features, music: false } });
@@ -211,12 +263,12 @@ test("shell CSS defines the approved shutter timing, instant motion fallback, mo
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
   assert.match(css, /safe-area-inset-bottom/);
   assert.match(css, /data-reduced-motion="true"/);
-  assert.match(css, /\.cr-music[^}]*bottom:\s*calc\([^}]*--cr-mobile-nav-clearance/s);
+  assert.match(css, /\.cr-music[^}]*bottom:\s*var\(--cr-mobile-nav-clearance\)/s);
   assert.match(css, /\.cr-route-nav\s*\{[^}]*--cr-focus-ring:\s*var\(--cr-cobalt\)/s);
   assert.match(css, /\.cr-route-nav a\[aria-current="location"\]\s*\{[^}]*--cr-focus-ring:\s*var\(--cr-sea-ink\)/s);
   assert.match(css, /\.cr-music\s*\{[^}]*--cr-focus-ring:\s*var\(--cr-sea-ink\)/s);
-  assert.match(css, /\.cr-content\s*\{[^}]*padding-bottom:\s*calc\(var\(--cr-mobile-nav-clearance\) \+ env\(safe-area-inset-bottom\)\)/s);
-  assert.match(css, /@media\s*\(min-width:\s*768px\)[\s\S]*?\.cr-content\s*\{[^}]*padding-bottom:\s*0/s);
+  assert.match(css, /\.cr-content\s*\{[^}]*padding-bottom:\s*var\(--cr-mobile-nav-clearance\)/s);
+  assert.match(css, /@media\s*\(min-width:\s*1200px\)[\s\S]*?\.cr-content\s*\{[^}]*padding-bottom:\s*0/s);
 
   const luminance = (hex) => {
     const channels = hex.slice(1).match(/.{2}/g).map((value) => Number.parseInt(value, 16) / 255);
@@ -250,7 +302,7 @@ test("route links retain their grid composition while ordinary anchors keep the 
   const dom = new JSDOM(
     `${renderToStaticMarkup(React.createElement(ThemeStyles))}
      <div class="cr-theme">
-       <nav class="cr-route-nav"><a id="route-link" href="#cr-beranda"><span>01</span><span>Beranda</span></a></nav>
+       <nav class="cr-route-nav"><a id="route-link" href="#cr-beranda"><svg class="cr-route-glyph" aria-hidden="true"></svg><span class="cr-route-label">Beranda</span></a></nav>
        <a id="ordinary-link" href="#next">Lanjut</a>
      </div>`,
     { pretendToBeVisual: true },
@@ -261,4 +313,67 @@ test("route links retain their grid composition while ordinary anchors keep the 
   assert.equal(routeStyle.minHeight, "48px");
   assert.equal(ordinaryStyle.display, "inline-flex");
   assert.equal(ordinaryStyle.minHeight, "48px");
+  const css = dom.window.document.querySelector("style")?.textContent ?? "";
+  assert.match(css, /\.cr-route-glyph\s*\{[^}]*width:\s*1\.2rem[^}]*height:\s*1\.2rem/s, "icons stay legible at about 19px");
+  assert.match(css, /\.cr-route-accent\s*\{[^}]*stroke:\s*var\(--cr-tangerine\)/s);
+  assert.match(css, /\.cr-route-nav a\[aria-current="location"\] \.cr-route-accent\s*\{[^}]*stroke:\s*var\(--cr-cobalt\)/s);
+  assert.doesNotMatch(css, /\.cr-route-glyph > span/, "the diamond and index glyph are gone");
+});
+
+function mediaBlock(css, query) {
+  const start = css.indexOf(`@media ${query} {`);
+  assert.ok(start >= 0, `missing @media ${query}`);
+  let depth = 0;
+  for (let index = css.indexOf("{", start); index < css.length; index += 1) {
+    if (css[index] === "{") depth += 1;
+    if (css[index] === "}") depth -= 1;
+    if (depth === 0) return css.slice(start, index + 1);
+  }
+  throw new Error(`unterminated @media ${query}`);
+}
+
+function rule(block, selector) {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = block.match(new RegExp(`(?:^|[}\\s])${escaped}\\s*\\{([^}]*)\\}`));
+  assert.ok(match, `missing rule ${selector}`);
+  return match[1];
+}
+
+test("phone and tablet bottom bar fits five equal stops without sideways scrolling (DESIGN 12a)", () => {
+  const css = new JSDOM(renderShell()).window.document.querySelector("style")?.textContent ?? "";
+  const phone = mediaBlock(css, "(max-width: 767px)");
+  assert.doesNotMatch(phone, /\.cr-route-nav/, "the phone strip is not styled separately from the tablet bar");
+  const bar = mediaBlock(css, "(max-width: 1199px)");
+
+  const nav = rule(bar, ".cr-route-nav");
+  assert.match(nav, /left:\s*max\(12px,\s*env\(safe-area-inset-left\)\)/);
+  assert.match(nav, /right:\s*max\(12px,\s*env\(safe-area-inset-right\)\)/);
+  assert.match(nav, /bottom:\s*max\(12px,\s*env\(safe-area-inset-bottom\)\)/);
+  assert.match(nav, /overflow:\s*hidden/);
+  assert.doesNotMatch(bar, /overflow-x:\s*auto|max-content/, "the bar never scrolls horizontally");
+
+  const list = rule(bar, ".cr-route-nav ul");
+  assert.match(list, /display:\s*grid/);
+  assert.match(list, /grid-auto-columns:\s*minmax\(0,\s*1fr\)/, "items share the width equally");
+  assert.match(list, /grid-auto-flow:\s*column/);
+
+  const link = rule(bar, ".cr-route-nav a");
+  assert.match(link, /flex-direction:\s*column/, "icon sits above the label");
+  assert.match(link, /min-width:\s*0/);
+  const minHeight = Number(link.match(/min-height:\s*([\d.]+)rem/)?.[1]) * 16;
+  assert.ok(minHeight >= 52, `items are at least 52px tall (got ${minHeight}px)`);
+  assert.match(link, /font-size:\s*clamp\(11px,\s*3vw,\s*12px\)/, "labels never drop below 11px");
+
+  assert.match(rule(bar, ".cr-route-glyph"), /width:\s*clamp\(18px,\s*5\.2vw,\s*22px\)[^}]*height:\s*clamp\(18px,\s*5\.2vw,\s*22px\)/);
+  const label = rule(bar, ".cr-route-label");
+  assert.match(label, /white-space:\s*nowrap/);
+  assert.match(label, /text-overflow:\s*ellipsis/);
+
+  assert.match(css, /--cr-mobile-nav-height:\s*calc\(3\.25rem \+ 2px\)/, "bar height is items plus its two borders");
+  assert.match(css, /--cr-mobile-nav-clearance:\s*calc\(var\(--cr-mobile-nav-height\) \+ max\(12px,\s*env\(safe-area-inset-bottom\)\)/);
+  assert.match(css, /\.cr-music\s*\{[^}]*bottom:\s*var\(--cr-mobile-nav-clearance\)/s, "music clears the bar");
+
+  const rail = mediaBlock(css, "(min-width: 1200px)");
+  assert.match(rule(rail, ".cr-route-nav"), /top:\s*50%/, "desktop keeps the side rail");
+  assert.match(rule(rail, ".cr-route-nav ul"), /flex-direction:\s*column/);
 });

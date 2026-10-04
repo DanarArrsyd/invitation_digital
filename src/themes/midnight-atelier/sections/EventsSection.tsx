@@ -1,6 +1,5 @@
 import type { InvitationEvent } from "@/types/invitation";
 import {
-  calendarEventForEvent,
   normalizedEventTime,
   timeZoneLabel,
   validEventDate,
@@ -8,7 +7,6 @@ import {
 } from "@/themes/shared/calendar";
 import { usableExternalUrl } from "@/themes/shared/external-url";
 
-import { AddToCalendar } from "../components/AddToCalendar";
 import { Section } from "../components/Section";
 
 function eventDate(value: string): string | null {
@@ -25,14 +23,10 @@ function eventDate(value: string): string | null {
 export function EventsSection({
   events,
   mapsEnabled,
-  coupleDisplayName,
-  invitationId,
   timeZone,
 }: {
   events: InvitationEvent[];
   mapsEnabled: boolean;
-  coupleDisplayName: string;
-  invitationId: string;
   timeZone?: InvitationTimeZone;
 }) {
   if (events.length === 0) return null;
@@ -50,7 +44,6 @@ export function EventsSection({
           const start = normalizedEventTime(event.startTime);
           const end = normalizedEventTime(event.endTime);
           const mapUrl = mapsEnabled ? usableExternalUrl(event.mapsUrl) : null;
-          const calendarEvent = calendarEventForEvent(event, coupleDisplayName, timeZone);
 
           return (
             <li key={event.id} data-event-item={event.id} className="ma-event">
@@ -66,14 +59,13 @@ export function EventsSection({
               <div className="ma-event-place">
                 {event.venueName ? <p className="ma-event-venue">{event.venueName}</p> : null}
                 {event.address ? <p className="ma-event-address">{event.address}</p> : null}
-                <div className="ma-event-actions">
-                  {mapUrl ? (
+                {mapUrl ? (
+                  <div className="ma-event-actions">
                     <a href={mapUrl} target="_blank" rel="noopener noreferrer" aria-label={`Buka Maps untuk ${event.title}`}>
                       Buka Maps <span aria-hidden="true">↗</span>
                     </a>
-                  ) : null}
-                  {calendarEvent ? <AddToCalendar event={calendarEvent} uid={`${invitationId}-${event.id}`} /> : null}
-                </div>
+                  </div>
+                ) : null}
               </div>
             </li>
           );

@@ -2,11 +2,18 @@
 
 ## Active Implementation Checkpoint
 
-Before continuing Terra Botanica rollout work, read
-[`docs/PROJECT_MEMORY.md`](docs/PROJECT_MEMORY.md). It records the durable
-task checkpoint, commit chain, verification state, and the boundary between
-local implementation and remote rollout. The linked design spec and
-implementation plan remain authoritative for requirements.
+Before continuing any theme work, read
+[`docs/PROJECT_MEMORY.md`](docs/PROJECT_MEMORY.md), section "Theme identity
+redesign (Oct 2026)". It records the durable task checkpoint (current branch,
+last completed task, where to resume), the commit chain, verification state,
+and open review notes. The linked design spec and implementation plan remain
+authoritative for requirements.
+
+Current work: Terra Botanica "Herbarium Cinta" on branch
+`design/terra-identity-at0kh3`, plan `docs/superpowers/plans/2026-10-03-terra-identity.md`.
+All 10 tasks are done and the PR to `main` is open; it waits for the owner's
+explicit "merge". Ask the user before merging any PR
+(merges to `main` deploy production).
 
 ## Project Overview
 

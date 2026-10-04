@@ -170,14 +170,18 @@ const CSS = `
 .ni-hero-inner { position: relative; display: grid; align-items: center; gap: 3rem; width: 100%; max-width: 1440px; margin-inline: auto; padding: clamp(3.5rem, 6vw, 6rem) var(--ni-gutter); }
 .ni-hero-inner--text { display: block; max-width: 1180px; }
 .ni-hero-names { max-width: 14ch; font-size: clamp(3.8rem, 8.5vw, 8.5rem); line-height: 1.05; }
+/* Hero photo rule (DESIGN.md 9): 3:4 portrait; phones stack the title above
+   it at full content width, tablet/desktop set them side by side. */
 .ni-hero-portrait { width: 100%; max-width: 480px; justify-self: center; min-width: 0; }
-.ni-hero-photo-frame { position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 4 / 5; border-radius: 50% 50% 0 0 / 40% 40% 0 0; border: 1px solid var(--ni-gold-soft); background: var(--ni-ivory-2); box-shadow: 0 18px 50px -36px rgba(74,63,52,.3); }
+.ni-hero-photo-frame { position: relative; overflow: hidden; isolation: isolate; aspect-ratio: 3 / 4; border-radius: 50% 50% 0 0 / 40% 40% 0 0; border: 1px solid var(--ni-gold-soft); background: var(--ni-ivory-2); box-shadow: 0 18px 50px -36px rgba(74,63,52,.3); }
 .ni-hero-photo-frame::after { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(168,122,61,.2); border-radius: inherit; pointer-events: none; }
 @media (min-width: 768px) {
   .ni-hero-inner:not(.ni-hero-inner--text) { grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: clamp(2rem,5vw,5rem); }
   .ni-hero-portrait { justify-self: end; }
 }
 @media (max-width: 767px) {
+  .ni-hero-inner:not(.ni-hero-inner--text) { gap: 2.5rem; }
+  .ni-hero-portrait { max-width: none; justify-self: stretch; }
   .ni-hero .ni-hero-floral { top: 2rem; bottom: auto; left: -6rem; width: 380px; opacity: .1; }
 }
 .ni-couple-grid { display: grid; gap: 3.5rem; margin-top: 3rem; }
@@ -273,39 +277,47 @@ const CSS = `
   .ni-theme button { letter-spacing: .12em; }
 }
 
+/* Bottom bar (DESIGN.md 12a). Phones: a full-width pill rail in a 12px /
+   safe-area gutter, five equal items that never scroll. The bar is 64px tall
+   (52px items + 5px rail padding + 1px border, twice); --ni-nav-clearance is
+   that plus its bottom offset and a 12px breath, so page content and the
+   music control both clear it. */
+.ni-theme { --ni-nav-clearance: calc(64px + max(12px, env(safe-area-inset-bottom)) + 12px); }
+.ni-content[data-ni-nav] { padding-bottom: var(--ni-nav-clearance); }
 .ni-floating-nav {
-  padding-bottom: max(1.1rem, env(safe-area-inset-bottom));
-  padding-inline: max(1rem, env(safe-area-inset-left)) max(1rem, env(safe-area-inset-right));
+  padding-inline: max(12px, env(safe-area-inset-left)) max(12px, env(safe-area-inset-right));
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
   pointer-events: none;
 }
 .ni-floating-nav-rail {
   display: flex;
   align-items: stretch;
-  gap: clamp(0px, 0.6vw, 2px);
-  padding: 6px;
-  max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
+  gap: 0;
+  width: 100%;
+  padding: 5px;
+  overflow: hidden;
   list-style: none;
   pointer-events: auto;
   border-radius: 999px;
   border: 1px solid rgba(168,122,61,0.35);
-  background: rgba(252,250,245,0.86);
+  background: rgba(252,250,245,0.92);
   box-shadow: 0 18px 44px -22px rgba(42,34,25,0.38), 0 1px 0 rgba(255,255,255,0.6) inset;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
-.ni-floating-nav-rail::-webkit-scrollbar { display: none; }
+.ni-floating-nav-rail > li { flex: 1 1 0; min-width: 0; display: flex; }
 .ni-floating-nav-btn {
   position: relative;
   display: flex;
   flex: 1 1 auto;
-  min-width: clamp(3.15rem, 16vw, 4.4rem);
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 3px;
-  padding: 0.55rem clamp(0.4rem, 2.4vw, 0.85rem);
+  padding: 6px 2px;
   border-radius: 999px;
   color: var(--ni-brown-soft);
   transition: color 0.35s ease, transform 0.25s ease;
@@ -314,16 +326,28 @@ const CSS = `
 .ni-floating-nav-btn:active { transform: scale(0.94); }
 .ni-floating-nav-btn[data-active] { color: var(--ni-espresso); }
 .ni-floating-nav-glyph { position: relative; z-index: 1; display: grid; place-items: center; transition: transform 0.35s cubic-bezier(.22,.61,.36,1); }
-.ni-floating-nav-glyph svg { width: clamp(15px, 4.6vw, 19px); height: clamp(15px, 4.6vw, 19px); }
-.ni-floating-nav-btn[data-active] .ni-floating-nav-glyph { transform: translateY(-1px); color: var(--ni-gold); }
+.ni-floating-nav-glyph svg { width: clamp(18px, 5.2vw, 22px); height: clamp(18px, 5.2vw, 22px); }
+.ni-floating-nav-btn[data-active] .ni-floating-nav-glyph { transform: translateY(-1px); color: var(--ni-gold-ink); }
 .ni-floating-nav-label {
   position: relative;
   z-index: 1;
-  font-size: clamp(0.5rem, 2.4vw, 0.58rem);
+  max-width: 100%;
+  font-size: clamp(11px, 3vw, 12px);
   font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ni-floating-nav-btn[data-active] .ni-floating-nav-label { font-weight: 600; }
+/* Tablet/desktop: the rail hugs its items, centred, in inscription capitals. */
+@media (min-width: 768px) {
+  .ni-floating-nav-rail { width: auto; max-width: 100%; padding: 6px; gap: 2px; }
+  .ni-floating-nav-rail > li { flex: 0 0 auto; }
+  .ni-floating-nav-btn { min-width: 4.6rem; padding: 6px 0.9rem; }
+  .ni-floating-nav-glyph svg { width: 20px; height: 20px; }
+  .ni-floating-nav-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
 }
 .ni-floating-nav-pill {
   position: absolute;

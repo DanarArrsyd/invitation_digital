@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+import type { CalendarEventInput } from "@/themes/shared/calendar";
+
+import { AddToCalendar } from "../components/AddToCalendar";
 import { Section } from "../components/Section";
 
 function CountdownClock({ target }: { target: number }) {
@@ -37,16 +40,33 @@ function CountdownClock({ target }: { target: number }) {
   );
 }
 
-export function CountdownSection({ target }: { target: number | null }) {
-  if (target === null || !Number.isFinite(target)) return null;
+export function CountdownSection({
+  target,
+  calendarEvent,
+  calendarUid,
+}: {
+  target: number | null;
+  calendarEvent: CalendarEventInput | null;
+  calendarUid: string;
+}) {
+  const hasTarget = target !== null && Number.isFinite(target);
+  if (!hasTarget && !calendarEvent) return null;
 
   return (
-    <Section id="cr-countdown" labelledBy="cr-countdown-heading" tone="cobalt" className="cr-countdown">
+    <Section
+      id="cr-countdown"
+      labelledBy="cr-countdown-heading"
+      tone="cobalt"
+      className={hasTarget ? "cr-countdown" : "cr-countdown cr-countdown-calendar-only"}
+    >
       <div className="cr-countdown-heading">
         <p>Next horizon</p>
-        <h2 id="cr-countdown-heading">Menuju hari bahagia</h2>
+        <h2 id="cr-countdown-heading">{hasTarget ? "Menuju hari bahagia" : "Simpan tanggalnya"}</h2>
       </div>
-      <CountdownClock key={target} target={target} />
+      <div className="cr-countdown-board">
+        {hasTarget ? <CountdownClock key={target} target={target} /> : null}
+        {calendarEvent ? <AddToCalendar event={calendarEvent} uid={calendarUid} /> : null}
+      </div>
     </Section>
   );
 }

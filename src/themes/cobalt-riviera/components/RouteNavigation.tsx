@@ -5,6 +5,8 @@ import { useMemo } from "react";
 import type { ThemeSectionKey } from "@/themes/section-contract";
 import { useActiveSection } from "@/themes/shared/use-active-section";
 
+import { NavIcon } from "./NavIcon";
+
 export interface RivieraRouteItem {
   id: `cr-${string}`;
   section: ThemeSectionKey;
@@ -24,14 +26,11 @@ export function RouteNavigation({ items }: { items: RivieraRouteItem[] }) {
   return (
     <nav className="cr-route-nav" aria-label="Navigasi undangan">
       <ul>
-        {mountedItems.map((item, index) => (
+        {mountedItems.map((item) => (
           <li key={item.id}>
             <a href={`#${item.id}`} aria-current={activeId === item.id ? "location" : undefined}>
-              <span className="cr-route-glyph" aria-hidden="true">
-                <span />
-                <span>{String(index + 1).padStart(2, "0")}</span>
-              </span>
-              <span>{item.label}</span>
+              <NavIcon section={item.section} className="cr-route-glyph" />
+              <span className="cr-route-label">{item.label}</span>
             </a>
           </li>
         ))}

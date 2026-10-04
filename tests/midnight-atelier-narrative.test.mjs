@@ -118,6 +118,25 @@ test("narrative renders cinematic hero, quote, diptych credits, and closing fall
   assert.equal(closingImage?.getAttribute("alt"), "Nadia dan Arka di malam hari");
 });
 
+test("hero photo is a 3:4 portrait that follows the title block", () => {
+  const document = render();
+  const heading = document.querySelector("#ma-hero-heading");
+  const image = document.querySelector("#ma-beranda img");
+  assert.ok(heading && image);
+  assert.ok(heading.compareDocumentPosition(image) & 4, "title precedes the photo in DOM order");
+  const copy = document.querySelector("#ma-beranda .ma-hero-copy");
+  const frame = image.closest(".ma-media");
+  assert.ok(copy.compareDocumentPosition(frame) & 4, "the whole copy block precedes the photo frame");
+  assert.equal(frame?.style.aspectRatio, "3 / 4");
+  assert.match(image.getAttribute("sizes") ?? "", /\(min-width: 768px\) \d+vw, 100vw/);
+});
+
+test("text-only hero keeps the mark before the copy", () => {
+  const document = render(fixture({ media: { coverImageUrl: null, musicUrl: null }, gallery: [] }));
+  const inner = document.querySelector("#ma-beranda .ma-section-inner");
+  assert.deepEqual([...inner.children].map((child) => child.getAttribute("class")), ["ma-mark ma-hero-mark", "ma-hero-copy"]);
+});
+
 test("sparse narrative remains intentional without photos, quote, parents, or people", () => {
   const sparse = fixture({
     people: [], gallery: [],
@@ -188,7 +207,12 @@ test("hero, portrait, and closing image failures retain stable accessible frames
 test("narrative CSS protects long content and required viewport compositions", () => {
   const css = render().querySelector("style")?.textContent ?? "";
   assert.match(css, /\.ma-person-copy[^}]*overflow-wrap:\s*anywhere/s);
-  assert.match(css, /\.ma-hero-image[^}]*aspect-ratio/s);
+  assert.match(css, /\.ma-hero-image\s*\{[^}]*aspect-ratio:\s*3 \/ 4/s);
+  assert.doesNotMatch(css, /\.ma-hero-image\s*\{[^}]*min-height/s, "no min-height can stretch the 3:4 frame");
+  assert.doesNotMatch(css, /16 \/ 10/);
+  const tablet = css.slice(css.indexOf("@media (min-width: 768px)"));
+  assert.match(tablet, /\.ma-hero-copy\s*\{[^}]*grid-column:\s*1 \/[^}]*grid-row:\s*1/s, "title and photo sit side by side from 768px");
+  assert.match(tablet, /\.ma-hero-image\s*\{[^}]*grid-row:\s*1/s);
   assert.match(css, /@media\s*\(max-width:\s*767px\)/);
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
   assert.match(css, /@media\s*\(min-width:\s*1100px\)/);

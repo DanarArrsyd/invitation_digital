@@ -64,6 +64,7 @@ function loadSection(theme, name, actions = {}) {
       if (moduleName.endsWith("/Ornament")) return { OrnamentCorner: inert, OrnamentDivider: inert };
       if (moduleName.endsWith("/Botanical")) return { FloralCorner: inert, BotanicalDivider: inert };
       if (moduleName.endsWith("/MelatiShower")) return { MelatiShower: () => React.createElement("div", { "data-ni-melati": "" }) };
+      if (moduleName.endsWith("/DandelionRelease")) return { DandelionRelease: () => React.createElement("div", { "data-tb-dandelion": "" }) };
       return nodeRequire(moduleName);
     },
   });

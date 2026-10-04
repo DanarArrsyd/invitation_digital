@@ -5,6 +5,7 @@ import { useInvitationCover } from "@/themes/shared/use-invitation-cover";
 
 import { Botanical } from "./components/Botanical";
 import { FloatingNav, type NavItem } from "./components/FloatingNav";
+import { SeedBloom } from "./components/SeedBloom";
 
 function formatEventDate(value: string | null): string | null {
   if (!value) return null;
@@ -50,13 +51,15 @@ export function CoverGate({
           </div>
           <div className="tb-cover-layout">
             <div className="tb-cover-title">
+              <SeedBloom />
               <p className="tb-journal-label">{label}</p>
-              <h1 className="tb-cover-names">
+              <h1 className="tb-cover-names tb-script">
                 {names.length === 2 ? (
                   <><span>{names[0]}</span><span className="tb-cover-amp"> &amp; </span><span>{names[1]}</span></>
                 ) : displayName}
               </h1>
               {dateLabel ? <time className="tb-cover-date" dateTime={eventDate ?? undefined}>{dateLabel}</time> : null}
+              <p className="tb-specimen tb-label" aria-hidden="true">Rosa amoris · No. 01</p>
             </div>
             <div className="tb-cover-recipient">
               <p>Kepada Yth.</p>

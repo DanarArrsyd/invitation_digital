@@ -250,3 +250,112 @@ test("ni-body copy is never set below 1rem", () => {
   walk(ivoryRoot);
   assert.deepEqual(offenders, []);
 });
+
+const ALL_FEATURES = { music: false, countdown: false, maps: false, story: true, gallery: true, dressCode: false,
+  livestream: false, rsvp: true, wishes: true, gift: true, guestPersonalization: false };
+const STORY = { id: "s", title: "Bertemu", storyDate: null, yearLabel: "2020", description: null, imageUrl: null, sortOrder: 0 };
+const PHOTO = { id: "p", imageUrl: "https://img.test/p.jpg", caption: null, altText: "Foto", aspectRatio: "portrait_4_5", sortOrder: 0 };
+const GIFT = { id: "gift", providerType: "bank", providerName: "BCA", accountNumber: "1", accountName: "Alya", logoUrl: null, sortOrder: 0 };
+
+function navLabels(overrides) {
+  const { NusantaraIvory } = createLoader()("index");
+  const html = renderToStaticMarkup(React.createElement(NusantaraIvory, { invitation: invitation(overrides), guest: null }));
+  const { document } = new JSDOM(html).window;
+  return [...document.querySelectorAll("nav .ni-floating-nav-label")].map((node) => node.textContent.trim());
+}
+
+test("the Ivory bar picks at most five items through the shared nav priority, in page order", () => {
+  const source = readFileSync(resolve(ivoryRoot, "NusantaraIvory.tsx"), "utf8");
+  assert.match(source, /import \{ pickNavItems \} from "@\/themes\/shared\/nav-priority"/);
+  assert.doesNotMatch(source, /priority:\s*\d/, "no theme-local priority table");
+
+  const full = navLabels({ features: ALL_FEATURES, stories: [STORY], gallery: [PHOTO], gifts: [GIFT] });
+  assert.deepEqual(full, ["Beranda", "Acara", "RSVP", "Ucapan", "Kado"]);
+
+  const browsing = navLabels({
+    features: { ...ALL_FEATURES, rsvp: false, wishes: false, gift: false },
+    stories: [STORY], gallery: [PHOTO],
+  });
+  assert.deepEqual(browsing, ["Beranda", "Mempelai", "Acara", "Cerita", "Galeri"]);
+});
+
+function cssRule(styles, selector) {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = styles.match(new RegExp(`(^|\\n)\\s*${escaped}\\s*\\{([^}]*)\\}`));
+  assert.ok(match, `missing rule ${selector}`);
+  return match[2];
+}
+
+test("the Ivory bar meets the DESIGN.md 12a mobile sizing", () => {
+  const styles = readFileSync(resolve(ivoryRoot, "ThemeStyles.tsx"), "utf8");
+  const navBlock = styles.slice(styles.indexOf(".ni-floating-nav {"), styles.indexOf(".ni-addcal-trigger"));
+  assert.doesNotMatch(navBlock, /overflow-x:\s*(auto|scroll)/, "the rail never scrolls sideways");
+
+  const bar = cssRule(styles, ".ni-floating-nav");
+  assert.match(bar, /padding-inline:\s*max\(12px, env\(safe-area-inset-left\)\) max\(12px, env\(safe-area-inset-right\)\)/);
+  assert.match(bar, /padding-bottom:\s*max\(12px, env\(safe-area-inset-bottom\)\)/);
+
+  const rail = cssRule(styles, ".ni-floating-nav-rail");
+  assert.match(rail, /width:\s*100%/);
+  assert.match(rail, /overflow:\s*hidden/);
+  assert.match(cssRule(styles, ".ni-floating-nav-rail > li"), /flex:\s*1 1 0/, "equal-width items");
+
+  const button = cssRule(styles, ".ni-floating-nav-btn");
+  const height = Number(button.match(/min-height:\s*(\d+)px/)?.[1]);
+  assert.ok(height >= 52, `item min-height ${height}px`);
+
+  assert.match(cssRule(styles, ".ni-floating-nav-glyph svg"), /width:\s*clamp\(18px, 5\.2vw, 22px\)/);
+  const label = cssRule(styles, ".ni-floating-nav-label");
+  assert.equal(label.match(/font-size:\s*([^;]+);/)[1].trim(), "clamp(11px, 3vw, 12px)");
+  assert.match(label, /white-space:\s*nowrap/);
+  assert.match(label, /text-overflow:\s*ellipsis/);
+  for (const value of navBlock.matchAll(/\.ni-floating-nav-label \{[^}]*font-size:\s*([0-9.]+)(px|rem)/g)) {
+    const px = value[2] === "rem" ? Number(value[1]) * 16 : Number(value[1]);
+    assert.ok(px >= 11, `label font-size ${value[1]}${value[2]} is below 11px`);
+  }
+
+  const active = cssRule(styles, ".ni-floating-nav-btn[data-active]");
+  const token = Object.fromEntries([...styles.matchAll(/--ni-([a-z0-9-]+):\s*(#[0-9A-Fa-f]{6})/g)].map(([, name, hex]) => [name, hex]));
+  const activeInk = active.match(/color:\s*var\(--ni-([a-z0-9-]+)\)/)[1];
+  assert.ok(contrast(token[activeInk], token.cream) >= 4.5, "active label is AA on the active pill");
+
+  assert.match(cssRule(styles, ".ni-content[data-ni-nav]"), /padding-bottom:\s*var\(--ni-nav-clearance\)/, "content clears the bar");
+  assert.match(styles, /--ni-nav-clearance:\s*calc\(/);
+});
+
+test("the content wrapper reserves room for the bar only when the bar renders", () => {
+  const { CoverGate } = createLoader()("CoverGate");
+  const items = [
+    { id: "ni-beranda", label: "Beranda", icon: "home", section: "hero" },
+    { id: "ni-acara", label: "Acara", icon: "calendar", section: "events" },
+  ];
+  const render = (navItems) => new JSDOM(renderToStaticMarkup(React.createElement(CoverGate, {
+    invitationId: "ivory", guestToken: null, eyebrow: null, displayName: "Alya & Bima",
+    eventDate: "2030-10-20", guestDisplayName: null, musicUrl: null, musicEnabled: false, navItems,
+  }, React.createElement("p", null, "isi")))).window.document;
+  assert.ok(render(items).querySelector(".ni-content[data-ni-nav]"));
+  assert.equal(render(items.slice(0, 1)).querySelector(".ni-content[data-ni-nav]"), null);
+});
+
+test("the hero photo is a 3:4 portrait that follows the title in reading order", () => {
+  const { NusantaraIvory } = createLoader()("index");
+  const html = renderToStaticMarkup(React.createElement(NusantaraIvory, {
+    invitation: invitation({ media: { coverImageUrl: "https://img.test/hero.jpg", musicUrl: null } }), guest: null,
+  }));
+  const { document, Node } = new JSDOM(html).window;
+  const hero = document.querySelector("#ni-beranda");
+  const heading = hero.querySelector("h1");
+  const image = hero.querySelector("img");
+  assert.ok(image, "hero renders the cover photo");
+  assert.equal(image.getAttribute("alt"), "Foto prewedding Alya & Bima");
+  assert.ok(heading.compareDocumentPosition(image) & Node.DOCUMENT_POSITION_FOLLOWING, "title precedes the photo");
+
+  const styles = readFileSync(resolve(ivoryRoot, "ThemeStyles.tsx"), "utf8");
+  assert.match(cssRule(styles, ".ni-hero-photo-frame"), /aspect-ratio:\s*3 \/ 4/);
+  assert.doesNotMatch(styles, /\.ni-hero[^{]*\{[^}]*aspect-ratio:\s*4 \/ 5/, "no 4:5 hero crop remains");
+  const mobile = styles.slice(styles.indexOf("@media (max-width: 767px)"));
+  assert.match(cssRule(mobile, ".ni-hero-portrait"), /max-width:\s*none/, "full content width below 768px");
+
+  const text = renderToStaticMarkup(React.createElement(NusantaraIvory, { invitation: invitation(), guest: null }));
+  assert.equal(new JSDOM(text).window.document.querySelector("#ni-beranda img"), null, "text-only hero has no frame");
+});

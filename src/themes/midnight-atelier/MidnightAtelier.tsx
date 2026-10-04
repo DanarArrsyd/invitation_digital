@@ -1,5 +1,6 @@
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
+import { pickNavItems } from "@/themes/shared/nav-priority";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 
 import type { NavItem } from "./components/FloatingNav";
@@ -32,7 +33,7 @@ export function buildMidnightNavItems(invitation: PublicInvitation): NavItem[] {
     features.wishes ? { id: "ma-ucapan", section: "wishes", label: "Ucapan" } : null,
     features.gift && invitation.gifts.length > 0 ? { id: "ma-kado", section: "gift", label: "Kado" } : null,
   ];
-  return candidates.filter((item): item is NavItem => item !== null);
+  return pickNavItems(candidates.filter((item): item is NavItem => item !== null));
 }
 
 export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
@@ -43,6 +44,7 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
     heroImageUrl,
     closingImageUrl,
     countdownTarget,
+    calendarEvent,
     dressCode,
   } = buildThemeViewModel(invitation, guest);
   const navItems = buildMidnightNavItems(invitation);
@@ -79,11 +81,13 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
           <EventsSection
             events={invitation.events}
             mapsEnabled={invitation.features.maps}
-            coupleDisplayName={coupleDisplayName}
-            invitationId={invitation.id}
             timeZone={invitation.timeZone}
           />
-          <CountdownSection target={countdownTarget} />
+          <CountdownSection
+            target={countdownTarget}
+            calendarEvent={calendarEvent}
+            calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
+          />
           <DressCodeSection dressCode={dressCode} />
           {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
           {invitation.features.gallery ? (

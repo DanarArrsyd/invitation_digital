@@ -25,8 +25,9 @@ implementation plans remain the source of truth:
   contract. Presentation may differ; capability parity may not.
 - Existing themes must remain visually unchanged unless shared behavior
   requires a tested parity fix.
-- Terra Botanica uses the approved **Editorial Garden** direction: Fraunces,
-  Manrope, Linen/Clay/Moss/Cacao/Sun/Bone, asymmetrical editorial composition,
+- Terra Botanica uses the approved **Editorial Garden** direction: Herr Von
+  Muellerhoff / Courier Prime / Spectral, the Herbarium Cinta palette (see the
+  2026-10-03 identity spec), asymmetrical editorial composition,
   restrained custom botanical marks, and no generic SaaS-card styling.
 - Midnight Atelier uses the approved **dark cinematic couture** direction:
   Bodoni Moda, Barlow Condensed, Ink/Lacquer/Oxblood/Champagne/Pearl/Smoke,
@@ -110,6 +111,25 @@ Key boundaries:
 - Theme directories own markup, spacing, typography, ornaments, responsive
   composition, and visual feedback only. They do not query Supabase or
   duplicate package, validation, calendar, or server-action logic.
+- Cross-theme rules from the owner (Oct 2026), binding for every current and
+  future template:
+  - Calendar actions live only in the countdown section, from the primary
+    event (`buildThemeViewModel().calendarEvent`); events show Maps only. The
+    section renders calendar-only when there is no countdown target.
+  - Floating/route navigation shows a theme-drawn SVG icon per item, mapped
+    from the item's `section` key, next to the visible label (Ivory
+    `FloatingNav`, Terra/Midnight/Cobalt `components/NavIcon.tsx`).
+  - Person roles are a fixed admin choice (`src/lib/invitations/person-role.ts`)
+    and public data normalizes stored roles to lowercase keys; themes label
+    parents "Putri dari"/"Putra dari" from them. Name headings are never
+    capped by a `ch` reading measure.
+  - Mobile responsive UI rules (DESIGN.md §9 and §12a): the bottom nav holds
+    at most 5 items picked by `pickNavItems` (`themes/shared/nav-priority.ts`),
+    spans the width with equal items, never scrolls sideways, icon
+    `clamp(18px, 5.2vw, 22px)` over a label of at least 11px, items at least
+    52px tall, safe-area offsets, and content reserves bottom space for it.
+  - Hero: the pre-wedding photo is 3:4 in every template; on mobile the title
+    block comes first and the photo below it.
 - `listActiveThemes()` remains the admin theme source. The registry is not an
   admin catalogue and no second theme list should be introduced.
 
@@ -122,7 +142,7 @@ fourth visual system from the same normalized invitation contract:
 CoverGate — horizon shutters, guest personalization, music and focus handoff
   ├─ Hero + quote — panoramic or typographic horizon opening
   ├─ Couple + parents — offset resort editorials and social credits
-  ├─ Itinerary — events, Maps, calendar, countdown, dress code, livestream
+  ├─ Itinerary — events, Maps, countdown + calendar, dress code, livestream
   ├─ Story — ordered folio with complete text-only entries
   ├─ Gallery — panoramic anchor plus ceramic mosaic
   ├─ RSVP — large checked color fields over shared action state
@@ -171,7 +191,7 @@ distinct couture programme from the same canonical capabilities:
 CoverGate — curtain seam, guest personalization, music and focus handoff
   ├─ Hero — cinematic image or intentional dark sparse state
   ├─ Couple + parents — left-aligned editorial portrait spread
-  ├─ Programme — events, maps, calendar, countdown, dress code, livestream
+  ├─ Programme — events, maps, countdown + calendar, dress code, livestream
   ├─ Story — couture narrative sequence, including text-only entries
   ├─ Gallery — contact-sheet composition for sparse or full collections
   ├─ RSVP — Lacquer interaction using shared action state and Turnstile
@@ -222,12 +242,12 @@ must produce no dead navigation target and no decorative gap.
 
 - Direction: **Editorial Garden** — intimate field journal, contemporary and
   organic, not rustic-boho and not a recolored Ivory clone.
-- Display type: Fraunces for names, chapter headings, quotes, expressive dates,
-  and the primary interaction moment.
-- Supporting type: Manrope for body copy, metadata, controls, inputs, labels,
-  countdown units, and accessibility-critical text.
-- Palette: Linen `#F2E7D8`, Clay `#B6634B`, Moss `#53634E`, Cacao `#45372C`,
-  Sun `#D6A663`, and Bone `#FBF7F0`.
+- Direction since Oct 2026: **Herbarium Cinta** — the couple's pressed-flower
+  herbarium (spec `docs/superpowers/specs/2026-10-03-theme-identity-redesign-design.md` §5).
+- Type: Herr Von Muellerhoff for couple names; Courier Prime for specimen
+  labels, dates, buttons and navigation; Spectral for italic headings and body.
+- Palette: Linen `#F2EBDD`, Lumut `#4E5B3A`, Clay `#B5653E` (small text uses
+  `--tb-clay-ink` `#9A4F2E`), Cacao `#4A3426`, Sun `#D9A441`, Bone `#FBF7EE`.
 - Composition: asymmetrical editorial spreads, alternating portrait/text
   rhythm, deliberate whitespace, stable image crops, and restrained custom SVG
   botanical silhouettes.
@@ -454,6 +474,83 @@ plan in `docs/superpowers/plans/` after the previous one merges.
 - Deferred Ivory items: see spec §4 Deferred.
 - Jost stays installed for Midnight; `cormorant-garamond` removed.
 - `tests/font-delivery.test.mjs` fails if two themes map the same family.
+- Ivory shipped in PR #14 (merge `07951a4`, production deployed 2026-10-03).
+  Owner still to check the live Rayhana & Febri page via admin preview and a
+  real phone.
+- Terra "Herbarium Cinta": seed-to-bloom cover, scroll vine (`GrowingVine`,
+  `themes/shared/use-scroll-progress.ts`), typed labels (`TypedText`,
+  `themes/shared/use-in-view-once.ts`), dandelion after a sent wish, taped
+  gallery prints. Plan: `docs/superpowers/plans/2026-10-03-terra-identity.md`.
+  `@fontsource-variable/fraunces` and `manrope` removed.
+
+#### Checkpoint — Terra "Herbarium Cinta" (PR open, 2026-10-04)
+
+- Branch `design/terra-identity-at0kh3` (pushed; continues the earlier
+  `design/terra-identity`), based on `main` `07951a4`. All 10 plan tasks
+  done; the PR to `main` waits for the owner's explicit "merge" (merging
+  deploys production).
+- Commits: fonts `4deb1c3`; palette + paper texture + identity harness
+  `407aa0c`; script names `fb66ae4`; shared hooks `f8a6198`; seed bloom
+  `0ca3f56`; growing vine `38eacac`; typed labels `cf10a0e`; dandelion
+  `3bce6de`; taped photos `7ca0328`. Fixes beyond the plan:
+  - `8f51e88` `useScrollProgress` recomputes on body resize, so the vine is
+    not full-grown after the cover opens.
+  - `e4d2827` typed labels use a `"0px"` root margin so one at the page end
+    cannot stay clipped.
+  - Task 9 adds a reduced-motion override so photos show settled before the
+    observer fires.
+  - `useInViewOnce` arms (`watching`) only after the observer first reports
+    the element off-screen; an element already on screen is `seen` without
+    arming and renders as is (no hide-then-reveal flash on restored scroll
+    or `#tb-galeri`).
+  - Courier now covers Maps, calendar, gift copy, attendance legend and
+    choices.
+- Verification: `npm test` 311/312 (the one failure is the pre-existing
+  environmental countdown timezone test: the nested `node --test` prints TAP,
+  not `✔`, when piped on Node 22; its probe passes); lint, typecheck and
+  `npm run build` clean.
+- Visual QA (temporary fixture, Chromium at 320, 375 and 1280): names
+  Herr Von Muellerhoff, labels/actions Courier Prime, headings italic
+  Spectral, body Spectral 16px; one tap opens and the cover is inert at
+  once, lifts by ~1.7s; vine 0 after opening, ~0.5 mid-page, 1 at the end,
+  stays in the left gutter; event labels type out; gallery drops in and
+  settles; no horizontal overflow at any width; reduced motion hides the
+  cover at once, labels unclipped, no dandelion; dandelion is 20 nodes and
+  stays on screen at 320px.
+- Owner revisions after the first preview (2026-10-04/05), all on this
+  branch and in PR #15:
+  - Groom showed "Orang tua": stored role "Groom"; roles now normalized in
+    public data and a fixed admin choice (`b8ecf78`, loaders `5c232f2`).
+  - Terra text-only couple squeezed to a far-right column; fixed (`b8ecf78`).
+  - Calendar moved into the countdown in Terra, Midnight, Cobalt (Ivory
+    already did it); themed SVG nav icons in all three.
+  - Shared `pickNavItems` (≤5) and the mobile bar/hero rules (`6fd4cb4`)
+    applied to all four themes; hero photo 3:4 with the title first on
+    mobile.
+  - Browser QA at 320/375/1280 for all four themes: no overflow, 5 nav items
+    each with an icon, no cut labels, ≥52px items on phones, title before a
+    3:4 photo (Ivory's arch frame is 3:4; its image bleeds for parallax),
+    calendar only in the countdown, groom reads "Putra dari".
+- Remaining notes (not blocking):
+  - After the seeds fade the bare dandelion stalk and its 120x130 space
+    remain under the thank-you text; on desktop seeds briefly cross the
+    wishes column.
+  - Terra test harnesses still mock `next/font/google` Fraunces/Manrope
+    (harmless, unused).
+  - The countdown timezone test should assert on the probe's exit status
+    instead of the `✔` glyph (separate fix).
+- Workflow: superpowers subagent-driven development (fresh implementer per
+  task, review per task). Local SDD scratch (`.superpowers/`) is gitignored.
+- Terra-specific constraints learned: Terra source must not contain `<img`
+  or `querySelector`; Terra effects are CSS + the shared
+  `use-in-view-once` / `use-scroll-progress` hooks, not Motion components;
+  server and first client markup must match under reduced motion.
+- After Terra merges: write and run the Midnight plan, then Cobalt, from spec
+  §6–7 (choices already approved: Midnight = Imperial Script / Bodoni Moda /
+  Jost, champagne-toast opener, spotlight headings, dance card RSVP,
+  bubbles on wishes, picture lights in gallery; Cobalt = Corinthia /
+  Familjen Grotesk / Newsreader, receding-wave opener, wave dividers,
+  morning-to-sunset scroll, postmark RSVP, message-in-a-bottle wishes).
 
 ## Resolved review notes
 

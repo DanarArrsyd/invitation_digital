@@ -115,17 +115,62 @@ test("flat itinerary renders one through five ordered events with all readable d
   }
 });
 
-test("safe maps and shared event-specific calendar actions remain attached to their row", () => {
-  const document = render();
-  const row = document.querySelector("#cr-acara [data-event-item='event-0']");
-  const maps = row?.querySelector("a[aria-label^='Buka Maps']");
-  assert.equal(maps?.getAttribute("href"), "https://maps.example.test/venue-0");
-  assert.equal(maps?.getAttribute("target"), "_blank");
-  assert.match(maps?.getAttribute("rel") ?? "", /noopener/);
-  const google = row?.querySelector("a[aria-label^='Google Kalender']");
-  assert.match(google?.getAttribute("href") ?? "", /^https:\/\/calendar\.google\.com\/calendar\/render\?/);
-  assert.equal(new URL(google?.getAttribute("href") ?? "").searchParams.get("text"), "Upacara Pernikahan — Mira & Raka");
-  assert.ok(row?.querySelector("button[aria-label^='Unduh kalender']"));
+test("event rows keep their safe maps while calendar actions stay out of the itinerary", () => {
+  const document = render(fixture({ events: [event(0), event(1)] }));
+  const rows = [...document.querySelectorAll("#cr-acara [data-event-item]")];
+  assert.equal(rows.length, 2);
+  rows.forEach((row, index) => {
+    const maps = row.querySelector("a[aria-label^='Buka Maps']");
+    assert.equal(maps?.getAttribute("href"), `https://maps.example.test/venue-${index}`);
+    assert.equal(maps?.getAttribute("target"), "_blank");
+    assert.match(maps?.getAttribute("rel") ?? "", /noopener/);
+  });
+  const events = document.getElementById("cr-acara");
+  assert.equal(events.querySelector(".cr-calendar-actions"), null);
+  assert.equal(events.querySelector("a[aria-label^='Google Kalender'], button[aria-label^='Unduh kalender']"), null);
+});
+
+test("countdown carries exactly one calendar action set built from the earliest event", () => {
+  const earliest = event(0, { title: "Akad Pagi", startTime: "08:00:00", endTime: "10:00:00", sortOrder: 5 });
+  const document = render(fixture({ events: [event(1), earliest] }));
+  const countdown = document.getElementById("cr-countdown");
+  assert.ok(countdown);
+  assert.equal(countdown.querySelectorAll("dd").length, 4, "the clock stays alongside the calendar");
+  assert.equal(document.querySelectorAll(".cr-calendar-actions").length, 1);
+  const actions = countdown.querySelector(".cr-calendar-actions");
+  assert.ok(actions);
+  assert.equal(actions.querySelectorAll("a[aria-label^='Google Kalender']").length, 1);
+  assert.equal(actions.querySelectorAll("button[aria-label^='Unduh kalender']").length, 1);
+  const google = new URL(actions.querySelector("a[aria-label^='Google Kalender']").getAttribute("href"));
+  assert.equal(google.origin + google.pathname, "https://calendar.google.com/calendar/render");
+  assert.equal(google.searchParams.get("text"), "Akad Pagi — Mira & Raka");
+  assert.match(google.searchParams.get("dates") ?? "", /^20301020T010000Z\/20301020T030000Z$/);
+  assert.equal(
+    actions.querySelector("button[aria-label^='Unduh kalender']").getAttribute("aria-label"),
+    "Unduh kalender .ics untuk Akad Pagi — Mira & Raka",
+  );
+});
+
+test("calendar actions keep a save-the-date block when the countdown clock is off", () => {
+  const document = render(fixture({ features: { ...baseFeatures, countdown: false } }));
+  const countdown = document.getElementById("cr-countdown");
+  assert.ok(countdown, "a calendar alone still earns the section");
+  assert.equal(countdown.querySelector(".cr-countdown-units"), null);
+  assert.equal(countdown.querySelectorAll("dd").length, 0);
+  const heading = document.getElementById(countdown.getAttribute("aria-labelledby"));
+  assert.match(heading?.textContent ?? "", /Simpan tanggalnya/);
+  assert.equal(countdown.querySelectorAll(".cr-calendar-actions").length, 1);
+  assert.equal(document.querySelectorAll(".cr-calendar-actions").length, 1);
+});
+
+test("calendar actions disappear when no event has a valid positive same-day interval", () => {
+  const events = [event(0, { endTime: "16:30:00" }), event(1, { startTime: "18:00:00", endTime: "09:00:00" })];
+  const withClock = render(fixture({ events }));
+  assert.equal(withClock.querySelectorAll("#cr-countdown dd").length, 4);
+  assert.equal(withClock.querySelector(".cr-calendar-actions"), null);
+  const withoutClock = render(fixture({ events, features: { ...baseFeatures, countdown: false } }));
+  assert.equal(withoutClock.getElementById("cr-countdown"), null);
+  assert.equal(withoutClock.querySelector(".cr-calendar-actions"), null);
 });
 
 test("malformed date, times, and unsafe URLs preserve useful text without orphan actions", () => {
@@ -167,7 +212,7 @@ test("disabled optional features stay absent while event rows remain useful", ()
   const document = render(fixture({ features: { ...baseFeatures, countdown: false, maps: false, dressCode: false, livestream: false } }));
   assert.ok(document.querySelector("#cr-acara"));
   assert.equal(document.querySelector("#cr-acara a[aria-label^='Buka Maps']"), null);
-  assert.equal(document.querySelector("#cr-countdown"), null);
+  assert.equal(document.querySelector("#cr-countdown .cr-countdown-units"), null);
   assert.equal(document.querySelector("#cr-dress-code"), null);
   assert.equal(document.querySelector("#cr-livestream"), null);
 });
@@ -198,15 +243,19 @@ test("every itinerary and broadcast control resolves a visible high-contrast foc
   };
   const controls = [
     ...document.querySelectorAll("#cr-acara .cr-event-actions a, #cr-acara .cr-event-actions button"),
+    ...document.querySelectorAll("#cr-countdown .cr-calendar-actions a, #cr-countdown .cr-calendar-actions button"),
     ...document.querySelectorAll("#cr-livestream a"),
   ];
+  assert.equal(document.querySelectorAll("#cr-countdown .cr-calendar-actions :is(a, button)").length, 2);
   assert.ok(controls.length >= 4);
   for (const control of controls) {
     control.focus();
     const style = document.defaultView.getComputedStyle(control);
-    const surface = control.closest(".cr-surface-porcelain, .cr-surface-sea-ink");
-    const expected = surface?.classList.contains("cr-surface-sea-ink") ? "#F3CF4C" : "#1646C8";
-    const background = surface?.classList.contains("cr-surface-sea-ink") ? "#123047" : "#FFF9EE";
+    const surface = control.closest(".cr-surface-porcelain, .cr-surface-sea-ink, .cr-surface-cobalt");
+    const dark = surface?.classList.contains("cr-surface-sea-ink") || surface?.classList.contains("cr-surface-cobalt");
+    const expected = dark ? "#F3CF4C" : "#1646C8";
+    const background = surface?.classList.contains("cr-surface-sea-ink") ? "#123047"
+      : surface?.classList.contains("cr-surface-cobalt") ? "#1646C8" : "#FFF9EE";
     assert.equal(style.getPropertyValue("--cr-focus-ring").trim().toUpperCase(), expected);
     assert.ok(contrast(expected, background) >= 3);
   }
@@ -243,11 +292,11 @@ test("mounted countdown resets for a new target, clamps at zero, and clears time
   const { CountdownSection } = loadTheme().load("themes/cobalt-riviera/sections/CountdownSection");
   const root = createRoot(document.getElementById("root"));
   try {
-    await act(async () => root.render(React.createElement(CountdownSection, { target: now + 5_000 })));
+    await act(async () => root.render(React.createElement(CountdownSection, { target: now + 5_000, calendarEvent: null, calendarUid: "uid" })));
     assert.equal(document.querySelector('[data-unit="seconds"]')?.textContent, "05");
     const firstTimer = nextTimer;
 
-    await act(async () => root.render(React.createElement(CountdownSection, { target: now + 9_000 })));
+    await act(async () => root.render(React.createElement(CountdownSection, { target: now + 9_000, calendarEvent: null, calendarUid: "uid" })));
     assert.equal(document.querySelector('[data-unit="seconds"]')?.textContent, "09", "new target must reset displayed time");
     assert.ok(cleared.includes(firstTimer), "changing target clears the old timer");
     const activeTimer = nextTimer;
@@ -266,9 +315,66 @@ test("mounted countdown resets for a new target, clamps at zero, and clears time
   }
 });
 
-test("countdown omits null and non-finite targets", () => {
+const calendarEvent = {
+  title: "Upacara Pernikahan — Mira & Raka", date: "2030-10-20", startTime: "16:30", endTime: "20:30",
+  location: "Riviera Pavilion", description: "Undangan Mira & Raka", timeZone: "Asia/Jakarta",
+};
+
+test("countdown omits null and non-finite targets unless a calendar event remains", () => {
   const { CountdownSection } = loadTheme().load("themes/cobalt-riviera/sections/CountdownSection");
   for (const target of [null, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
-    assert.equal(renderToStaticMarkup(React.createElement(CountdownSection, { target })), "");
+    assert.equal(renderToStaticMarkup(React.createElement(CountdownSection, { target, calendarEvent: null, calendarUid: "uid" })), "");
+    const document = new JSDOM(renderToStaticMarkup(
+      React.createElement(CountdownSection, { target, calendarEvent, calendarUid: "uid" }),
+    )).window.document;
+    assert.equal(document.querySelector("section")?.id, "cr-countdown");
+    assert.equal(document.querySelector("dd"), null);
+    assert.match(document.querySelector("h2")?.textContent ?? "", /Simpan tanggalnya/);
+    assert.equal(document.querySelectorAll(".cr-calendar-actions").length, 1);
   }
+});
+
+test("countdown calendar download builds the .ics from the primary event and its stable uid", async (t) => {
+  const dom = new JSDOM("<div id='root'></div>", { pretendToBeVisual: true, url: "https://invitation.test/" });
+  const keys = ["window", "document", "HTMLElement", "IS_REACT_ACT_ENVIRONMENT"];
+  const previous = Object.fromEntries(keys.map((key) => [key, globalThis[key]]));
+  Object.assign(globalThis, {
+    window: dom.window,
+    document: dom.window.document,
+    HTMLElement: dom.window.HTMLElement,
+    IS_REACT_ACT_ENVIRONMENT: true,
+  });
+  const { CountdownSection } = loadTheme().load("themes/cobalt-riviera/sections/CountdownSection");
+  const root = createRoot(document.getElementById("root"));
+  try {
+    let downloaded;
+    const create = t.mock.method(URL, "createObjectURL", (blob) => { downloaded = blob; return "blob:cobalt-calendar"; });
+    const revoke = t.mock.method(URL, "revokeObjectURL", () => {});
+    const click = t.mock.method(dom.window.HTMLAnchorElement.prototype, "click", function () {
+      assert.match(this.download, /\.ics$/);
+    });
+    await act(async () => root.render(React.createElement(CountdownSection, {
+      target: null, calendarEvent, calendarUid: "cobalt-itinerary-event-0@invitation.digital",
+    })));
+    const button = document.querySelector("#cr-countdown button[aria-label^='Unduh kalender']");
+    assert.ok(button);
+    await act(async () => button.click());
+    assert.equal(create.mock.callCount(), 1);
+    assert.equal(click.mock.callCount(), 1);
+    assert.equal(revoke.mock.calls[0].arguments[0], "blob:cobalt-calendar");
+    const text = await downloaded.text();
+    assert.match(text, /UID:cobalt-itinerary-event-0@invitation\.digital/);
+    assert.match(text, /DTSTART:20301020T093000Z/);
+    assert.match(text, /DTEND:20301020T133000Z/);
+    assert.match(text, /SUMMARY:Upacara Pernikahan — Mira & Raka/);
+    await act(async () => root.unmount());
+  } finally {
+    Object.assign(globalThis, previous);
+    dom.window.close();
+  }
+});
+
+test("theme wires the countdown calendar uid from the invitation and earliest event", () => {
+  const source = readFileSync(resolve(sourceRoot, "themes/cobalt-riviera/CobaltRiviera.tsx"), "utf8");
+  assert.match(source, /calendarUid=\{`\$\{invitation\.id\}-\$\{primaryEvent\?\.id \?\? "main"\}@invitation\.digital`\}/);
 });

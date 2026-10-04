@@ -1,15 +1,22 @@
 export function ThemeStyles() {
   return <style>{`
     .tb-theme {
-      --tb-linen: #F2E7D8;
-      --tb-clay: #B6634B;
-      --tb-moss: #53634E;
-      --tb-cacao: #45372C;
-      --tb-sun: #D6A663;
-      --tb-bone: #FBF7F0;
+      --tb-linen: #F2EBDD;
+      --tb-clay: #B5653E;
+      --tb-moss: #4E5B3A;
+      --tb-cacao: #4A3426;
+      --tb-sun: #D9A441;
+      --tb-bone: #FBF7EE;
+      /* Clay for small text: --tb-clay is ~4:1 on bone, this ink stays AA. */
+      --tb-clay-ink: #9A4F2E;
       --tb-gutter: clamp(1.5rem, 6vw, 5rem);
-      --tb-display: var(--font-tb-display), Georgia, serif;
-      --tb-body: var(--font-tb-body), Arial, sans-serif;
+      /* Bottom bar height (52px item + 3px padding each side + 1px border each
+         side) plus its offset from the screen edge: content reserves this much. */
+      --tb-nav-space: calc(60px + max(12px, env(safe-area-inset-bottom)));
+      --tb-script: var(--font-tb-script), "Snell Roundhand", cursive;
+      --tb-label: var(--font-tb-label), "Courier New", monospace;
+      --tb-display: var(--font-tb-text), Georgia, serif;
+      --tb-body: var(--font-tb-text), Georgia, serif;
       background: var(--tb-linen);
       color: var(--tb-cacao);
       font-family: var(--tb-body);
@@ -23,7 +30,11 @@ export function ThemeStyles() {
     .tb-theme *, .tb-theme *::before, .tb-theme *::after { box-sizing: border-box; }
     .tb-theme [hidden] { display: none !important; }
     .tb-theme h1, .tb-theme h2, .tb-theme h3, .tb-theme p { margin: 0; }
-    .tb-theme h1, .tb-theme h2, .tb-theme h3 { font-family: var(--tb-display); font-weight: 400; }
+    .tb-theme h1, .tb-theme h2, .tb-theme h3 { font-family: var(--tb-display); font-weight: 400; font-style: italic; }
+    /* Herbarium voices: ink signatures for names, typewriter for specimen labels. */
+    .tb-theme .tb-script { font-family: var(--tb-script); font-style: normal; font-weight: 400; letter-spacing: 0; }
+    .tb-theme .tb-label { font-family: var(--tb-label); font-style: normal; letter-spacing: .04em; }
+    .tb-theme :is(.tb-journal-label, .tb-cover-date, .tb-event-index, .tb-event-main time, .tb-event-time, .tb-story-date, .tb-gift-provider, .tb-wish-meta time, .tb-gallery-item figcaption, .tb-countdown-units dt, .tb-action, .tb-form-submit, .tb-more-wishes, .tb-nav a, .tb-text-action, .tb-calendar-actions :is(a, button), .tb-gift-account > button, .tb-attendance legend, .tb-attendance-choices button) { font-family: var(--tb-label); font-style: normal; letter-spacing: .04em; }
     .tb-theme button, .tb-theme input, .tb-theme textarea, .tb-theme select { font: inherit; }
     .tb-theme button, .tb-theme a { -webkit-tap-highlight-color: transparent; }
     .tb-theme :focus-visible { outline: 3px solid currentColor; outline-offset: 5px; }
@@ -35,9 +46,23 @@ export function ThemeStyles() {
       background: var(--tb-linen);
       transition: transform 800ms cubic-bezier(.65, 0, .25, 1), opacity 800ms ease, visibility 0s 800ms;
     }
+    /* The cover stays while the seed blooms (~1.2s), then lifts away. It stops
+       taking taps immediately so the revealed content is usable at once. */
     .tb-theme .tb-gate[data-opened="true"] .tb-cover {
       transform: translateY(-6%); opacity: 0; visibility: hidden; pointer-events: none;
+      transition: transform 600ms cubic-bezier(.65, 0, .25, 1) 1100ms, opacity 600ms ease 1100ms, visibility 0s 1700ms;
     }
+    .tb-theme .tb-bloom { display: block; width: clamp(64px, 16vw, 96px); height: auto; margin-bottom: 1.5rem; color: var(--tb-moss); }
+    .tb-theme .tb-bloom-stem { stroke-dasharray: 1; stroke-dashoffset: 1; }
+    .tb-theme :is(.tb-bloom-leaf, .tb-bloom-petal, .tb-bloom-core) { transform-box: fill-box; transform-origin: center; transform: scale(0); }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-stem { animation: tb-bloom-draw .7s cubic-bezier(.4, 0, .2, 1) forwards; }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-leaf { animation: tb-bloom-pop .4s .45s cubic-bezier(.3, 1.4, .5, 1) forwards; }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-leaf--late { animation-delay: .6s; }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-petal { animation: tb-bloom-pop .45s cubic-bezier(.3, 1.4, .5, 1) forwards; }
+    .tb-theme .tb-gate[data-opened="true"] .tb-bloom-core { animation: tb-bloom-pop .3s 1.1s forwards; }
+    @keyframes tb-bloom-draw { to { stroke-dashoffset: 0; } }
+    @keyframes tb-bloom-pop { to { transform: scale(1); } }
+    .tb-theme .tb-specimen { margin-top: 1rem; font-size: .8125rem; color: var(--tb-moss); }
     .tb-theme .tb-cover-sheet { position: relative; min-height: 100svh; }
     .tb-theme .tb-cover-art { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
     .tb-theme .tb-botanical { display: block; pointer-events: none; }
@@ -51,7 +76,7 @@ export function ThemeStyles() {
     }
     .tb-theme .tb-cover-title, .tb-theme .tb-cover-recipient { min-width: 0; }
     .tb-theme .tb-journal-label { font-size: .875rem; margin-bottom: 2rem; }
-    .tb-theme .tb-cover-names { font-size: clamp(3rem, 13vw, 7rem); line-height: 1.02; letter-spacing: -.055em; max-width: 11ch; }
+    .tb-theme .tb-cover-names { font-size: clamp(3.4rem, 15vw, 7.5rem); line-height: 1; letter-spacing: 0; max-width: 11ch; }
     .tb-theme .tb-cover-names > span { display: block; }
     .tb-theme .tb-cover-names > span:last-child { margin-left: .38em; }
     .tb-theme .tb-cover-names .tb-cover-amp { font-size: .5em; line-height: 1.3; margin-left: 1.2em; color: var(--tb-moss); }
@@ -63,7 +88,9 @@ export function ThemeStyles() {
     .tb-theme .tb-cover-recipient .tb-action { margin-top: 1.5rem; }
     .tb-theme .tb-action:hover { background: var(--tb-cacao); border-color: var(--tb-cacao); }
     .tb-theme .tb-action:focus-visible { outline-color: var(--tb-cacao); }
-    .tb-theme .tb-content { min-height: 100svh; padding-bottom: calc(7rem + env(safe-area-inset-bottom)); }
+    .tb-theme .tb-content { min-height: 100svh; padding-bottom: calc(var(--tb-nav-space) + 2.5rem); }
+    /* A focused field scrolls clear of the bar instead of stopping behind it. */
+    .tb-theme .tb-content :is(input, textarea, button, select) { scroll-margin-bottom: calc(var(--tb-nav-space) + 1rem); }
     .tb-theme .tb-content:focus-visible { outline-offset: -6px; }
     .tb-theme .tb-section { padding: clamp(4rem, 10vw, 8rem) var(--tb-gutter); scroll-margin-top: 2rem; }
     .tb-theme .tb-section-inner { max-width: 1180px; margin-inline: auto; min-width: 0; }
@@ -72,6 +99,8 @@ export function ThemeStyles() {
     .tb-theme .tb-surface-clay { background: var(--tb-clay); color: var(--tb-cacao); }
     .tb-theme .tb-surface-clay > .tb-section-inner { background: var(--tb-bone); padding: clamp(1.5rem, 5vw, 4rem); }
     .tb-theme .tb-surface-moss { background: var(--tb-moss); color: var(--tb-bone); }
+    /* Herbarium paper: a fine printed dot, drawn in CSS so it costs no request. */
+    .tb-theme :is(.tb-surface-linen, .tb-surface-bone, .tb-cover) { background-image: radial-gradient(rgba(74, 52, 38, .05) 1px, transparent 1px); background-size: 5px 5px; }
     .tb-theme .tb-section-heading { max-width: 48rem; margin-bottom: clamp(2rem, 5vw, 4rem); }
     .tb-theme .tb-section-heading h2 { font-size: clamp(2.25rem, 7vw, 4.5rem); line-height: 1.13; letter-spacing: -.035em; }
     .tb-theme .tb-section-intro { max-width: 62ch; margin-top: 1.5rem; }
@@ -81,9 +110,10 @@ export function ThemeStyles() {
     .tb-theme .tb-image-fallback { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 1rem; color: var(--tb-moss); text-align: center; font-size: .8125rem; }
     .tb-theme .tb-image-fallback .tb-botanical { width: min(24%, 100px); max-height: 50%; }
     .tb-theme .tb-hero { padding-top: clamp(1.5rem, 4vw, 4rem); }
-    .tb-theme .tb-hero-image { border-radius: 0 0 20% 0; }
-    .tb-theme .tb-hero-copy { display: grid; gap: 1.5rem; margin-top: 2rem; }
-    .tb-theme .tb-hero-copy h2 { max-width: 15ch; font-size: clamp(2.8rem, 9vw, 6.5rem); line-height: 1.05; letter-spacing: -.05em; }
+    .tb-theme .tb-hero-image { margin-top: 2.5rem; border-radius: 0 0 20% 0; }
+    .tb-theme .tb-hero-copy { display: grid; gap: 1.5rem; }
+    .tb-theme .tb-hero-text-only .tb-hero-copy { margin-top: 2rem; }
+    .tb-theme .tb-hero-copy h2 { max-width: 15ch; font-size: clamp(3.2rem, 11vw, 7rem); line-height: 1.05; letter-spacing: 0; }
     .tb-theme .tb-hero-copy p { max-width: 38ch; white-space: pre-line; }
     .tb-theme .tb-hero-text-only { padding-top: clamp(4rem, 10vw, 8rem); }
     .tb-theme .tb-hero-botanical { width: clamp(70px, 15vw, 150px); margin-left: auto; margin-bottom: 2rem; color: var(--tb-moss); }
@@ -96,8 +126,11 @@ export function ThemeStyles() {
     .tb-theme .tb-person-portrait { width: 88%; }
     .tb-theme .tb-person:nth-child(even) .tb-person-portrait { margin-left: auto; border-radius: 0 25% 0 0; }
     .tb-theme .tb-person:first-child .tb-person-portrait { border-radius: 25% 0 0 0; }
-    .tb-theme .tb-person-copy { min-width: 0; max-width: 42ch; }
-    .tb-theme .tb-person-copy h3 { font-size: clamp(2.2rem, 6vw, 4.3rem); line-height: 1.12; letter-spacing: -.035em; }
+    /* The reading measure applies to the parents and bio, not the script name,
+       so a long name keeps the full column instead of wrapping at ~40ch. */
+    .tb-theme .tb-person-copy { min-width: 0; }
+    .tb-theme .tb-person-copy > :not(h3) { max-width: 42ch; }
+    .tb-theme .tb-person-copy h3 { font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1.1; letter-spacing: 0; overflow-wrap: anywhere; text-wrap: balance; }
     .tb-theme .tb-parents { margin-top: 1.5rem; }
     .tb-theme .tb-parents > p:first-child { font-size: .875rem; margin-bottom: .35rem; }
     .tb-theme .tb-parents > p:last-child > span { display: block; }
@@ -121,7 +154,7 @@ export function ThemeStyles() {
     .tb-theme .tb-event-list { margin: 0; padding: 0; list-style: none; }
     .tb-theme .tb-event { display: grid; grid-template-columns: 3ch minmax(0, 1fr); gap: 1.5rem; padding: clamp(2rem, 5vw, 3.5rem) 0; border-bottom: 1px solid rgba(69, 55, 44, .35); min-width: 0; }
     .tb-theme .tb-event:last-child { border-bottom: 0; padding-bottom: 0; }
-    .tb-theme .tb-event-index { color: var(--tb-clay); font-size: .875rem; font-weight: 700; letter-spacing: .08em; padding-top: .65rem; }
+    .tb-theme .tb-event-index { color: var(--tb-clay-ink); font-size: .875rem; font-weight: 700; letter-spacing: .08em; padding-top: .65rem; }
     .tb-theme .tb-event-main, .tb-theme .tb-event-place { min-width: 0; overflow-wrap: anywhere; }
     .tb-theme .tb-event-main h3 { font-size: clamp(2rem, 7vw, 4rem); line-height: 1.12; letter-spacing: -.035em; }
     .tb-theme .tb-event-main time { display: block; margin-top: 1rem; font-size: .9375rem; font-weight: 700; }
@@ -139,6 +172,7 @@ export function ThemeStyles() {
     .tb-theme .tb-countdown-units > div { display: flex; flex-direction: column; min-width: 0; border-top: 2px solid var(--tb-clay); padding-top: 1rem; }
     .tb-theme .tb-countdown-units dd { margin: 0; font-family: var(--tb-display); font-size: clamp(1.5rem, 4vw, 3.25rem); font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
     .tb-theme .tb-countdown-units dt { order: 2; margin-top: .75rem; font-size: .8125rem; }
+    .tb-theme .tb-countdown .tb-calendar-actions { margin-top: 0; padding-top: .25rem; }
     .tb-theme .tb-dress-code > .tb-section-inner { max-width: 960px; }
     .tb-theme .tb-dress-description { max-width: 56ch; }
     .tb-theme .tb-dress-groups { display: grid; gap: 2.5rem; margin-top: 2.5rem; }
@@ -195,33 +229,74 @@ export function ThemeStyles() {
     .tb-theme .tb-closing > .tb-section-inner { display: grid; gap: 3rem; align-items: center; }
     .tb-theme .tb-closing-copy { min-width: 0; }
     .tb-theme .tb-closing-botanical { width: 60px; margin-bottom: 2rem; color: var(--tb-linen); }
-    .tb-theme .tb-closing h2 { max-width: 12ch; font-size: clamp(2.75rem, 8vw, 6rem); line-height: 1.12; letter-spacing: -.04em; }
+    .tb-theme .tb-closing h2 { max-width: 12ch; font-size: clamp(3rem, 10vw, 6.5rem); line-height: 1.1; letter-spacing: 0; }
     .tb-theme .tb-closing p { margin-top: 2rem; max-width: 42ch; white-space: pre-line; }
     .tb-theme .tb-closing-image { width: 82%; margin-left: auto; border-radius: 0 0 28% 0; }
-    .tb-theme .tb-nav { position: fixed; z-index: 30; bottom: max(.75rem, env(safe-area-inset-bottom)); left: max(1rem, env(safe-area-inset-left)); right: max(1rem, env(safe-area-inset-right)); width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; background: var(--tb-bone); color: var(--tb-cacao); border: 1px solid var(--tb-moss); }
-    .tb-theme .tb-nav ul { display: flex; gap: .25rem; overflow-x: auto; overscroll-behavior-x: contain; list-style: none; padding: .35rem; margin: 0; }
-    .tb-theme .tb-nav li { flex: 0 0 auto; }
-    .tb-theme .tb-nav a { display: flex; align-items: center; justify-content: center; min-height: 48px; min-width: 48px; padding: .5rem .85rem; text-decoration: none; font-size: .8125rem; }
-    .tb-theme .tb-nav a[aria-current="location"] { background: var(--tb-moss); color: var(--tb-bone); text-decoration: underline; }
+    /* Phones: a full-width bar of up to five equal items; nothing scrolls sideways (DESIGN.md §12a). */
+    .tb-theme .tb-nav { position: fixed; z-index: 30; left: max(12px, env(safe-area-inset-left)); right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); background: var(--tb-bone); color: var(--tb-cacao); border: 1px solid var(--tb-moss); }
+    .tb-theme .tb-nav ul { display: flex; list-style: none; padding: 3px; margin: 0; }
+    .tb-theme .tb-nav li { flex: 1 1 0; min-width: 0; }
+    .tb-theme .tb-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 52px; width: 100%; min-width: 0; padding: 5px 2px; text-decoration: none; font-size: clamp(11px, 3vw, 12px); line-height: 1.2; }
+    .tb-theme .tb-nav-icon { display: block; flex: none; width: clamp(18px, 5.2vw, 22px); height: clamp(18px, 5.2vw, 22px); }
+    /* Courier is wide: dropping the label tracking lets "Mempelai" fit a fifth of a 320px bar. */
+    .tb-theme .tb-nav-label { display: block; max-width: 100%; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tb-theme .tb-nav a[aria-current="location"] { background: var(--tb-moss); color: var(--tb-bone); }
     .tb-theme .tb-nav a:focus-visible { outline-offset: -3px; }
-    .tb-theme .tb-music { position: fixed; z-index: 30; right: max(1rem, env(safe-area-inset-right)); bottom: calc(5.75rem + env(safe-area-inset-bottom)); display: grid; place-items: center; min-width: 48px; min-height: 48px; border: 1px solid var(--tb-moss); background: var(--tb-bone); color: var(--tb-moss); cursor: pointer; }
+    .tb-theme .tb-music { position: fixed; z-index: 30; right: max(1rem, env(safe-area-inset-right)); bottom: calc(var(--tb-nav-space) + .75rem); display: grid; place-items: center; min-width: 48px; min-height: 48px; border: 1px solid var(--tb-moss); background: var(--tb-bone); color: var(--tb-moss); cursor: pointer; }
+    /* Climbing vine: fixed to the page edge inside the gutter; its growth is
+       a CSS read of --tb-progress, written by useScrollProgress. */
+    .tb-theme .tb-vine { position: fixed; z-index: 1; top: 0; bottom: 0; left: max(2px, env(safe-area-inset-left)); width: clamp(18px, 3vw, 36px); pointer-events: none; color: var(--tb-moss); opacity: .55; --tb-progress: 0; }
+    .tb-theme .tb-vine svg { display: block; width: 100%; height: 100%; overflow: visible; }
+    .tb-theme .tb-vine-stem { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--tb-progress)); }
+    .tb-theme .tb-vine-leaf { fill: currentColor; transform-box: fill-box; transform-origin: center; transform: scale(clamp(0, (var(--tb-progress) - var(--tb-at)) * 12, 1)); }
+    .tb-theme .tb-vine-flower { fill: var(--tb-clay); }
+    /* Typewriter labels: hidden only once the observer is armed, then revealed
+       one character step at a time. */
+    .tb-theme .tb-typed { display: inline-block; max-width: 100%; }
+    .tb-theme .tb-typed[data-typed="waiting"] { clip-path: inset(0 100% 0 0); }
+    .tb-theme .tb-typed[data-typed="typed"] { animation: tb-type calc(var(--tb-chars) * 38ms) steps(var(--tb-chars), end) both; }
+    @keyframes tb-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+    /* Dandelion: seeds drift off after a sent wish; the root's overflow-x: clip keeps them from widening the page. */
+    .tb-theme .tb-dandelion { position: relative; width: 120px; height: 130px; margin-top: 1.5rem; pointer-events: none; }
+    .tb-theme .tb-dandelion-stalk { position: absolute; left: 59px; top: 56px; width: 1.5px; height: 74px; background: var(--tb-moss); }
+    .tb-theme .tb-dandelion-seed { position: absolute; left: 60px; top: 56px; width: 1px; height: 26px; background: rgba(74, 52, 38, .45); transform-origin: 0 0; transform: rotate(var(--tb-angle)); animation: tb-seed-drift 2.6s cubic-bezier(.2, .6, .3, 1) forwards; }
+    .tb-theme .tb-dandelion-seed::after { content: ""; position: absolute; top: 22px; left: -6px; width: 12px; height: 12px; border-radius: 50%; border: 1px dotted rgba(74, 52, 38, .55); }
+    @keyframes tb-seed-drift { to { transform: translate(var(--tb-dx), var(--tb-dy)) rotate(calc(var(--tb-angle) + 140deg)); opacity: 0; } }
+    /* Herbarium prints: white border, paper tape, a hand-placed tilt; they
+       drop in and settle once the gallery scrolls into view. */
+    .tb-theme .tb-gallery-item { position: relative; transform: rotate(var(--tb-tilt, 0deg)); }
+    .tb-theme .tb-gallery-item .tb-media { border: 6px solid var(--tb-bone); box-shadow: 0 6px 16px -10px rgba(74, 52, 38, .55); }
+    .tb-theme .tb-gallery-item::before { content: ""; position: absolute; z-index: 1; top: -9px; left: 50%; width: 64px; height: 18px; margin-left: -32px; background: rgba(217, 164, 65, .45); transform: rotate(-4deg); pointer-events: none; }
+    .tb-theme .tb-gallery-grid[data-settle="waiting"] .tb-gallery-item { opacity: 0; transform: translateY(-48px) rotate(calc(var(--tb-tilt, 0deg) * -6)); }
+    .tb-theme .tb-gallery-grid[data-settle="settled"] .tb-gallery-item { transition: transform .8s cubic-bezier(.3, 1.3, .5, 1) var(--tb-drop-delay, 0s), opacity .4s ease var(--tb-drop-delay, 0s); }
     @media (min-width: 768px) {
+      /* Wider screens: a compact centred bar, items still equal in width. */
+      .tb-theme .tb-nav { width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; }
+      .tb-theme .tb-nav ul { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: .25rem; padding: .35rem; }
+      .tb-theme .tb-nav a { padding: .4rem .9rem; font-size: .8125rem; }
+      .tb-theme .tb-nav-icon { width: 20px; height: 20px; }
       .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; }
       .tb-theme .tb-wishes > .tb-section-inner { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: start; }
       .tb-theme .tb-wishes-feed { padding-top: clamp(1rem, 7vw, 5rem); }
       .tb-theme .tb-event { grid-template-columns: 3ch minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(1.5rem, 4vw, 4rem); }
       .tb-theme .tb-event-place { grid-column: 3; }
       .tb-theme .tb-countdown > .tb-section-inner { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: end; }
+      .tb-theme .tb-countdown .tb-calendar-actions { grid-column: 2; }
       .tb-theme .tb-dress-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .tb-theme .tb-hero-copy { grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); align-items: end; gap: 4rem; margin-top: 3rem; }
+      .tb-theme .tb-hero-text-only .tb-hero-copy { grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); align-items: end; gap: 4rem; margin-top: 3rem; }
+      /* Title and 3:4 portrait side by side; the photo takes ~5/12. */
+      .tb-theme .tb-hero:not(.tb-hero-text-only) > .tb-section-inner { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(2.5rem, 5vw, 5rem); align-items: center; }
+      .tb-theme .tb-hero-image { margin-top: 0; }
       .tb-theme .tb-quote-sheet { grid-template-columns: 80px minmax(0, 1fr); gap: 3rem; align-items: start; margin-left: max(0px, calc((100% - 1180px) / 2)); }
       .tb-theme .tb-quote-botanical { width: 80px; }
       .tb-theme .tb-person { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(3rem, 7vw, 7rem); }
       .tb-theme .tb-person-portrait { width: 100%; }
       .tb-theme .tb-person:nth-child(even) .tb-person-portrait { grid-column: 2; grid-row: 1; }
       .tb-theme .tb-person:nth-child(even) .tb-person-copy { grid-column: 1; grid-row: 1; padding-left: 10%; }
-      .tb-theme .tb-person-text-only { display: block; max-width: 48rem; }
-      .tb-theme .tb-person-text-only:nth-child(even) { margin-left: auto; }
+      /* Explicit width: an auto margin would shrink a grid item to its content
+         and push the second person into a narrow column at the far edge. */
+      .tb-theme .tb-person-text-only { display: block; width: min(100%, 44rem); }
+      .tb-theme .tb-person-text-only:nth-child(even) { justify-self: end; }
       .tb-theme .tb-story-entry { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(2.5rem, 6vw, 6rem); }
       .tb-theme .tb-story-entry:nth-child(even) .tb-media { grid-column: 2; grid-row: 1; }
       .tb-theme .tb-story-entry:nth-child(even) .tb-story-copy { grid-column: 1; grid-row: 1; }
@@ -239,6 +314,10 @@ export function ThemeStyles() {
     @media (prefers-reduced-motion: reduce) {
       .tb-theme *, .tb-theme *::before, .tb-theme *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
       .tb-theme .tb-cover, .tb-theme .tb-gate[data-opened="true"] .tb-cover { transform: none; }
+      .tb-theme .tb-vine { --tb-progress: 1 !important; }
+      .tb-theme .tb-typed[data-typed] { clip-path: none !important; }
+      .tb-theme .tb-gallery-grid[data-settle] .tb-gallery-item { opacity: 1 !important; transform: rotate(var(--tb-tilt, 0deg)) !important; }
+      .tb-theme .tb-dandelion { display: none; }
     }
 
       /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */

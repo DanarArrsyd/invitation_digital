@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+import type { CalendarEventInput } from "@/themes/shared/calendar";
+
+import { AddToCalendar } from "../components/AddToCalendar";
 import { Section } from "../components/Section";
 
 function CountdownClock({ target }: { target: number }) {
@@ -37,16 +40,33 @@ function CountdownClock({ target }: { target: number }) {
   );
 }
 
-export function CountdownSection({ target }: { target: number | null }) {
-  if (target === null || !Number.isFinite(target)) return null;
+export function CountdownSection({
+  target,
+  calendarEvent,
+  calendarUid,
+}: {
+  target: number | null;
+  calendarEvent: CalendarEventInput | null;
+  calendarUid: string;
+}) {
+  const hasTarget = target !== null && Number.isFinite(target);
+  if (!hasTarget && !calendarEvent) return null;
 
   return (
-    <Section id="ma-countdown" labelledBy="ma-countdown-heading" tone="oxblood" className="ma-countdown">
+    <Section
+      id="ma-countdown"
+      labelledBy="ma-countdown-heading"
+      tone="oxblood"
+      className={`ma-countdown${hasTarget ? "" : " ma-countdown-calendar-only"}`}
+    >
       <div className="ma-countdown-intro">
-        <p>The night awaits</p>
-        <h2 id="ma-countdown-heading">Menuju malam itu</h2>
+        <p>{hasTarget ? "The night awaits" : "Save the evening"}</p>
+        <h2 id="ma-countdown-heading">{hasTarget ? "Menuju malam itu" : "Simpan tanggalnya"}</h2>
       </div>
-      <CountdownClock target={target} />
+      <div className="ma-countdown-body">
+        {hasTarget ? <CountdownClock target={target} /> : null}
+        {calendarEvent ? <AddToCalendar event={calendarEvent} uid={calendarUid} /> : null}
+      </div>
     </Section>
   );
 }

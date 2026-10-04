@@ -1,5 +1,4 @@
 import {
-  calendarEventForEvent,
   normalizedEventTime,
   timeZoneLabel,
   validEventDate,
@@ -8,7 +7,6 @@ import {
 import { usableExternalUrl } from "@/themes/shared/external-url";
 import type { InvitationEvent } from "@/types/invitation";
 
-import { AddToCalendar } from "../components/AddToCalendar";
 import { Section } from "../components/Section";
 
 function readableEventDate(value: string): string | null {
@@ -25,14 +23,10 @@ function readableEventDate(value: string): string | null {
 export function EventsSection({
   events,
   mapsEnabled,
-  coupleDisplayName,
-  invitationId,
   timeZone,
 }: {
   events: InvitationEvent[];
   mapsEnabled: boolean;
-  coupleDisplayName: string;
-  invitationId: string;
   timeZone?: InvitationTimeZone;
 }) {
   if (events.length === 0) return null;
@@ -50,8 +44,6 @@ export function EventsSection({
           const start = normalizedEventTime(event.startTime);
           const end = normalizedEventTime(event.endTime);
           const mapUrl = mapsEnabled ? usableExternalUrl(event.mapsUrl) : null;
-          const calendarEvent = calendarEventForEvent(event, coupleDisplayName, timeZone);
-          const hasActions = mapUrl !== null || calendarEvent !== null;
 
           return (
             <li key={event.id} data-event-item={event.id} className="cr-event">
@@ -65,14 +57,11 @@ export function EventsSection({
               <div className="cr-event-place">
                 {event.venueName ? <p className="cr-event-venue">{event.venueName}</p> : null}
                 {event.address ? <p className="cr-event-address">{event.address}</p> : null}
-                {hasActions ? (
+                {mapUrl ? (
                   <div className="cr-event-actions">
-                    {mapUrl ? (
-                      <a href={mapUrl} target="_blank" rel="noopener noreferrer" aria-label={`Buka Maps untuk ${event.title}`}>
-                        Buka Maps <span aria-hidden="true">↗</span>
-                      </a>
-                    ) : null}
-                    {calendarEvent ? <AddToCalendar event={calendarEvent} uid={`${invitationId}-${event.id}`} /> : null}
+                    <a href={mapUrl} target="_blank" rel="noopener noreferrer" aria-label={`Buka Maps untuk ${event.title}`}>
+                      Buka Maps <span aria-hidden="true">↗</span>
+                    </a>
                   </div>
                 ) : null}
               </div>

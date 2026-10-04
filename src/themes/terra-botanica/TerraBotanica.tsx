@@ -1,11 +1,13 @@
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
+import { pickNavItems } from "@/themes/shared/nav-priority";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 
 import { CoverGate } from "./CoverGate";
 import type { NavItem } from "./components/FloatingNav";
+import { GrowingVine } from "./components/GrowingVine";
 import { ThemeStyles } from "./ThemeStyles";
-import { bodySans, displaySerif } from "./fonts";
+import { labelFace, scriptFace, textFace } from "./fonts";
 import { HeroSection } from "./sections/HeroSection";
 import { QuoteSection } from "./sections/QuoteSection";
 import { CoupleSection } from "./sections/CoupleSection";
@@ -20,6 +22,7 @@ import { RsvpSection } from "./sections/RsvpSection";
 import { WishesSection } from "./sections/WishesSection";
 import { GiftSection } from "./sections/GiftSection";
 
+/** Every section the guest can jump to, narrowed to the five the bottom bar holds (DESIGN.md §12a). */
 export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
   const { features } = invitation;
   const candidates: (NavItem | null)[] = [
@@ -32,15 +35,15 @@ export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
     features.wishes ? { id: "tb-ucapan", section: "wishes", label: "Ucapan" } : null,
     features.gift && invitation.gifts.length > 0 ? { id: "tb-kado", section: "gift", label: "Kado" } : null,
   ];
-  return candidates.filter((item): item is NavItem => item !== null);
+  return pickNavItems(candidates.filter((item): item is NavItem => item !== null));
 }
 
 export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
-  const { coupleDisplayName, guestDisplayName, primaryEvent, countdownTarget, dressCode, heroImageUrl, closingImageUrl } = buildThemeViewModel(invitation, guest);
+  const { coupleDisplayName, guestDisplayName, primaryEvent, countdownTarget, calendarEvent, dressCode, heroImageUrl, closingImageUrl } = buildThemeViewModel(invitation, guest);
   const navItems = buildTerraNavItems(invitation);
 
   return (
-    <div className={`tb-theme ${displaySerif.variable} ${bodySans.variable}`}>
+    <div className={`tb-theme ${scriptFace.variable} ${labelFace.variable} ${textFace.variable}`}>
       <ThemeStyles />
       <CoverGate
         invitationId={invitation.id}
@@ -53,11 +56,16 @@ export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
         musicUrl={invitation.media.musicUrl}
         navItems={navItems}
       >
+        <GrowingVine />
         <HeroSection displayName={coupleDisplayName} imageUrl={heroImageUrl} message={invitation.content.openingMessage} />
         <QuoteSection quote={invitation.content.openingQuote} />
         <CoupleSection people={invitation.people} settings={invitation.theme.settings} invitationType={invitation.type} />
-        <EventsSection events={invitation.events} mapsEnabled={invitation.features.maps} coupleDisplayName={coupleDisplayName} invitationId={invitation.id} timeZone={invitation.timeZone} />
-        <CountdownSection target={countdownTarget} />
+        <EventsSection events={invitation.events} mapsEnabled={invitation.features.maps} timeZone={invitation.timeZone} />
+        <CountdownSection
+          target={countdownTarget}
+          calendarEvent={calendarEvent}
+          calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
+        />
         <DressCodeSection dressCode={dressCode} />
         {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
         {invitation.features.gallery ? <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} /> : null}

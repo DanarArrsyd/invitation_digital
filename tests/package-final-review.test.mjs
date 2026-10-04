@@ -214,6 +214,8 @@ function renderAdminPage(path, packageKey) {
     "@/lib/supabase/storage": { getMediaPublicUrl: () => null },
     "@/lib/utils/instagram": { getPersonInstagram: () => ({ url: "https://www.instagram.com/old/" }) },
     "@/lib/utils/dressCode": dressUtils,
+    "@/lib/invitations/person-role": loadTs("lib/invitations/person-role.ts"),
+    "./PersonRoleSelect": { PersonRoleSelect: () => null },
     "@/server/invitations/queries": { getInvitationDetail: async () => detail },
     "./actions": {},
     "./media-actions": {},

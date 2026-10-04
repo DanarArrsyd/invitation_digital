@@ -7,11 +7,13 @@ import { SubmitButton } from "@/components/admin/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { isPersonRole, normalizePersonRole, PERSON_ROLE_LABELS } from "@/lib/invitations/person-role";
 import { getRequiredPackageForFeature, PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlements";
 import { getPersonInstagram } from "@/lib/utils/instagram";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
+import { PersonRoleSelect } from "./PersonRoleSelect";
 import { deletePersonAction, upsertPersonAction, uploadPersonPhotoAction, updatePersonInstagramAction } from "./actions";
 
 type PersonDefaults = {
@@ -23,14 +25,19 @@ type PersonDefaults = {
   bio: string | null;
 };
 
+function personRoleLabel(role: string): string {
+  const normalized = normalizePersonRole(role);
+  return isPersonRole(normalized) ? PERSON_ROLE_LABELS[normalized] : role;
+}
+
 /** Shared by the edit forms and the "add" form; `idPrefix` keeps ids unique per row. */
 function PersonFields({ idPrefix, person }: { idPrefix: string; person?: PersonDefaults }) {
   const id = (name: string) => `${idPrefix}-${name}`;
 
   return (
     <>
-      <FormField id={id("role")} label="Peran" hint="Isi bride untuk mempelai wanita, groom untuk mempelai pria.">
-        <Input id={id("role")} name="role" defaultValue={person?.role ?? ""} placeholder="bride / groom" required />
+      <FormField id={id("role")} label="Peran">
+        <PersonRoleSelect id={id("role")} defaultValue={person?.role} />
       </FormField>
       <FormField id={id("fullName")} label="Nama lengkap">
         <Input id={id("fullName")} name="fullName" defaultValue={person?.full_name ?? ""} required />
@@ -91,7 +98,7 @@ export default async function PeoplePage({
 
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-foreground">
-                {person.full_name} ({person.role})
+                {person.full_name} ({personRoleLabel(person.role)})
               </p>
 
               <form action={uploadPersonPhotoAction} className="mt-2 flex flex-wrap items-center gap-2">

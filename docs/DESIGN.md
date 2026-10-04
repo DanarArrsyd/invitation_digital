@@ -247,6 +247,15 @@ After opening:
 
 A large image may be used after the initial ivory cover.
 
+Hero photo rule (every template):
+
+- The pre-wedding hero photo is always cropped **3:4 (portrait)**.
+- Mobile (below 768px): the hero title block (eyebrow, couple names, short
+  line) comes **first**, the 3:4 photo **below** it, full content width.
+- Tablet/desktop may place title and photo side by side, but the photo stays
+  3:4 and the title stays first in reading (DOM) order.
+- Without a photo the hero is text-only; no placeholder frame.
+
 ---
 
 ## 10. Couple Section
@@ -263,6 +272,13 @@ Preferred approaches:
 
 Mobile can stack naturally.
 
+Every theme labels parents by role: "Putri dari" for `bride`, "Putra dari"
+for `groom`. Roles are a fixed admin choice and are normalized to lowercase
+keys before a theme sees them, so a stored "Groom" still reads "Putra dari".
+Names must keep a full column on every viewport: a reading measure (`ch`
+max-width) applies to parents and bio, never to the name, and long names wrap
+in balanced lines instead of being squeezed into a narrow column.
+
 ---
 
 ## 11. Event Details
@@ -276,7 +292,8 @@ Each event should display:
 - address when available;
 - map action.
 
-Do not make event information decorative at the expense of readability.
+Events do not carry calendar actions. Do not make event information
+decorative at the expense of readability.
 
 ---
 
@@ -298,6 +315,43 @@ Menit
 ```
 
 Avoid giant boxes resembling ecommerce flash sales.
+
+The "save to calendar" actions (Google Kalender and .ics download) live in the
+countdown section, built from the primary (earliest) event, in every theme.
+When the countdown feature is off or the date is unusable, the same section
+still renders with only the calendar actions and a "save the date" heading.
+
+---
+
+## 12a. Floating Navigation
+
+Every theme's section navigation shows an icon with each visible text label;
+text-only navigation is not acceptable. Icons are drawn in the theme's own
+visual language (Ivory: fine Nusantara line; Terra: botanical field-journal
+line; Midnight: art-deco geometry; Cobalt: nautical/postal line), are mapped
+from the section key, are `aria-hidden`, and never replace the visible label.
+Tap targets stay at least 44px and the bar never causes horizontal overflow at
+320px.
+
+Mobile bar sizing (below 768px, every template):
+
+- At most **5 items** (`src/themes/shared/nav-priority.ts` `pickNavItems`):
+  events, RSVP, wishes, gift, home win over couple, gallery, story; the chosen
+  items keep page order.
+- The bar spans the screen width inside a gutter of
+  `max(12px, env(safe-area-inset-left/right))` and sits
+  `max(12px, env(safe-area-inset-bottom))` above the bottom edge.
+- Items share the width equally (`flex: 1 1 0` or equal grid columns); the bar
+  **never scrolls horizontally** and no label is cut off.
+- Each item: icon `clamp(18px, 5.2vw, 22px)` above the label, label
+  `clamp(11px, 3vw, 12px)` (never below 11px), single line, ellipsis as a last
+  resort; item height at least 52px.
+- The active item is marked by colour/fill with AA contrast, not by an
+  underline alone.
+- Page content reserves bottom padding equal to the bar height plus its offset
+  so the last section and form controls are never hidden behind the bar.
+- Tablet/desktop may switch to the theme's rail or wider bar, still capped at
+  5 items.
 
 ---
 

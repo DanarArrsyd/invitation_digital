@@ -1,24 +1,39 @@
 "use client";
 
+import { useRef, type CSSProperties } from "react";
+
+import { useInViewOnce } from "@/themes/shared/use-in-view-once";
 import { enlargeLabel, GalleryLightbox } from "@/themes/shared/GalleryLightbox";
 import { useGalleryLightbox } from "@/themes/shared/use-gallery-lightbox";
 import { GALLERY_ASPECT_RATIO_CSS, type GalleryItem } from "@/types/invitation";
 import { EditorialImage } from "../components/EditorialImage";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
+import { TypedText } from "../components/TypedText";
+
+// Hand-placed tilt for each print, repeated down the page.
+const TILTS = [-2, 1.5, -1, 2.5, -1.5, 1] as const;
 
 export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[]; displayName: string }) {
   const lightbox = useGalleryLightbox(gallery.length);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const { watching, seen } = useInViewOnce(gridRef);
   if (gallery.length === 0) return null;
   return (
     <Section id="tb-galeri" labelledBy="tb-gallery-heading" className="tb-gallery">
       <SectionHeading id="tb-gallery-heading" title="Dalam kenangan" />
-      <div className="tb-gallery-grid">
+      <div ref={gridRef} className="tb-gallery-grid" data-settle={watching ? (seen ? "settled" : "waiting") : undefined}>
         {gallery.map((item, index) => {
           // A full-width anchor followed by a pair; a final pair never leaves an orphan tile.
           const span = index % 3 === 0 && gallery.length - index !== 2 ? 2 : 1;
           return (
-            <figure key={item.id} data-gallery-item={item.id} data-gallery-span={span} className="tb-gallery-item">
+            <figure
+              key={item.id}
+              data-gallery-item={item.id}
+              data-gallery-span={span}
+              className="tb-gallery-item"
+              style={{ "--tb-tilt": `${TILTS[index % TILTS.length]}deg`, "--tb-drop-delay": `${Math.min(index, 8) * 0.08}s` } as CSSProperties}
+            >
               <button
                 type="button"
                 className="tb-gallery-zoom"
@@ -32,7 +47,7 @@ export function GallerySection({ gallery, displayName }: { gallery: GalleryItem[
                   aspectRatio={GALLERY_ASPECT_RATIO_CSS[item.aspectRatio]}
                 />
               </button>
-              {item.caption?.trim() ? <figcaption>{item.caption}</figcaption> : null}
+              {item.caption?.trim() ? <figcaption><TypedText text={item.caption} /></figcaption> : null}
             </figure>
           );
         })}

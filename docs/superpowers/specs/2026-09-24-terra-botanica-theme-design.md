@@ -1,5 +1,10 @@
 # Terra Botanica Theme Design
 
+> **Superseded (visual direction only), 2026-10-03:** typography, palette, cover
+> and ornaments now follow `2026-10-03-theme-identity-redesign-design.md` §5
+> ("Herbarium Cinta"). Data, sections, feature gating and accessibility below
+> remain authoritative.
+
 **Date:** 2026-09-24
 
 **Status:** Approved for implementation planning

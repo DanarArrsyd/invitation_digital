@@ -130,14 +130,133 @@ test("photo-free couture cover renders personalized programme data and curtain s
 
 test("navigation candidates require both enabled features and available content", () => {
   const { buildMidnightNavItems } = loadTheme().load("themes/midnight-atelier/MidnightAtelier");
-  assert.deepEqual(Array.from(buildMidnightNavItems(fixture()), (item) => item.id), [
-    "ma-beranda", "ma-mempelai", "ma-acara", "ma-cerita", "ma-galeri", "ma-rsvp", "ma-ucapan", "ma-kado",
+  const browsingOnly = fixture({ features: { ...features, rsvp: false, wishes: false, gift: false } });
+  assert.deepEqual(Array.from(buildMidnightNavItems(browsingOnly), (item) => item.id), [
+    "ma-beranda", "ma-mempelai", "ma-acara", "ma-cerita", "ma-galeri",
   ]);
   const empty = fixture({
     people: [], events: [], stories: [], gallery: [], gifts: [],
     features: { ...features, story: false, gallery: false, rsvp: false, wishes: false, gift: false },
   });
   assert.deepEqual(Array.from(buildMidnightNavItems(empty), (item) => item.id), ["ma-beranda"]);
+});
+
+test("a full invitation keeps five guest-action nav items in page order", () => {
+  const { buildMidnightNavItems } = loadTheme().load("themes/midnight-atelier/MidnightAtelier");
+  const items = buildMidnightNavItems(fixture());
+  assert.equal(items.length, 5);
+  assert.deepEqual(Array.from(items, (item) => item.id), ["ma-beranda", "ma-acara", "ma-rsvp", "ma-ucapan", "ma-kado"]);
+  assert.deepEqual(Array.from(items, (item) => item.section), ["hero", "events", "rsvp", "wishes", "gift"]);
+});
+
+test("every navigation section key has a thin art-deco icon", () => {
+  const { NavIcon } = loadTheme().load("themes/midnight-atelier/components/NavIcon");
+  const sections = ["hero", "couple", "events", "story", "gallery", "rsvp", "wishes", "gift"];
+  const markup = new Set();
+  for (const section of sections) {
+    const html = renderToStaticMarkup(React.createElement(NavIcon, { section }));
+    const svg = new JSDOM(html).window.document.querySelector("svg");
+    assert.ok(svg, `${section} renders an svg`);
+    assert.equal(svg.getAttribute("viewBox"), "0 0 24 24", section);
+    assert.equal(svg.getAttribute("aria-hidden"), "true", section);
+    assert.equal(svg.getAttribute("focusable"), "false", section);
+    assert.equal(svg.getAttribute("stroke"), "currentColor", section);
+    assert.equal(svg.getAttribute("stroke-linejoin"), "miter", section);
+    assert.ok(svg.querySelector("path, rect, circle, line, polyline, ellipse"), `${section} draws a glyph`);
+    markup.add(svg.innerHTML);
+  }
+  assert.equal(markup.size, sections.length, "each section has a distinct glyph");
+});
+
+test("opened navigation shows one hidden icon plus a visible label and no numeric index", async () => {
+  const view = await mountShell({}, fixture());
+  try {
+    const { document } = view;
+    await act(async () => document.querySelector(".ma-cover-open").click());
+    const links = [...document.querySelectorAll(".ma-nav a")];
+    assert.deepEqual(links.map((link) => link.textContent), [
+      "Beranda", "Acara", "RSVP", "Ucapan", "Kado",
+    ]);
+    for (const link of links) {
+      const icons = link.querySelectorAll("svg");
+      assert.equal(icons.length, 1, `${link.textContent} has one icon`);
+      assert.equal(icons[0].getAttribute("aria-hidden"), "true");
+      assert.equal(icons[0].getAttribute("focusable"), "false");
+      assert.doesNotMatch(link.textContent, /\d/, "no numeric index");
+      assert.ok(link.querySelector(".ma-nav-label")?.textContent, "label stays visible text");
+    }
+  } finally {
+    await view.cleanup();
+  }
+});
+
+function navCss() {
+  const document = new JSDOM(renderShell()).window.document;
+  return document.querySelector("style")?.textContent ?? "";
+}
+
+function cssBlock(css, header) {
+  const start = css.indexOf(header);
+  assert.notEqual(start, -1, `missing ${header}`);
+  let depth = 0;
+  for (let index = css.indexOf("{", start); index < css.length; index += 1) {
+    if (css[index] === "{") depth += 1;
+    if (css[index] === "}") depth -= 1;
+    if (depth === 0) return css.slice(start, index + 1);
+  }
+  throw new Error(`unterminated ${header}`);
+}
+
+function withoutMedia(css, header) {
+  return css.replace(cssBlock(css, header), "");
+}
+
+function rules(css, selector) {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return [...css.matchAll(new RegExp(`(?:^|[}\\s])${escaped}\\s*\\{([^}]*)\\}`, "g"))].map((match) => match[1]);
+}
+
+test("navigation CSS stacks icons on mobile and sets them beside labels on the desktop rail", () => {
+  const css = navCss();
+  assert.match(css, /\.ma-nav-icon\s*\{[^}]*width:\s*clamp\(18px,\s*5\.2vw,\s*22px\)/s);
+  assert.match(css, /\.ma-nav a\[aria-current="location"\]\s*\{[^}]*background:\s*var\(--ma-ink\)[^}]*color:\s*var\(--ma-pearl\)/s);
+  assert.match(css, /\.ma-nav a\[aria-current="location"\] \.ma-nav-icon\s*\{[^}]*color:\s*var\(--ma-champagne\)/s);
+  assert.match(cssBlock(css, "@media (min-width: 768px)"), /\.ma-nav a\s*\{[^}]*grid-template-columns:\s*(?:1[89]|20)px/);
+  assert.doesNotMatch(css, /\.ma-nav a span:first-child/, "numeric index styling is gone");
+});
+
+test("mobile nav is a full-width, non-scrolling bar of equal, readable items", () => {
+  const css = navCss();
+  const mobile = withoutMedia(css, "@media (min-width: 768px)");
+  for (const body of rules(mobile, ".ma-nav ul")) {
+    assert.doesNotMatch(body, /overflow(?:-x)?:\s*(?:auto|scroll)/, "mobile bar never scrolls sideways");
+  }
+  const nav = rules(mobile, ".ma-nav").join(";");
+  assert.match(nav, /left:\s*max\(12px,\s*env\(safe-area-inset-left\)\)/);
+  assert.match(nav, /right:\s*max\(12px,\s*env\(safe-area-inset-right\)\)/);
+  assert.match(nav, /bottom:\s*var\(--ma-nav-offset\)/);
+  assert.match(css, /--ma-nav-offset:\s*max\(12px,\s*env\(safe-area-inset-bottom\)\)/);
+  assert.match(rules(mobile, ".ma-nav li").join(";"), /flex:\s*1 1 0/, "items share the width equally");
+  assert.match(rules(mobile, ".ma-nav li").join(";"), /min-width:\s*0/);
+  const link = rules(mobile, ".ma-nav a").join(";");
+  const minHeight = Number(link.match(/min-height:\s*(\d+)px/)?.[1]);
+  assert.ok(minHeight >= 52, `item min-height ${minHeight}px is at least 52px`);
+  const label = rules(mobile, ".ma-nav-label").join(";");
+  const labelSize = label.match(/font-size:\s*clamp\((\d+)px,\s*[\d.]+vw,\s*(\d+)px\)/);
+  assert.ok(labelSize, "label size is a px clamp");
+  assert.ok(Number(labelSize[1]) >= 11, "label never below 11px");
+  assert.match(label, /white-space:\s*nowrap/);
+  assert.match(label, /text-overflow:\s*ellipsis/);
+});
+
+test("mobile content reserves room for the bar and the music button clears it", () => {
+  const css = navCss();
+  const phone = cssBlock(css, "@media (max-width: 767px)");
+  assert.match(phone, /\.ma-content\s*\{[^}]*padding-bottom:\s*calc\(var\(--ma-nav-height\)\s*\+\s*var\(--ma-nav-offset\)/s);
+  const height = Number(css.match(/--ma-nav-height:\s*(\d+)px/)?.[1]);
+  assert.ok(height >= 52 + 2, `declared bar height ${height}px covers the 52px items and border`);
+  const music = rules(withoutMedia(css, "@media (min-width: 768px)"), ".ma-music").join(";");
+  assert.match(music, /bottom:\s*calc\(var\(--ma-nav-offset\)\s*\+\s*var\(--ma-nav-height\)\s*\+\s*\d+px\)/);
 });
 
 for (const width of [390, 1440]) {

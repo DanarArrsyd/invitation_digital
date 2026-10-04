@@ -1,7 +1,11 @@
-.tb-font-display {
-  --font-tb-display: "Fraunces Variable";
+.tb-font-script {
+  --font-tb-script: "Herr Von Muellerhoff";
 }
 
-.tb-font-body {
-  --font-tb-body: "Manrope Variable";
+.tb-font-label {
+  --font-tb-label: "Courier Prime";
+}
+
+.tb-font-text {
+  --font-tb-text: "Spectral";
 }

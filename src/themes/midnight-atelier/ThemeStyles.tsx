@@ -12,6 +12,9 @@ export function ThemeStyles() {
         --ma-champagne: ${colors.champagne};
         --ma-pearl: ${colors.pearl};
         --ma-smoke: ${colors.smoke};
+        /* 52px items + 2x4px list padding + 2x1px border. */
+        --ma-nav-height: 62px;
+        --ma-nav-offset: max(12px, env(safe-area-inset-bottom));
         min-height: 100svh;
         overflow-x: clip;
         background: var(--ma-ink);
@@ -167,7 +170,8 @@ export function ThemeStyles() {
       .ma-media { position: relative; overflow: hidden; background: var(--ma-lacquer); }
       .ma-media img { object-fit: cover; }
       .ma-hero > .ma-section-inner { display: grid; width: 100%; max-width: none; padding: 0; align-content: start; }
-      .ma-hero-image { width: 100%; aspect-ratio: 16 / 10; min-height: 18rem; align-self: start; }
+      /* DESIGN.md 9: title block first, then the 3:4 portrait. */
+      .ma-hero-image { width: 100%; aspect-ratio: 3 / 4; align-self: start; }
       .ma-hero-copy {
         position: relative;
         z-index: 1;
@@ -354,6 +358,10 @@ export function ThemeStyles() {
       .ma-countdown-units > div:nth-child(even) { padding-left: 1rem; }
       .ma-countdown-units dd { margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(2.8rem, 12vw, 6rem); line-height: .8; font-variant-numeric: tabular-nums; }
       .ma-countdown-units dt { margin-top: .75rem; color: var(--ma-champagne); font-size: .72rem; }
+      .ma-countdown-body { display: grid; min-width: 0; align-content: end; gap: clamp(1.75rem, 5vw, 2.5rem); }
+      .ma-countdown .ma-calendar-actions { gap: 0 1.5rem; }
+      .ma-countdown .ma-calendar-actions :is(a, button) { flex: 1 1 9rem; justify-content: space-between; }
+      .ma-countdown-calendar-only .ma-countdown-body { border-top: 1px solid var(--ma-champagne); padding-top: .5rem; }
       .ma-dress-code > .ma-section-inner { display: grid; align-content: start; gap: clamp(3rem, 8vw, 6rem); }
       .ma-dress-description { max-width: 25ch; margin: 0; font-family: var(--font-ma-display), serif; font-size: clamp(1.8rem, 5vw, 3.5rem); line-height: 1.12; overflow-wrap: anywhere; }
       .ma-dress-groups { display: grid; gap: 2.5rem; }
@@ -634,13 +642,19 @@ export function ThemeStyles() {
         letter-spacing: 0.16em;
         text-transform: uppercase;
       }
+      .ma-theme :is(a, button, input, textarea, select) { min-height: 48px; }
+      .ma-theme :is(a, button, input, textarea, select):focus-visible {
+        outline: 3px solid var(--ma-champagne);
+        outline-offset: 4px;
+      }
+      /* Mobile bottom bar (DESIGN.md 12a); the 768px+ media query turns it into the side rail.
+         Declared after the generic 48px control rule so the 52px item height wins. */
       .ma-nav {
         position: fixed;
         z-index: 30;
-        right: max(1rem, env(safe-area-inset-right));
-        bottom: max(.75rem, env(safe-area-inset-bottom));
-        left: max(1rem, env(safe-area-inset-left));
-        max-width: calc(100% - 2rem);
+        right: max(12px, env(safe-area-inset-right));
+        bottom: var(--ma-nav-offset);
+        left: max(12px, env(safe-area-inset-left));
         background: var(--ma-pearl);
         color: var(--ma-ink);
         border: 1px solid var(--ma-champagne);
@@ -649,32 +663,44 @@ export function ThemeStyles() {
         display: flex;
         gap: 0;
         margin: 0;
-        padding: .3rem;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
+        padding: 4px;
         list-style: none;
       }
-      .ma-nav li { flex: 0 0 auto; }
+      .ma-nav li { flex: 1 1 0; min-width: 0; }
       .ma-nav a {
         display: grid;
-        min-width: 64px;
-        min-height: 48px;
+        width: 100%;
+        min-width: 0;
+        min-height: 52px;
         place-items: center;
         align-content: center;
-        gap: .05rem;
-        padding: .35rem .7rem;
+        gap: 3px;
+        padding: 4px 2px;
         color: inherit;
         text-decoration: none;
       }
-      .ma-nav a span:first-child { color: var(--ma-oxblood); font-size: .62rem; font-variant-numeric: tabular-nums; }
-      .ma-nav a span:last-child { font-size: .72rem; }
+      .ma-nav-icon {
+        display: block;
+        width: clamp(18px, 5.2vw, 22px);
+        height: clamp(18px, 5.2vw, 22px);
+        flex: none;
+        color: var(--ma-oxblood);
+      }
+      .ma-nav-label {
+        max-width: 100%;
+        overflow: hidden;
+        font-size: clamp(11px, 3vw, 12px);
+        line-height: 1.2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
       .ma-nav a[aria-current="location"] { background: var(--ma-ink); color: var(--ma-pearl); }
-      .ma-nav a[aria-current="location"] span:first-child { color: var(--ma-champagne); }
+      .ma-nav a[aria-current="location"] .ma-nav-icon { color: var(--ma-champagne); }
       .ma-music {
         position: fixed;
         z-index: 31;
-        right: max(1rem, env(safe-area-inset-right));
-        bottom: calc(5.25rem + env(safe-area-inset-bottom));
+        right: max(12px, env(safe-area-inset-right));
+        bottom: calc(var(--ma-nav-offset) + var(--ma-nav-height) + 12px);
         display: grid;
         width: 48px;
         min-height: 48px;
@@ -686,16 +712,12 @@ export function ThemeStyles() {
         cursor: pointer;
       }
       .ma-music svg { width: 1.1rem; fill: currentColor; }
-      .ma-theme :is(a, button, input, textarea, select) { min-height: 48px; }
-      .ma-theme :is(a, button, input, textarea, select):focus-visible {
-        outline: 3px solid var(--ma-champagne);
-        outline-offset: 4px;
-      }
       @media (max-width: 767px) {
         .ma-cover-frame { grid-template-rows: auto 1fr auto; gap: 2rem; }
         .ma-cover-masthead span:last-child { display: none; }
         .ma-cover-names { font-size: clamp(3.5rem, 20vw, 6.25rem); }
-        .ma-hero-copy { min-height: calc(100svh - 62.5vw); margin-top: -1px; align-content: center; }
+        .ma-content { padding-bottom: calc(var(--ma-nav-height) + var(--ma-nav-offset)); }
+        .ma-hero-text-only .ma-hero-copy { min-height: calc(100svh - 62.5vw); margin-top: -1px; align-content: center; }
       }
       @media (min-width: 768px) {
         .ma-cover-frame {
@@ -707,6 +729,20 @@ export function ThemeStyles() {
         .ma-cover-stage { align-self: center; text-align: left; }
         .ma-cover-names { align-items: flex-start; }
         .ma-cover-recipient { align-self: end; margin-bottom: 1rem; }
+        .ma-hero:not(.ma-hero-text-only) > .ma-section-inner {
+          grid-template-columns: repeat(12, minmax(0, 1fr));
+          align-content: center;
+          align-items: center;
+          padding: clamp(3rem, 6vw, 6rem) clamp(8rem, 13vw, 12rem) clamp(3rem, 6vw, 6rem) 0;
+        }
+        .ma-hero:not(.ma-hero-text-only) .ma-hero-copy {
+          grid-column: 1 / 8;
+          grid-row: 1;
+          margin-left: clamp(1.25rem, 5vw, 6rem);
+          padding: clamp(2.5rem, 5vw, 5.5rem);
+        }
+        .ma-hero:not(.ma-hero-text-only) .ma-hero-copy h2 { font-size: clamp(3.6rem, 7vw, 8.5rem); }
+        .ma-hero-image { grid-column: 7 / -1; grid-row: 1; }
         .ma-nav {
           top: 50%;
           right: max(1rem, env(safe-area-inset-right));
@@ -716,8 +752,10 @@ export function ThemeStyles() {
           max-width: 10rem;
           transform: translateY(-50%);
         }
-        .ma-nav ul { max-height: min(76vh, 38rem); flex-direction: column; overflow-x: hidden; overflow-y: auto; }
-        .ma-nav a { grid-template-columns: 1.5rem minmax(0, 1fr); min-width: 8.5rem; justify-items: start; text-align: left; }
+        .ma-nav ul { max-height: min(76vh, 38rem); flex-direction: column; padding: .3rem; overflow-x: hidden; overflow-y: auto; }
+        .ma-nav li { flex: none; }
+        .ma-nav a { grid-template-columns: 20px minmax(0, 1fr); min-width: 8.5rem; align-items: center; justify-items: start; column-gap: .65rem; padding: .35rem .7rem; text-align: left; }
+        .ma-nav-icon { width: 20px; height: 20px; }
         .ma-music { top: max(1.25rem, env(safe-area-inset-top)); bottom: auto; }
         .ma-quote-inner { grid-template-columns: 5rem minmax(0, 1fr); }
         .ma-people { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: clamp(2.5rem, 6vw, 6rem); }
@@ -727,7 +765,10 @@ export function ThemeStyles() {
         .ma-event { grid-template-columns: 3rem minmax(0, 1fr) minmax(15rem, .75fr); gap: clamp(1.5rem, 4vw, 4rem); }
         .ma-event-place { padding-top: 2rem; }
         .ma-countdown > .ma-section-inner { grid-template-columns: minmax(0, 1fr) minmax(24rem, 1fr); }
-        .ma-countdown-units { grid-template-columns: repeat(4, minmax(0, 1fr)); align-self: end; }
+        .ma-countdown-units { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .ma-countdown-body { align-self: end; }
+        .ma-countdown .ma-calendar-actions { justify-content: flex-end; }
+        .ma-countdown .ma-calendar-actions :is(a, button) { flex: 0 1 auto; }
         .ma-countdown-units > div { border-right: 1px solid var(--ma-champagne); padding: 1.25rem; }
         .ma-countdown-units > div:first-child { padding-left: 0; }
         .ma-countdown-units > div:last-child { border-right: 0; padding-right: 0; }
@@ -757,12 +798,9 @@ export function ThemeStyles() {
         .ma-closing > .ma-section-inner { grid-template-columns: minmax(0, 1.1fr) minmax(18rem, .9fr); }
       }
       @media (min-width: 1100px) {
-        .ma-hero > .ma-section-inner { grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: end; }
-        .ma-hero-image { grid-column: 1 / 10; grid-row: 1; min-height: 42rem; }
-        .ma-hero-copy { grid-column: 8 / -1; grid-row: 1; margin-bottom: clamp(3rem, 7vw, 7rem); padding: clamp(3rem, 5vw, 5.5rem); }
         .ma-hero-text-only > .ma-section-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(24rem, .65fr); align-items: end; }
         .ma-hero-text-only .ma-hero-mark { align-self: start; }
-        .ma-hero-text-only .ma-hero-copy { grid-column: 2; }
+        .ma-hero-text-only .ma-hero-copy { grid-column: 2; grid-row: 1; margin-bottom: clamp(3rem, 7vw, 7rem); }
         .ma-gallery-columns { columns: 3; }
       }
       .ma-gate[data-reduced-motion="true"] .ma-cover,

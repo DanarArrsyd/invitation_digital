@@ -16,8 +16,13 @@ import "@fontsource-variable/lora/wght-italic.css";
 import "./nusantara-ivory/fonts.css";
 
 // terra-botanica
-import "@fontsource-variable/fraunces";
-import "@fontsource-variable/manrope";
+import "@fontsource/herr-von-muellerhoff/400.css";
+import "@fontsource/courier-prime/400.css";
+import "@fontsource/courier-prime/700.css";
+import "@fontsource/spectral/400.css";
+import "@fontsource/spectral/400-italic.css";
+import "@fontsource/spectral/600.css";
+import "@fontsource/spectral/700.css";
 import "./terra-botanica/fonts.css";
 
 // midnight-atelier
