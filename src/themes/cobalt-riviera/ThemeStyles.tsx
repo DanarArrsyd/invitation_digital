@@ -182,6 +182,8 @@ export function ThemeStyles() {
       .cr-route-anchor { position: absolute; top: 0; }
       .cr-section { position: relative; min-height: 100svh; }
       .cr-section-inner {
+        position: relative;
+        z-index: 1;
         width: min(100%, 96rem);
         min-height: inherit;
         margin-inline: auto;
@@ -935,6 +937,15 @@ export function ThemeStyles() {
         outline: 3px solid var(--cr-focus-ring);
         outline-offset: 4px;
       }
+      /* Ombak pembatas: two wave lines at each chapter's top edge, below the
+         content. They sway only while on screen; only transform animates. */
+      .cr-divider { position: absolute; z-index: 0; top: clamp(1.25rem, 3.5vw, 2.25rem); right: 0; left: 0; height: 20px; overflow: hidden; pointer-events: none; }
+      .cr-divider svg { display: block; width: 200%; height: 100%; overflow: visible; }
+      .cr-divider-line { fill: none; stroke-width: 1.5; vector-effect: non-scaling-stroke; transform-box: view-box; animation: cr-sway 7s ease-in-out infinite alternate; animation-play-state: paused; }
+      .cr-divider-line-a { stroke: currentColor; opacity: .45; }
+      .cr-divider-line-b { stroke: var(--cr-tangerine); animation-duration: 9s; animation-delay: -3s; }
+      .cr-divider[data-sway="on"] .cr-divider-line { animation-play-state: running; }
+      @keyframes cr-sway { from { transform: translateX(0); } to { transform: translateX(-25%); } }
       /* Postcard voices: Corinthia for names (.cr-script), Newsreader italic for
          headings and numerals, Familjen Grotesk spaced capitals for labels. */
       .cr-theme :is(h2, h3, blockquote):not(.cr-script) { font-family: var(--cr-text); font-style: italic; font-variation-settings: normal; font-weight: 500; letter-spacing: -.015em; line-height: 1.02; }

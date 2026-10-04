@@ -336,3 +336,54 @@ test("the wave cover hydrates without mismatch when the browser prefers reduced 
     await view.cleanup();
   }
 });
+
+test("two wave lines divide the chapters and sway only while on screen", async () => {
+  const load = createLoader();
+  const { CobaltRiviera } = load("index");
+  const full = invitation({
+    content: { openingQuote: "Laut mengajari kami sabar.", openingMessage: null, closingMessage: null },
+  });
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(CobaltRiviera, { invitation: full, guest: null }))).window;
+  const sections = [...document.querySelectorAll("#cr-content main > section")];
+  assert.ok(sections.length >= 8);
+  for (const section of sections) {
+    const dividers = section.querySelectorAll(":scope > .cr-divider");
+    if (section.id === "cr-beranda") {
+      assert.equal(dividers.length, 0, "the hero opens the page without a divider");
+      continue;
+    }
+    assert.equal(dividers.length, 1, `${section.id} has one divider`);
+    assert.equal(section.firstElementChild, dividers[0], `${section.id}: the divider sits at the chapter's top edge`);
+    assert.equal(dividers[0].getAttribute("aria-hidden"), "true");
+    assert.equal(dividers[0].querySelectorAll("path.cr-divider-line").length, 2);
+    assert.equal(dividers[0].hasAttribute("data-sway"), false, "server markup is still");
+  }
+
+  const { WaveDivider } = load("components/WaveDivider");
+  FakeIntersectionObserver.instances = [];
+  const view = await mount(React.createElement(WaveDivider), { intersectionObserver: FakeIntersectionObserver });
+  const observer = FakeIntersectionObserver.instances[0];
+  try {
+    const divider = view.document.querySelector(".cr-divider");
+    assert.equal(divider.hasAttribute("data-sway"), false, "nothing moves before the observer reports");
+    await act(async () => observer.trigger(true));
+    assert.equal(divider.dataset.sway, "on");
+    await act(async () => observer.trigger(false));
+    assert.equal(divider.dataset.sway, "off", "it pauses again off screen");
+    await act(async () => observer.trigger(true));
+    assert.equal(divider.dataset.sway, "on", "and resumes when it returns");
+  } finally { await view.cleanup(); }
+  assert.equal(observer.elements.length, 0, "the observer is released on unmount");
+
+  const sheet = css();
+  assert.match(sheet, /\.cr-divider-line\s*\{[^}]*animation:\s*cr-sway[^;]*infinite[^}]*animation-play-state:\s*paused/);
+  assert.match(sheet, /\.cr-divider\[data-sway="on"\] \.cr-divider-line\s*\{\s*animation-play-state:\s*running/);
+  const sway = sheet.match(/@keyframes cr-sway\s*\{((?:[^{}]*\{[^}]*\})*)\s*\}/)?.[1] ?? "";
+  assert.ok(sway, "cr-sway keyframes exist");
+  for (const [, body] of sway.matchAll(/\{([^}]*)\}/g)) {
+    for (const declaration of body.split(";").map((part) => part.trim()).filter(Boolean)) {
+      assert.match(declaration, /^transform:/, `cr-sway animates only transform: ${declaration}`);
+    }
+  }
+  assert.match(sheet, /\.cr-section-inner\s*\{[^}]*position:\s*relative[^}]*z-index:\s*1/, "chapter content stays above the divider");
+});

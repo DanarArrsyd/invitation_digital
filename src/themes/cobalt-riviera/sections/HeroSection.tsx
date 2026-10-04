@@ -50,6 +50,7 @@ export function HeroSection({
       id="cr-beranda"
       labelledBy="cr-hero-heading"
       tone="porcelain"
+      divider={false}
       className={`cr-hero ${imageUrl ? "cr-hero-photo" : "cr-hero-text-only"}`}
     >
       <div id="cr-foundation" aria-labelledby="cr-foundation-title" className="cr-hero-layout">
