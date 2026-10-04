@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
+
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { useRsvpForm } from "@/themes/shared/use-public-forms";
 
@@ -13,6 +15,12 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
   guestName: string | null;
 }) {
   const { state, formAction, isPending, attendance, setAttendance, formRef, onSubmit } = useRsvpForm();
+  // The choices stay live while the action is pending; name the answer that was sent.
+  const [sentAttending, setSentAttending] = useState(false);
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    setSentAttending(new FormData(event.currentTarget).get("attendance") === "attending");
+    onSubmit(event);
+  }
 
   return (
     <Section id="tb-rsvp" labelledBy="tb-rsvp-heading" tone="moss" className="tb-rsvp">
@@ -26,9 +34,10 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
           <div className="tb-form-success" role="status">
             <p>Terima kasih</p>
             <p>Konfirmasi kehadiran Anda telah kami terima.</p>
+            <p>Tercatat: {sentAttending ? "Hadir" : "Tidak hadir"}.</p>
           </div>
         ) : (
-          <form ref={formRef} action={formAction} onSubmit={onSubmit} className="tb-form">
+          <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="tb-form">
             <input type="hidden" name="invitationId" value={invitationId} />
             <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="guestToken" value={guestToken ?? ""} />

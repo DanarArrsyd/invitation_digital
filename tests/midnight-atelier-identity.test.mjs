@@ -538,6 +538,7 @@ test("an attending RSVP writes a tasselled dance card; declining keeps the plain
   const declined = await answer("Bude Sri", "Tidak Hadir");
   try {
     assert.match(declined.document.querySelector('#ma-rsvp [role="status"]').textContent, /Terima kasih/);
+    assert.match(declined.document.querySelector('#ma-rsvp [role="status"]').textContent, /Tercatat: Tidak hadir\./, "a decline is announced too");
     assert.equal(declined.document.querySelector("[data-ma-dance-card]"), null);
   } finally { await declined.cleanup(); }
 

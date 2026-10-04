@@ -579,6 +579,7 @@ test("RSVP submits exact fields, retains the selected attendance on error, and s
     await act(async () => { form.dispatchEvent(new view.document.defaultView.Event("submit", { bubbles: true, cancelable: true })); });
     await act(async () => resolveAction({ status: "success" }));
     assert.match(view.document.querySelector("#tb-rsvp").textContent, /Konfirmasi kehadiran Anda telah kami terima/);
+    assert.match(view.document.querySelector("#tb-rsvp [role='status']").textContent, /Tercatat: Hadir\./, "the status names the submitted answer");
   } finally { await view.cleanup(); }
 });
 

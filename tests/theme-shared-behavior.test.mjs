@@ -311,6 +311,7 @@ for (const [attendance, showsMelati] of [["attending", true], ["not_attending", 
       assert.match(section.querySelector('[role="status"]').textContent, /Terima kasih/);
       assert.doesNotMatch(section.textContent, /Matur nuwun/i);
       assert.match(section.textContent, /Konfirmasi kehadiran Anda telah kami terima/);
+      assert.match(section.querySelector('[role="status"]').textContent, showsMelati ? /Tercatat: Hadir\./ : /Tercatat: Tidak hadir\./, "the status names the submitted answer");
       assert.equal(Boolean(section.querySelector("[data-ni-melati]")), showsMelati);
     } finally { await view.cleanup(); }
   });

@@ -65,6 +65,7 @@ export function RsvpSection({
                 <p className="ni-body max-w-[32ch] text-base">
                   Konfirmasi kehadiran Anda telah kami terima.
                 </p>
+                <p className="ni-body text-base">Tercatat: {sentAttending ? "Hadir" : "Tidak hadir"}.</p>
               </div>
             ) : (
               <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="flex flex-col gap-7">

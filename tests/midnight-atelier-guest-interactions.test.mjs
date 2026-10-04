@@ -171,6 +171,7 @@ test("RSVP submits exact fields and presents selected, pending, error, and succe
     await submit(form);
     await act(async () => resolveAction({ status: "success" }));
     assert.match(view.document.getElementById("ma-rsvp").textContent, /Konfirmasi kehadiran Anda telah kami terima/);
+    assert.match(view.document.querySelector("#ma-rsvp [role='status']").textContent, /Tercatat: Hadir\./, "the status names the submitted answer");
   } finally { await view.cleanup(); }
 });
 
