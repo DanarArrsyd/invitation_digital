@@ -509,8 +509,9 @@ plan in `docs/superpowers/plans/` after the previous one merges.
   morning-to-sunset scroll, postmark RSVP, message-in-a-bottle wishes).
   Already done for Cobalt: nautical nav icons, calendar in the countdown,
   5-item mobile bar, 3:4 title-first hero.
-- Open follow-up: Ivory's melati shower reads the live attendance like the
-  Midnight bug did; offer a small fix PR.
+- Done in PR #17 (`59db030`): Ivory's melati shower now follows the submitted
+  attendance (it read the live choice, like the Midnight dance card bug), and
+  Ivory thanks read "Terima kasih" instead of "Matur nuwun" (owner request).
 
 #### Checkpoint — Midnight "Malam di Ballroom" (merged, 2026-10-04)
 
