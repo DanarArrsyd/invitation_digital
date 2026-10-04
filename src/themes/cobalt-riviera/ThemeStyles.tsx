@@ -969,6 +969,23 @@ export function ThemeStyles() {
       .cr-postmark-word { font-size: 15px; }
       .cr-postmark-note { font-size: 10px; }
       @keyframes cr-stamp { 0% { opacity: 0; transform: scale(1.5) rotate(-22deg); } 70% { opacity: 1; transform: scale(.95) rotate(-9deg); } 100% { opacity: 1; transform: scale(1) rotate(-10deg); } }
+      /* Pesan dalam botol: the band is a reserved, clipped 6rem row where the
+         form was, above the thank-you, so the bottle never drifts over the
+         heading or the confirmation and nothing jumps when it leaves. */
+      .cr-wish-sent { position: relative; min-width: 0; padding-top: 6rem; }
+      .cr-bottle-band { position: absolute; top: 0; right: 0; left: 0; height: 6rem; overflow: hidden; pointer-events: none; }
+      .cr-bottle-note { position: absolute; top: .25rem; right: 0; left: 0; margin: 0; overflow: hidden; color: var(--cr-cobalt); font-family: var(--cr-text); font-size: 1.0625rem; font-style: italic; white-space: nowrap; text-overflow: ellipsis; transform-origin: 0 100%; animation: cr-note-roll .9s cubic-bezier(.5, 0, .75, 0) .2s both; }
+      .cr-bottle { position: absolute; bottom: .55rem; left: 0; width: 4.5rem; height: auto; overflow: visible; animation: cr-bottle-drift 1.4s ease-in 1.7s both; }
+      .cr-bottle-bob { transform-box: fill-box; transform-origin: center; animation: cr-bottle-bob .55s ease-in-out .9s 4 alternate both; }
+      .cr-bottle-glass { fill: rgba(142, 197, 214, .35); stroke: var(--cr-cobalt); stroke-width: 1.5; }
+      .cr-bottle-cork { fill: var(--cr-tangerine); }
+      .cr-bottle-scroll { fill: var(--cr-citron); stroke: var(--cr-sea-ink); stroke-width: .75; }
+      .cr-bottle-sea { position: absolute; right: 0; bottom: 0; left: 0; width: 100%; height: 12px; animation: cr-bottle-sea-fade .5s ease-in 2.6s both; }
+      .cr-bottle-sea path { fill: none; stroke: var(--cr-pool); stroke-width: 2; vector-effect: non-scaling-stroke; }
+      @keyframes cr-note-roll { from { opacity: 1; transform: none; } to { opacity: 0; transform: translate(.5rem, 3.2rem) scale(.06); } }
+      @keyframes cr-bottle-bob { from { transform: translateY(0) rotate(-3deg); } to { transform: translateY(-4px) rotate(3deg); } }
+      @keyframes cr-bottle-drift { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(min(70vw, 22rem)); } }
+      @keyframes cr-bottle-sea-fade { from { opacity: 1; } to { opacity: 0; } }
       /* Postcard voices: Corinthia for names (.cr-script), Newsreader italic for
          headings and numerals, Familjen Grotesk spaced capitals for labels. */
       .cr-theme :is(h2, h3, blockquote):not(.cr-script) { font-family: var(--cr-text); font-style: italic; font-variation-settings: normal; font-weight: 500; letter-spacing: -.015em; line-height: 1.02; }
@@ -1134,6 +1151,7 @@ export function ThemeStyles() {
           transition: none !important;
         }
         .cr-sky { --cr-day: 1 !important; }
+        .cr-wish-sent { padding-top: 0; }
       }
   
       /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */

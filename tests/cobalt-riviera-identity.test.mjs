@@ -552,3 +552,96 @@ test("the postmark names the attendance that was submitted, not a choice changed
     assert.equal(declined.document.querySelectorAll("[data-cr-postmark] text")[1].textContent, "TIDAK HADIR", "a stored decline never reads HADIR");
   } finally { await declined.cleanup(); }
 });
+
+test("a sent wish rolls into a bottle that drifts away inside its own band; the thank-you stays", async () => {
+  const { WishBottle } = createLoader()("components/WishBottle");
+  const band = new JSDOM(renderToStaticMarkup(React.createElement(WishBottle, { message: "Bahagia selalu" }))).window.document.querySelector("[data-cr-bottle]");
+  assert.equal(band.getAttribute("aria-hidden"), "true");
+  assert.equal(band.querySelector(".cr-bottle-note").textContent, "Bahagia selalu");
+  assert.ok(band.querySelector("svg.cr-bottle .cr-bottle-bob") && band.querySelector("svg.cr-bottle-sea"));
+  assert.ok(band.querySelectorAll("*").length <= 20, `${band.querySelectorAll("*").length} nodes`);
+  const long = new JSDOM(renderToStaticMarkup(React.createElement(WishBottle, { message: "doa ".repeat(100) }))).window.document;
+  assert.ok(long.querySelector(".cr-bottle-note").textContent.length <= 80);
+  const still = createLoader({ reducedMotion: true })("components/WishBottle").WishBottle;
+  assert.equal(renderToStaticMarkup(React.createElement(still, { message: "Bahagia selalu" })), "");
+
+  const wishes = [{ id: "w1", guestName: "Pak Joko", message: "Selamat menempuh hidup baru", createdAt: "2030-01-02T00:00:00Z" }];
+  const { WishesSection } = createLoader({ actions: { submitWish: async () => ({ status: "success" }) } })("sections/WishesSection");
+  const view = await mount(React.createElement(WishesSection, { invitationId: "cobalt", slug: "cobalt", guestToken: "t", guestName: "Bude Sri", wishes }));
+  try {
+    const form = view.document.querySelector("#cr-ucapan form");
+    form.elements.namedItem("message").value = "Bahagia selalu";
+    await submit(view, form);
+    const section = view.document.getElementById("cr-ucapan");
+    const status = section.querySelector('[role="status"]');
+    assert.match(status.textContent, /Terima kasih atas ucapan dan doanya/);
+    const bottle = section.querySelector("[data-cr-bottle]");
+    assert.equal(bottle.querySelector(".cr-bottle-note").textContent, "Bahagia selalu", "the sent text, captured at submit");
+    assert.equal(bottle.contains(status), false, "the thank-you is never inside the band");
+    assert.ok(bottle.compareDocumentPosition(status) & 4, "the band sits above the thank-you, below the heading");
+    assert.equal(section.querySelectorAll("[data-wish-id]").length, 1, "no optimistic insert: the list waits for revalidation");
+  } finally { await view.cleanup(); }
+
+  const reduced = createLoader({ reducedMotion: true, actions: { submitWish: async () => ({ status: "success" }) } })("sections/WishesSection").WishesSection;
+  const calm = await mount(React.createElement(reduced, { invitationId: "cobalt", slug: "cobalt", guestToken: "t", guestName: "Bude Sri", wishes: [] }));
+  try {
+    const form = calm.document.querySelector("#cr-ucapan form");
+    form.elements.namedItem("message").value = "Bahagia selalu";
+    await submit(calm, form);
+    assert.match(calm.document.querySelector('#cr-ucapan [role="status"]').textContent, /Terima kasih/);
+    assert.equal(calm.document.querySelector("[data-cr-bottle]"), null, "no bottle under reduced motion");
+  } finally { await calm.cleanup(); }
+
+  const sheet = css();
+  const bandRule = rules(sheet, ".cr-bottle-band").join(";");
+  assert.match(bandRule, /top:\s*0/);
+  assert.match(bandRule, /height:\s*6rem/);
+  assert.match(bandRule, /overflow:\s*hidden/, "the bottle never leaves its band");
+  assert.match(rules(sheet, ".cr-wish-sent").join(";"), /padding-top:\s*6rem/, "the band's row is reserved, so nothing jumps when it leaves");
+  assert.match(sheet, /prefers-reduced-motion: reduce\)[\s\S]*\.cr-wish-sent\s*\{\s*padding-top:\s*0/, "no empty row under reduced motion");
+  const note = rules(sheet, ".cr-bottle-note").join(";");
+  assert.match(note, /white-space:\s*nowrap/, "one line only");
+  assert.match(note, /text-overflow:\s*ellipsis/);
+  for (const name of ["cr-note-roll", "cr-bottle-bob", "cr-bottle-drift"]) {
+    const frames = sheet.match(new RegExp(`@keyframes ${name}\\s*\\{((?:[^{}]*\\{[^}]*\\})*)\\s*\\}`))?.[1] ?? "";
+    assert.ok(frames, `${name} keyframes exist`);
+    for (const [, body] of frames.matchAll(/\{([^}]*)\}/g)) {
+      for (const declaration of body.split(";").map((part) => part.trim()).filter(Boolean)) {
+        assert.match(declaration, /^(transform|opacity):/, `${name}: ${declaration}`);
+      }
+    }
+  }
+});
+
+test("the bottle sails once: a server refresh of the list never replays it, and it leaves for good", async () => {
+  const { WishesSection } = createLoader({ actions: { submitWish: async () => ({ status: "success" }) } })("sections/WishesSection");
+  let setWishes;
+  function Host() {
+    const [wishes, update] = React.useState([]);
+    setWishes = update;
+    return React.createElement(WishesSection, { invitationId: "cobalt", slug: "cobalt", guestToken: "t", guestName: "Bude Sri", wishes });
+  }
+  const view = await mount(React.createElement(Host));
+  try {
+    const form = view.document.querySelector("#cr-ucapan form");
+    form.elements.namedItem("message").value = "Bahagia selalu";
+    await submit(view, form);
+    const band = view.document.querySelector("[data-cr-bottle]");
+    assert.equal(band.getAttribute("aria-hidden"), "true");
+    await act(async () => setWishes([{ id: "w1", guestName: "Bude Sri", message: "Bahagia selalu", createdAt: "2030-01-02T00:00:00Z" }]));
+    assert.equal(view.document.querySelector("[data-cr-bottle]"), band, "the revalidated list does not remount the bottle");
+    const end = (name) => { const event = new view.window.Event("animationend", { bubbles: true }); event.animationName = name; return event; };
+    await act(async () => band.querySelector(".cr-bottle-bob").dispatchEvent(end("cr-bottle-bob")));
+    assert.ok(view.document.querySelector("[data-cr-bottle]"), "only the drift ends it");
+    await act(async () => band.querySelector("svg.cr-bottle").dispatchEvent(end("cr-bottle-drift")));
+    assert.equal(view.document.querySelector("[data-cr-bottle]"), null, "gone once it has drifted away");
+    await act(async () => setWishes((current) => [...current]));
+    assert.equal(view.document.querySelector("[data-cr-bottle]"), null, "and it never comes back");
+    assert.match(view.document.querySelector('#cr-ucapan [role="status"]').textContent, /Terima kasih atas ucapan dan doanya/);
+    assert.equal(view.document.querySelectorAll("[data-wish-id]").length, 1);
+  } finally { await view.cleanup(); }
+
+  const source = readFileSync(resolve(cobaltRoot, "components/WishBottle.tsx"), "utf8");
+  assert.match(source, /setTimeout\(/, "a missed animationend still removes the band");
+  assert.doesNotMatch(source, /Math\.random\(|querySelector|<img/);
+});

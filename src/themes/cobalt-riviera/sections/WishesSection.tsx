@@ -1,10 +1,13 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
+
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { useWishForm, useWishPagination } from "@/themes/shared/use-public-forms";
 import type { Wish } from "@/types/invitation";
 
 import { Section } from "../components/Section";
+import { WishBottle } from "../components/WishBottle";
 
 const PAGE_SIZE = 5;
 
@@ -23,6 +26,13 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
 }) {
   const { state, formAction, isPending, formRef, onSubmit } = useWishForm();
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
+  // The form unmounts on success; keep the text it sent so it can sail away.
+  const [sentMessage, setSentMessage] = useState<string | null>(null);
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    const message = new FormData(event.currentTarget).get("message");
+    setSentMessage(typeof message === "string" ? message : null);
+    onSubmit(event);
+  }
 
   return (
     <Section id="cr-ucapan" labelledBy="cr-wishes-heading" tone="porcelain" className="cr-wishes">
@@ -34,9 +44,12 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
         </header>
 
         {state.status === "success" ? (
-          <p className="cr-form-success cr-form-success-dark" role="status">Terima kasih atas ucapan dan doanya.</p>
+          <div className="cr-wish-sent">
+            <WishBottle message={sentMessage} />
+            <p className="cr-form-success cr-form-success-dark" role="status">Terima kasih atas ucapan dan doanya.</p>
+          </div>
         ) : (
-          <form ref={formRef} action={formAction} onSubmit={onSubmit} className="cr-form cr-wish-form">
+          <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="cr-form cr-wish-form">
             <input type="hidden" name="invitationId" value={invitationId} />
             <input type="hidden" name="slug" value={slug} />
             <input type="hidden" name="guestToken" value={guestToken ?? ""} />
