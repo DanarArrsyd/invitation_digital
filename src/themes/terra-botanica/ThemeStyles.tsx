@@ -229,6 +229,13 @@ export function ThemeStyles() {
     .tb-theme .tb-nav a[aria-current="location"] { background: var(--tb-moss); color: var(--tb-bone); text-decoration: underline; }
     .tb-theme .tb-nav a:focus-visible { outline-offset: -3px; }
     .tb-theme .tb-music { position: fixed; z-index: 30; right: max(1rem, env(safe-area-inset-right)); bottom: calc(5.75rem + env(safe-area-inset-bottom)); display: grid; place-items: center; min-width: 48px; min-height: 48px; border: 1px solid var(--tb-moss); background: var(--tb-bone); color: var(--tb-moss); cursor: pointer; }
+    /* Climbing vine: fixed to the page edge inside the gutter; its growth is
+       a CSS read of --tb-progress, written by useScrollProgress. */
+    .tb-theme .tb-vine { position: fixed; z-index: 1; top: 0; bottom: 0; left: max(2px, env(safe-area-inset-left)); width: clamp(18px, 3vw, 36px); pointer-events: none; color: var(--tb-moss); opacity: .55; --tb-progress: 0; }
+    .tb-theme .tb-vine svg { display: block; width: 100%; height: 100%; overflow: visible; }
+    .tb-theme .tb-vine-stem { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--tb-progress)); }
+    .tb-theme .tb-vine-leaf { fill: currentColor; transform-box: fill-box; transform-origin: center; transform: scale(clamp(0, (var(--tb-progress) - var(--tb-at)) * 12, 1)); }
+    .tb-theme .tb-vine-flower { fill: var(--tb-clay); }
     @media (min-width: 768px) {
       .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; }
       .tb-theme .tb-wishes > .tb-section-inner { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: start; }
@@ -263,6 +270,7 @@ export function ThemeStyles() {
     @media (prefers-reduced-motion: reduce) {
       .tb-theme *, .tb-theme *::before, .tb-theme *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
       .tb-theme .tb-cover, .tb-theme .tb-gate[data-opened="true"] .tb-cover { transform: none; }
+      .tb-theme .tb-vine { --tb-progress: 1 !important; }
     }
 
       /* Gallery lightbox (shared behaviour: themes/shared/GalleryLightbox). */

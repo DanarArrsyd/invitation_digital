@@ -4,6 +4,7 @@ import { buildThemeViewModel } from "@/themes/shared/view-model";
 
 import { CoverGate } from "./CoverGate";
 import type { NavItem } from "./components/FloatingNav";
+import { GrowingVine } from "./components/GrowingVine";
 import { ThemeStyles } from "./ThemeStyles";
 import { labelFace, scriptFace, textFace } from "./fonts";
 import { HeroSection } from "./sections/HeroSection";
@@ -53,6 +54,7 @@ export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {
         musicUrl={invitation.media.musicUrl}
         navItems={navItems}
       >
+        <GrowingVine />
         <HeroSection displayName={coupleDisplayName} imageUrl={heroImageUrl} message={invitation.content.openingMessage} />
         <QuoteSection quote={invitation.content.openingQuote} />
         <CoupleSection people={invitation.people} settings={invitation.theme.settings} invitationType={invitation.type} />

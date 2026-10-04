@@ -198,3 +198,27 @@ test("the cover carries a seed that blooms when the invitation opens", () => {
   assert.match(css, /\[data-opened="true"\] \.tb-bloom-stem\s*\{[^}]*animation:/);
   assert.match(css, /\[data-opened="true"\] \.tb-cover\s*\{[^}]*transition:[^}]*1100ms/, "cover waits for the bloom before fading");
 });
+
+test("a vine along the page edge grows with scroll progress", async () => {
+  const { GrowingVine } = createLoader()("components/GrowingVine");
+  const view = await mount(React.createElement(GrowingVine));
+  try {
+    const vine = view.document.querySelector(".tb-vine");
+    assert.equal(vine.getAttribute("aria-hidden"), "true");
+    assert.equal(vine.querySelector(".tb-vine-stem").getAttribute("pathLength"), "1");
+    const leaves = vine.querySelectorAll(".tb-vine-leaf");
+    assert.ok(leaves.length >= 6);
+    for (const leaf of leaves) assert.match(leaf.getAttribute("style"), /--tb-at:\s*0\.\d+/);
+    assert.equal(vine.style.getPropertyValue("--tb-progress"), "1.0000", "jsdom cannot scroll, so the vine is complete");
+  } finally {
+    await view.cleanup();
+  }
+
+  const { TerraBotanica } = createLoader()("index");
+  const { document } = new JSDOM(renderToStaticMarkup(React.createElement(TerraBotanica, { invitation: invitation(), guest: null }))).window;
+  assert.ok(document.querySelector("#tb-content .tb-vine"), "the vine lives inside the invitation content, not on the cover");
+
+  const css = styles();
+  assert.match(css, /\.tb-vine-stem\s*\{[^}]*stroke-dashoffset:\s*calc\(1 - var\(--tb-progress\)\)/);
+  assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tb-vine\s*\{\s*--tb-progress:\s*1 !important/);
+});
