@@ -111,6 +111,18 @@ Key boundaries:
 - Theme directories own markup, spacing, typography, ornaments, responsive
   composition, and visual feedback only. They do not query Supabase or
   duplicate package, validation, calendar, or server-action logic.
+- Cross-theme rules from the owner (Oct 2026), binding for every current and
+  future template:
+  - Calendar actions live only in the countdown section, from the primary
+    event (`buildThemeViewModel().calendarEvent`); events show Maps only. The
+    section renders calendar-only when there is no countdown target.
+  - Floating/route navigation shows a theme-drawn SVG icon per item, mapped
+    from the item's `section` key, next to the visible label (Ivory
+    `FloatingNav`, Terra/Midnight/Cobalt `components/NavIcon.tsx`).
+  - Person roles are a fixed admin choice (`src/lib/invitations/person-role.ts`)
+    and public data normalizes stored roles to lowercase keys; themes label
+    parents "Putri dari"/"Putra dari" from them. Name headings are never
+    capped by a `ch` reading measure.
 - `listActiveThemes()` remains the admin theme source. The registry is not an
   admin catalogue and no second theme list should be introduced.
 

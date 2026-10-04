@@ -263,6 +263,13 @@ Preferred approaches:
 
 Mobile can stack naturally.
 
+Every theme labels parents by role: "Putri dari" for `bride`, "Putra dari"
+for `groom`. Roles are a fixed admin choice and are normalized to lowercase
+keys before a theme sees them, so a stored "Groom" still reads "Putra dari".
+Names must keep a full column on every viewport: a reading measure (`ch`
+max-width) applies to parents and bio, never to the name, and long names wrap
+in balanced lines instead of being squeezed into a narrow column.
+
 ---
 
 ## 11. Event Details
@@ -276,7 +283,8 @@ Each event should display:
 - address when available;
 - map action.
 
-Do not make event information decorative at the expense of readability.
+Events do not carry calendar actions. Do not make event information
+decorative at the expense of readability.
 
 ---
 
@@ -298,6 +306,23 @@ Menit
 ```
 
 Avoid giant boxes resembling ecommerce flash sales.
+
+The "save to calendar" actions (Google Kalender and .ics download) live in the
+countdown section, built from the primary (earliest) event, in every theme.
+When the countdown feature is off or the date is unusable, the same section
+still renders with only the calendar actions and a "save the date" heading.
+
+---
+
+## 12a. Floating Navigation
+
+Every theme's section navigation shows an icon with each visible text label;
+text-only navigation is not acceptable. Icons are drawn in the theme's own
+visual language (Ivory: fine Nusantara line; Terra: botanical field-journal
+line; Midnight: art-deco geometry; Cobalt: nautical/postal line), are mapped
+from the section key, are `aria-hidden`, and never replace the visible label.
+Tap targets stay at least 44px and the bar never causes horizontal overflow at
+320px.
 
 ---
 
