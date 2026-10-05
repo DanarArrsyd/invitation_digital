@@ -111,6 +111,32 @@ test("a real published invitation still records the RSVP", async () => {
   );
 });
 
+test("demo forms work without a Turnstile token (the widget may not have loaded)", async () => {
+  const { supabase, writes } = fakeSupabase(demoInvitation);
+  const { submitRsvp, submitWish } = loadSubmitters(supabase, []);
+  const rsvp = await submitRsvp({ invitationId, guestName: "Tamu", attendance: "attending" });
+  const wish = await submitWish({ invitationId, guestName: "Tamu", message: "Tess doa" });
+  assert.deepEqual({ ...rsvp }, { ok: true });
+  assert.deepEqual({ ...wish }, { ok: true });
+  assert.equal(writes.length, 0);
+});
+
+test("a real invitation without a Turnstile token gets a readable Indonesian message", async () => {
+  const { supabase, writes } = fakeSupabase({ ...demoInvitation, status: "published", is_demo: false });
+  const turnstileCalls = [];
+  const { submitRsvp, submitWish } = loadSubmitters(supabase, turnstileCalls);
+  for (const result of [
+    await submitRsvp({ invitationId, guestName: "Tamu", attendance: "attending" }),
+    await submitWish({ invitationId, guestName: "Tamu", message: "Selamat!" }),
+  ]) {
+    assert.equal(result.ok, false);
+    assert.match(result.error, /Verifikasi keamanan belum selesai/);
+    assert.doesNotMatch(result.error, /Invalid input|expected string/);
+  }
+  assert.equal(writes.length, 0);
+  assert.equal(turnstileCalls.length, 0);
+});
+
 test("analytics skip demo invitations and keep recording real ones", async () => {
   for (const [invitation, expected] of [
     [{ is_demo: true }, 0],
