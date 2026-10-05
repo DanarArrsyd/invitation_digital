@@ -36,12 +36,15 @@ export async function listInvitations(status?: string, search?: string): Promise
 
   // Filters follow the effective status (see lib/invitations/status.ts): a
   // published row past its expires_at belongs under "expired".
+  // Demo invitations only appear under their own filter.
+  query = query.eq("is_demo", status === "demo");
+
   const now = new Date().toISOString();
   if (status === "published") {
     query = query.eq("status", "published").or(`expires_at.is.null,expires_at.gt.${now}`);
   } else if (status === "expired") {
     query = query.or(`status.eq.expired,and(status.eq.published,expires_at.lte.${now})`);
-  } else if (status && status !== "all") {
+  } else if (status && status !== "all" && status !== "demo") {
     query = query.eq("status", status);
   }
 

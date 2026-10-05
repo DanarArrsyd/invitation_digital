@@ -21,20 +21,24 @@ export async function submitRsvp(input: unknown): Promise<SubmitRsvpResult> {
 
   const { invitationId, guestToken, guestName, attendance, turnstileToken } = parsed.data;
 
-  const verified = await verifyTurnstileToken(turnstileToken);
-  if (!verified) {
-    return { ok: false, error: "Verifikasi keamanan gagal. Silakan coba lagi." };
-  }
-
   const supabase = createSupabaseAdminClient();
 
   // Confirm the invitation exists and is actually published — never trust
   // client-supplied invitationId alone for a write.
   const { data: invitation } = await supabase
     .from("invitations")
-    .select("id, status")
+    .select("id, status, is_demo")
     .eq("id", invitationId)
     .maybeSingle();
+
+  // Demos show the real confirmation so visitors see the full experience,
+  // but nothing is written.
+  if (invitation?.is_demo) return { ok: true };
+
+  const verified = await verifyTurnstileToken(turnstileToken);
+  if (!verified) {
+    return { ok: false, error: "Verifikasi keamanan gagal. Silakan coba lagi." };
+  }
 
   if (!invitation || invitation.status !== "published") {
     return { ok: false, error: "Undangan tidak ditemukan." };

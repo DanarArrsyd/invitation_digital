@@ -139,9 +139,11 @@ theme nav moves up by the bar height in demo mode).
 - Package switch re-resolves features with
   `resolveInvitationFeatures(packageKey, settings)` and applies the package
   limits (events, gallery count) to what is rendered.
-- RSVP and wishes forms render but submit is replaced by a notice
-  "Ini undangan demo, data tidak disimpan." Server actions also reject
-  demo invitation ids.
+- RSVP and wishes forms behave exactly like the real invitation, so the
+  visitor sees each theme's confirmation moment (melati, postmark, dance
+  card), but the server actions return success for demo invitations
+  without writing anything or spending a Turnstile check. The demo bar
+  already says it is a demo.
 - Guest personalisation shows a sample name via `?to=` so the cover
   demonstrates it.
 - `noindex`, never expires, no analytics events recorded.

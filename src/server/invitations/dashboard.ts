@@ -52,6 +52,7 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
     .select(
       "id, title, slug, status, event_date, expires_at, updated_at, theme:themes(name), guests(count), rsvps(count), wishes(count)",
     )
+    .eq("is_demo", false)
     .order("updated_at", { ascending: false });
 
   if (error) {

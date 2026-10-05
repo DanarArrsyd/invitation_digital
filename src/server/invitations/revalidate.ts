@@ -1,5 +1,6 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 
+import { demoInvitationCacheTag } from "@/lib/marketing/cache-tags";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 /**
@@ -23,11 +24,16 @@ export async function revalidateInvitation(invitationId: string) {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from("invitations")
-    .select("slug")
+    .select("slug, is_demo, theme:themes(slug)")
     .eq("id", invitationId)
     .maybeSingle();
 
   if (data?.slug) {
     revalidatePath(`/${data.slug}`);
+  }
+
+  // A demo is rendered from the marketing cache, not the public loader.
+  if (data?.is_demo && data.theme?.slug) {
+    updateTag(demoInvitationCacheTag(data.theme.slug));
   }
 }

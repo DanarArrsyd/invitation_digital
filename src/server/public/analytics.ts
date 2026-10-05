@@ -22,6 +22,14 @@ export async function trackEvent(input: {
 }): Promise<void> {
   try {
     const supabase = createSupabaseAdminClient();
+    // Demo visits are marketing traffic, not guest activity.
+    const { data: invitation } = await supabase
+      .from("invitations")
+      .select("is_demo")
+      .eq("id", input.invitationId)
+      .maybeSingle();
+    if (!invitation || invitation.is_demo) return;
+
     await supabase.from("analytics_events").insert({
       invitation_id: input.invitationId,
       event_type: input.eventType,
