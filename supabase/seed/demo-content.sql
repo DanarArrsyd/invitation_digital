@@ -356,7 +356,7 @@ update public.themes set
   description = 'Pagelaran wayang kulit di balik kelir yang disinari blencong. Gunungan dicabut saat undangan dibuka, tokoh wayang mendampingi mempelai, dan tancep kayon menutup acara.
 
 Cocok untuk pernikahan adat Jawa, tasyakuran, dan acara keluarga yang ingin bernuansa budaya.',
-  event_types = array['wedding']::text[],
+  event_types = array['wedding', 'engagement', 'aqiqah', 'birthday', 'graduation']::text[],
   screenshot_paths = array['/demo/kelir-kencana/screen-1.jpg', '/demo/kelir-kencana/screen-2.jpg', '/demo/kelir-kencana/screen-3.jpg']::text[],
   sort_order = 5,
   is_listed = true
