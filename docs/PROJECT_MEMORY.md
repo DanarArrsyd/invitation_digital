@@ -23,8 +23,8 @@ implementation plans remain the source of truth:
   available (Vercel registry check), `.id` / `.co.id` unchecked (`.co.id`
   needs business documents). Alternatives considered: Hadiraya, Jumparaya,
   Sambutraya, Hadirin. Known risk: loose association with the Temu app.
-  Pending: buy domain, PDKI trademark check, rename "Invitation Platform" /
-  "IP" monogram in the admin (login, sidebar, metadata titles).
+  Admin login, sidebar and metadata renamed to Temuraya with a "T"
+  monogram. Pending: buy domain, PDKI trademark check.
 - 2026-10-05 admin redesign: the admin shell follows the login page palette
   (forest #1f2b25, paper #f4f5f1, ink #17201b, sage #53634e) through a
   `:root:has([data-admin-theme])` token override in `globals.css`, so shadcn

@@ -25,8 +25,8 @@ decided 2026-10-05. It covers every event type (weddings, birthdays,
 aqiqah, graduations, reunions, corporate events), so never brand it as
 wedding-only. Target domains: `temuraya.com` (available on 2026-10-05,
 not yet purchased) and `temuraya.id` (check with a PANDI registrar).
-Trademark check at PDKI is still pending. The admin UI still says
-"Invitation Platform" / "IP" until the rename is done.
+Trademark check at PDKI is still pending. The admin UI (login, sidebar,
+metadata) already uses "Temuraya" with a "T" monogram.
 
 No customer invitation is live yet. The earlier "Rayhana & Febri" invitation
 and `sample-1..3` were demo data only and were removed from the database on

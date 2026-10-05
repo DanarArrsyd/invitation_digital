@@ -59,7 +59,7 @@ test("all admin screens are excluded from search indexing", () => {
   assert.equal(layout.metadata.robots.index, false);
   assert.equal(layout.metadata.robots.follow, false);
   assert.equal(layout.metadata.robots.noarchive, true);
-  assert.equal(layout.metadata.title.default, "Invitation Admin");
+  assert.equal(layout.metadata.title.default, "Temuraya Admin");
 });
 
 test("signed-out operators receive a semantic admin login gateway", async () => {

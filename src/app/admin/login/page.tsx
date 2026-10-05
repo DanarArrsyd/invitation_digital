@@ -34,10 +34,10 @@ export default async function AdminLoginPage() {
 
         <div className="relative flex items-center gap-3">
           <span className="flex size-11 items-center justify-center border border-white/30 text-sm font-semibold tracking-[-0.03em]">
-            IP
+            T
           </span>
           <div>
-            <p className="text-sm font-medium">Invitation Platform</p>
+            <p className="text-sm font-medium">Temuraya</p>
             <p className="text-xs text-white/55">Ruang kerja pengelola</p>
           </div>
         </div>
@@ -63,9 +63,9 @@ export default async function AdminLoginPage() {
         <div className="w-full max-w-md">
           <div className="mb-12 flex items-center gap-3 lg:hidden">
             <span className="flex size-10 items-center justify-center border border-[#17201b]/20 text-sm font-semibold">
-              IP
+              T
             </span>
-            <span className="text-sm font-medium">Invitation Platform</span>
+            <span className="text-sm font-medium">Temuraya</span>
           </div>
 
           <p className="text-sm font-medium text-[#53634e]">Ruang admin</p>
