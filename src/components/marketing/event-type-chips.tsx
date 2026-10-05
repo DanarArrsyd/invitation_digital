@@ -16,7 +16,7 @@ export function EventTypeChips({
   active?: EventType | null;
   includeAll?: boolean;
 }) {
-  const base = "inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition";
+  const base = "inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium whitespace-nowrap transition";
   return (
     <ul className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
       {includeAll ? (

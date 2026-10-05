@@ -104,3 +104,33 @@ test("invitation slugs cannot take a marketing route", () => {
   assert.equal(validation.invitationSlugSchema.parse("rania-dimas"), "rania-dimas");
   assert.equal(validation.invitationSlugSchema.parse("template-kita"), "template-kita");
 });
+
+test("package highlights list only shipped features and follow each package", () => {
+  const entitlements = loadTs("lib/packages/entitlements.ts");
+  const { getPackageHighlights } = loadTs("lib/marketing/package-features.ts", {
+    "@/lib/packages/entitlements": entitlements,
+  });
+  const intimate = getPackageHighlights("intimate");
+  const signature = getPackageHighlights("signature");
+  const grand = getPackageHighlights("grand");
+
+  assert.equal(intimate[0], "Hingga 2 acara");
+  assert.equal(intimate[1], "Hingga 8 foto galeri");
+  assert.ok(!intimate.includes("Ucapan & doa tamu"));
+  assert.ok(signature.includes("Ucapan & doa tamu"));
+  assert.ok(!signature.includes("Link live streaming"));
+  assert.ok(grand.includes("Link live streaming"));
+  assert.ok(signature.includes("Tautan Instagram") && !intimate.includes("Tautan Instagram"));
+  for (const unshipped of [/ekspor/i, /video/i, /statistik/i, /sponsor/i]) {
+    assert.ok(!grand.some((item) => unshipped.test(item)), `${unshipped} is not shipped yet`);
+  }
+});
+
+test("search engines skip the admin and demo pages", () => {
+  const { default: robots } = loadTs("app/robots.ts", {
+    "@/lib/marketing/site-url": { getSiteUrl: () => "https://temuraya.com" },
+  });
+  const rules = robots();
+  assert.deepEqual([...rules.rules.disallow], ["/admin", "/demo"]);
+  assert.equal(rules.sitemap, "https://temuraya.com/sitemap.xml");
+});

@@ -1,7 +1,7 @@
 # Temuraya Landing & Template Catalogue
 
 Date: 2026-10-05
-Status: Decisions taken with the owner; awaiting spec review
+Status: Implemented on 2026-10-05 (see "Implementation notes" at the end)
 Roadmap: Phase 7 "Marketing Website" in `docs/ROADMAP.md`
 
 ## 1. Goal
@@ -254,3 +254,27 @@ domain purchase (owner handles `temuraya.com`).
   types.
 - **Demo leakage**: RSVP/wishes from demos must never reach the database;
   enforced in both the UI and the server actions, covered by tests.
+
+## 12. Implementation notes (2026-10-05)
+
+Where the build differs from the sections above:
+
+- **Demo link**: no `themes.demo_invitation_id`. The demo of a theme is the
+  invitation with `is_demo = true` for that `theme_id` (unique partial
+  index). The column was briefly added in production and its foreign key
+  broke every `theme:themes(*)` embed; the key was dropped within minutes.
+  Migration `20261005000002_drop_theme_demo_column.sql` removes the unused
+  column and still needs the owner's approval to run in production.
+- **Demo forms**: RSVP and wishes return success for demo invitations
+  without writing or spending a Turnstile check, so visitors see each
+  theme's real confirmation moment.
+- **Hero**: two static phone mockups (first two listed templates) instead of
+  a cross-fade, to keep the hero still and light.
+- **Packages on phones**: horizontal scroll-snap instead of tabs (no client
+  JavaScript); three columns from `lg`.
+- **Mobile menu**: native `<details>` disclosure, no client bundle.
+- **Package highlights** come from `PACKAGE_DEFINITIONS` and list only
+  shipped features; unshipped capabilities (RSVP export, video gallery,
+  analytics, sponsors, style presets) are not advertised.
+- **Admin pages**: `/admin/site/catalog`, `/admin/site/packages`,
+  `/admin/site/contact`, under the sidebar group "Situs Temuraya".

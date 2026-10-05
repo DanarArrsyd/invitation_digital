@@ -1,6 +1,7 @@
 import { Menu, MessageCircle, X } from "lucide-react";
 import Link from "next/link";
 
+import { cn } from "@/lib/utils";
 import type { SiteSettings } from "@/server/marketing/queries";
 
 import { BrandMark } from "./brand-mark";
@@ -40,10 +41,13 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <OrderLink settings={settings} className={`${mk.buttonPrimary} hidden h-10 px-4 sm:inline-flex`}>
-            <MessageCircle aria-hidden="true" className="size-4" />
-            Pesan via WhatsApp
-          </OrderLink>
+          {/* Phones get the sticky bottom bar instead. */}
+          <div className="hidden sm:block">
+            <OrderLink settings={settings} className={cn(mk.buttonPrimary, "h-10 px-4")}>
+              <MessageCircle aria-hidden="true" className="size-4" />
+              Pesan via WhatsApp
+            </OrderLink>
+          </div>
 
           <details className="group relative md:hidden">
             <summary className="flex size-10 cursor-pointer list-none items-center justify-center rounded-xl border border-tr-ink/15 bg-tr-card text-tr-ink [&::-webkit-details-marker]:hidden">

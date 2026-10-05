@@ -18,6 +18,18 @@ implementation plans remain the source of truth:
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-05 marketing site: `/` is the Temuraya landing (no longer a
+  redirect to `/admin`), plus `/template`, `/template/[themeSlug]` and
+  `/demo/[themeSlug]?paket=&to=`. Content is managed in admin "Situs
+  Temuraya" (catalogue, package prices, WhatsApp contact). Demos are
+  invitations with `is_demo` (one per theme), hidden from `/[slug]`,
+  dashboards and analytics; their RSVP/wishes succeed without writing.
+  Never add a foreign key from `themes` to `invitations` (PostgREST embed
+  ambiguity broke production for a few minutes on 2026-10-05). Spec and
+  plan: `docs/superpowers/{specs,plans}/2026-10-05-temuraya-landing*.md`.
+  Owner still to fill: WhatsApp number, prices, demo invitations with Canva
+  photos, screenshots/taglines; and approve migration
+  `20261005000002_drop_theme_demo_column.sql` in production.
 - 2026-10-05 brand: the platform is named **Temuraya** (temu raya). Owner
   chose it for being event-agnostic. `temuraya.com` and `temuraya.co` were
   available (Vercel registry check), `.id` / `.co.id` unchecked (`.co.id`

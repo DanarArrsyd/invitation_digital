@@ -55,14 +55,14 @@ export function HeroSection({ templates }: { templates: MarketingTemplate[] }) {
               <PhoneMockup
                 src={back.coverUrl}
                 alt={`Template ${back.name}`}
-                className="relative z-0 -mr-10 mb-8 w-[46%] max-w-[13rem] -rotate-6 sm:-mr-12"
+                className="relative z-0 -mr-10 mb-8 w-[46%] max-w-[13rem] -rotate-6 sm:-mr-12 lg:max-w-[15rem]"
               />
             ) : null}
             <PhoneMockup
               src={front?.coverUrl ?? null}
               alt={front ? `Template ${front.name}` : "Template segera tersedia"}
               priority
-              className="relative z-10 w-[54%] max-w-[15rem] rotate-2"
+              className="relative z-10 w-[54%] max-w-[15rem] rotate-2 lg:max-w-[17rem]"
             />
           </div>
         </div>
@@ -103,9 +103,9 @@ export function ShowcaseSection({ templates }: { templates: MarketingTemplate[] 
       </div>
 
       {templates.length > 0 ? (
-        <ul className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="-mx-4 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
           {templates.slice(0, 4).map((template) => (
-            <li key={template.id} className="flex">
+            <li key={template.id} className="flex w-[78%] max-w-[20rem] shrink-0 snap-center sm:w-auto sm:max-w-none">
               <TemplateCard template={template} />
             </li>
           ))}
@@ -169,8 +169,8 @@ export function FeaturesSection({ spotlight }: { spotlight: MarketingTemplate | 
       <h2 id="fitur-heading" className={mk.sectionTitle}>
         Yang tamu rasakan
       </h2>
-      <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[1.1fr_1fr_1fr]">
-        <div className="relative flex min-h-[22rem] flex-col justify-between overflow-hidden rounded-2xl bg-tr-forest p-6 text-tr-paper md:row-span-2 md:min-h-0">
+      <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-[1.1fr_1fr_1fr]">
+        <div className="relative col-span-2 flex min-h-[22rem] flex-col justify-between overflow-hidden rounded-2xl bg-tr-forest p-6 text-tr-paper lg:col-span-1 lg:row-span-3 lg:min-h-0">
           <ArchMotif className="-right-10 bottom-0 h-[70%] w-[22rem]" />
           <div className="relative max-w-[18rem]">
             <h3 className="text-xl font-semibold tracking-[-0.02em]">Satu link, semua yang tamu butuhkan</h3>
@@ -181,10 +181,10 @@ export function FeaturesSection({ spotlight }: { spotlight: MarketingTemplate | 
           </div>
         </div>
         {FEATURES.map(({ icon: Icon, title, body }) => (
-          <div key={title} className="rounded-2xl border border-tr-line bg-tr-card p-5">
+          <div key={title} className="rounded-2xl border border-tr-line bg-tr-card p-4 sm:p-5">
             <Icon aria-hidden="true" className="size-5 text-tr-sage" />
-            <h3 className="mt-4 font-semibold tracking-[-0.01em]">{title}</h3>
-            <p className="mt-1.5 text-sm leading-6 text-tr-muted">{body}</p>
+            <h3 className="mt-3 text-[0.95rem] leading-snug font-semibold tracking-[-0.01em] sm:mt-4 sm:text-base">{title}</h3>
+            <p className="mt-1.5 text-[0.82rem] leading-5 text-tr-muted sm:text-sm sm:leading-6">{body}</p>
           </div>
         ))}
       </div>
