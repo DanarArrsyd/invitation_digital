@@ -22,6 +22,7 @@ const NAMES = {
   "terra-botanica": "Terra Botanica",
   "midnight-atelier": "Midnight Atelier",
   "cobalt-riviera": "Cobalt Riviera",
+  "kelir-kencana": "Kelir Kencana",
 };
 
 function html({ from, to, ink, label, caption, width, height }) {

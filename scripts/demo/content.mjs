@@ -33,6 +33,12 @@ export const PALETTES = {
     ["#E8743B", "#C95A24", "#F7F4EC"],
     ["#8EC5D6", "#5FA3B8", "#0E2350"],
   ],
+  "kelir-kencana": [
+    ["#F2E7D0", "#E8D7B4", "#3D2314"],
+    ["#3D2314", "#1C1510", "#C09435"],
+    ["#8E2B1F", "#5E1C14", "#F2E7D0"],
+    ["#C09435", "#84601D", "#1C1510"],
+  ],
 };
 
 /** Image slots per template, in "Sample N" order. */
@@ -158,6 +164,26 @@ export const DEMOS = [
       { type: "Perpisahan", title: "Farewell Brunch", date: "2027-09-19", start: "09:00", end: "11:00", venue: "Kafe Sample", address: "Jl. Contoh No. 10, Bali" },
     ],
     dressCode: { description: "Linen dan warna laut: biru, putih, dan sentuhan jeruk.", groups: [{ label: "Tamu", colors: ["#1D3E9E", "#F7F4EC", "#E8743B"] }] },
+  },
+  {
+    theme: "kelir-kencana",
+    sortOrder: 5,
+    tagline: "Pagelaran wayang di balik kelir emas.",
+    description:
+      "Pagelaran wayang kulit di balik kelir yang disinari blencong. Gunungan dicabut saat undangan dibuka, tokoh wayang mendampingi mempelai, dan tancep kayon menutup acara.\n\nCocok untuk pernikahan adat Jawa, tasyakuran, dan acara keluarga yang ingin bernuansa budaya.",
+    title: "Pernikahan Ratri & Galih",
+    eventDate: "2027-10-16",
+    venue: "Pendopo Sample, Surakarta",
+    people: [
+      { role: "bride", fullName: "Ratri Wulandari", nickname: "Ratri", father: "Bapak Sample Harjono", mother: "Ibu Sample Sulastri", bio: "Putri kedua" },
+      { role: "groom", fullName: "Galih Satriya Wibowo", nickname: "Galih", father: "Bapak Sample Darmaji", mother: "Ibu Sample Kartini", bio: "Putra pertama" },
+    ],
+    events: [
+      { type: "Adat", title: "Siraman & Midodareni", date: "2027-10-15", start: "15:00", end: "21:00", venue: "Rumah Keluarga Sample", address: "Jl. Contoh No. 4, Surakarta" },
+      { type: "Sakral", title: "Akad Nikah", date: "2027-10-16", start: "08:00", end: "10:00", venue: "Masjid Sample", address: "Jl. Contoh No. 11, Surakarta" },
+      { type: "Perayaan", title: "Resepsi", date: "2027-10-16", start: "11:00", end: "14:00", venue: "Pendopo Sample", address: "Jl. Contoh No. 17, Surakarta", livestream: "https://www.youtube.com/" },
+    ],
+    dressCode: { description: "Batik bernuansa sogan atau merah prada.", groups: [{ label: "Tamu", colors: ["#3D2314", "#8E2B1F", "#C09435"] }] },
   },
 ].map((demo) => ({ ...common, ...demo }));
 

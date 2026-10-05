@@ -2,6 +2,7 @@ import { NusantaraIvory } from "./nusantara-ivory";
 import { TerraBotanica } from "./terra-botanica";
 import { MidnightAtelier, MIDNIGHT_ATELIER_SECTIONS } from "./midnight-atelier";
 import { CobaltRiviera, COBALT_RIVIERA_SECTIONS } from "./cobalt-riviera";
+import { KelirKencana, KELIR_KENCANA_SECTIONS } from "./kelir-kencana";
 import { defineThemeSectionManifest } from "./section-contract";
 import type { ThemeRegistry } from "@/types/theme";
 
@@ -83,5 +84,14 @@ export const themeRegistry: ThemeRegistry = {
       palette: ["#14121A", "#5E1A22", "#D8C08A"],
     },
     sections: MIDNIGHT_ATELIER_SECTIONS,
+  },
+  "kelir-kencana": {
+    component: KelirKencana,
+    category: "wedding",
+    preview: {
+      name: "Kelir Kencana",
+      palette: ["#1C1510", "#F2E7D0", "#8E2B1F"],
+    },
+    sections: KELIR_KENCANA_SECTIONS,
   },
 };

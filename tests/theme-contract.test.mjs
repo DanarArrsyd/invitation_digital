@@ -41,6 +41,10 @@ function loadThemeContract() {
       CobaltRiviera: () => null,
       COBALT_RIVIERA_SECTIONS: Object.fromEntries(contract.THEME_SECTION_KEYS.map((key) => [key, true])),
     },
+    "./kelir-kencana": {
+      KelirKencana: () => null,
+      KELIR_KENCANA_SECTIONS: Object.fromEntries(contract.THEME_SECTION_KEYS.map((key) => [key, true])),
+    },
     "./section-contract": contract,
   });
   return { ...contract, themeRegistry };
@@ -66,5 +70,6 @@ test("every registered theme exposes its approved preview metadata", () => {
     "nusantara-ivory": { name: "Nusantara Ivory", palette: ["#F8F1E4", "#A87A3D", "#6B3E26"] },
     "terra-botanica": { name: "Terra Botanica", palette: ["#F2EBDD", "#B5653E", "#4E5B3A"] },
     "midnight-atelier": { name: "Midnight Atelier", palette: ["#14121A", "#5E1A22", "#D8C08A"] },
+    "kelir-kencana": { name: "Kelir Kencana", palette: ["#1C1510", "#F2E7D0", "#8E2B1F"] },
   });
 });

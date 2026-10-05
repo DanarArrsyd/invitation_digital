@@ -56,6 +56,24 @@ Working notes:
   `.git/info/exclude`) and are deleted afterwards; run `npx next typegen`
   (or remove `.next/dev/types`) after deleting a route.
 
+## Kelir Kencana (5 October 2026, branch `claude/relaxed-davinci-9i8qkb`)
+
+Fifth template, wayang kulit "Pagelaran Semalam Suntuk". Spec:
+`docs/superpowers/specs/2026-10-05-kelir-kencana-theme-design.md`; approved
+through the claude.ai mockup "Kelir Kencana Mockup" (v5). Code in
+`src/themes/kelir-kencana/` (prefix `kk-`), fonts Mea Culpa / Marcellus /
+Gelasio, share style `mea-culpa`, demo "Ratri & Galih", catalogue screenshots
+in `public/demo/kelir-kencana/`, test `tests/kelir-kencana.test.mjs`.
+
+- Wayang figures are owner-supplied PNGs saved as
+  `public/themes/kelir-kencana/wayang-satria.webp` (groom side) and
+  `wayang-putri.webp` (bride side). They are 400 px originals; the owner will
+  replace them with ≥1000 px files under the same names and confirm the
+  licence for commercial use before launch.
+- Owner to run after merge: migration
+  `20261005000004_kelir_kencana_theme.sql` (idempotent upsert, no deletes),
+  then the Kelir block of `supabase/seed/demo-content.sql` for the demo.
+
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.

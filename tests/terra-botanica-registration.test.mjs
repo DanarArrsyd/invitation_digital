@@ -70,10 +70,10 @@ function invitation(themeSlug) {
   };
 }
 
-test("all four registered theme slugs resolve through the real public renderer", () => {
+test("every registered theme slug resolve through the real public renderer", () => {
   const { themeRegistry } = loadSource("themes/registry");
   const { ThemeRenderer } = loadSource("themes/ThemeRenderer");
-  assert.deepEqual(Object.keys(themeRegistry).sort(), ["cobalt-riviera", "midnight-atelier", "nusantara-ivory", "terra-botanica"]);
+  assert.deepEqual(Object.keys(themeRegistry).sort(), ["cobalt-riviera", "kelir-kencana", "midnight-atelier", "nusantara-ivory", "terra-botanica"]);
   assert.equal(themeRegistry["terra-botanica"].preview.name, "Terra Botanica");
   assert.equal(themeRegistry["terra-botanica"].category, "wedding");
   assert.deepEqual([...themeRegistry["terra-botanica"].preview.palette], ["#F2EBDD", "#B5653E", "#4E5B3A"]);
@@ -88,6 +88,7 @@ test("all four registered theme slugs resolve through the real public renderer",
     "nusantara-ivory": "NusantaraIvory",
     "terra-botanica": "TerraBotanica",
     "midnight-atelier": "MidnightAtelier",
+    "kelir-kencana": "KelirKencana",
   };
   for (const [slug, componentName] of Object.entries(expectedComponents)) {
     const resolved = ThemeRenderer({ invitation: invitation(slug), guest: null });
@@ -231,7 +232,7 @@ test("all packages normalize identical effective features for every registered t
   };
   for (const packageKey of ["intimate", "signature", "grand"]) {
     const results = [];
-    for (const slug of ["nusantara-ivory", "terra-botanica", "midnight-atelier", "cobalt-riviera"]) {
+    for (const slug of ["nusantara-ivory", "terra-botanica", "midnight-atelier", "cobalt-riviera", "kelir-kencana"]) {
       const row = {
         id: "test", type: "wedding", slug: "test", title: "Alya & Bima", status: "published",
         package_key: packageKey, settings: { features: savedFeatures }, theme_id: "theme-id", theme: { id: "theme-id", slug },

@@ -4,7 +4,7 @@
  *   node scripts/demo/build-seed.mjs
  *
  * The SQL is idempotent: it replaces every demo invitation (is_demo = true)
- * and refreshes the catalogue fields of the four templates. It never touches
+ * and refreshes the catalogue fields of every template. It never touches
  * customer invitations, package prices or contact settings.
  */
 import { mkdir, writeFile } from "node:fs/promises";

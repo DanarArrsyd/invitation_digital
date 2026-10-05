@@ -37,6 +37,14 @@ const THEME_FONTS = {
       /--font-cr-body:\s*"Newsreader Variable"/,
     ],
   },
+  "kelir-kencana": {
+    packages: [/@fontsource\/mea-culpa/, /@fontsource\/marcellus/, /@fontsource-variable\/gelasio/],
+    faces: [
+      /--font-kk-script:\s*"Mea Culpa"/,
+      /--font-kk-display:\s*"Marcellus"/,
+      /--font-kk-body:\s*"Gelasio Variable"/,
+    ],
+  },
 };
 
 test("each wedding theme bundles its own fonts instead of downloading Google fonts at build time", async () => {
@@ -66,7 +74,7 @@ test("theme fonts load only on routes that render a theme", async () => {
   assert.match(previewPage, /import "@\/themes\/theme-fonts";/);
   assert.doesNotMatch(layout, /@fontsource|theme-fonts/);
   assert.match(layout, /lang="id"/);
-  assert.doesNotMatch(globals, /--font-(nusantara|tb|ma|cr)-/);
+  assert.doesNotMatch(globals, /--font-(nusantara|tb|ma|cr|kk)-/);
 });
 
 test("the admin sans token resolves to Geist instead of referencing itself", async () => {
@@ -145,4 +153,18 @@ test("Cobalt styles consume the script, label and text faces", async () => {
   }
   assert.match(themeFonts, /@fontsource\/corinthia\/700\.css/, "names use Corinthia Bold");
   assert.match(themeFonts, /@fontsource-variable\/newsreader\/wght-italic\.css/, "italic headings ship the italic axis");
+});
+
+test("Kelir styles consume the script, display and text faces", async () => {
+  const [styles, themeFonts] = await Promise.all([
+    source("src/themes/kelir-kencana/ThemeStyles.tsx"),
+    source("src/themes/theme-fonts.ts"),
+  ]);
+  assert.match(styles, /--kk-script:\s*var\(--font-kk-script\)/);
+  assert.match(styles, /--kk-display:\s*var\(--font-kk-display\)/);
+  assert.match(styles, /--kk-text:\s*var\(--font-kk-body\)/);
+  assert.match(styles, /font-family:\s*var\(--kk-text\);\s*font-size:\s*1\.0625rem/, "body text is at least 17px");
+  assert.match(styles, /\.kk-theme \.kk-script\s*\{[^}]*font-family:\s*var\(--kk-script\)/);
+  assert.match(styles, /\.kk-theme \.kk-eyebrow\s*\{[^}]*font-family:\s*var\(--kk-display\)[^}]*text-transform:\s*uppercase/);
+  assert.match(themeFonts, /@fontsource-variable\/gelasio\/wght-italic\.css/, "the italic quote ships the italic axis");
 });

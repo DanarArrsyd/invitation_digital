@@ -11,7 +11,8 @@ authoritative for requirements.
 
 The theme identity redesign is complete and live: Ivory (PR #14), Terra
 (PR #15, `7750e29`), Midnight (PR #16, `202c787`), Ivory melati fix (PR #17,
-`13d9150`) and Cobalt (PR #18, `d2666b7`). The Temuraya launch work (PRs
+`13d9150`) and Cobalt (PR #18, `d2666b7`). Kelir Kencana (wayang, fifth template) is on branch
+`claude/relaxed-davinci-9i8qkb`; see PROJECT_MEMORY "Kelir Kencana". The Temuraya launch work (PRs
 #19–#26: cleanup, admin redesign, brand, marketing site, demos, performance,
 logo, share banners, nav tiers, Turnstile fix) is live; its checkpoint and
 owner to-dos are in `docs/PROJECT_MEMORY.md` "Checkpoint — 5 October 2026".

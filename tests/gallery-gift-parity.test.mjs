@@ -22,6 +22,7 @@ const THEMES = [
   { name: "terra-botanica", gallery: ["sections/GallerySection", "GallerySection"], gift: ["sections/GiftAccountCard", "GiftAccountCard"] },
   { name: "midnight-atelier", gallery: ["sections/GallerySection", "GallerySection"], gift: ["sections/GiftAccountLedger", "GiftAccountLedger"] },
   { name: "cobalt-riviera", gallery: ["sections/GallerySection", "GallerySection"], gift: ["sections/GiftReceipt", "GiftReceipt"] },
+  { name: "kelir-kencana", gallery: ["sections/GallerySection", "GallerySection"], gift: ["sections/GiftSlip", "GiftSlip"] },
 ];
 
 const passthrough = ({ children, id }) => React.createElement(id ? "section" : "div", id ? { id } : null, children);
@@ -47,8 +48,8 @@ function createLoader(themeDir) {
       get navigator() { return globalThis.navigator; },
       require(name) {
         if (name === "react" || name === "react/jsx-runtime") return nodeRequire(name);
-        if (/\/components\/(EditorialImage|AtelierImage|RivieraImage)$/.test(name)) {
-          return { EditorialImage: stubImage, AtelierImage: stubImage, RivieraImage: stubImage };
+        if (/\/components\/(EditorialImage|AtelierImage|RivieraImage|KelirImage)$/.test(name)) {
+          return { EditorialImage: stubImage, AtelierImage: stubImage, RivieraImage: stubImage, KelirImage: stubImage };
         }
         if (/\/components\/(Section|Reveal)$/.test(name)) return { Section: passthrough, Reveal: passthrough };
         if (/\/components\/SectionHeading$/.test(name)) return { SectionHeading: ({ title }) => React.createElement("h2", null, title) };
