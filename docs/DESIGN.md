@@ -333,16 +333,30 @@ from the section key, are `aria-hidden`, and never replace the visible label.
 Tap targets stay at least 44px and the bar never causes horizontal overflow at
 320px.
 
+Stops grow with the package (`src/lib/packages/nav-sections.ts`
+`NAV_SECTIONS_BY_PACKAGE`, resolved by the public loader into
+`invitation.navSections` so themes never see the package):
+
+| Package | Stops |
+|---|---|
+| Intimate | Beranda, Mempelai, Acara, RSVP, Kado |
+| Signature | + Galeri, Ucapan |
+| Grand | + Cerita, Streaming |
+
+A higher package always keeps every stop of the one below. A stop drops out
+only when its section isn't rendered (feature off or no content). Items keep
+page order.
+
 Mobile bar sizing (below 768px, every template):
 
-- At most **5 items** (`src/themes/shared/nav-priority.ts` `pickNavItems`):
-  events, RSVP, wishes, gift, home win over couple, gallery, story; the chosen
-  items keep page order.
 - The bar spans the screen width inside a gutter of
   `max(12px, env(safe-area-inset-left/right))` and sits
   `max(12px, env(safe-area-inset-bottom))` above the bottom edge.
-- Items share the width equally (`flex: 1 1 0` or equal grid columns); the bar
-  **never scrolls horizontally** and no label is cut off.
+- Up to five items share the width equally. With more, each item takes
+  `calc(100% / 5.4)`, so a sixth item peeks in, and the bar scrolls sideways
+  **inside itself** (scrollbar hidden, scroll-snap). The page never scrolls
+  horizontally. The active item is kept in view
+  (`src/themes/shared/use-nav-rail-scroll.ts`).
 - Each item: icon `clamp(18px, 5.2vw, 22px)` above the label, label
   `clamp(11px, 3vw, 12px)` (never below 11px), single line, ellipsis as a last
   resort; item height at least 52px.
@@ -350,8 +364,8 @@ Mobile bar sizing (below 768px, every template):
   underline alone.
 - Page content reserves bottom padding equal to the bar height plus its offset
   so the last section and form controls are never hidden behind the bar.
-- Tablet/desktop may switch to the theme's rail or wider bar, still capped at
-  5 items.
+- Tablet/desktop may switch to the theme's rail or wider bar showing every
+  stop.
 
 ---
 

@@ -60,6 +60,15 @@ const GLYPHS: Record<TerraNavSection, ReactNode> = {
       <path d="M12.1 11.2c1.3-.3 2.6.4 2.6 1.7.1 1.3-.9 2.3-2.3 2.3-1.4 0-2.4-.9-2.3-2.2.1-.9.8-1.6 2-1.8Z" fill="currentColor" />
     </>
   ),
+  // A field-journal screen with a play mark, a sprig curling over its corner.
+  livestream: (
+    <>
+      <path d="M3.8 6.6c5.5-.4 10.9-.4 16.4 0l-.3 10.2c-5.3.4-10.5.4-15.8 0Z" />
+      <path d="M10.4 9.5v4.6l3.9-2.3Z" />
+      <path d="M8.2 20.4c2.5-.4 5.1-.4 7.6 0M12 17.2v3" />
+      <path d="M17.6 6.4c.3-1.9 1.4-3 3.1-3.3-.2 1.8-1.2 2.9-3.1 3.3Z" />
+    </>
+  ),
   // A dandelion head, one seed already drifting.
   wishes: (
     <>

@@ -12,6 +12,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { JSDOM } from "jsdom";
 import ts from "typescript";
 
+// Bottom-bar stops per package, as the public loader resolves them (lib/packages/nav-sections).
+const NAV = {
+  intimate: ["hero", "couple", "events", "rsvp", "gift"],
+  signature: ["hero", "couple", "events", "gallery", "rsvp", "wishes", "gift"],
+  grand: ["hero", "couple", "events", "story", "gallery", "livestream", "rsvp", "wishes", "gift"],
+};
+
 const nodeRequire = createRequire(import.meta.url);
 const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
 
@@ -67,7 +74,7 @@ const features = {
 const guest = { id: "guest", displayName: "Nama Tamu Yang Sangat Panjang", token: "guest-token", notes: null };
 function fixture(overrides = {}) {
   return {
-    id: "terra-test", type: "wedding", slug: "terra-test", title: "Alya & Bima", status: "published",
+    id: "terra-test", type: "wedding", navSections: NAV.signature, slug: "terra-test", title: "Alya & Bima", status: "published",
     eventDate: "2026-10-20", venueSummary: "Kebun Pengujian", publishedAt: "2026-09-01T00:00:00Z", expiresAt: null,
     theme: { slug: "terra-botanica", settings: { dressCode: { description: "Warna bumi", groups: [] } } },
     people: [
@@ -141,7 +148,7 @@ test("shell navigation candidates require enabled features and available content
   const { buildTerraNavItems } = loadTheme().load("themes/terra-botanica/TerraBotanica");
   assert.equal(typeof buildTerraNavItems, "function");
   assert.deepEqual(Array.from(buildTerraNavItems(fixture()), (item) => item.id), [
-    "tb-beranda", "tb-acara", "tb-rsvp", "tb-ucapan", "tb-kado",
+    "tb-beranda", "tb-mempelai", "tb-acara", "tb-galeri", "tb-rsvp", "tb-ucapan", "tb-kado",
   ]);
   const empty = fixture({ people: [], events: [], stories: [], gallery: [], gifts: [], features: { ...features, rsvp: false, wishes: false } });
   assert.deepEqual(Array.from(buildTerraNavItems(empty), (item) => item.id), ["tb-beranda"]);

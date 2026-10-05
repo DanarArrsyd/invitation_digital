@@ -1089,7 +1089,8 @@ export function ThemeStyles() {
       @media (min-width: 900px) and (max-width: 1199px) and (max-height: 850px) {
         .cr-hero-horizon { min-height: clamp(18rem, 42svh, 22rem); }
       }
-      /* Phone and tablet bottom bar (DESIGN 12a): five equal stops, never scrolls. */
+      /* Phone and tablet bottom bar (DESIGN 12a): up to five equal stops; with more,
+         5.4 show and the bar scrolls sideways inside itself, never the page. */
       @media (max-width: 1199px) {
         .cr-route-nav {
           right: max(12px, env(safe-area-inset-right));
@@ -1098,8 +1099,9 @@ export function ThemeStyles() {
           border: 1px solid var(--cr-sea-ink);
           overflow: hidden;
         }
-        .cr-route-nav ul { display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; }
-        .cr-route-nav li { min-width: 0; }
+        .cr-route-nav ul { display: flex; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-width: none; }
+        .cr-route-nav ul::-webkit-scrollbar { display: none; }
+        .cr-route-nav li { flex: 1 0 calc(100% / 5.4); min-width: 0; scroll-snap-align: start; }
         .cr-route-nav a {
           display: flex;
           width: 100%;

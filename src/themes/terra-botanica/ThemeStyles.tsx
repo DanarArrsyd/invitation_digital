@@ -234,8 +234,10 @@ export function ThemeStyles() {
     .tb-theme .tb-closing-image { width: 82%; margin-left: auto; border-radius: 0 0 28% 0; }
     /* Phones: a full-width bar of up to five equal items; nothing scrolls sideways (DESIGN.md §12a). */
     .tb-theme .tb-nav { position: fixed; z-index: 30; left: max(12px, env(safe-area-inset-left)); right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); background: var(--tb-bone); color: var(--tb-cacao); border: 1px solid var(--tb-moss); }
-    .tb-theme .tb-nav ul { display: flex; list-style: none; padding: 3px; margin: 0; }
-    .tb-theme .tb-nav li { flex: 1 1 0; min-width: 0; }
+    /* More stops than fit: 5.4 show (the cut-off one hints at more) and the bar scrolls sideways, never the page. */
+    .tb-theme .tb-nav ul { display: flex; list-style: none; padding: 3px; margin: 0; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-width: none; }
+    .tb-theme .tb-nav ul::-webkit-scrollbar { display: none; }
+    .tb-theme .tb-nav li { flex: 1 0 calc(100% / 5.4); min-width: 0; scroll-snap-align: start; }
     .tb-theme .tb-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 52px; width: 100%; min-width: 0; padding: 5px 2px; text-decoration: none; font-size: clamp(11px, 3vw, 12px); line-height: 1.2; }
     .tb-theme .tb-nav-icon { display: block; flex: none; width: clamp(18px, 5.2vw, 22px); height: clamp(18px, 5.2vw, 22px); }
     /* Courier is wide: dropping the label tracking lets "Mempelai" fit a fifth of a 320px bar. */

@@ -15,6 +15,7 @@ function loadModule(path) {
     module: { exports },
     require(name) {
       if (name === "@/lib/packages/entitlements") return loadModule("lib/packages/entitlements");
+      if (name === "@/lib/packages/nav-sections") return loadModule("lib/packages/nav-sections");
       if (name === "@/lib/supabase/storage") return { getMediaPublicUrl: () => null };
       if (name === "@/lib/invitations/time-zones") return loadModule("lib/invitations/time-zones");
       if (name === "@/lib/invitations/person-role") return loadModule("lib/invitations/person-role");
@@ -93,6 +94,7 @@ test("Intimate theme settings omit paid metadata and preserve unrelated settings
   assert.equal(Object.hasOwn(result, "package_key"), false);
   assert.equal(Object.hasOwn(result.theme, "packageKey"), false);
   assert.equal(Object.hasOwn(result.theme.settings, "packageKey"), false);
+  assert.deepEqual([...result.navSections], ["hero", "couple", "events", "rsvp", "gift"], "the bar gets stops, not the package");
 });
 
 test("Signature keeps story, wishes and paid metadata but disables livestream", async () => {

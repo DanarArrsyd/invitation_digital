@@ -200,6 +200,7 @@ function loadNormalizer() {
       exports, module: { exports },
       require(name) {
         if (name === "@/lib/packages/entitlements") return load("lib/packages/entitlements");
+        if (name === "@/lib/packages/nav-sections") return load("lib/packages/nav-sections");
         if (name === "@/lib/supabase/storage") return { getMediaPublicUrl: () => null };
         if (name === "@/lib/invitations/time-zones") return load("lib/invitations/time-zones");
       if (name === "@/lib/invitations/person-role") return load("lib/invitations/person-role");

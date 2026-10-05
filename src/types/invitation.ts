@@ -1,4 +1,5 @@
 import type { InvitationTimeZone } from "@/lib/invitations/time-zones";
+import type { NavSectionKey } from "@/lib/packages/nav-sections";
 
 export type InvitationType =
   | "wedding"
@@ -102,6 +103,8 @@ export interface InvitationFeatures {
 export interface PublicInvitation {
   id: string;
   type: InvitationType;
+  /** Bottom-bar stops the package includes (lib/packages/nav-sections), in page order. */
+  navSections: readonly NavSectionKey[];
   slug: string;
   title: string;
   status: "published";

@@ -43,6 +43,14 @@ const GLYPHS: Record<NavSectionKey, ReactNode> = {
       <path d="M3.5 8.5h17v12h-17ZM6.5 11.5h11v6h-11Z" />
     </>
   ),
+  // Stepped deco screen broadcasting from a fan of thin rays.
+  livestream: (
+    <>
+      <path d="M4 8h16v10H4ZM9 21h6M12 18v3" />
+      <path d="M10.5 10.8v4.4l3.6-2.2Z" />
+      <path d="M8.5 5.2 12 3l3.5 2.2" />
+    </>
+  ),
   // Dance card with a chevron crest and a tasselled cord.
   rsvp: (
     <>

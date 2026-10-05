@@ -1,6 +1,7 @@
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
 import { pickNavItems } from "@/themes/shared/nav-priority";
+import { hasLivestreamLink } from "@/themes/shared/external-url";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 
 import { CoverGate } from "./CoverGate";
@@ -22,7 +23,7 @@ import { RsvpSection } from "./sections/RsvpSection";
 import { WishesSection } from "./sections/WishesSection";
 import { GiftSection } from "./sections/GiftSection";
 
-/** Every section the guest can jump to, narrowed to the five the bottom bar holds (DESIGN.md §12a). */
+/** Every section the guest can jump to, narrowed to the stops the invitation's package includes (DESIGN.md §12a). */
 export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
   const { features } = invitation;
   const candidates: (NavItem | null)[] = [
@@ -31,11 +32,14 @@ export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
     invitation.events.length > 0 ? { id: "tb-acara", section: "events", label: "Acara" } : null,
     features.story && invitation.stories.length > 0 ? { id: "tb-cerita", section: "story", label: "Cerita" } : null,
     features.gallery && invitation.gallery.length > 0 ? { id: "tb-galeri", section: "gallery", label: "Galeri" } : null,
+    features.livestream && hasLivestreamLink(invitation.events)
+      ? { id: "tb-livestream", section: "livestream", label: "Streaming" }
+      : null,
     features.rsvp ? { id: "tb-rsvp", section: "rsvp", label: "RSVP" } : null,
     features.wishes ? { id: "tb-ucapan", section: "wishes", label: "Ucapan" } : null,
     features.gift && invitation.gifts.length > 0 ? { id: "tb-kado", section: "gift", label: "Kado" } : null,
   ];
-  return pickNavItems(candidates.filter((item): item is NavItem => item !== null));
+  return pickNavItems(candidates.filter((item): item is NavItem => item !== null), invitation.navSections);
 }
 
 export function TerraBotanica({ invitation, guest }: ThemeComponentProps) {

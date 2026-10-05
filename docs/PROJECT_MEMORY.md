@@ -18,6 +18,13 @@ implementation plans remain the source of truth:
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-05 nav per package: the bottom bar no longer caps at five by
+  priority (that dropped Mempelai on Signature/Grand). Stops are tiered per
+  package in `src/lib/packages/nav-sections.ts`: Intimate 5 (Beranda,
+  Mempelai, Acara, RSVP, Kado), Signature 7 (+Galeri, Ucapan), Grand 9
+  (+Cerita, Streaming). The loader passes `invitation.navSections`, not the
+  package key (the public payload must not reveal the package). Phone bars
+  scroll sideways inside themselves past five; DESIGN.md §12a updated.
 - 2026-10-05 share banners: every shared link shows a 1200×630 banner.
   Invitation links (`/[slug]`) use the invitation's theme colours, names,
   date, venue and cover; `/template/[slug]` and `/demo/[slug]` show the

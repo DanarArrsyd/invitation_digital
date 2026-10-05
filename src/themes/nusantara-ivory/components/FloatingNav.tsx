@@ -3,8 +3,9 @@
 import { motion, useReducedMotion } from "motion/react";
 import type { NavSectionKey } from "@/themes/shared/nav-priority";
 import { useActiveSection } from "@/themes/shared/use-active-section";
+import { useNavRailScroll } from "@/themes/shared/use-nav-rail-scroll";
 
-export type NavIcon = "home" | "heart" | "calendar" | "gallery" | "book" | "gift" | "message" | "pen";
+export type NavIcon = "home" | "heart" | "calendar" | "gallery" | "book" | "broadcast" | "gift" | "message" | "pen";
 
 export type NavItem = {
   id: string;
@@ -36,6 +37,14 @@ const ICONS: Record<NavIcon, React.ReactNode> = {
   ),
   book: (
     <path d="M5 4.5h5.5a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H5V4.5ZM19 4.5h-5.5a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H19V4.5Z" />
+  ),
+  broadcast: (
+    <>
+      <rect x="3.5" y="6" width="17" height="11.5" rx="1" />
+      <path d="m10.5 9.4 4 2.35-4 2.35Z" />
+      <path d="M8.5 20.5h7M12 17.5v3" />
+      <path d="M9.5 3.5 12 5.5l2.5-2" />
+    </>
   ),
   gift: (
     <>
@@ -76,6 +85,7 @@ export function FloatingNav({ items }: { items: NavItem[] }) {
   const ids = items.map((item) => item.id);
   const active = useActiveSection(ids);
   const reduced = useReducedMotion() ?? false;
+  const railRef = useNavRailScroll<HTMLUListElement>(active);
 
   if (items.length < 2) return null;
 
@@ -93,11 +103,11 @@ export function FloatingNav({ items }: { items: NavItem[] }) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.22, 0.61, 0.36, 1], delay: reduced ? 0 : 1.05 }}
     >
-      <ul className="ni-floating-nav-rail">
+      <ul ref={railRef} className="ni-floating-nav-rail">
         {items.map((item) => {
           const isActive = item.id === active;
           return (
-            <li key={item.id}>
+            <li key={item.id} data-nav-id={item.id}>
               <button
                 type="button"
                 onClick={() => handleNavigate(item.id)}
