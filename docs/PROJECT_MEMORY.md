@@ -18,6 +18,13 @@ implementation plans remain the source of truth:
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-05 brand: the platform is named **Temuraya** (temu raya). Owner
+  chose it for being event-agnostic. `temuraya.com` and `temuraya.co` were
+  available (Vercel registry check), `.id` / `.co.id` unchecked (`.co.id`
+  needs business documents). Alternatives considered: Hadiraya, Jumparaya,
+  Sambutraya, Hadirin. Known risk: loose association with the Temu app.
+  Pending: buy domain, PDKI trademark check, rename "Invitation Platform" /
+  "IP" monogram in the admin (login, sidebar, metadata titles).
 - 2026-10-05 admin redesign: the admin shell follows the login page palette
   (forest #1f2b25, paper #f4f5f1, ink #17201b, sage #53634e) through a
   `:root:has([data-admin-theme])` token override in `globals.css`, so shadcn
