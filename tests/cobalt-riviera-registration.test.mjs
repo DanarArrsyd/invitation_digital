@@ -12,6 +12,7 @@ const nodeRequire = createRequire(import.meta.url);
 const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
 const themeSlugs = [
   "cobalt-riviera",
+  "kelir-kencana",
   "midnight-atelier",
   "nusantara-ivory",
   "terra-botanica",
@@ -72,7 +73,7 @@ function invitation(themeSlug) {
   };
 }
 
-test("all four registered theme slugs resolve through the public renderer", () => {
+test("every registered theme slug resolves through the public renderer", () => {
   const { themeRegistry } = loadSource("themes/registry");
   const { ThemeRenderer } = loadSource("themes/ThemeRenderer");
   assert.deepEqual(Object.keys(themeRegistry).sort(), themeSlugs);

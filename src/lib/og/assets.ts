@@ -18,6 +18,7 @@ const SCRIPT_FILES: Record<ShareScript, { file: string; weight: 400 | 700 }> = {
   "herr-von-muellerhoff": { file: "herr-von-muellerhoff-latin-400-normal.woff", weight: 400 },
   "imperial-script": { file: "imperial-script-latin-400-normal.woff", weight: 400 },
   corinthia: { file: "corinthia-latin-700-normal.woff", weight: 700 },
+  "mea-culpa": { file: "mea-culpa-latin-400-normal.woff", weight: 400 },
 };
 
 const fontCache = new Map<string, Promise<ArrayBuffer>>();

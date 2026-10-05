@@ -38,3 +38,10 @@ import "@fontsource-variable/familjen-grotesk";
 import "@fontsource-variable/newsreader";
 import "@fontsource-variable/newsreader/wght-italic.css";
 import "./cobalt-riviera/fonts.css";
+
+// kelir-kencana
+import "@fontsource/mea-culpa/400.css";
+import "@fontsource/marcellus/400.css";
+import "@fontsource-variable/gelasio";
+import "@fontsource-variable/gelasio/wght-italic.css";
+import "./kelir-kencana/fonts.css";

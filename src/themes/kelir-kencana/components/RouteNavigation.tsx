@@ -1,0 +1,42 @@
+"use client";
+
+import { useMemo } from "react";
+
+import type { ThemeSectionKey } from "@/themes/section-contract";
+import { useActiveSection } from "@/themes/shared/use-active-section";
+import { useNavRailScroll } from "@/themes/shared/use-nav-rail-scroll";
+
+import { NavIcon } from "./NavIcon";
+
+export interface KelirRouteItem {
+  id: `kk-${string}`;
+  section: ThemeSectionKey;
+  label: string;
+}
+
+export function RouteNavigation({ items }: { items: KelirRouteItem[] }) {
+  const mountedItems = useMemo(() => {
+    if (typeof document === "undefined") return [];
+    return items.filter((item) => document.getElementById(item.id) !== null);
+  }, [items]);
+  const ids = useMemo(() => mountedItems.map((item) => item.id), [mountedItems]);
+  const activeId = useActiveSection(ids);
+  const railRef = useNavRailScroll<HTMLUListElement>(activeId);
+
+  if (mountedItems.length === 0) return null;
+
+  return (
+    <nav className="kk-route-nav" aria-label="Navigasi undangan">
+      <ul ref={railRef}>
+        {mountedItems.map((item) => (
+          <li key={item.id} data-nav-id={item.id}>
+            <a href={`#${item.id}`} aria-current={activeId === item.id ? "location" : undefined}>
+              <NavIcon section={item.section} className="kk-route-glyph" />
+              <span className="kk-route-label">{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}

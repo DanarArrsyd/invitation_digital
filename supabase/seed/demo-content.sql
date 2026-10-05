@@ -291,4 +291,75 @@ Cocok untuk destination wedding dan pernikahan di tepi pantai.',
   is_listed = true
 where slug = 'cobalt-riviera';
 
+-- Pernikahan Ratri & Galih (kelir-kencana)
+do $$
+declare
+  inv_id uuid;
+begin
+  insert into public.invitations (
+    type, title, slug, theme_id, status, event_date, venue_summary, package_key, is_demo,
+    published_at, expires_at, cover_image_path, opening_quote, opening_message, closing_message, settings
+  )
+  select 'wedding', 'Pernikahan Ratri & Galih', 'demo-kelir-kencana', t.id, 'published', '2027-10-16', 'Pendopo Sample, Surakarta',
+    'grand', true, now(), null, '/demo/kelir-kencana/cover.jpg',
+    'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan dari jenismu sendiri, supaya kamu merasa tenteram kepadanya. (QS. Ar-Rum: 21)', 'Dengan memohon rahmat Tuhan Yang Maha Esa, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia kami.', 'Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir. Terima kasih atas doa dan restunya.', '{"features":{"music":false,"countdown":true,"maps":true,"story":true,"gallery":true,"dressCode":true,"livestream":true,"rsvp":true,"wishes":true,"gift":true,"guestPersonalization":true},"timeZone":"Asia/Jakarta","dressCode":{"description":"Batik bernuansa sogan atau merah prada.","groups":[{"label":"Tamu","colors":["#3D2314","#8E2B1F","#C09435"]}]}}'::jsonb
+  from public.themes t where t.slug = 'kelir-kencana'
+  returning id into inv_id;
+
+  insert into public.invitation_people (invitation_id, role, full_name, nickname, father_name, mother_name, photo_path, bio, sort_order)
+  values
+    (inv_id, 'bride', 'Ratri Wulandari', 'Ratri', 'Bapak Sample Harjono', 'Ibu Sample Sulastri', '/demo/kelir-kencana/person-1.jpg', 'Putri kedua', 0),
+    (inv_id, 'groom', 'Galih Satriya Wibowo', 'Galih', 'Bapak Sample Darmaji', 'Ibu Sample Kartini', '/demo/kelir-kencana/person-2.jpg', 'Putra pertama', 1);
+
+  insert into public.invitation_events (invitation_id, event_type, title, event_date, start_time, end_time, venue_name, address, maps_url, livestream_url, sort_order)
+  values
+    (inv_id, 'Adat', 'Siraman & Midodareni', '2027-10-15', '15:00', '21:00', 'Rumah Keluarga Sample', 'Jl. Contoh No. 4, Surakarta', 'https://www.google.com/maps/search/?api=1&query=Rumah%20Keluarga%20Sample%2C%20Jl.%20Contoh%20No.%204%2C%20Surakarta', null, 0),
+    (inv_id, 'Sakral', 'Akad Nikah', '2027-10-16', '08:00', '10:00', 'Masjid Sample', 'Jl. Contoh No. 11, Surakarta', 'https://www.google.com/maps/search/?api=1&query=Masjid%20Sample%2C%20Jl.%20Contoh%20No.%2011%2C%20Surakarta', null, 1),
+    (inv_id, 'Perayaan', 'Resepsi', '2027-10-16', '11:00', '14:00', 'Pendopo Sample', 'Jl. Contoh No. 17, Surakarta', 'https://www.google.com/maps/search/?api=1&query=Pendopo%20Sample%2C%20Jl.%20Contoh%20No.%2017%2C%20Surakarta', 'https://www.youtube.com/', 2);
+
+  insert into public.invitation_stories (invitation_id, title, year_label, description, image_path, sort_order)
+  values
+    (inv_id, 'Pertama bertemu', '2019', 'Cerita contoh: kami bertemu di sebuah acara kampus dan mulai berbincang tanpa henti.', '/demo/kelir-kencana/story-1.jpg', 0),
+    (inv_id, 'Menjalin cerita', '2022', 'Cerita contoh: dari teman dekat menjadi pasangan yang saling menguatkan.', '/demo/kelir-kencana/story-2.jpg', 1),
+    (inv_id, 'Melangkah bersama', '2026', 'Cerita contoh: dengan restu keluarga, kami memutuskan untuk melangkah ke jenjang berikutnya.', '/demo/kelir-kencana/story-3.jpg', 2);
+
+  insert into public.gallery_items (invitation_id, image_path, alt_text, aspect_ratio, sort_order)
+  values
+    (inv_id, '/demo/kelir-kencana/gallery-01.jpg', 'Foto contoh 1', 'portrait_3_4', 0),
+    (inv_id, '/demo/kelir-kencana/gallery-02.jpg', 'Foto contoh 2', 'landscape_4_3', 1),
+    (inv_id, '/demo/kelir-kencana/gallery-03.jpg', 'Foto contoh 3', 'square_1_1', 2),
+    (inv_id, '/demo/kelir-kencana/gallery-04.jpg', 'Foto contoh 4', 'portrait_4_5', 3),
+    (inv_id, '/demo/kelir-kencana/gallery-05.jpg', 'Foto contoh 5', 'landscape_16_9', 4),
+    (inv_id, '/demo/kelir-kencana/gallery-06.jpg', 'Foto contoh 6', 'portrait_3_4', 5),
+    (inv_id, '/demo/kelir-kencana/gallery-07.jpg', 'Foto contoh 7', 'square_1_1', 6),
+    (inv_id, '/demo/kelir-kencana/gallery-08.jpg', 'Foto contoh 8', 'landscape_4_3', 7),
+    (inv_id, '/demo/kelir-kencana/gallery-09.jpg', 'Foto contoh 9', 'portrait_4_5', 8),
+    (inv_id, '/demo/kelir-kencana/gallery-10.jpg', 'Foto contoh 10', 'portrait_3_4', 9),
+    (inv_id, '/demo/kelir-kencana/gallery-11.jpg', 'Foto contoh 11', 'landscape_16_9', 10),
+    (inv_id, '/demo/kelir-kencana/gallery-12.jpg', 'Foto contoh 12', 'square_1_1', 11);
+
+  insert into public.gift_accounts (invitation_id, provider_type, provider_name, account_number, account_name, sort_order)
+  values
+    (inv_id, 'bank', 'Bank Sample', '1234567890', 'Nama Mempelai Sample', 0),
+    (inv_id, 'ewallet', 'Dompet Digital Sample', '081200000000', 'Nama Mempelai Sample', 1);
+
+  insert into public.wishes (invitation_id, guest_name, message, is_visible, created_at)
+  values
+    (inv_id, 'Tamu Sample 1', 'Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah.', true, now() - interval '5 hours'),
+    (inv_id, 'Tamu Sample 2', 'Bahagia selalu untuk kalian berdua. Semoga langgeng sampai kakek nenek.', true, now() - interval '10 hours'),
+    (inv_id, 'Tamu Sample 3', 'Turut berbahagia! Maaf belum bisa hadir, doa terbaik dari jauh.', true, now() - interval '15 hours'),
+    (inv_id, 'Tamu Sample 4', 'Semoga cinta kalian terus tumbuh setiap hari. Selamat!', true, now() - interval '20 hours');
+end $$;
+
+update public.themes set
+  tagline = 'Pagelaran wayang di balik kelir emas.',
+  description = 'Pagelaran wayang kulit di balik kelir yang disinari blencong. Gunungan dicabut saat undangan dibuka, tokoh wayang mendampingi mempelai, dan tancep kayon menutup acara.
+
+Cocok untuk pernikahan adat Jawa, tasyakuran, dan acara keluarga yang ingin bernuansa budaya.',
+  event_types = array['wedding']::text[],
+  screenshot_paths = array['/demo/kelir-kencana/screen-1.jpg', '/demo/kelir-kencana/screen-2.jpg', '/demo/kelir-kencana/screen-3.jpg']::text[],
+  sort_order = 5,
+  is_listed = true
+where slug = 'kelir-kencana';
+
 commit;

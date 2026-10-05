@@ -83,6 +83,7 @@ test("next/image resizes app files and bucket uploads, and passes other hosts th
     "src/themes/terra-botanica/components/EditorialImage.tsx",
     "src/themes/midnight-atelier/components/AtelierImage.tsx",
     "src/themes/cobalt-riviera/components/RivieraImage.tsx",
+    "src/themes/kelir-kencana/components/KelirImage.tsx",
   ]) {
     assert.match(source(file), /unoptimized=\{!isOptimizableImage\(/, file);
   }

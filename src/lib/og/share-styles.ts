@@ -5,7 +5,7 @@
  * one added to the catalogue before its banner style, falls back to the
  * Temuraya brand style, so every link still gets a banner.
  */
-export type ShareScript = "great-vibes" | "herr-von-muellerhoff" | "imperial-script" | "corinthia";
+export type ShareScript = "great-vibes" | "herr-von-muellerhoff" | "imperial-script" | "corinthia" | "mea-culpa";
 
 export interface ShareStyle {
   /** Main canvas behind the text. */
@@ -60,6 +60,14 @@ export const THEME_SHARE_STYLES: Record<string, ShareStyle> = {
     muted: "#4A5878",
     accent: "#E8743B",
     script: "corinthia",
+  },
+  "kelir-kencana": {
+    background: "#F2E7D0",
+    panel: "#1C1510",
+    ink: "#3D2314",
+    muted: "#6B4A33",
+    accent: "#8E2B1F",
+    script: "mea-culpa",
   },
 };
 
