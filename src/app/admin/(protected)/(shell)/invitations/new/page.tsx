@@ -8,7 +8,10 @@ export default async function NewInvitationPage() {
 
   return (
     <div>
-      <PageHeader title="Undangan baru" />
+      <PageHeader
+        title="Undangan baru"
+        description="Isi dasarnya dulu. Mempelai, acara, foto dan tamu bisa dilengkapi setelah undangan dibuat."
+      />
       <div className="mt-6">
         <NewInvitationForm themes={themes} />
       </div>

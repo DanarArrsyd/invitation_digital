@@ -23,10 +23,10 @@ export function FormField({
   children: ReactNode;
 }) {
   return (
-    <div className={cn("flex min-w-0 flex-col gap-2", className)}>
+    <div className={cn("flex min-w-0 flex-col gap-1.5", className)}>
       <Label htmlFor={id}>{label}</Label>
       {children}
-      {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
+      {hint ? <p className="text-xs leading-5 text-muted-foreground">{hint}</p> : null}
     </div>
   );
 }

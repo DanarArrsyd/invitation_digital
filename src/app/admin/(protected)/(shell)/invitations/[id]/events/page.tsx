@@ -3,8 +3,19 @@ import { notFound } from "next/navigation";
 import { ConfirmDeleteForm } from "@/components/admin/confirm-delete-form";
 import { FormField } from "@/components/admin/form-field";
 import { FormMessage } from "@/components/admin/form-message";
+import {
+  FieldGrid,
+  Panel,
+  PanelBody,
+  PanelFooter,
+  PanelHeader,
+  SettingsSection,
+  UsageMeter,
+} from "@/components/admin/settings-section";
 import { SubmitButton } from "@/components/admin/submit-button";
+import { UnsavedHint } from "@/components/admin/unsaved-hint";
 import { Input } from "@/components/ui/input";
+import { formatLongEventDate } from "@/components/admin/format";
 import { getPackageDefinition, type PackageKey } from "@/lib/packages/entitlements";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
@@ -48,13 +59,13 @@ function EventFields({ idPrefix, event }: { idPrefix: string; event?: EventDefau
       <FormField id={id("venueName")} label="Nama tempat">
         <Input id={id("venueName")} name="venueName" defaultValue={event?.venue_name ?? ""} />
       </FormField>
-      <FormField id={id("address")} label="Alamat">
+      <FormField id={id("address")} label="Alamat" className="sm:col-span-2">
         <Input id={id("address")} name="address" defaultValue={event?.address ?? ""} />
       </FormField>
-      <FormField id={id("mapsUrl")} label="Link Google Maps">
+      <FormField id={id("mapsUrl")} label="Link Google Maps" hint="Salin dari tombol Bagikan di Google Maps.">
         <Input id={id("mapsUrl")} name="mapsUrl" type="url" defaultValue={event?.maps_url ?? ""} />
       </FormField>
-      <FormField id={id("livestreamUrl")} label="Link live streaming">
+      <FormField id={id("livestreamUrl")} label="Link live streaming" hint="Opsional. Tampil di paket Grand.">
         <Input id={id("livestreamUrl")} name="livestreamUrl" type="url" defaultValue={event?.livestream_url ?? ""} />
       </FormField>
     </>
@@ -79,59 +90,71 @@ export default async function EventsPage({
   const limitReached = events.length >= packageDefinition.limits.maxEvents;
 
   return (
-    <div className="flex flex-col gap-6">
-      <FormMessage tone="error">{error}</FormMessage>
-      <p className="text-sm text-muted-foreground">
-        {events.length} dari {packageDefinition.limits.maxEvents} acara digunakan · Paket {packageDefinition.label}
-      </p>
+    <div className="flex flex-col">
+      <FormMessage tone="error" className="mb-2">{error}</FormMessage>
 
-      {events.map((event, index) => (
-        <section key={event.id} className="rounded-lg border border-border bg-card p-4">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="min-w-0 truncate text-sm font-medium text-foreground">
-              {index + 1}. {event.title}
-            </h2>
-            <ConfirmDeleteForm
-              action={deleteEventAction}
-              hiddenFields={{ id: event.id, invitationId: invitation.id }}
-              title="Hapus acara ini?"
-              description={`"${event.title}" akan dihapus dari undangan. Tindakan ini tidak bisa dibatalkan.`}
-            />
-          </div>
-
-          <form action={upsertEventAction} className="grid gap-3 sm:grid-cols-2">
-            <input type="hidden" name="id" value={event.id} />
-            <input type="hidden" name="invitationId" value={invitation.id} />
-            <input type="hidden" name="sortOrder" value={event.sort_order} />
-
-            <EventFields idPrefix={`event-${event.id}`} event={event} />
-
-            <SubmitButton className="w-fit sm:col-span-2">Simpan</SubmitButton>
-          </form>
-        </section>
-      ))}
-
-      <form
-        action={upsertEventAction}
-        className="grid max-w-2xl gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-2"
+      <SettingsSection
+        id="events"
+        title="Rangkaian acara"
+        description={
+          <>
+            <p>Setiap acara tampil berurutan di undangan, lengkap dengan peta dan tombol kalender.</p>
+            <UsageMeter used={events.length} limit={packageDefinition.limits.maxEvents} unit="acara" />
+          </>
+        }
       >
-        <input type="hidden" name="invitationId" value={invitation.id} />
-        <input type="hidden" name="sortOrder" value={events.length} />
+        {events.map((event, index) => (
+          <Panel key={event.id}>
+            <PanelHeader
+              index={index + 1}
+              title={event.title}
+              meta={[event.event_type, formatLongEventDate(event.event_date)].filter(Boolean).join(" · ")}
+              actions={
+                <ConfirmDeleteForm
+                  action={deleteEventAction}
+                  hiddenFields={{ id: event.id, invitationId: invitation.id }}
+                  title="Hapus acara ini?"
+                  description={`"${event.title}" akan dihapus dari undangan. Tindakan ini tidak bisa dibatalkan.`}
+                />
+              }
+            />
+            <form action={upsertEventAction}>
+              <input type="hidden" name="id" value={event.id} />
+              <input type="hidden" name="invitationId" value={invitation.id} />
+              <input type="hidden" name="sortOrder" value={event.sort_order} />
+              <PanelBody>
+                <FieldGrid>
+                  <EventFields idPrefix={`event-${event.id}`} event={event} />
+                </FieldGrid>
+              </PanelBody>
+              <PanelFooter>
+                <UnsavedHint />
+                <SubmitButton>Simpan acara</SubmitButton>
+              </PanelFooter>
+            </form>
+          </Panel>
+        ))}
 
-        <fieldset disabled={limitReached} className="grid gap-3 border-0 p-0 sm:col-span-2 sm:grid-cols-2">
-          <EventFields idPrefix="event-new" />
-        </fieldset>
-
-        {limitReached ? (
-          <p className="text-sm text-muted-foreground sm:col-span-2">
-            Batas acara paket tercapai. Hapus acara atau upgrade paket.
-          </p>
-        ) : (
-          <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
-            Tambah acara
-          </SubmitButton>
-        )}
-      </form>
+        <Panel className="border-dashed bg-[color-mix(in_oklch,var(--card),var(--muted)_30%)] shadow-none">
+          <PanelHeader title="Tambah acara" meta={limitReached ? "Batas acara paket ini sudah tercapai" : `Acara ke-${events.length + 1}`} />
+          <form action={upsertEventAction}>
+            <input type="hidden" name="invitationId" value={invitation.id} />
+            <input type="hidden" name="sortOrder" value={events.length} />
+            <PanelBody>
+              <fieldset disabled={limitReached} className="grid gap-x-5 gap-y-5 border-0 p-0 sm:grid-cols-2 disabled:opacity-60">
+                <EventFields idPrefix="event-new" />
+              </fieldset>
+            </PanelBody>
+            <PanelFooter>
+              {limitReached ? (
+                <p className="mr-auto text-sm text-muted-foreground">Hapus acara atau naikkan paket untuk menambah.</p>
+              ) : (
+                <SubmitButton pendingText="Menambahkan...">Tambah acara</SubmitButton>
+              )}
+            </PanelFooter>
+          </form>
+        </Panel>
+      </SettingsSection>
     </div>
   );
 }

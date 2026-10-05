@@ -375,6 +375,22 @@ function loadGalleryUpload({ invitationResult, galleryResult } = {}) {
   return { uploadGalleryItems: exports.uploadGalleryItems, calls };
 }
 
+// Layout-only admin wrappers: render their children so page content stays assertable.
+function settingsSectionStub() {
+  const React = nodeRequire("react");
+  const wrap = ({ children, title, description }) =>
+    React.createElement("div", null, title ?? null, description ?? null, children);
+  return {
+    SettingsSection: wrap,
+    Panel: wrap,
+    PanelBody: wrap,
+    PanelFooter: wrap,
+    PanelHeader: ({ title, meta, actions }) => React.createElement("div", null, title, meta ?? null, actions ?? null),
+    FieldGrid: wrap,
+    UsageMeter: () => null,
+  };
+}
+
 function loadGalleryPage(galleryCount) {
   const source = ts.transpileModule(
     readFileSync(
@@ -395,6 +411,8 @@ function loadGalleryPage(galleryCount) {
       if (name === "@/components/admin/empty-state") return { EmptyState: "empty-state" };
       if (name === "@/components/admin/form-message") return { FormMessage: ({ children }) => children ?? null };
       if (name === "@/components/admin/submit-button") return { SubmitButton: "submit-button" };
+      if (name === "@/components/admin/file-drop") return { FileDrop: "file-drop" };
+      if (name === "@/components/admin/settings-section") return settingsSectionStub();
       if (name === "@/components/ui/input") return { Input: "input" };
       if (name === "@/components/ui/label") return { Label: "label" };
       if (name === "@/lib/packages/entitlements") return loadEntitlements();

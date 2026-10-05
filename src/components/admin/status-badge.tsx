@@ -20,7 +20,10 @@ export function InvitationStatusBadge({
 }) {
   const { label, className: tone } = STATUS[effectiveInvitationStatus(status, expiresAt)];
   return (
-    <Badge variant="outline" className={cn(tone, className)}>
+    <Badge
+      variant="outline"
+      className={cn("gap-1.5 rounded-md before:size-1.5 before:rounded-full before:bg-current before:content-['']", tone, className)}
+    >
       {label}
     </Badge>
   );

@@ -1,9 +1,21 @@
+import { cache } from "react";
+
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Tables } from "@/types/database";
 
 export type InvitationListItem = Pick<
   Tables<"invitations">,
-  "id" | "title" | "slug" | "type" | "status" | "event_date" | "expires_at" | "published_at" | "cover_image_path"
+  | "id"
+  | "title"
+  | "slug"
+  | "type"
+  | "status"
+  | "event_date"
+  | "expires_at"
+  | "published_at"
+  | "cover_image_path"
+  | "package_key"
+  | "venue_summary"
 > & {
   theme: Pick<Tables<"themes">, "name" | "slug"> | null;
   gallery_items: Pick<Tables<"gallery_items">, "image_path">[];
@@ -22,13 +34,19 @@ export function matchesInvitationSearch(
   return invitation.title.toLowerCase().includes(term) || invitation.slug.toLowerCase().includes(term);
 }
 
-export async function listInvitations(status?: string, search?: string): Promise<InvitationListItem[]> {
+export type InvitationSort = "recent" | "event";
+
+export async function listInvitations(
+  status?: string,
+  search?: string,
+  sort: InvitationSort = "recent",
+): Promise<InvitationListItem[]> {
   const supabase = await createSupabaseServerClient();
 
   let query = supabase
     .from("invitations")
     .select(
-      "id, title, slug, type, status, event_date, expires_at, published_at, cover_image_path, theme:themes(name, slug), gallery_items(image_path), guests(count), rsvps(count), wishes(count)",
+      "id, title, slug, type, status, event_date, expires_at, published_at, cover_image_path, package_key, venue_summary, theme:themes(name, slug), gallery_items(image_path), guests(count), rsvps(count), wishes(count)",
     )
     .order("sort_order", { referencedTable: "gallery_items", ascending: true })
     .limit(1, { foreignTable: "gallery_items" })
@@ -54,7 +72,51 @@ export async function listInvitations(status?: string, search?: string): Promise
     throw new Error(error.message);
   }
 
-  return data.filter((invitation) => matchesInvitationSearch(invitation, search));
+  const matches = data.filter((invitation) => matchesInvitationSearch(invitation, search));
+  return sort === "event" ? sortByUpcomingEvent(matches) : matches;
+}
+
+/**
+ * Upcoming events first (soonest on top), then undated invitations, then
+ * past events (most recent first). `today` is a YYYY-MM-DD date.
+ */
+export function sortByUpcomingEvent<T extends { event_date: string | null }>(
+  items: T[],
+  today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }),
+): T[] {
+  const rank = (date: string | null) => (date === null ? 1 : date >= today ? 0 : 2);
+  return [...items].sort((a, b) => {
+    const byRank = rank(a.event_date) - rank(b.event_date);
+    if (byRank !== 0) return byRank;
+    if (a.event_date === null || b.event_date === null) return 0;
+    return rank(a.event_date) === 0
+      ? a.event_date.localeCompare(b.event_date)
+      : b.event_date.localeCompare(a.event_date);
+  });
+}
+
+export type InvitationStatusCounts = Record<"all" | "draft" | "published" | "expired" | "demo", number>;
+
+/** How many invitations each status tab holds, by effective status. */
+export async function countInvitationsByStatus(): Promise<InvitationStatusCounts> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.from("invitations").select("status, expires_at, is_demo");
+  if (error) throw new Error(error.message);
+
+  const now = Date.now();
+  const counts: InvitationStatusCounts = { all: 0, draft: 0, published: 0, expired: 0, demo: 0 };
+  for (const row of data) {
+    if (row.is_demo) {
+      counts.demo += 1;
+      continue;
+    }
+    counts.all += 1;
+    const lapsed = row.status === "published" && row.expires_at !== null && new Date(row.expires_at).getTime() <= now;
+    if (row.status === "expired" || lapsed) counts.expired += 1;
+    else if (row.status === "published") counts.published += 1;
+    else if (row.status === "draft") counts.draft += 1;
+  }
+  return counts;
 }
 
 export async function listActiveThemes(): Promise<Tables<"themes">[]> {
@@ -84,7 +146,11 @@ export interface InvitationDetail {
   themes: Tables<"themes">[];
 }
 
-export async function getInvitationDetail(invitationId: string): Promise<InvitationDetail | null> {
+/**
+ * Everything the editor needs for one invitation. Request-cached so the
+ * editor layout (header, readiness) and the section page share one fetch.
+ */
+export const getInvitationDetail = cache(async (invitationId: string): Promise<InvitationDetail | null> => {
   const supabase = await createSupabaseServerClient();
 
   const [invitationRes, peopleRes, eventsRes, storiesRes, galleryRes, giftsRes, guestsRes, themesRes] =
@@ -143,7 +209,7 @@ export async function getInvitationDetail(invitationId: string): Promise<Invitat
     guests: guestsRes.data,
     themes: themesRes.data,
   };
-}
+});
 
 export interface InvitationResponses {
   rsvps: Tables<"rsvps">[];

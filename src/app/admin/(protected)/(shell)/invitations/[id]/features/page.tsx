@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { FormMessage } from "@/components/admin/form-message";
+import { Panel, PanelFooter, SettingsSection } from "@/components/admin/settings-section";
 import { SubmitButton } from "@/components/admin/submit-button";
+import { UnsavedHint } from "@/components/admin/unsaved-hint";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -32,10 +34,18 @@ const FEATURE_COPY: Record<keyof InvitationFeatures, FeatureCopy> = {
   music: { label: "Musik latar", description: "Diputar setelah tamu membuka undangan, dengan tombol jeda.", contentSection: "general" },
 };
 
-const FEATURE_GROUPS: { label: string; keys: (keyof InvitationFeatures)[] }[] = [
-  { label: "Isi undangan", keys: ["countdown", "maps", "story", "gallery", "dressCode", "livestream"] },
-  { label: "Interaksi tamu", keys: ["rsvp", "wishes", "gift", "guestPersonalization"] },
-  { label: "Suasana", keys: ["music"] },
+const FEATURE_GROUPS: { label: string; description: string; keys: (keyof InvitationFeatures)[] }[] = [
+  {
+    label: "Isi undangan",
+    description: "Bagian yang tampil di halaman undangan. Bagian tanpa isi tetap tersembunyi walau dinyalakan.",
+    keys: ["countdown", "maps", "story", "gallery", "dressCode", "livestream"],
+  },
+  {
+    label: "Interaksi tamu",
+    description: "Yang bisa dilakukan tamu: konfirmasi hadir, mengirim ucapan, memberi hadiah.",
+    keys: ["rsvp", "wishes", "gift", "guestPersonalization"],
+  },
+  { label: "Suasana", description: "Musik diputar setelah tamu membuka undangan.", keys: ["music"] },
 ];
 
 export default async function FeaturesPage({
@@ -57,59 +67,73 @@ export default async function FeaturesPage({
   const allowed = PACKAGE_DEFINITIONS[invitation.package_key as PackageKey].invitationFeatures;
 
   return (
-    <form action={updateFeaturesAction} className="flex max-w-2xl flex-col gap-6">
+    <form action={updateFeaturesAction} className="flex flex-col">
       <input type="hidden" name="invitationId" value={invitation.id} />
+      {error || saved ? (
+        <div className="mb-2 flex flex-col gap-2">
+          <FormMessage tone="error">{error}</FormMessage>
+          <FormMessage tone="success">{!error && saved ? "Tersimpan." : null}</FormMessage>
+        </div>
+      ) : null}
 
-      {FEATURE_GROUPS.map((group) => (
-        <fieldset key={group.label} className="flex flex-col gap-2">
-          <legend className="mb-2 text-sm font-semibold text-foreground">{group.label}</legend>
-          {group.keys.map((key) => {
-            const copy = FEATURE_COPY[key];
-            const requiredPackage = getRequiredPackageForFeature(key);
-            const granted = allowed[key];
-            return (
-              <div key={key} className="flex items-start justify-between gap-4 rounded-lg border border-border bg-card px-4 py-3">
-                <div className="min-w-0">
-                  <Label htmlFor={key}>{copy.label}</Label>
-                  <p id={`${key}-description`} className="mt-1 text-sm text-muted-foreground">
-                    {copy.description}
-                    {copy.contentSection ? (
-                      <>
-                        {" "}
-                        <Link
-                          href={`/admin/invitations/${invitation.id}/${copy.contentSection}`}
-                          className="underline underline-offset-2 hover:text-foreground"
-                        >
-                          Atur isinya
-                        </Link>
-                      </>
-                    ) : null}
-                  </p>
-                  {!granted && requiredPackage ? (
-                    <p id={`${key}-package`} className="mt-1 text-xs text-muted-foreground">
-                      Tersedia di {PACKAGE_DEFINITIONS[requiredPackage].label}
-                    </p>
-                  ) : null}
-                </div>
-                <Switch
-                  id={key}
-                  name={key}
-                  disabled={!granted}
-                  defaultChecked={granted && Boolean(features[key])}
-                  aria-describedby={
-                    !granted && requiredPackage ? `${key}-description ${key}-package` : `${key}-description`
-                  }
-                />
-              </div>
-            );
-          })}
-        </fieldset>
+      {FEATURE_GROUPS.map((group, groupIndex) => (
+        <SettingsSection key={group.label} title={group.label} description={group.description}>
+          <Panel>
+            <fieldset className="divide-y divide-border">
+              <legend className="sr-only">{group.label}</legend>
+              {group.keys.map((key) => {
+                const copy = FEATURE_COPY[key];
+                const requiredPackage = getRequiredPackageForFeature(key);
+                const granted = allowed[key];
+                return (
+                  <div key={key} className="flex items-start justify-between gap-5 px-5 py-4 sm:px-6">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Label htmlFor={key}>{copy.label}</Label>
+                        {!granted && requiredPackage ? (
+                          <span id={`${key}-package`} className="rounded-md bg-[#f6ecd9] px-1.5 py-0.5 text-[11px] font-medium text-[#8a5a12]">
+                            Tersedia di {PACKAGE_DEFINITIONS[requiredPackage].label}
+                          </span>
+                        ) : null}
+                      </div>
+                      <p id={`${key}-description`} className="mt-1 text-sm leading-6 text-muted-foreground">
+                        {copy.description}
+                        {copy.contentSection ? (
+                          <>
+                            {" "}
+                            <Link
+                              href={`/admin/invitations/${invitation.id}/${copy.contentSection}`}
+                              className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
+                            >
+                              Atur isinya
+                            </Link>
+                          </>
+                        ) : null}
+                      </p>
+                    </div>
+                    <Switch
+                      id={key}
+                      name={key}
+                      disabled={!granted}
+                      defaultChecked={granted && Boolean(features[key])}
+                      className="mt-0.5"
+                      aria-describedby={
+                        !granted && requiredPackage ? `${key}-description ${key}-package` : `${key}-description`
+                      }
+                    />
+                  </div>
+                );
+              })}
+            </fieldset>
+            {groupIndex === FEATURE_GROUPS.length - 1 ? (
+              <PanelFooter>
+                <UnsavedHint />
+                <SubmitButton>Simpan fitur</SubmitButton>
+              </PanelFooter>
+            ) : null}
+          </Panel>
+        </SettingsSection>
       ))}
-
-      <FormMessage tone="error">{error}</FormMessage>
-      <FormMessage tone="success">{!error && saved ? "Tersimpan." : null}</FormMessage>
-
-      <SubmitButton className="w-fit">Simpan fitur</SubmitButton>
     </form>
   );
 }

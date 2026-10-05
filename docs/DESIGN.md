@@ -718,6 +718,28 @@ leave no dead route item or decorative gap, while controls remain at least
 
 ---
 
+
+## 27a. Admin editor layout (Oct 2026)
+
+Admin pages (shadcn, forest/paper tokens) follow one pattern:
+
+- Editor sections are `SettingsSection`s from `src/components/admin/settings-section.tsx`:
+  title and a short "what and why" on the left (16rem), a `Panel` on the
+  right with `FieldGrid` (two columns from `sm`) and a `PanelFooter` holding
+  `UnsavedHint` and the save button. On phones the footer sticks to the
+  bottom while its form is in view.
+- Lists of items (events, people, gifts, stories) are one `Panel` per item
+  with a `PanelHeader` (index, title, meta, delete), plus a dashed "Tambah"
+  panel last. Package limits show as a `UsageMeter` under the description.
+- Uploads use `FileDrop` (a real file input dressed as a drop area).
+- Controls: inputs, selects 40px, radius 10px, card fill, sage focus ring;
+  buttons 36px default, 40px `lg`.
+- The editor header shows cover, status, package, theme, event date with
+  H-countdown and publish readiness (`getPublishReadiness`); the detail
+  query is request-cached so the layout and page share one fetch.
+- The invitation list is a table (lg) / stacked rows (phones) with status
+  counts, "Acara terdekat" sort and an RSVP-over-guests bar.
+
 ## 28. New Template Checklist (every future template)
 
 Rules learned while shipping Ivory, Terra, Midnight and Cobalt and the

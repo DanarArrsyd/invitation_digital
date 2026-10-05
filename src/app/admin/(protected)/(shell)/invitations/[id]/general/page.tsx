@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
 
+import { FileDrop } from "@/components/admin/file-drop";
 import { FormMessage } from "@/components/admin/form-message";
+import { Panel, PanelBody, PanelFooter, SettingsSection } from "@/components/admin/settings-section";
 import { SubmitButton } from "@/components/admin/submit-button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import type { PackageKey } from "@/lib/packages/entitlements";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import { getInvitationDetail } from "@/server/invitations/queries";
@@ -32,36 +31,50 @@ export default async function GeneralPage({
   if (!detail) notFound();
 
   const { invitation, themes } = detail;
+  const coverUrl = getMediaPublicUrl(invitation.cover_image_path);
+  const musicName = invitation.music_path?.split("/").pop() ?? null;
 
   return (
-    <div className="flex flex-col gap-10">
-      <FormMessage tone="error">{error}</FormMessage>
-      <div className="flex flex-col gap-2">
-        <h2 id="prewedding-heading" className="text-base font-semibold text-foreground">Foto prewedding — hero undangan</h2>
-        <p id="prewedding-help" className="text-sm text-muted-foreground">Tampil dalam frame melengkung di sebelah nama pasangan setelah undangan dibuka. Gunakan foto portrait 4:5; PNG, JPG, atau WebP.</p>
-        <Label htmlFor="prewedding-photo">Pilih foto prewedding</Label>
-        {getMediaPublicUrl(invitation.cover_image_path) ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={getMediaPublicUrl(invitation.cover_image_path) ?? undefined}
-            alt="Foto prewedding saat ini"
-            className="aspect-[4/5] w-40 rounded-t-full border border-border object-cover"
-          />
-        ) : null}
-        <form action={uploadCoverImageAction} className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-          <input type="hidden" name="invitationId" value={invitation.id} />
-          <Input id="prewedding-photo" aria-describedby="prewedding-help" type="file" name="file" accept="image/png,image/jpeg,image/webp" required />
-          <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
-            {invitation.cover_image_path ? "Ganti foto prewedding" : "Unggah foto prewedding"}
-          </SubmitButton>
-        </form>
-      </div>
-
-      <Separator />
-
+    <div className="flex flex-col">
+      <FormMessage tone="error" className="mb-2">{error}</FormMessage>
       <GeneralForm invitation={invitation} themes={themes} saved={saved} />
 
-      <Separator />
+      <SettingsSection
+        id="cover"
+        title="Foto sampul"
+        description="Tampil di bagian pembuka setelah undangan dibuka dan di banner saat link dibagikan. Portrait 4:5, PNG, JPG atau WebP."
+      >
+        <Panel>
+          <form action={uploadCoverImageAction}>
+            <input type="hidden" name="invitationId" value={invitation.id} />
+            <PanelBody className="sm:flex-row sm:items-center">
+              <div className="aspect-[4/5] w-28 shrink-0 overflow-hidden rounded-t-full rounded-b-lg border border-border bg-muted">
+                {coverUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={coverUrl} alt="Foto sampul saat ini" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="flex h-full items-center justify-center px-2 text-center text-xs text-muted-foreground">
+                    Belum ada foto
+                  </span>
+                )}
+              </div>
+              <FileDrop
+                id="prewedding-photo"
+                accept="image/png,image/jpeg,image/webp"
+                required
+                label={coverUrl ? "Pilih foto pengganti" : "Pilih foto sampul"}
+                hint="Tarik foto ke sini atau klik untuk memilih."
+                className="flex-1"
+              />
+            </PanelBody>
+            <PanelFooter>
+              <SubmitButton pendingText="Mengunggah...">
+                {invitation.cover_image_path ? "Ganti foto sampul" : "Unggah foto sampul"}
+              </SubmitButton>
+            </PanelFooter>
+          </form>
+        </Panel>
+      </SettingsSection>
 
       <PackageForm
         invitationId={invitation.id}
@@ -70,27 +83,35 @@ export default async function GeneralPage({
         saved={packageSaved === "1"}
       />
 
-      <Separator />
-
-      <div className="flex flex-col gap-6">
-        <h2 className="text-sm font-semibold text-foreground">Musik</h2>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="music-file">File musik (MP3, M4A atau WAV)</Label>
-          {invitation.music_path ? (
-            <p className="text-sm text-muted-foreground">
-              Saat ini: {invitation.music_path.split("/").pop()}
-            </p>
-          ) : null}
-          <form action={uploadMusicAction} className="flex flex-wrap items-center gap-2">
+      <SettingsSection
+        id="music"
+        title="Musik"
+        description="Diputar setelah tamu membuka undangan, dengan tombol jeda yang selalu terlihat. MP3, M4A atau WAV."
+      >
+        <Panel>
+          <form action={uploadMusicAction}>
             <input type="hidden" name="invitationId" value={invitation.id} />
-            <Input id="music-file" type="file" name="file" accept="audio/mpeg,audio/mp4,audio/wav" className="max-w-xs" required />
-            <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
-              Unggah
-            </SubmitButton>
+            <PanelBody>
+              {musicName ? (
+                <p className="text-sm text-muted-foreground">
+                  Saat ini: <span className="font-medium text-foreground">{musicName}</span>
+                </p>
+              ) : null}
+              <FileDrop
+                id="music-file"
+                kind="audio"
+                accept="audio/mpeg,audio/mp4,audio/wav"
+                required
+                label={musicName ? "Pilih lagu pengganti" : "Pilih file musik"}
+              />
+            </PanelBody>
+            <PanelFooter>
+              <SubmitButton pendingText="Mengunggah...">Unggah musik</SubmitButton>
+            </PanelFooter>
           </form>
-        </div>
-      </div>
+        </Panel>
+      </SettingsSection>
+
     </div>
   );
 }
