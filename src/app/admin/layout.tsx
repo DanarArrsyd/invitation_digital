@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: {
-    default: "Invitation Admin",
-    template: "%s | Invitation Admin",
+    default: "Temuraya Admin",
+    template: "%s | Temuraya Admin",
   },
   description: "Ruang kerja privat untuk mengelola undangan digital.",
   robots: {
