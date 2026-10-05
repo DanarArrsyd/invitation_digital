@@ -1,5 +1,6 @@
 import type { InvitationEvent } from "@/types/invitation";
 import { usableExternalUrl } from "@/themes/shared/external-url";
+import { ExternalArrowIcon } from "@/themes/shared/action-icons";
 
 import { Section } from "../components/Section";
 import { Spotlight } from "../components/Spotlight";
@@ -22,7 +23,7 @@ export function LivestreamSection({ events, enabled }: { events: InvitationEvent
         {links.map(({ event, url }) => (
           <li key={event.id}>
             <a href={url} target="_blank" rel="noopener noreferrer">
-              <span>Saksikan {event.title}</span><span aria-hidden="true">↗</span>
+              <span>Saksikan {event.title}</span><ExternalArrowIcon />
             </a>
           </li>
         ))}

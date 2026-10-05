@@ -5,6 +5,7 @@ import {
   buildIcsCalendar,
   type CalendarEventInput,
 } from "@/themes/shared/calendar";
+import { AppleGlyph, GoogleGlyph } from "@/themes/shared/action-icons";
 
 export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: string }) {
   function downloadIcs() {
@@ -27,10 +28,10 @@ export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: 
         rel="noopener noreferrer"
         aria-label={`Google Kalender untuk ${event.title}`}
       >
-        Google Kalender <span aria-hidden="true">↗</span>
+        Google Kalender <GoogleGlyph />
       </a>
       <button type="button" onClick={downloadIcs} aria-label={`Unduh kalender .ics untuk ${event.title}`}>
-        Simpan .ics <span aria-hidden="true">↓</span>
+        Simpan .ics <AppleGlyph />
       </button>
     </div>
   );

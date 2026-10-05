@@ -1,5 +1,6 @@
 import type { InvitationEvent } from "@/types/invitation";
 import { usableExternalUrl } from "@/themes/shared/external-url";
+import { ExternalArrowIcon } from "@/themes/shared/action-icons";
 
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
@@ -14,7 +15,7 @@ export function LivestreamSection({ events, enabled }: { events: InvitationEvent
       <SectionHeading id="tb-livestream-heading" title="Dari kejauhan">
         <p>Ikuti pertemuan ini dari mana pun Anda berada.</p>
       </SectionHeading>
-      <ul>{links.map(({ event, url }) => <li key={event.id}><a href={url} target="_blank" rel="noopener noreferrer">{`Saksikan ${event.title}`}<span aria-hidden="true">↗</span></a></li>)}</ul>
+      <ul>{links.map(({ event, url }) => <li key={event.id}><a href={url} target="_blank" rel="noopener noreferrer">{`Saksikan ${event.title}`}<ExternalArrowIcon /></a></li>)}</ul>
     </Section>
   );
 }

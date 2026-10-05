@@ -206,3 +206,14 @@
     @apply font-sans;
   }
 }
+
+/* Inline action glyphs in public themes (src/themes/shared/action-icons.tsx). */
+@layer components {
+  .theme-action-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+    vertical-align: -0.125em;
+  }
+}

@@ -785,6 +785,10 @@ is incomplete, not that the test is wrong.
 
 ### 28.5 Guest interaction
 
+- Action glyphs (Maps, livestream, calendar) come from
+  `src/themes/shared/action-icons.tsx`: thin drawn arrows plus the Google and
+  Apple marks. Never type ↗ or ↓ in markup; iOS draws ↗ as a blue emoji.
+
 - Cover: no full-screen photo on the initial cover for Ivory-style themes,
   guest name when present, an explicit open button; music only starts after
   that tap and keeps a visible play/pause control.

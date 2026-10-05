@@ -1,6 +1,7 @@
 "use client";
 
 import { buildGoogleCalendarUrl, buildIcsCalendar, type CalendarEventInput } from "@/themes/shared/calendar";
+import { AppleGlyph, GoogleGlyph } from "@/themes/shared/action-icons";
 
 export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: string }) {
   function downloadIcs() {
@@ -17,8 +18,8 @@ export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: 
 
   return (
     <div className="tb-calendar-actions">
-      <a href={buildGoogleCalendarUrl(event)} target="_blank" rel="noopener noreferrer" aria-label={`Google Kalender untuk ${event.title}`}>Google Kalender <span aria-hidden="true">↗</span></a>
-      <button type="button" onClick={downloadIcs} aria-label={`Unduh kalender .ics untuk ${event.title}`}>Unduh kalender .ics <span aria-hidden="true">↓</span></button>
+      <a href={buildGoogleCalendarUrl(event)} target="_blank" rel="noopener noreferrer" aria-label={`Google Kalender untuk ${event.title}`}><GoogleGlyph /> Google Kalender</a>
+      <button type="button" onClick={downloadIcs} aria-label={`Unduh kalender .ics untuk ${event.title}`}><AppleGlyph /> Unduh kalender .ics</button>
     </div>
   );
 }

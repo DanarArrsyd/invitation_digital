@@ -6,6 +6,7 @@ import {
   type InvitationTimeZone,
 } from "@/themes/shared/calendar";
 import { usableExternalUrl } from "@/themes/shared/external-url";
+import { ExternalArrowIcon } from "@/themes/shared/action-icons";
 
 import { Section } from "../components/Section";
 import { Spotlight } from "../components/Spotlight";
@@ -63,7 +64,7 @@ export function EventsSection({
                 {mapUrl ? (
                   <div className="ma-event-actions">
                     <a href={mapUrl} target="_blank" rel="noopener noreferrer" aria-label={`Buka Maps untuk ${event.title}`}>
-                      Buka Maps <span aria-hidden="true">↗</span>
+                      Buka Maps <ExternalArrowIcon />
                     </a>
                   </div>
                 ) : null}
