@@ -21,6 +21,6 @@ export const KELIR_KENCANA_TOKENS = {
 } as const;
 
 export const KELIR_KENCANA_FIGURES = {
-  satria: { src: "/themes/kelir-kencana/wayang-satria.webp", width: 282, height: 386 },
-  putri: { src: "/themes/kelir-kencana/wayang-putri.webp", width: 262, height: 380 },
+  satria: { src: "/themes/kelir-kencana/wayang-satria.webp", width: 702, height: 963 },
+  putri: { src: "/themes/kelir-kencana/wayang-putri.webp", width: 653, height: 948 },
 } as const;
