@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, FileHeart, LayoutDashboard, LogOut, Plus } from "lucide-react";
+import { ArrowLeft, BadgePercent, ExternalLink, FileHeart, LayoutDashboard, LayoutTemplate, LogOut, MessageCircle, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -26,6 +26,12 @@ const MAIN_NAV = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/invitations", label: "Undangan", icon: FileHeart },
   { href: "/admin/invitations/new", label: "Undangan baru", icon: Plus },
+] as const;
+
+const SITE_NAV = [
+  { href: "/admin/site/catalog", label: "Katalog Template", icon: LayoutTemplate },
+  { href: "/admin/site/packages", label: "Paket & Harga", icon: BadgePercent },
+  { href: "/admin/site/contact", label: "Kontak", icon: MessageCircle },
 ] as const;
 
 /**
@@ -83,6 +89,32 @@ export function AppSidebar({
                   </SidebarMenuItem>
                 );
               })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-white/45">Situs Temuraya</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {SITE_NAV.map(({ href, label, icon: Icon }) => (
+                <SidebarMenuItem key={href}>
+                  <SidebarMenuButton
+                    render={<Link href={href} onClick={closeOnMobile} />}
+                    isActive={pathname.startsWith(href)}
+                  >
+                    <Icon aria-hidden="true" />
+                    <span>{label}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton render={<a href="/" target="_blank" rel="noreferrer" />}>
+                  <ExternalLink aria-hidden="true" />
+                  <span>Lihat situs</span>
+                  <span className="sr-only">(tab baru)</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

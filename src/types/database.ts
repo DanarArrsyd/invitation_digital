@@ -353,6 +353,7 @@ export type Database = {
           event_date: string | null
           expires_at: string | null
           id: string
+          is_demo: boolean
           music_path: string | null
           opening_message: string | null
           opening_quote: string | null
@@ -375,6 +376,7 @@ export type Database = {
           event_date?: string | null
           expires_at?: string | null
           id?: string
+          is_demo?: boolean
           music_path?: string | null
           opening_message?: string | null
           opening_quote?: string | null
@@ -397,6 +399,7 @@ export type Database = {
           event_date?: string | null
           expires_at?: string | null
           id?: string
+          is_demo?: boolean
           music_path?: string | null
           opening_message?: string | null
           opening_quote?: string | null
@@ -427,6 +430,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      package_offers: {
+        Row: {
+          is_visible: boolean
+          package_key: string
+          price_idr: number | null
+          price_note: string | null
+          updated_at: string
+        }
+        Insert: {
+          is_visible?: boolean
+          package_key: string
+          price_idr?: number | null
+          price_note?: string | null
+          updated_at?: string
+        }
+        Update: {
+          is_visible?: boolean
+          package_key?: string
+          price_idr?: number | null
+          price_note?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -494,38 +521,77 @@ export type Database = {
           },
         ]
       }
+      site_settings: {
+        Row: {
+          id: boolean
+          instagram_url: string | null
+          updated_at: string
+          whatsapp_message: string
+          whatsapp_number: string | null
+        }
+        Insert: {
+          id?: boolean
+          instagram_url?: string | null
+          updated_at?: string
+          whatsapp_message?: string
+          whatsapp_number?: string | null
+        }
+        Update: {
+          id?: boolean
+          instagram_url?: string | null
+          updated_at?: string
+          whatsapp_message?: string
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
       themes: {
         Row: {
           category: string
           created_at: string
           description: string | null
+          event_types: string[]
           id: string
           is_active: boolean
+          is_listed: boolean
           name: string
           preview_image_path: string | null
+          screenshot_paths: string[]
           slug: string
+          sort_order: number
+          tagline: string | null
           updated_at: string
         }
         Insert: {
           category: string
           created_at?: string
           description?: string | null
+          event_types?: string[]
           id?: string
           is_active?: boolean
+          is_listed?: boolean
           name: string
           preview_image_path?: string | null
+          screenshot_paths?: string[]
           slug: string
+          sort_order?: number
+          tagline?: string | null
           updated_at?: string
         }
         Update: {
           category?: string
           created_at?: string
           description?: string | null
+          event_types?: string[]
           id?: string
           is_active?: boolean
+          is_listed?: boolean
           name?: string
           preview_image_path?: string | null
+          screenshot_paths?: string[]
           slug?: string
+          sort_order?: number
+          tagline?: string | null
           updated_at?: string
         }
         Relationships: []

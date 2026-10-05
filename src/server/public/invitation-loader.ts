@@ -30,8 +30,10 @@ async function loadPublicInvitationContent(slug: string): Promise<CachedInvitati
 
   if (error) throw new Error(error.message);
 
+  // Demo invitations live only at /demo/[themeSlug].
   if (
     !invitation ||
+    invitation.is_demo ||
     !invitation.theme ||
     invitation.status === "draft" ||
     invitation.status === "archived"

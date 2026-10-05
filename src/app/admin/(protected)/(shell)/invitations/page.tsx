@@ -19,6 +19,7 @@ const STATUS_FILTERS = [
   { value: "draft", label: "Draf" },
   { value: "published", label: "Terbit" },
   { value: "expired", label: "Kedaluwarsa" },
+  { value: "demo", label: "Demo" },
 ] as const;
 
 function filterHref(status: string, search: string): string {

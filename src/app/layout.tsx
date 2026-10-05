@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
+import { getSiteUrl } from "@/lib/marketing/site-url";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,9 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://invitation-digital-delta.vercel.app",
-  ),
+  metadataBase: new URL(getSiteUrl()),
   title: "Temuraya",
   description: "Undangan digital untuk setiap acara.",
 };

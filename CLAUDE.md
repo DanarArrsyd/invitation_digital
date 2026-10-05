@@ -28,6 +28,12 @@ not yet purchased) and `temuraya.id` (check with a PANDI registrar).
 Trademark check at PDKI is still pending. The admin UI (login, sidebar,
 metadata) already uses "Temuraya" with a "T" monogram.
 
+The public marketing site (landing `/`, `/template`, `/template/[themeSlug]`,
+`/demo/[themeSlug]`) shares the forest/paper brand tokens (`--tr-*` in
+`globals.css`) and is managed from admin "Situs Temuraya". It is a catalogue
+with WhatsApp ordering, not customer self-service. See
+`docs/superpowers/specs/2026-10-05-temuraya-landing-design.md`.
+
 No customer invitation is live yet. The earlier "Rayhana & Febri" invitation
 and `sample-1..3` were demo data only and were removed from the database on
 2026-10-04; do not treat them as a real customer or recreate them. The

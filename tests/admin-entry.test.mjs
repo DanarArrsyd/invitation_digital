@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import test from "node:test";
 import vm from "node:vm";
@@ -35,20 +35,12 @@ function loadTs(path, dependencies = {}) {
   return exports;
 }
 
-test("root sends operators into the authenticated admin flow", () => {
-  let destination = null;
-  const redirectError = new Error("NEXT_REDIRECT");
-  const page = loadTs("app/page.tsx", {
-    "next/navigation": {
-      redirect(path) {
-        destination = path;
-        throw redirectError;
-      },
-    },
-  });
-
-  assert.throws(() => page.default(), redirectError);
-  assert.equal(destination, "/admin");
+test("the root is the Temuraya landing page, not a redirect into the admin", () => {
+  assert.equal(existsSync(new URL("../src/app/page.tsx", import.meta.url)), false);
+  const landing = readFileSync(new URL("../src/app/(marketing)/page.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(landing, /redirect\(/);
+  const adminIndex = readFileSync(new URL("../src/app/admin/(protected)/(shell)/page.tsx", import.meta.url), "utf8");
+  assert.match(adminIndex, /redirect\("\/admin\/dashboard"\)/);
 });
 
 test("all admin screens are excluded from search indexing", () => {

@@ -4,6 +4,38 @@ import { INVITATION_TIME_ZONE_KEYS, type InvitationTimeZone } from "@/lib/invita
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+/**
+ * Top-level segments used by the marketing site and app. Static routes win
+ * over /[slug] in the App Router, so an invitation with one of these slugs
+ * would be unreachable.
+ */
+export const RESERVED_INVITATION_SLUGS = [
+  "admin",
+  "api",
+  "demo",
+  "faq",
+  "kontak",
+  "login",
+  "paket",
+  "privasi",
+  "robots",
+  "sitemap",
+  "syarat",
+  "template",
+  "tentang",
+] as const;
+
+export const invitationSlugSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .min(3, "Slug minimal 3 karakter")
+  .max(80)
+  .regex(slugPattern, "Slug hanya boleh huruf kecil, angka, dan tanda strip")
+  .refine((slug) => !(RESERVED_INVITATION_SLUGS as readonly string[]).includes(slug), {
+    message: "Slug ini dipakai halaman Temuraya, pilih slug lain",
+  });
+
 export const invitationTypeSchema = z.enum([
   "wedding",
   "birthday",
@@ -17,13 +49,7 @@ export const packageKeySchema = z.enum(["intimate", "signature", "grand"]);
 
 export const createInvitationSchema = z.object({
   title: z.string().trim().min(1, "Judul wajib diisi").max(200),
-  slug: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .min(3, "Slug minimal 3 karakter")
-    .max(80)
-    .regex(slugPattern, "Slug hanya boleh huruf kecil, angka, dan tanda strip"),
+  slug: invitationSlugSchema,
   type: invitationTypeSchema,
   themeId: z.string().uuid("Theme wajib dipilih"),
   packageKey: packageKeySchema,
@@ -37,13 +63,7 @@ export const updatePackageSchema = z.object({
 export const updateGeneralSchema = z.object({
   invitationId: z.string().uuid(),
   title: z.string().trim().min(1, "Judul wajib diisi").max(200),
-  slug: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .min(3, "Slug minimal 3 karakter")
-    .max(80)
-    .regex(slugPattern, "Slug hanya boleh huruf kecil, angka, dan tanda strip"),
+  slug: invitationSlugSchema,
   type: invitationTypeSchema,
   themeId: z.string().uuid("Theme wajib dipilih"),
   eventDate: z.string().trim().optional().or(z.literal("")),
