@@ -9,7 +9,7 @@ import { PhoneMockup } from "./phone-mockup";
 export function TemplateCard({ template, headingLevel = "h3" }: { template: MarketingTemplate; headingLevel?: "h2" | "h3" }) {
   const Heading = headingLevel;
   return (
-    <article className="group relative flex flex-col rounded-2xl border border-tr-line bg-tr-card p-4 transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-30px_rgba(23,32,27,0.4)] sm:p-5">
+    <article className="group relative flex w-full flex-col rounded-2xl border border-tr-line bg-tr-card p-4 transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-30px_rgba(23,32,27,0.4)] sm:p-5">
       <div className="rounded-xl bg-tr-mist px-[18%] pt-6 pb-0">
         <PhoneMockup src={template.coverUrl} alt={`Tampilan template ${template.name}`} className="rounded-b-none border-b-0" />
       </div>

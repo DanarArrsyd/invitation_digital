@@ -68,8 +68,8 @@ in `public/demo/kelir-kencana/`, test `tests/kelir-kencana.test.mjs`.
 - Wayang figures are owner-supplied PNGs saved as
   `public/themes/kelir-kencana/wayang-satria.webp` (groom side) and
   `wayang-putri.webp` (bride side), trimmed from the owner's 1000 px
-  originals (supplied after PR #28). Licence for commercial use is the
-  owner's to confirm.
+  originals (supplied after PR #28). The owner confirmed on 2026-10-05
+  that they may be used commercially.
 - PR #28 merged (`7876f3d`). Migration `kelir_kencana_theme` and the Kelir
   demo block were applied to production on 2026-10-05 (event types kept as
   wedding, engagement, aqiqah, birthday, graduation; `build-seed.mjs` still
