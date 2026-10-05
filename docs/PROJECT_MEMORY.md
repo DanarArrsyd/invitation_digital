@@ -35,18 +35,11 @@ after every merge):
 Rules for future templates are collected in `docs/DESIGN.md` §28 (New
 Template Checklist). Read it before starting a template.
 
-Owner to-do (outside the repo):
-
-- Delete the empty invitation `112e7d3e-4492-4b08-996a-ad7530638b94`.
-- Run `supabase/migrations/20261005000002_drop_theme_demo_column.sql` in the
-  SQL editor (destructive DDL; the MCP tool needs the owner's confirmation,
-  so it is handed over as SQL).
-- In Cloudflare Turnstile, make sure the widget's hostnames include
-  `invitation-digital-delta.vercel.app` (and `temuraya.com` later).
-- Buy `temuraya.com` / `temuraya.id`, then set `NEXT_PUBLIC_SITE_URL`;
-  PDKI trademark check.
-- Optional: enable asymmetric JWT signing keys in Supabase so admin
-  `getClaims()` verifies locally.
+Owner to-do (outside the repo): all closed by the owner on 2026-10-05
+(empty invitation `112e7d3e…` deleted and migration
+`20261005000002_drop_theme_demo_column.sql` applied, both verified in the
+database; Turnstile hostnames, domain purchase with `NEXT_PUBLIC_SITE_URL`,
+PDKI check and the optional JWT signing keys reported done by the owner).
 
 Working notes:
 
@@ -120,8 +113,8 @@ Working notes:
   ambiguity broke production for a few minutes on 2026-10-05). Spec and
   plan: `docs/superpowers/{specs,plans}/2026-10-05-temuraya-landing*.md`.
   Demo invitations, screenshots and taglines were filled in #23 (owner may
-  later swap the "Sample N" images for Canva photos). Owner still to run
-  migration `20261005000002_drop_theme_demo_column.sql` in production.
+  later swap the "Sample N" images for Canva photos). Migration
+  `20261005000002_drop_theme_demo_column.sql` ran in production on 2026-10-05.
 - 2026-10-05 brand: the platform is named **Temuraya** (temu raya). Owner
   chose it for being event-agnostic. `temuraya.com` and `temuraya.co` were
   available (Vercel registry check), `.id` / `.co.id` unchecked (`.co.id`
