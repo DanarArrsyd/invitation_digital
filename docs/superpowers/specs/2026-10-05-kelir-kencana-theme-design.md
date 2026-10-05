@@ -65,8 +65,8 @@ cards.
   full colour; in Jejer faded (30%) beside each person's portrait, facing
   the portrait. The figure on the groom/first person is "satria", on the
   bride/second person "putri". Non-wedding invitations keep the figures in
-  cover and closing only. The current files are 400 px; the owner will
-  supply ≥1000 px replacements (same file names) before launch.
+  cover and closing only. Files are trimmed from the owner's 1000 px
+  originals.
 
 ## 5. Sections (all registered sections; canonical anchors)
 

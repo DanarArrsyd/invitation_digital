@@ -67,12 +67,13 @@ in `public/demo/kelir-kencana/`, test `tests/kelir-kencana.test.mjs`.
 
 - Wayang figures are owner-supplied PNGs saved as
   `public/themes/kelir-kencana/wayang-satria.webp` (groom side) and
-  `wayang-putri.webp` (bride side). They are 400 px originals; the owner will
-  replace them with ≥1000 px files under the same names and confirm the
-  licence for commercial use before launch.
-- Owner to run after merge: migration
-  `20261005000004_kelir_kencana_theme.sql` (idempotent upsert, no deletes),
-  then the Kelir block of `supabase/seed/demo-content.sql` for the demo.
+  `wayang-putri.webp` (bride side), trimmed from the owner's 1000 px
+  originals (supplied after PR #28). Licence for commercial use is the
+  owner's to confirm.
+- PR #28 merged (`7876f3d`). Migration `kelir_kencana_theme` and the Kelir
+  demo block were applied to production on 2026-10-05 (event types kept as
+  wedding, engagement, aqiqah, birthday, graduation; `build-seed.mjs` still
+  writes `wedding` only, so a full reseed narrows them).
 
 ## Product decisions that must survive future sessions
 
