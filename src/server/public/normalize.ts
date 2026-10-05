@@ -5,6 +5,7 @@ import {
   resolveEffectiveInvitationFeatures,
   type PackageKey,
 } from "@/lib/packages/entitlements";
+import { NAV_SECTIONS_BY_PACKAGE } from "@/lib/packages/nav-sections";
 import { normalizePersonRole } from "@/lib/invitations/person-role";
 import { resolveInvitationTimeZone } from "@/lib/invitations/time-zones";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
@@ -100,6 +101,7 @@ export async function loadNormalizedInvitation(
   return {
     id: invitation.id,
     type: invitation.type as PublicInvitation["type"],
+    navSections: NAV_SECTIONS_BY_PACKAGE[packageKey] ?? NAV_SECTIONS_BY_PACKAGE.signature,
     slug: invitation.slug,
     title: invitation.title,
     status: "published",

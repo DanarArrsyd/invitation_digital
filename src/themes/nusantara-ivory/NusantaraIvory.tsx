@@ -1,3 +1,4 @@
+import { hasLivestreamLink } from "@/themes/shared/external-url";
 import { pickNavItems } from "@/themes/shared/nav-priority";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 import type { ThemeComponentProps } from "@/types/theme";
@@ -34,7 +35,7 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
   } = buildThemeViewModel(invitation, guest);
   const eyebrow = invitation.type === "wedding" ? "The Wedding Of" : null;
 
-  // Page order; pickNavItems keeps the five that matter most to guests.
+  // Page order; pickNavItems keeps the stops the invitation's package includes.
   const navCandidates: (NavItem | null)[] = [
     { id: "ni-beranda", label: "Beranda", icon: "home", section: "hero" },
     invitation.people.length > 0 ? { id: "ni-mempelai", label: "Mempelai", icon: "heart", section: "couple" } : null,
@@ -45,11 +46,17 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
     features.gallery && invitation.gallery.length > 0
       ? { id: "ni-galeri", label: "Galeri", icon: "gallery", section: "gallery" }
       : null,
+    features.livestream && hasLivestreamLink(invitation.events)
+      ? { id: "ni-livestream", label: "Streaming", icon: "broadcast", section: "livestream" }
+      : null,
     features.rsvp ? { id: "ni-rsvp", label: "RSVP", icon: "message", section: "rsvp" } : null,
     features.wishes ? { id: "ni-ucapan", label: "Ucapan", icon: "pen", section: "wishes" } : null,
     features.gift && invitation.gifts.length > 0 ? { id: "ni-kado", label: "Kado", icon: "gift", section: "gift" } : null,
   ];
-  const navItems = pickNavItems(navCandidates.filter((item): item is NavItem => item !== null));
+  const navItems = pickNavItems(
+    navCandidates.filter((item): item is NavItem => item !== null),
+    invitation.navSections,
+  );
 
   return (
     <div className={`ni-theme ${scriptFace.variable} ${displayFace.variable} ${bodyFace.variable}`}>

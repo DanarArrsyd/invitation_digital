@@ -660,14 +660,20 @@ export function ThemeStyles() {
         color: var(--ma-ink);
         border: 1px solid var(--ma-champagne);
       }
+      /* More stops than fit: 5.4 show (the cut-off one hints at more) and the bar scrolls sideways, never the page. */
       .ma-nav ul {
         display: flex;
         gap: 0;
         margin: 0;
         padding: 4px;
         list-style: none;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
       }
-      .ma-nav li { flex: 1 1 0; min-width: 0; }
+      .ma-nav ul::-webkit-scrollbar { display: none; }
+      .ma-nav li { flex: 1 0 calc(100% / 5.4); min-width: 0; scroll-snap-align: start; }
       .ma-nav a {
         display: grid;
         width: 100%;

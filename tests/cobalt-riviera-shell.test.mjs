@@ -11,6 +11,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { JSDOM } from "jsdom";
 import ts from "typescript";
 
+// Bottom-bar stops per package, as the public loader resolves them (lib/packages/nav-sections).
+const NAV = {
+  intimate: ["hero", "couple", "events", "rsvp", "gift"],
+  signature: ["hero", "couple", "events", "gallery", "rsvp", "wishes", "gift"],
+  grand: ["hero", "couple", "events", "story", "gallery", "livestream", "rsvp", "wishes", "gift"],
+};
+
 const nodeRequire = createRequire(import.meta.url);
 const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
 
@@ -67,7 +74,7 @@ const features = {
 
 function fixture(overrides = {}) {
   return {
-    id: "cobalt-shell", type: "wedding", slug: "cobalt-shell", title: "Mira & Raka", status: "published",
+    id: "cobalt-shell", type: "wedding", navSections: NAV.signature, slug: "cobalt-shell", title: "Mira & Raka", status: "published",
     eventDate: "2027-06-19", venueSummary: null, publishedAt: "2026-10-01T00:00:00Z", expiresAt: null,
     theme: { slug: "cobalt-riviera", settings: {} },
     people: [
@@ -140,12 +147,22 @@ test("route candidates require usable content and enabled features after registr
   const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
   const { themeRegistry } = loadTheme().load("themes/registry");
   assert.deepEqual(Array.from(buildCobaltRouteItems(fixture()), (item) => item.id), [
-    "cr-beranda", "cr-acara", "cr-rsvp", "cr-ucapan", "cr-kado",
-  ], "eight candidates collapse to five guest-action stops in page order");
+    "cr-beranda", "cr-mempelai", "cr-acara", "cr-galeri", "cr-rsvp", "cr-ucapan", "cr-kado",
+  ], "Signature keeps its seven stops in page order");
+  assert.deepEqual(Array.from(buildCobaltRouteItems(fixture({ navSections: NAV.intimate })), (item) => item.id), [
+    "cr-beranda", "cr-mempelai", "cr-acara", "cr-rsvp", "cr-kado",
+  ], "Intimate keeps Mempelai");
+  const grand = fixture({
+    navSections: NAV.grand,
+    events: [{ ...fixture().events[0], livestreamUrl: "https://youtube.com/live/x" }],
+  });
+  assert.deepEqual(Array.from(buildCobaltRouteItems(grand), (item) => item.id), [
+    "cr-beranda", "cr-mempelai", "cr-acara", "cr-cerita", "cr-galeri", "cr-livestream", "cr-rsvp", "cr-ucapan", "cr-kado",
+  ], "Grand adds story and streaming");
   const browsing = fixture({ features: { ...features, rsvp: false, wishes: false } });
   assert.deepEqual(Array.from(buildCobaltRouteItems(browsing), (item) => item.id), [
     "cr-beranda", "cr-mempelai", "cr-acara", "cr-galeri", "cr-kado",
-  ], "freed slots go to couple, then gallery, before story");
+  ], "disabled sections drop out");
   const sparse = fixture({
     people: [], events: [], stories: [], gallery: [], gifts: [],
     features: { ...features, story: false, gallery: false, rsvp: false, wishes: false, gift: false },
@@ -178,7 +195,7 @@ for (const width of [320, 1440]) {
       }
       assert.deepEqual(
         Array.from(document.querySelectorAll(".cr-route-nav a"), (link) => link.getAttribute("href")),
-        ["#cr-beranda", "#cr-acara", "#cr-rsvp", "#cr-ucapan", "#cr-kado"],
+        ["#cr-beranda", "#cr-mempelai", "#cr-acara", "#cr-galeri", "#cr-rsvp", "#cr-ucapan", "#cr-kado"],
       );
       assert.ok(document.querySelector('.cr-route-nav a[aria-current="location"]'));
     } finally {
@@ -219,11 +236,10 @@ test("route navigation pairs every visible label with one decorative nautical ic
 test("every section key the route builder can emit has a dedicated icon, with a compass fallback", () => {
   const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
   const { NavIcon, ROUTE_ICON_GLYPHS } = loadTheme().load("themes/cobalt-riviera/components/NavIcon");
-  const { NAV_SECTION_PRIORITY, MAX_NAV_ITEMS } = loadTheme().load("themes/shared/nav-priority");
+  const { NAV_SECTION_KEYS } = loadTheme().load("lib/packages/nav-sections");
   const emitted = Array.from(buildCobaltRouteItems(fixture()), (item) => item.section);
-  assert.deepEqual(emitted, ["hero", "events", "rsvp", "wishes", "gift"]);
-  assert.ok(emitted.length <= MAX_NAV_ITEMS);
-  for (const section of Object.keys(NAV_SECTION_PRIORITY)) {
+  assert.deepEqual(emitted, ["hero", "couple", "events", "gallery", "rsvp", "wishes", "gift"]);
+  for (const section of NAV_SECTION_KEYS) {
     assert.ok(Object.hasOwn(ROUTE_ICON_GLYPHS, section), `${section} has a dedicated icon`);
     const svg = new JSDOM(renderToStaticMarkup(React.createElement(NavIcon, { section }))).window.document.querySelector("svg");
     assert.equal(svg?.getAttribute("data-icon"), section);
@@ -338,7 +354,7 @@ function rule(block, selector) {
   return match[1];
 }
 
-test("phone and tablet bottom bar fits five equal stops without sideways scrolling (DESIGN 12a)", () => {
+test("phone and tablet bottom bar shows five equal stops and scrolls inside itself when there are more (DESIGN 12a)", () => {
   const css = new JSDOM(renderShell()).window.document.querySelector("style")?.textContent ?? "";
   const phone = mediaBlock(css, "(max-width: 767px)");
   assert.doesNotMatch(phone, /\.cr-route-nav/, "the phone strip is not styled separately from the tablet bar");
@@ -348,13 +364,13 @@ test("phone and tablet bottom bar fits five equal stops without sideways scrolli
   assert.match(nav, /left:\s*max\(12px,\s*env\(safe-area-inset-left\)\)/);
   assert.match(nav, /right:\s*max\(12px,\s*env\(safe-area-inset-right\)\)/);
   assert.match(nav, /bottom:\s*max\(12px,\s*env\(safe-area-inset-bottom\)\)/);
-  assert.match(nav, /overflow:\s*hidden/);
-  assert.doesNotMatch(bar, /overflow-x:\s*auto|max-content/, "the bar never scrolls horizontally");
+  assert.match(nav, /overflow:\s*hidden/, "the page itself never scrolls sideways");
 
   const list = rule(bar, ".cr-route-nav ul");
-  assert.match(list, /display:\s*grid/);
-  assert.match(list, /grid-auto-columns:\s*minmax\(0,\s*1fr\)/, "items share the width equally");
-  assert.match(list, /grid-auto-flow:\s*column/);
+  assert.match(list, /display:\s*flex/);
+  assert.match(list, /overflow-x:\s*auto/, "extra stops scroll inside the bar");
+  assert.match(list, /scrollbar-width:\s*none/);
+  assert.match(rule(bar, ".cr-route-nav li"), /flex:\s*1 0 calc\(100% \/ 5\.4\)/, "up to five stops share the width; more peek in");
 
   const link = rule(bar, ".cr-route-nav a");
   assert.match(link, /flex-direction:\s*column/, "icon sits above the label");

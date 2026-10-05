@@ -12,7 +12,7 @@ export function LivestreamSection({ events }: { events: InvitationEvent[] }) {
   if (links.length === 0) return null;
 
   return (
-    <Section tone="ivory">
+    <Section id="ni-livestream" tone="ivory">
       <div className="grid gap-8 md:grid-cols-12 md:items-center md:gap-14">
         <div className="md:col-span-5">
           <SectionHeading eyebrow="Ikuti Dari Rumah" title="Live Streaming" align="left" />

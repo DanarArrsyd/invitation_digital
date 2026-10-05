@@ -11,6 +11,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { JSDOM } from "jsdom";
 import ts from "typescript";
 
+// Bottom-bar stops per package, as the public loader resolves them (lib/packages/nav-sections).
+const NAV = {
+  intimate: ["hero", "couple", "events", "rsvp", "gift"],
+  signature: ["hero", "couple", "events", "gallery", "rsvp", "wishes", "gift"],
+  grand: ["hero", "couple", "events", "story", "gallery", "livestream", "rsvp", "wishes", "gift"],
+};
+
 const nodeRequire = createRequire(import.meta.url);
 const srcRoot = fileURLToPath(new URL("../src/", import.meta.url));
 const ivoryRoot = resolve(srcRoot, "themes/nusantara-ivory");
@@ -83,7 +90,7 @@ async function mount(element) {
 
 function invitation(overrides = {}) {
   return {
-    id: "ivory", type: "wedding", slug: "ivory", title: "Alya & Bima", status: "published",
+    id: "ivory", type: "wedding", navSections: NAV.signature, slug: "ivory", title: "Alya & Bima", status: "published",
     eventDate: "2030-10-20", venueSummary: "Ubud", publishedAt: "2030-01-01T00:00:00Z", expiresAt: null,
     timeZone: "Asia/Jakarta",
     theme: { slug: "nusantara-ivory", settings: {} },
@@ -265,19 +272,25 @@ function navLabels(overrides) {
   return [...document.querySelectorAll("nav .ni-floating-nav-label")].map((node) => node.textContent.trim());
 }
 
-test("the Ivory bar picks at most five items through the shared nav priority, in page order", () => {
+test("the Ivory bar shows the package's stops through the shared nav list, in page order", () => {
   const source = readFileSync(resolve(ivoryRoot, "NusantaraIvory.tsx"), "utf8");
   assert.match(source, /import \{ pickNavItems \} from "@\/themes\/shared\/nav-priority"/);
   assert.doesNotMatch(source, /priority:\s*\d/, "no theme-local priority table");
 
-  const full = navLabels({ features: ALL_FEATURES, stories: [STORY], gallery: [PHOTO], gifts: [GIFT] });
-  assert.deepEqual(full, ["Beranda", "Acara", "RSVP", "Ucapan", "Kado"]);
+  const full = { features: ALL_FEATURES, stories: [STORY], gallery: [PHOTO], gifts: [GIFT] };
+  assert.deepEqual(navLabels({ ...full, navSections: NAV.intimate }), ["Beranda", "Mempelai", "Acara", "RSVP", "Kado"]);
+  assert.deepEqual(navLabels(full), ["Beranda", "Mempelai", "Acara", "Galeri", "RSVP", "Ucapan", "Kado"]);
+  const live = invitation().events.map((event) => ({ ...event, livestreamUrl: "https://youtube.com/live/x" }));
+  assert.deepEqual(
+    navLabels({ ...full, navSections: NAV.grand, features: { ...ALL_FEATURES, livestream: true }, events: live }),
+    ["Beranda", "Mempelai", "Acara", "Cerita", "Galeri", "Streaming", "RSVP", "Ucapan", "Kado"],
+  );
 
   const browsing = navLabels({
     features: { ...ALL_FEATURES, rsvp: false, wishes: false, gift: false },
     stories: [STORY], gallery: [PHOTO],
   });
-  assert.deepEqual(browsing, ["Beranda", "Mempelai", "Acara", "Cerita", "Galeri"]);
+  assert.deepEqual(browsing, ["Beranda", "Mempelai", "Acara", "Galeri"]);
 });
 
 function cssRule(styles, selector) {
@@ -290,7 +303,7 @@ function cssRule(styles, selector) {
 test("the Ivory bar meets the DESIGN.md 12a mobile sizing", () => {
   const styles = readFileSync(resolve(ivoryRoot, "ThemeStyles.tsx"), "utf8");
   const navBlock = styles.slice(styles.indexOf(".ni-floating-nav {"), styles.indexOf(".ni-addcal-trigger"));
-  assert.doesNotMatch(navBlock, /overflow-x:\s*(auto|scroll)/, "the rail never scrolls sideways");
+  assert.match(cssRule(styles, ".ni-floating-nav-rail"), /overflow-x:\s*auto/, "extra stops scroll inside the rail");
 
   const bar = cssRule(styles, ".ni-floating-nav");
   assert.match(bar, /padding-inline:\s*max\(12px, env\(safe-area-inset-left\)\) max\(12px, env\(safe-area-inset-right\)\)/);
@@ -298,8 +311,9 @@ test("the Ivory bar meets the DESIGN.md 12a mobile sizing", () => {
 
   const rail = cssRule(styles, ".ni-floating-nav-rail");
   assert.match(rail, /width:\s*100%/);
-  assert.match(rail, /overflow:\s*hidden/);
-  assert.match(cssRule(styles, ".ni-floating-nav-rail > li"), /flex:\s*1 1 0/, "equal-width items");
+  assert.match(rail, /overflow-y:\s*hidden/);
+  assert.match(rail, /scrollbar-width:\s*none/);
+  assert.match(cssRule(styles, ".ni-floating-nav-rail > li"), /flex:\s*1 0 calc\(100% \/ 5\.4\)/, "up to five share the width; more peek in");
 
   const button = cssRule(styles, ".ni-floating-nav-btn");
   const height = Number(button.match(/min-height:\s*(\d+)px/)?.[1]);

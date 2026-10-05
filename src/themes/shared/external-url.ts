@@ -7,3 +7,8 @@ export function usableExternalUrl(value: string | null): string | null {
     return null;
   }
 }
+
+/** Whether any event carries a livestream link a guest can open. */
+export function hasLivestreamLink(events: readonly { livestreamUrl: string | null }[]): boolean {
+  return events.some((event) => usableExternalUrl(event.livestreamUrl) !== null);
+}

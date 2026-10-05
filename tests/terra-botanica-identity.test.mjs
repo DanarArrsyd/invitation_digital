@@ -11,6 +11,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { JSDOM } from "jsdom";
 import ts from "typescript";
 
+// Bottom-bar stops per package, as the public loader resolves them (lib/packages/nav-sections).
+const NAV = {
+  intimate: ["hero", "couple", "events", "rsvp", "gift"],
+  signature: ["hero", "couple", "events", "gallery", "rsvp", "wishes", "gift"],
+  grand: ["hero", "couple", "events", "story", "gallery", "livestream", "rsvp", "wishes", "gift"],
+};
+
 const nodeRequire = createRequire(import.meta.url);
 const srcRoot = fileURLToPath(new URL("../src/", import.meta.url));
 const terraRoot = resolve(srcRoot, "themes/terra-botanica");
@@ -102,7 +109,7 @@ async function mount(element, { intersectionObserver } = {}) {
 
 function invitation(overrides = {}) {
   return {
-    id: "terra", type: "wedding", slug: "terra", title: "Alya & Bima", status: "published",
+    id: "terra", type: "wedding", navSections: NAV.signature, slug: "terra", title: "Alya & Bima", status: "published",
     eventDate: "2030-10-20", venueSummary: "Kebun Raya", publishedAt: "2030-01-01T00:00:00Z", expiresAt: null,
     timeZone: "Asia/Jakarta",
     theme: { slug: "terra-botanica", settings: {} },
@@ -369,7 +376,7 @@ test("floating nav pairs every visible Courier label with one hidden botanical g
   const { buildTerraNavItems } = load("TerraBotanica");
   const { FloatingNav } = load("components/FloatingNav");
   const items = buildTerraNavItems(navInvitation());
-  assert.deepEqual(Array.from(items, (item) => item.section), ["hero", "events", "rsvp", "wishes", "gift"]);
+  assert.deepEqual(Array.from(items, (item) => item.section), ["hero", "couple", "events", "gallery", "rsvp", "wishes", "gift"]);
   const { document } = new JSDOM(renderToStaticMarkup(React.createElement(FloatingNav, { items }))).window;
   const links = [...document.querySelectorAll(".tb-nav a")];
   assert.equal(links.length, items.length);
@@ -418,21 +425,27 @@ function baseRule(css, selector) {
   return match[1];
 }
 
-test("the bottom nav keeps at most five items, guest actions first, in page order", () => {
+test("the bottom nav shows the package's stops in page order", () => {
   const source = readFileSync(resolve(terraRoot, "TerraBotanica.tsx"), "utf8");
   assert.match(source, /import \{ pickNavItems \} from "@\/themes\/shared\/nav-priority";/);
   assert.match(source, /return pickNavItems\(/);
   assert.match(readFileSync(resolve(terraRoot, "components/FloatingNav.tsx"), "utf8"), /section: NavSectionKey;/);
   const { buildTerraNavItems } = createLoader()("TerraBotanica");
-  const full = buildTerraNavItems(navInvitation());
-  assert.equal(full.length, 5);
-  assert.deepEqual(Array.from(full, (item) => item.label), ["Beranda", "Acara", "RSVP", "Ucapan", "Kado"]);
+  const labels = (invitation) => Array.from(buildTerraNavItems(invitation), (item) => item.label);
+  assert.deepEqual(labels({ ...navInvitation(), navSections: NAV.intimate }), ["Beranda", "Mempelai", "Acara", "RSVP", "Kado"]);
+  assert.deepEqual(labels(navInvitation()), ["Beranda", "Mempelai", "Acara", "Galeri", "RSVP", "Ucapan", "Kado"]);
+  const grand = navInvitation();
+  grand.navSections = NAV.grand;
+  grand.features = { ...grand.features, story: true, livestream: true };
+  grand.events = grand.events.map((event) => ({ ...event, livestreamUrl: "https://youtube.com/live/x" }));
+  const grandLabels = labels(grand);
+  assert.ok(grandLabels.includes("Streaming") && grandLabels.length > 7, `Grand adds more stops (${grandLabels})`);
   const noGift = navInvitation();
   noGift.features = { ...noGift.features, gift: false };
-  assert.deepEqual(Array.from(buildTerraNavItems(noGift), (item) => item.section), ["hero", "couple", "events", "rsvp", "wishes"]);
+  assert.deepEqual(Array.from(buildTerraNavItems(noGift), (item) => item.section), ["hero", "couple", "events", "gallery", "rsvp", "wishes"]);
 });
 
-test("below 768px the nav spans the screen in equal, unscrolled items with readable labels", () => {
+test("below 768px the nav spans the screen in equal items that scroll inside the bar past five", () => {
   const css = styles();
   const nav = baseRule(css, ".tb-nav");
   assert.match(nav, /left: max\(12px, env\(safe-area-inset-left\)\); right: max\(12px, env\(safe-area-inset-right\)\);/);
@@ -442,8 +455,9 @@ test("below 768px the nav spans the screen in equal, unscrolled items with reada
   assert.match(nav, /border: 1px solid var\(--tb-moss\);/, "moss hairline");
   const list = baseRule(css, ".tb-nav ul");
   assert.match(list, /display: flex;/);
-  assert.doesNotMatch(css, /\.tb-nav ul \{[^}]*overflow-x/, "the bar never scrolls sideways");
-  assert.match(baseRule(css, ".tb-nav li"), /flex: 1 1 0; min-width: 0;/, "items share the width equally");
+  assert.match(list, /overflow-x: auto;/, "extra stops scroll inside the bar");
+  assert.match(list, /scrollbar-width: none;/);
+  assert.match(baseRule(css, ".tb-nav li"), /flex: 1 0 calc\(100% \/ 5\.4\); min-width: 0;/, "up to five share the width; more peek in");
   const link = baseRule(css, ".tb-nav a");
   assert.match(link, /flex-direction: column;/);
   const minHeight = Number(link.match(/min-height: (\d+)px/)[1]);
@@ -481,7 +495,7 @@ test("floating nav server markup matches the first client render", async () => {
     container.innerHTML = renderToStaticMarkup(element);
     await act(async () => { root = hydrateRoot(container, element); });
     assert.deepEqual(errors, []);
-    assert.equal(container.querySelectorAll(".tb-nav svg").length, 5);
+    assert.equal(container.querySelectorAll(".tb-nav svg").length, 7);
   } finally {
     console.error = originalError;
     if (root) await act(async () => root.unmount());

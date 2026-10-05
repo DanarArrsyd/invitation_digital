@@ -295,7 +295,11 @@ const CSS = `
   gap: 0;
   width: 100%;
   padding: 5px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
   list-style: none;
   pointer-events: auto;
   border-radius: 999px;
@@ -305,7 +309,9 @@ const CSS = `
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
-.ni-floating-nav-rail > li { flex: 1 1 0; min-width: 0; display: flex; }
+/* More stops than fit: 5.4 show (the cut-off one hints at more) and the bar scrolls sideways, never the page. */
+.ni-floating-nav-rail::-webkit-scrollbar { display: none; }
+.ni-floating-nav-rail > li { flex: 1 0 calc(100% / 5.4); min-width: 0; display: flex; scroll-snap-align: start; }
 .ni-floating-nav-btn {
   position: relative;
   display: flex;

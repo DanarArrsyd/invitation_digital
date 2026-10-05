@@ -1,6 +1,7 @@
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
 import { pickNavItems } from "@/themes/shared/nav-priority";
+import { hasLivestreamLink } from "@/themes/shared/external-url";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
 
 import type { NavItem } from "./components/FloatingNav";
@@ -29,11 +30,14 @@ export function buildMidnightNavItems(invitation: PublicInvitation): NavItem[] {
     invitation.events.length > 0 ? { id: "ma-acara", section: "events", label: "Acara" } : null,
     features.story && invitation.stories.length > 0 ? { id: "ma-cerita", section: "story", label: "Cerita" } : null,
     features.gallery && invitation.gallery.length > 0 ? { id: "ma-galeri", section: "gallery", label: "Galeri" } : null,
+    features.livestream && hasLivestreamLink(invitation.events)
+      ? { id: "ma-livestream", section: "livestream", label: "Streaming" }
+      : null,
     features.rsvp ? { id: "ma-rsvp", section: "rsvp", label: "RSVP" } : null,
     features.wishes ? { id: "ma-ucapan", section: "wishes", label: "Ucapan" } : null,
     features.gift && invitation.gifts.length > 0 ? { id: "ma-kado", section: "gift", label: "Kado" } : null,
   ];
-  return pickNavItems(candidates.filter((item): item is NavItem => item !== null));
+  return pickNavItems(candidates.filter((item): item is NavItem => item !== null), invitation.navSections);
 }
 
 export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {

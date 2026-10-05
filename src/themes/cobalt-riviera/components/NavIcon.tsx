@@ -45,6 +45,15 @@ export const ROUTE_ICON_GLYPHS = {
       <circle className="cr-route-accent" cx="12" cy="12" r="1" />
     </>
   ),
+  // A ship's radio mast sending waves across the sea.
+  livestream: (
+    <>
+      <path d="M12 9v11M9 20h6M12 9l-3 11M12 9l3 11" />
+      <circle cx="12" cy="7.5" r="1.5" />
+      <path d="M8.2 4.4a5 5 0 0 0 0 6.2M15.8 4.4a5 5 0 0 1 0 6.2" />
+      <path className="cr-route-accent" d="M5.6 2.6a8.5 8.5 0 0 0 0 9.8M18.4 2.6a8.5 8.5 0 0 1 0 9.8" />
+    </>
+  ),
   // Round postmark with wavy cancellation lines and a reply tick.
   rsvp: (
     <>

@@ -11,6 +11,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { JSDOM } from "jsdom";
 import ts from "typescript";
 
+// Bottom-bar stops per package, as the public loader resolves them (lib/packages/nav-sections).
+const NAV = {
+  intimate: ["hero", "couple", "events", "rsvp", "gift"],
+  signature: ["hero", "couple", "events", "gallery", "rsvp", "wishes", "gift"],
+  grand: ["hero", "couple", "events", "story", "gallery", "livestream", "rsvp", "wishes", "gift"],
+};
+
 const nodeRequire = createRequire(import.meta.url);
 const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
 
@@ -67,7 +74,7 @@ const features = {
 
 function fixture(overrides = {}) {
   return {
-    id: "midnight-shell", type: "wedding", slug: "midnight-shell", title: "Nadia & Arka", status: "published",
+    id: "midnight-shell", type: "wedding", navSections: NAV.signature, slug: "midnight-shell", title: "Nadia & Arka", status: "published",
     eventDate: "2027-02-14", venueSummary: null, publishedAt: "2026-09-30T00:00:00Z", expiresAt: null,
     theme: { slug: "midnight-atelier", settings: {} },
     people: [
@@ -132,8 +139,8 @@ test("navigation candidates require both enabled features and available content"
   const { buildMidnightNavItems } = loadTheme().load("themes/midnight-atelier/MidnightAtelier");
   const browsingOnly = fixture({ features: { ...features, rsvp: false, wishes: false, gift: false } });
   assert.deepEqual(Array.from(buildMidnightNavItems(browsingOnly), (item) => item.id), [
-    "ma-beranda", "ma-mempelai", "ma-acara", "ma-cerita", "ma-galeri",
-  ]);
+    "ma-beranda", "ma-mempelai", "ma-acara", "ma-galeri",
+  ], "Signature lists gallery; story is a Grand stop");
   const empty = fixture({
     people: [], events: [], stories: [], gallery: [], gifts: [],
     features: { ...features, story: false, gallery: false, rsvp: false, wishes: false, gift: false },
@@ -141,17 +148,20 @@ test("navigation candidates require both enabled features and available content"
   assert.deepEqual(Array.from(buildMidnightNavItems(empty), (item) => item.id), ["ma-beranda"]);
 });
 
-test("a full invitation keeps five guest-action nav items in page order", () => {
+test("each package shows its own nav stops in page order, growing with the package", () => {
   const { buildMidnightNavItems } = loadTheme().load("themes/midnight-atelier/MidnightAtelier");
-  const items = buildMidnightNavItems(fixture());
-  assert.equal(items.length, 5);
-  assert.deepEqual(Array.from(items, (item) => item.id), ["ma-beranda", "ma-acara", "ma-rsvp", "ma-ucapan", "ma-kado"]);
-  assert.deepEqual(Array.from(items, (item) => item.section), ["hero", "events", "rsvp", "wishes", "gift"]);
+  const ids = (invitation) => Array.from(buildMidnightNavItems(invitation), (item) => item.id);
+  assert.deepEqual(ids(fixture({ navSections: NAV.intimate })), ["ma-beranda", "ma-mempelai", "ma-acara", "ma-rsvp", "ma-kado"]);
+  assert.deepEqual(ids(fixture()), ["ma-beranda", "ma-mempelai", "ma-acara", "ma-galeri", "ma-rsvp", "ma-ucapan", "ma-kado"]);
+  const live = fixture().events.map((event) => ({ ...event, livestreamUrl: "https://youtube.com/live/x" }));
+  assert.deepEqual(ids(fixture({ navSections: NAV.grand, events: live })), [
+    "ma-beranda", "ma-mempelai", "ma-acara", "ma-cerita", "ma-galeri", "ma-livestream", "ma-rsvp", "ma-ucapan", "ma-kado",
+  ]);
 });
 
 test("every navigation section key has a thin art-deco icon", () => {
   const { NavIcon } = loadTheme().load("themes/midnight-atelier/components/NavIcon");
-  const sections = ["hero", "couple", "events", "story", "gallery", "rsvp", "wishes", "gift"];
+  const sections = ["hero", "couple", "events", "story", "gallery", "livestream", "rsvp", "wishes", "gift"];
   const markup = new Set();
   for (const section of sections) {
     const html = renderToStaticMarkup(React.createElement(NavIcon, { section }));
@@ -175,7 +185,7 @@ test("opened navigation shows one hidden icon plus a visible label and no numeri
     await act(async () => document.querySelector(".ma-cover-open").click());
     const links = [...document.querySelectorAll(".ma-nav a")];
     assert.deepEqual(links.map((link) => link.textContent), [
-      "Beranda", "Acara", "RSVP", "Ucapan", "Kado",
+      "Beranda", "Mempelai", "Acara", "Galeri", "RSVP", "Ucapan", "Kado",
     ]);
     for (const link of links) {
       const icons = link.querySelectorAll("svg");
@@ -225,18 +235,18 @@ test("navigation CSS stacks icons on mobile and sets them beside labels on the d
   assert.doesNotMatch(css, /\.ma-nav a span:first-child/, "numeric index styling is gone");
 });
 
-test("mobile nav is a full-width, non-scrolling bar of equal, readable items", () => {
+test("mobile nav is a full-width bar of equal, readable items that scrolls inside itself past five", () => {
   const css = navCss();
   const mobile = withoutMedia(css, "@media (min-width: 768px)");
-  for (const body of rules(mobile, ".ma-nav ul")) {
-    assert.doesNotMatch(body, /overflow(?:-x)?:\s*(?:auto|scroll)/, "mobile bar never scrolls sideways");
-  }
+  const list = rules(mobile, ".ma-nav ul").join(";");
+  assert.match(list, /overflow-x:\s*auto/, "extra stops scroll inside the bar");
+  assert.match(list, /scrollbar-width:\s*none/);
   const nav = rules(mobile, ".ma-nav").join(";");
   assert.match(nav, /left:\s*max\(12px,\s*env\(safe-area-inset-left\)\)/);
   assert.match(nav, /right:\s*max\(12px,\s*env\(safe-area-inset-right\)\)/);
   assert.match(nav, /bottom:\s*var\(--ma-nav-offset\)/);
   assert.match(css, /--ma-nav-offset:\s*max\(12px,\s*env\(safe-area-inset-bottom\)\)/);
-  assert.match(rules(mobile, ".ma-nav li").join(";"), /flex:\s*1 1 0/, "items share the width equally");
+  assert.match(rules(mobile, ".ma-nav li").join(";"), /flex:\s*1 0 calc\(100% \/ 5\.4\)/, "up to five share the width; more peek in");
   assert.match(rules(mobile, ".ma-nav li").join(";"), /min-width:\s*0/);
   const link = rules(mobile, ".ma-nav a").join(";");
   const minHeight = Number(link.match(/min-height:\s*(\d+)px/)?.[1]);

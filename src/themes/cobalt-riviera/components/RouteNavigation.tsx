@@ -4,6 +4,7 @@ import { useMemo } from "react";
 
 import type { ThemeSectionKey } from "@/themes/section-contract";
 import { useActiveSection } from "@/themes/shared/use-active-section";
+import { useNavRailScroll } from "@/themes/shared/use-nav-rail-scroll";
 
 import { NavIcon } from "./NavIcon";
 
@@ -20,14 +21,15 @@ export function RouteNavigation({ items }: { items: RivieraRouteItem[] }) {
   }, [items]);
   const ids = useMemo(() => mountedItems.map((item) => item.id), [mountedItems]);
   const activeId = useActiveSection(ids);
+  const railRef = useNavRailScroll<HTMLUListElement>(activeId);
 
   if (mountedItems.length === 0) return null;
 
   return (
     <nav className="cr-route-nav" aria-label="Navigasi undangan">
-      <ul>
+      <ul ref={railRef}>
         {mountedItems.map((item) => (
-          <li key={item.id}>
+          <li key={item.id} data-nav-id={item.id}>
             <a href={`#${item.id}`} aria-current={activeId === item.id ? "location" : undefined}>
               <NavIcon section={item.section} className="cr-route-glyph" />
               <span className="cr-route-label">{item.label}</span>
