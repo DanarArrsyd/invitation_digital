@@ -101,7 +101,7 @@ end $$;
 update public.themes set
   tagline = ${q(demo.tagline)},
   description = ${q(demo.description)},
-  event_types = ${arr(["wedding"])},
+  event_types = ${arr(demo.eventTypes)},
   screenshot_paths = ${arr([1, 2, 3].map((n) => imagePath(demo.theme, `screen-${n}.jpg`)))},
   sort_order = ${demo.sortOrder},
   is_listed = true

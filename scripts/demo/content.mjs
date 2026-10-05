@@ -74,6 +74,8 @@ export const imagePath = (theme, file) => `/demo/${theme}/${file}`;
 
 const common = {
   type: "wedding",
+  /** Event types the catalogue lists the template under. */
+  eventTypes: ["wedding"],
   package_key: "grand",
   status: "published",
   opening_quote:
@@ -168,6 +170,7 @@ export const DEMOS = [
   {
     theme: "kelir-kencana",
     sortOrder: 5,
+    eventTypes: ["wedding", "engagement", "aqiqah", "birthday", "graduation"],
     tagline: "Pagelaran wayang di balik kelir emas.",
     description:
       "Pagelaran wayang kulit di balik kelir yang disinari blencong. Gunungan dicabut saat undangan dibuka, tokoh wayang mendampingi mempelai, dan tancep kayon menutup acara.\n\nCocok untuk pernikahan adat Jawa, tasyakuran, dan acara keluarga yang ingin bernuansa budaya.",
