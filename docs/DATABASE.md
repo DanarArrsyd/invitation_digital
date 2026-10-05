@@ -539,6 +539,12 @@ ON wishes(invitation_id, is_visible);
 
 CREATE INDEX analytics_events_invitation_created_idx
 ON analytics_events(invitation_id, created_at);
+
+-- Foreign-key cover (20261005000003)
+CREATE INDEX analytics_events_guest_id_idx ON analytics_events(guest_id);
+CREATE INDEX invitations_created_by_idx ON invitations(created_by);
+CREATE INDEX rsvps_guest_id_idx ON rsvps(guest_id);
+CREATE INDEX wishes_guest_id_idx ON wishes(guest_id);
 ```
 
 The unique constraints on `invitations.slug`, `themes.slug`, and `guests.token` create useful indexes automatically.
@@ -552,6 +558,12 @@ Enable RLS on application tables.
 ### Public reads
 
 Public users may read only data required for published, non-expired invitations.
+
+The public read policies apply to `anon` only: signed-in users are admins
+who already read everything through the `*_admin_all` policies, and keeping
+both on `authenticated` made Postgres evaluate the published/expiry check on
+every admin read. Policies that compare to the current user wrap the call as
+`(select auth.uid())` so it runs once per statement.
 
 Where complex joins make direct public RLS cumbersome, prefer secure server-side queries using appropriately scoped server credentials rather than exposing unrestricted table access.
 

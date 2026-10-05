@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+import { TemurayaMark } from "@/components/brand/temuraya-mark";
 import { Card, CardContent } from "@/components/ui/card";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getCurrentAdmin } from "@/server/auth/current-admin";
 
 import { LoginForm } from "./LoginForm";
 
@@ -11,12 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminLoginPage() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
+  if (await getCurrentAdmin()) {
     redirect("/admin/dashboard");
   }
 
@@ -33,9 +29,7 @@ export default async function AdminLoginPage() {
         </div>
 
         <div className="relative flex items-center gap-3">
-          <span className="flex size-11 items-center justify-center border border-white/30 text-sm font-semibold tracking-[-0.03em]">
-            T
-          </span>
+          <TemurayaMark tone="light" className="h-11" />
           <div>
             <p className="text-sm font-medium">Temuraya</p>
             <p className="text-xs text-white/55">Ruang kerja pengelola</p>
@@ -62,9 +56,7 @@ export default async function AdminLoginPage() {
       <section className="flex min-h-svh items-center justify-center px-5 py-10 sm:px-10 lg:px-14">
         <div className="w-full max-w-md">
           <div className="mb-12 flex items-center gap-3 lg:hidden">
-            <span className="flex size-10 items-center justify-center border border-[#17201b]/20 text-sm font-semibold">
-              T
-            </span>
+            <TemurayaMark className="h-10" />
             <span className="text-sm font-medium">Temuraya</span>
           </div>
 

@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useState } from "react";
 
+import { isOptimizableImage } from "@/themes/shared/image-source";
+
 import { AtelierMark } from "./AtelierMark";
 
 export function AtelierImage({ src, alt, sizes, aspectRatio = "4 / 5", eager = false, className = "" }: {
@@ -30,7 +32,7 @@ export function AtelierImage({ src, alt, sizes, aspectRatio = "4 / 5", eager = f
           sizes={sizes}
           loading={eager ? "eager" : "lazy"}
           fetchPriority={eager ? "high" : undefined}
-          unoptimized={!src.startsWith("/") || src.startsWith("//")}
+          unoptimized={!isOptimizableImage(src)}
           onError={() => setFailedSource(src)}
         />
       )}

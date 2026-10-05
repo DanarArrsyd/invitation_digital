@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useState } from "react";
 
+import { isOptimizableImage } from "@/themes/shared/image-source";
+
 import { CeramicLine } from "./RivieraOrnaments";
 
 interface RivieraImageProps {
@@ -54,7 +56,7 @@ export function RivieraImage({
           sizes={sizes}
           loading={eager ? "eager" : "lazy"}
           fetchPriority={eager ? "high" : undefined}
-          unoptimized={!usableSource.startsWith("/") || usableSource.startsWith("//")}
+          unoptimized={!isOptimizableImage(usableSource)}
           onError={() => setFailedSource(usableSource)}
         />
       )}

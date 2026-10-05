@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { cn } from "@/lib/utils";
 
 import { BrandMark } from "./brand-mark";
@@ -26,14 +28,14 @@ export function PhoneMockup({
     >
       <div className="absolute top-2 left-1/2 z-10 h-4 w-16 -translate-x-1/2 rounded-full bg-tr-ink" aria-hidden="true" />
       {src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           src={src}
           alt={alt}
-          loading={priority ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : "auto"}
-          decoding="async"
-          className="h-full w-full rounded-[1.6rem] object-cover object-top"
+          fill
+          // The frame never renders wider than 17rem.
+          sizes="(min-width: 640px) 272px, 62vw"
+          preload={priority}
+          className="rounded-[1.6rem] object-cover object-top"
         />
       ) : (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded-[1.6rem] bg-tr-forest px-4 text-center">

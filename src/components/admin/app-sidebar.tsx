@@ -4,6 +4,7 @@ import { ArrowLeft, BadgePercent, ExternalLink, FileHeart, LayoutDashboard, Layo
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { TemurayaMark } from "@/components/brand/temuraya-mark";
 import {
   Sidebar,
   SidebarContent,
@@ -59,9 +60,7 @@ export function AppSidebar({
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
         <Link href="/admin/dashboard" onClick={closeOnMobile} className="flex items-center gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center border border-white/30 text-xs font-semibold tracking-[-0.03em] text-white">
-            T
-          </span>
+          <TemurayaMark tone="light" className="h-9 text-white" />
           <span className="min-w-0">
             <span className="block truncate text-sm font-medium text-white">Temuraya</span>
             <span className="block truncate text-xs text-white/55">Ruang kerja pengelola</span>

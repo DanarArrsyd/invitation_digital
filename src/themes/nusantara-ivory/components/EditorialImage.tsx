@@ -3,18 +3,9 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { BotanicalDivider } from "./Botanical";
+import { isOptimizableImage } from "@/themes/shared/image-source";
 
-/** Public URL prefix of the invitation media bucket (the next.config remote pattern). */
-function optimizablePrefix(): string | null {
-  try {
-    // Literal access so Next inlines it into the client bundle.
-    const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    return base ? `${base}/storage/v1/object/public/invitation-media/` : null;
-  } catch {
-    return null; // no `process` (plain Node/VM test harnesses)
-  }
-}
+import { BotanicalDivider } from "./Botanical";
 
 /**
  * Fills its positioned parent (the caller owns the aspect ratio, so there
@@ -38,7 +29,6 @@ export function EditorialImage({
   priority?: boolean;
 }) {
   const [failedSource, setFailedSource] = useState<string | null>(null);
-  const prefix = optimizablePrefix();
 
   if (failedSource === src) {
     return (
@@ -60,8 +50,8 @@ export function EditorialImage({
       fill
       sizes={sizes}
       className={className}
-      priority={priority}
-      unoptimized={!prefix || !src.startsWith(prefix)}
+      preload={priority}
+      unoptimized={!isOptimizableImage(src)}
       onError={() => setFailedSource(src)}
     />
   );
