@@ -6,6 +6,7 @@ import {
 } from "@/themes/shared/calendar";
 import { usableExternalUrl } from "@/themes/shared/external-url";
 import type { InvitationEvent } from "@/types/invitation";
+import { ExternalArrowIcon } from "@/themes/shared/action-icons";
 
 import { ChapterHeading } from "../components/ChapterHeading";
 import { Section } from "../components/Section";
@@ -64,7 +65,7 @@ export function EventsSection({
                 {event.address ? <p className="kk-programme-address">{event.address}</p> : null}
                 {mapUrl ? (
                   <a className="kk-text-link" href={mapUrl} target="_blank" rel="noopener noreferrer" aria-label={`Buka Maps untuk ${event.title}`}>
-                    Buka Maps <span aria-hidden="true">↗</span>
+                    Buka Maps <ExternalArrowIcon />
                   </a>
                 ) : null}
               </div>

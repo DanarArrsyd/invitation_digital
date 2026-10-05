@@ -514,6 +514,7 @@ export function ThemeStyles() {
         align-items: center;
         gap: .35rem 1rem;
       }
+      .cr-event-actions a .theme-action-icon { margin-left: .4em; }
       .cr-event-actions a {
         border: 0;
         border-bottom: 2px solid var(--cr-tangerine);

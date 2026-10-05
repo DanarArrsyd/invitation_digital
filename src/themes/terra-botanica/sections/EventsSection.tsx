@@ -6,6 +6,7 @@ import {
   type InvitationTimeZone,
 } from "@/themes/shared/calendar";
 import { usableExternalUrl } from "@/themes/shared/external-url";
+import { ExternalArrowIcon } from "@/themes/shared/action-icons";
 
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
@@ -40,7 +41,7 @@ export function EventsSection({ events, mapsEnabled, timeZone }: {
               <div className="tb-event-place">
                 {event.venueName ? <p className="tb-event-venue">{event.venueName}</p> : null}
                 {event.address ? <p className="tb-event-address">{event.address}</p> : null}
-                {mapUrl ? <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="tb-text-action" aria-label={`Buka Maps untuk ${event.title}`}>Buka Maps <span aria-hidden="true">↗</span></a> : null}
+                {mapUrl ? <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="tb-text-action" aria-label={`Buka Maps untuk ${event.title}`}>Buka Maps <ExternalArrowIcon /></a> : null}
               </div>
             </li>
           );
