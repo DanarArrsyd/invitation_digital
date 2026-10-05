@@ -134,3 +134,15 @@ test("search engines skip the admin and demo pages", () => {
   assert.deepEqual([...rules.rules.disallow], ["/admin", "/demo"]);
   assert.equal(rules.sitemap, "https://temuraya.com/sitemap.xml");
 });
+
+test("media paths that start with / are app files and skip the storage bucket", () => {
+  const storage = loadTs("lib/supabase/storage.ts", {
+    "./env": { getSupabaseUrl: () => "https://project.supabase.co" },
+  });
+  assert.equal(storage.getMediaPublicUrl("/demo/terra-botanica/cover.jpg"), "/demo/terra-botanica/cover.jpg");
+  assert.equal(
+    storage.getMediaPublicUrl("invitations/abc/cover/x.jpg"),
+    "https://project.supabase.co/storage/v1/object/public/invitation-media/invitations/abc/cover/x.jpg",
+  );
+  assert.equal(storage.getMediaPublicUrl(null), null);
+});

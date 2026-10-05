@@ -18,6 +18,15 @@ implementation plans remain the source of truth:
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-05 demo content: every template has a demo invitation (Grand,
+  3 events, 12 gallery photos, stories, gifts, 4 sample wishes, dress code)
+  with "Sample N" placeholder images in `public/demo/<theme>/` and real
+  theme screenshots `screen-1..3.jpg` for the catalogue. Source of truth:
+  `scripts/demo/content.mjs`; `node scripts/demo/images.mjs <chromium>`
+  redraws the placeholders, `node scripts/demo/build-seed.mjs` rewrites
+  `supabase/seed/demo-content.sql` (idempotent, replaces demo invitations
+  only). `getMediaPublicUrl` returns paths starting with "/" unchanged so
+  these static files work without Storage.
 - 2026-10-05 marketing site: `/` is the Temuraya landing (no longer a
   redirect to `/admin`), plus `/template`, `/template/[themeSlug]` and
   `/demo/[themeSlug]?paket=&to=`. Content is managed in admin "Situs
