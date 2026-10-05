@@ -715,3 +715,111 @@ and reduced motion shows the final sky, still waves and the postmark at rest
 while preserving every action. Empty, malformed, and disabled content must
 leave no dead route item or decorative gap, while controls remain at least
 48px and usable from 320px through desktop.
+
+---
+
+## 28. New Template Checklist (every future template)
+
+Rules learned while shipping Ivory, Terra, Midnight and Cobalt and the
+Temuraya catalogue (Oct 2026). A new template is not done until every item
+holds. Tests already enforce several of them; a red test means the template
+is incomplete, not that the test is wrong.
+
+### 28.1 Identity
+
+- One clear art direction with its own name and story (e.g. Terra "Herbarium
+  Cinta", Cobalt "Surat Cinta dari Mediterania"), written up in a spec under
+  `docs/superpowers/specs/` before code.
+- Its own type pairing (script + display + text), self-hosted from
+  `@fontsource/*` and registered in `src/themes/theme-fonts.ts` plus the
+  theme's `fonts.css`. Never `next/font/google` (build-time download).
+- Its own palette as CSS tokens with a theme prefix (`--ni-`, `--tb-`,
+  `--ma-`, `--cr-`). Text and active nav states meet AA contrast.
+- Motion is signature moments only (cover opener, one or two section
+  effects), built from CSS or the shared hooks (`use-in-view-once`,
+  `use-scroll-progress`). Respect `prefers-reduced-motion`; server markup and
+  the first client render must match.
+- Cultural references stay subtle (§3, guardrails in CLAUDE.md): no pasted
+  batik PNGs, neon, purple-blue gradients or dashboard cards.
+
+### 28.2 Data contract
+
+- The theme receives `PublicInvitation` only; no Supabase, no customer
+  hardcoding, no package key (the public payload must not reveal what the
+  couple bought).
+- Every optional section follows `invitation.features` and renders nothing
+  when its content is empty. Feature toggles are never removed per customer.
+- Copy follows `invitation.type`: wedding eyebrows ("The Wedding Of",
+  "Mempelai") only for weddings; other event types read naturally.
+- Section anchors use the theme prefix and these suffixes so nav, tests and
+  share links agree: `-beranda`, `-mempelai`, `-acara`, `-cerita`, `-galeri`,
+  `-livestream`, `-rsvp`, `-ucapan`, `-kado`.
+
+### 28.3 Navigation (see §12a)
+
+- Build candidates in page order, each guarded by its feature and content,
+  then `pickNavItems(candidates, invitation.navSections)`. Never cap or rank
+  items inside the theme.
+- Package tiers come from `src/lib/packages/nav-sections.ts`: Intimate 5,
+  Signature 7, Grand 9. Each tier keeps the one below. A Streaming stop
+  appears only on Grand, and only when an event has a usable livestream link
+  (`hasLivestreamLink`).
+- An icon for every `NavSectionKey` (TypeScript requires the full record),
+  drawn in the theme's own line language, `aria-hidden`, label always
+  visible.
+- Phone bar: up to five equal items; with more, `flex: 1 0 calc(100% / 5.4)`
+  inside a sideways-scrolling list (hidden scrollbar, scroll-snap), items
+  carry `data-nav-id`, and `useNavRailScroll` keeps the active item in view.
+  The page never scrolls horizontally at 320px.
+- Tablet/desktop: a centred bar or side rail that shows every stop.
+
+### 28.4 Media and performance
+
+- All photos go through `next/image` with `fill` + accurate `sizes`, and
+  `unoptimized={!isOptimizableImage(src)}`, so bucket uploads and `/demo`
+  files are resized per device. Never ship originals.
+- Hero photo 3:4 on phones with the title block first; below-the-fold media
+  lazy; a failed image keeps the composition with a themed placeholder.
+- No JS animation libraries for trivial effects; client components only for
+  interaction (cover, audio, forms, copy, nav).
+
+### 28.5 Guest interaction
+
+- Cover: no full-screen photo on the initial cover for Ivory-style themes,
+  guest name when present, an explicit open button; music only starts after
+  that tap and keeps a visible play/pause control.
+- RSVP and wishes use the shared hooks (`use-public-forms`) and put
+  `<TurnstileWidget />` inside the `<form>`. It renders explicitly on mount
+  and resets after each submit, so forms that mount late (after the cover,
+  on package switch) still send a token. All messages are Indonesian; no raw
+  validation text ever reaches a guest.
+- Demo invitations accept RSVP/wishes without writing and without Turnstile.
+
+### 28.6 Catalogue, demo and sharing
+
+- Database: an idempotent migration adding the `themes` row (slug, name,
+  tagline, description, `event_types`, `sort_order`, `is_listed`), with a
+  rollout/rollback note. Never add a foreign key from `themes` to
+  `invitations`.
+- Demo: add the theme to `scripts/demo/content.mjs` (demo copy and
+  `PALETTES`), run `node scripts/demo/images.mjs <chromium>` for the
+  "Sample N" photos and `node scripts/demo/build-seed.mjs` for the seed SQL.
+- Catalogue screenshots `public/demo/<theme>/screen-1..3.jpg`: 390×844
+  viewport at 2× (780×1688): cover, opened hero, one signature section.
+- Share banner: add the theme to `THEME_SHARE_STYLES` in
+  `src/lib/og/share-styles.ts` (background, panel, ink, muted, accent,
+  script). If the script face is new, copy its static latin `.woff` into
+  `assets/og-fonts/` and add it to `SCRIPT_FILES` in `src/lib/og/assets.ts`.
+  Without an entry the theme falls back to the Temuraya banner, and a test
+  fails.
+
+### 28.7 QA before review
+
+- Widths 320, 375, 768 and 1280, for Intimate, Signature and Grand: no
+  horizontal overflow, nav stops match the tier, labels never cut, items at
+  least 52px tall on phones.
+- Reduced motion, missing optional content, long names and venues, guest
+  and no-guest links.
+- `npm test`, lint, TypeScript, and a Vercel preview build. After merge,
+  marketing and demo data caches refresh within 10 minutes (`revalidate
+  600`); judge cached pages after that.

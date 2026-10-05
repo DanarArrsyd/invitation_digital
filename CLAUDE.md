@@ -11,10 +11,18 @@ authoritative for requirements.
 
 The theme identity redesign is complete and live: Ivory (PR #14), Terra
 (PR #15, `7750e29`), Midnight (PR #16, `202c787`), Ivory melati fix (PR #17,
-`13d9150`) and Cobalt (PR #18, `d2666b7`). Branch `design/terra-identity-at0kh3`
-is reset to `main` after each merge. Deferred: Midnight's gold-line
-chandelier. Ask the user before merging any PR
+`13d9150`) and Cobalt (PR #18, `d2666b7`). The Temuraya launch work (PRs
+#19–#26: cleanup, admin redesign, brand, marketing site, demos, performance,
+logo, share banners, nav tiers, Turnstile fix) is live; its checkpoint and
+owner to-dos are in `docs/PROJECT_MEMORY.md` "Checkpoint — 5 October 2026".
+Branch `design/terra-identity-at0kh3` is reset to `main` after each merge.
+Deferred: Midnight's gold-line chandelier. Ask the user before merging any PR
 (merges to `main` deploy production).
+
+Before building any new template, follow `docs/DESIGN.md` §28 (New Template
+Checklist): nav tiers per package, images through `isOptimizableImage`,
+Turnstile inside forms, catalogue row, demo content and screenshots, share
+banner style, and the QA matrix.
 
 ## Project Overview
 
