@@ -5,6 +5,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-tr-forest: var(--tr-forest);
+  --color-tr-forest-soft: var(--tr-forest-soft);
+  --color-tr-paper: var(--tr-paper);
+  --color-tr-ink: var(--tr-ink);
+  --color-tr-sage: var(--tr-sage);
+  --color-tr-muted: var(--tr-muted);
+  --color-tr-mist: var(--tr-mist);
+  --color-tr-line: var(--tr-line);
+  --color-tr-card: var(--tr-card);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -48,6 +57,22 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * Temuraya brand tokens (login, admin and marketing site). Public invitation
+ * themes never use these; each theme owns its palette.
+ */
+:root {
+  --tr-forest: #1f2b25;
+  --tr-forest-soft: #34443b;
+  --tr-paper: #f4f5f1;
+  --tr-ink: #17201b;
+  --tr-sage: #53634e;
+  --tr-muted: #5b645e;
+  --tr-mist: #e7ebe3;
+  --tr-line: #dde1d9;
+  --tr-card: #ffffff;
 }
 
 :root {
@@ -94,25 +119,25 @@
  * (which never render [data-admin-theme]) keep the defaults.
  */
 :root:has([data-admin-theme]) {
-  --background: #f4f5f1;
-  --foreground: #17201b;
-  --card: #ffffff;
-  --card-foreground: #17201b;
-  --popover: #ffffff;
-  --popover-foreground: #17201b;
-  --primary: #1f2b25;
-  --primary-foreground: #f4f5f1;
-  --secondary: #e7ebe3;
-  --secondary-foreground: #1f2b25;
+  --background: var(--tr-paper);
+  --foreground: var(--tr-ink);
+  --card: var(--tr-card);
+  --card-foreground: var(--tr-ink);
+  --popover: var(--tr-card);
+  --popover-foreground: var(--tr-ink);
+  --primary: var(--tr-forest);
+  --primary-foreground: var(--tr-paper);
+  --secondary: var(--tr-mist);
+  --secondary-foreground: var(--tr-forest);
   --muted: #eceee8;
-  --muted-foreground: #5b645e;
-  --accent: #e7ebe3;
-  --accent-foreground: #17201b;
-  --border: #dde1d9;
+  --muted-foreground: var(--tr-muted);
+  --accent: var(--tr-mist);
+  --accent-foreground: var(--tr-ink);
+  --border: var(--tr-line);
   --input: #d2d7ce;
-  --ring: #53634e;
+  --ring: var(--tr-sage);
   --radius: 0.75rem;
-  --sidebar: #1f2b25;
+  --sidebar: var(--tr-forest);
   --sidebar-foreground: #dfe4dc;
   --sidebar-primary: #f4f5f1;
   --sidebar-primary-foreground: #1f2b25;
