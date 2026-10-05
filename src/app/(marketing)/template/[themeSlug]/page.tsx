@@ -9,6 +9,7 @@ import { PhoneMockup } from "@/components/marketing/phone-mockup";
 import { mk } from "@/components/marketing/styles";
 import { TemplateCard } from "@/components/marketing/template-card";
 import { EVENT_TYPE_LABELS } from "@/lib/marketing/event-types";
+import { shareMetadata } from "@/lib/marketing/share-metadata";
 import {
   getListedTemplate,
   getListedTemplates,
@@ -23,10 +24,12 @@ type Params = { params: Promise<{ themeSlug: string }> };
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const template = await getListedTemplate((await params).themeSlug);
   if (!template) return { title: "Template tidak ditemukan" };
+  const description =
+    template.tagline ?? template.description ?? `Template undangan digital ${template.name} dari Temuraya.`;
   return {
     title: `Template ${template.name}`,
-    description: template.tagline ?? template.description ?? `Template undangan digital ${template.name} dari Temuraya.`,
-    openGraph: template.coverUrl ? { images: [{ url: template.coverUrl }] } : undefined,
+    description,
+    ...shareMetadata(`Template ${template.name} | Temuraya`, description),
   };
 }
 

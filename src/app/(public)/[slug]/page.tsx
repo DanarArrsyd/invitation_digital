@@ -38,7 +38,7 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       locale: "id_ID",
-      siteName: "Undangan Digital",
+      siteName: "Temuraya",
       title: share.title,
       description: share.description,
     },

@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useState } from "react";
+
+import { isOptimizableImage } from "@/themes/shared/image-source";
 import { Botanical } from "./Botanical";
 
 export function EditorialImage({ src, alt, sizes, aspectRatio = "4 / 5", eager = false, className = "" }: {
@@ -29,7 +31,7 @@ export function EditorialImage({ src, alt, sizes, aspectRatio = "4 / 5", eager =
           loading={eager ? "eager" : "lazy"}
           fetchPriority={eager ? "high" : undefined}
           // Remote storage retains its existing delivery until an optimizer host is configured.
-          unoptimized={!src.startsWith("/") || src.startsWith("//")}
+          unoptimized={!isOptimizableImage(src)}
           onError={() => setFailedSource(src)}
         />
       )}

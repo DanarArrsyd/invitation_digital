@@ -1,10 +1,17 @@
+import { EVENT_TYPE_LABELS, isEventType } from "@/lib/marketing/event-types";
 import { getCoupleDisplayName } from "@/lib/utils/coupleName";
 import type { PublicInvitation } from "@/types/invitation";
 
 type ShareInvitation = Pick<
   PublicInvitation,
   "title" | "eventDate" | "venueSummary" | "people" | "media"
->;
+> &
+  Partial<Pick<PublicInvitation, "type">>;
+
+/** "Undangan Pernikahan", "Undangan Aqiqah", …; weddings when the type is unknown. */
+export function getInvitationEyebrow(type: string | undefined): string {
+  return `Undangan ${isEventType(type) ? EVENT_TYPE_LABELS[type] : EVENT_TYPE_LABELS.wedding}`;
+}
 
 export interface InvitationShareData {
   displayName: string;
@@ -54,6 +61,14 @@ function formatEventDate(value: string | null): string | null {
   }).format(date);
 }
 
+/** Avoids "Undangan Aqiqah Aqiqah Raka" when the title already names the event. */
+function shareTitle(eyebrow: string, displayName: string): string {
+  const name = displayName.toLowerCase();
+  if (name.startsWith("undangan")) return displayName;
+  const eventLabel = eyebrow.slice("Undangan ".length).toLowerCase();
+  return name.includes(eventLabel) ? `Undangan ${displayName}` : `${eyebrow} ${displayName}`;
+}
+
 export function getInvitationShareData(invitation: ShareInvitation): InvitationShareData {
   const displayName = getCoupleDisplayName(invitation.people, invitation.title);
   const bride = invitation.people.find((person) => person.role === "bride");
@@ -70,7 +85,7 @@ export function getInvitationShareData(invitation: ShareInvitation): InvitationS
     displayName,
     primaryName,
     secondaryName,
-    title: `Undangan Pernikahan ${displayName}`,
+    title: shareTitle(getInvitationEyebrow(invitation.type), displayName),
     description: detail
       ? `${displayName} mengundang Anda ${detail}.`
       : `${displayName} mengundang Anda untuk merayakan hari bahagia mereka.`,

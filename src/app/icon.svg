@@ -1,6 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#2B2520"/>
-  <path d="M17 47V29c0-9 6.7-16 15-16s15 7 15 16v18" fill="none" stroke="#A7895E" stroke-width="1.5"/>
-  <path d="M21 47h22" stroke="#A7895E" stroke-width="1.5"/>
-  <text x="32" y="38" fill="#FFFDF8" font-family="Georgia, serif" font-size="16" text-anchor="middle">R&amp;F</text>
+  <rect width="64" height="64" rx="15" fill="#1f2b25"/>
+  <g transform="translate(0 3)">
+  <path d="M13.5 51V33a18.5 18.5 0 0 1 37 0v18" fill="none" stroke="#f4f5f1" stroke-opacity=".5" stroke-width="1.8"/>
+  <path d="M20 51V33a12 12 0 0 1 24 0v18" fill="none" stroke="#f4f5f1" stroke-width="3.2"/>
+  <path d="M25.5 34.5h13M32 34.5V51" fill="none" stroke="#f4f5f1" stroke-width="3.2"/>
+  <path d="M32 5.5l2.6 3.9L32 13.3l-2.6-3.9z" fill="#d6c493"/>
+  </g>
 </svg>

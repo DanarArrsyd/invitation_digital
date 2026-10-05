@@ -26,7 +26,10 @@ aqiqah, graduations, reunions, corporate events), so never brand it as
 wedding-only. Target domains: `temuraya.com` (available on 2026-10-05,
 not yet purchased) and `temuraya.id` (check with a PANDI registrar).
 Trademark check at PDKI is still pending. The admin UI (login, sidebar,
-metadata) already uses "Temuraya" with a "T" monogram.
+metadata) already uses "Temuraya" with the gapura mark
+(`src/components/brand/temuraya-mark.tsx`, a double arch framing a T).
+Shared links render banners from `src/lib/og/`; when adding a theme, add its
+banner colours to `src/lib/og/share-styles.ts`.
 
 The public marketing site (landing `/`, `/template`, `/template/[themeSlug]`,
 `/demo/[themeSlug]`) shares the forest/paper brand tokens (`--tr-*` in

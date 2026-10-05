@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { MobileOrderBar } from "@/components/marketing/mobile-order-bar";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { shareMetadata } from "@/lib/marketing/share-metadata";
 import { getSiteSettings } from "@/server/marketing/queries";
 
 export const metadata: Metadata = {
@@ -12,6 +13,10 @@ export const metadata: Metadata = {
   },
   description:
     "Undangan digital dengan nama tamu personal, RSVP, ucapan, musik, dan peta lokasi. Pilih template, lihat demo, pesan lewat WhatsApp.",
+  ...shareMetadata(
+    "Temuraya | Undangan digital untuk setiap perayaan",
+    "Undangan digital dengan nama tamu personal, RSVP, ucapan, musik, dan peta lokasi. Pilih template, lihat demo, pesan lewat WhatsApp.",
+  ),
 };
 
 export default async function MarketingLayout({ children }: { children: React.ReactNode }) {

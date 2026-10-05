@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: "Temuraya",
   description: "Undangan digital untuk setiap acara.",
+  applicationName: "Temuraya",
+  openGraph: { type: "website", locale: "id_ID", siteName: "Temuraya" },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

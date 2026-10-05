@@ -18,6 +18,27 @@ implementation plans remain the source of truth:
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-05 share banners: every shared link shows a 1200×630 banner.
+  Invitation links (`/[slug]`) use the invitation's theme colours, names,
+  date, venue and cover; `/template/[slug]` and `/demo/[slug]` show the
+  template's screenshots; `/template` shows the catalogue; everything else
+  uses the static `src/app/opengraph-image.png`. Kit: `src/lib/og/`
+  (share-styles, banners, assets with sharp re-encoding so WebP uploads
+  work). Fonts are static woff copies in `assets/og-fonts/`. A new theme
+  needs an entry in `src/lib/og/share-styles.ts` (a test enforces it);
+  without one it falls back to the Temuraya style.
+- 2026-10-05 performance + logo: the brand mark is the "gapura" (double
+  arch framing a T, brass star at the apex), component
+  `src/components/brand/temuraya-mark.tsx`; `node scripts/brand/render-icons.mjs
+  <chromium>` regenerates `src/app/icon.svg`, `apple-icon.png` and the site
+  `opengraph-image.png`. Tokens `--tr-brass` / `--tr-brass-soft`. Perf rules:
+  the proxy skips marketing routes and only refreshes Supabase auth under
+  `/admin` (public invitations just get the `session_id` cookie); admin auth
+  goes through the request-cached `getCurrentAdmin()` (getClaims), never
+  separate `getUser()` calls per layout; admin has `loading.tsx` skeletons;
+  theme images use `isOptimizableImage()` so bucket uploads are resized by
+  next/image (three themes used to ship originals). Migration
+  20261005000003 adds the FK indexes and scopes public read policies to anon.
 - 2026-10-05 demo content: every template has a demo invitation (Grand,
   3 events, 12 gallery photos, stories, gifts, 4 sample wishes, dress code)
   with "Sample N" placeholder images in `public/demo/<theme>/` and real

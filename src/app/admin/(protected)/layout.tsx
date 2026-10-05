@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { ToastListener } from "@/components/admin/toast-listener";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getCurrentAdmin } from "@/server/auth/current-admin";
 
 /**
  * Auth gate for every signed-in admin route. Chrome lives one level down in
@@ -14,12 +14,9 @@ export default async function ProtectedAdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const admin = await getCurrentAdmin();
 
-  if (!user) {
+  if (!admin) {
     redirect("/admin/login");
   }
 

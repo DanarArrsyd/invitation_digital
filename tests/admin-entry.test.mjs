@@ -68,13 +68,10 @@ test("signed-out operators receive a semantic admin login gateway", async () => 
       CardHeader: "div",
       CardTitle: "div",
     },
-    "@/lib/supabase/server": {
-      createSupabaseServerClient: async () => ({
-        auth: {
-          getUser: async () => ({ data: { user: null } }),
-        },
-      }),
+    "@/components/brand/temuraya-mark": {
+      TemurayaMark: () => nodeRequire("react").createElement("svg", { "aria-hidden": "true" }),
     },
+    "@/server/auth/current-admin": { getCurrentAdmin: async () => null },
     "./LoginForm": {
       LoginForm: () => nodeRequire("react").createElement("form", { "aria-label": "Form masuk admin" }),
     },
@@ -86,6 +83,7 @@ test("signed-out operators receive a semantic admin login gateway", async () => 
   assert.match(html, /<h1[^>]*>Masuk untuk mengelola undangan<\/h1>/);
   assert.match(html, /aria-label="Form masuk admin"/);
   assert.match(html, /Akses terbatas untuk pengelola/);
+  assert.doesNotMatch(html, />\s*T\s*</, "the gapura mark replaced the letter monogram");
 });
 
 test("login form exposes a named, localized credential flow", () => {

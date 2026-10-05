@@ -22,6 +22,12 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: supabaseMediaPattern(),
   },
+  // Share banners (src/lib/og) read their fonts and the demo screenshots
+  // from disk at runtime; ship them with the functions that render them.
+  outputFileTracingIncludes: {
+    "/**/opengraph-image*": ["./assets/og-fonts/*.woff", "./public/demo/*/cover.jpg", "./public/demo/*/screen-*.jpg"],
+    "/**/twitter-image*": ["./assets/og-fonts/*.woff", "./public/demo/*/cover.jpg"],
+  },
 };
 
 export default nextConfig;

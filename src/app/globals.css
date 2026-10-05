@@ -14,6 +14,8 @@
   --color-tr-mist: var(--tr-mist);
   --color-tr-line: var(--tr-line);
   --color-tr-card: var(--tr-card);
+  --color-tr-brass: var(--tr-brass);
+  --color-tr-brass-soft: var(--tr-brass-soft);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -73,6 +75,8 @@
   --tr-mist: #e7ebe3;
   --tr-line: #dde1d9;
   --tr-card: #ffffff;
+  --tr-brass: #a08552;
+  --tr-brass-soft: #d6c493;
 }
 
 :root {
