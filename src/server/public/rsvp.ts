@@ -4,7 +4,7 @@ import { getSessionId } from "@/lib/analytics/session";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sanitizePlainText } from "@/lib/security/sanitize";
 import { verifyTurnstileToken } from "@/lib/turnstile/verify";
-import { publicRsvpSchema } from "@/lib/validation/public-rsvp";
+import { publicRsvpSchema, TURNSTILE_PENDING_MESSAGE } from "@/lib/validation/public-rsvp";
 import { trackEvent } from "./analytics";
 
 export interface SubmitRsvpResult {
@@ -34,6 +34,10 @@ export async function submitRsvp(input: unknown): Promise<SubmitRsvpResult> {
   // Demos show the real confirmation so visitors see the full experience,
   // but nothing is written.
   if (invitation?.is_demo) return { ok: true };
+
+  if (!turnstileToken) {
+    return { ok: false, error: TURNSTILE_PENDING_MESSAGE };
+  }
 
   const verified = await verifyTurnstileToken(turnstileToken);
   if (!verified) {

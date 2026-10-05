@@ -5,7 +5,7 @@ import { isPackageKey, PACKAGE_DEFINITIONS } from "@/lib/packages/entitlements";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sanitizePlainText } from "@/lib/security/sanitize";
 import { verifyTurnstileToken } from "@/lib/turnstile/verify";
-import { publicWishSchema } from "@/lib/validation/public-wish";
+import { publicWishSchema, TURNSTILE_PENDING_MESSAGE } from "@/lib/validation/public-wish";
 import { trackEvent } from "./analytics";
 
 export interface SubmitWishResult {
@@ -35,6 +35,10 @@ export async function submitWish(input: unknown): Promise<SubmitWishResult> {
   // Demos show the real confirmation so visitors see the full experience,
   // but nothing is written.
   if (invitation?.is_demo) return { ok: true };
+
+  if (!turnstileToken) {
+    return { ok: false, error: TURNSTILE_PENDING_MESSAGE };
+  }
 
   const verified = await verifyTurnstileToken(turnstileToken);
   if (!verified) {
