@@ -655,4 +655,6 @@ A new theme should ideally require:
 2. theme components;
 3. optional theme-specific settings.
 
-It must not require database duplication.
+It must not require database duplication. The complete per-template
+checklist (catalogue row, demo content, share banner, nav tiers, QA) lives in
+`docs/DESIGN.md` §28.

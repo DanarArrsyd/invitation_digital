@@ -134,6 +134,9 @@ When adding a theme:
 6. Test all optional states.
 ```
 
+Then work through the full checklist in `docs/DESIGN.md` §28 (nav tiers,
+images, forms, catalogue row, demo content, screenshots, share banner, QA).
+
 ---
 
 ## Caveman Communication Mode

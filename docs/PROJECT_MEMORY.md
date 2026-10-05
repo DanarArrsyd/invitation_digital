@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 3 October 2026 (Asia/Jakarta)
+Last updated: 5 October 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -15,9 +15,64 @@ implementation plans remain the source of truth:
 - `docs/superpowers/specs/2026-10-01-cobalt-riviera-theme-design.md`
 - `docs/superpowers/plans/2026-10-01-cobalt-riviera-theme.md`
 
+## Checkpoint — 5 October 2026 (Temuraya launch session)
+
+Merged to `main` and deployed to production in this order (each merge
+approved by the owner; branch `design/terra-identity-at0kh3` reset to `main`
+after every merge):
+
+| PR | What |
+|---|---|
+| #19 | Database cleared of demo customer data (themes and admin kept) |
+| #20 | Admin redesign (forest/paper shell, dashboard, invitation list) |
+| #21 | Brand renamed to Temuraya |
+| #22 | Marketing site: landing, `/template`, `/template/[slug]`, `/demo/[slug]`, admin "Situs Temuraya" CMS |
+| #23 | Demo invitation for every template and package, "Sample N" images, catalogue screenshots |
+| #24 | Performance pass, gapura logo and icons, share banners (OG images) |
+| #25 | Bottom nav tiered per package (Intimate 5 / Signature 7 / Grand 9) |
+| #26 | Turnstile explicit render; demos need no token; Indonesian form errors |
+
+Rules for future templates are collected in `docs/DESIGN.md` §28 (New
+Template Checklist). Read it before starting a template.
+
+Owner to-do (outside the repo):
+
+- Delete the empty invitation `112e7d3e-4492-4b08-996a-ad7530638b94`.
+- Run `supabase/migrations/20261005000002_drop_theme_demo_column.sql` in the
+  SQL editor (destructive DDL; the MCP tool needs the owner's confirmation,
+  so it is handed over as SQL).
+- In Cloudflare Turnstile, make sure the widget's hostnames include
+  `invitation-digital-delta.vercel.app` (and `temuraya.com` later).
+- Buy `temuraya.com` / `temuraya.id`, then set `NEXT_PUBLIC_SITE_URL`;
+  PDKI trademark check.
+- Optional: enable asymmetric JWT signing keys in Supabase so admin
+  `getClaims()` verifies locally.
+
+Working notes:
+
+- Destructive SQL (DELETE/DROP/TRUNCATE) through the Supabase MCP waits for
+  owner confirmation and times out; give the owner the SQL instead.
+- This sandbox cannot reach Supabase, Vercel or Cloudflare over plain HTTP:
+  local `next build` fails at prerender (code and types still check), use
+  the Vercel MCP (`web_fetch_vercel_url`) to inspect deployments, and stub
+  `window.turnstile` in Playwright to test forms.
+- Marketing and demo data use `unstable_cache` (`revalidate 600`). Right
+  after a deploy, pages can show data cached by the previous build for up to
+  10 minutes; Vercel's tag invalidation API does not reach this cache.
+- Screenshots and QA fixtures go under `src/app/qa-*` (listed in
+  `.git/info/exclude`) and are deleted afterwards; run `npx next typegen`
+  (or remove `.next/dev/types`) after deleting a route.
+
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-05 forms: `TurnstileWidget` loads `api.js?render=explicit`, renders
+  on every mount, removes on unmount and resets after each submit (tokens are
+  single-use). Auto-render only scanned the first page load, so forms that
+  mounted later sent no token and guests saw a raw Zod message. The token is
+  checked after the demo short-circuit; a missing token on a real invitation
+  returns "Verifikasi keamanan belum selesai. Tunggu sebentar, lalu kirim
+  lagi."
 - 2026-10-05 nav per package: the bottom bar no longer caps at five by
   priority (that dropped Mempelai on Signature/Grand). Stops are tiered per
   package in `src/lib/packages/nav-sections.ts`: Intimate 5 (Beranda,
@@ -64,16 +119,17 @@ implementation plans remain the source of truth:
   Never add a foreign key from `themes` to `invitations` (PostgREST embed
   ambiguity broke production for a few minutes on 2026-10-05). Spec and
   plan: `docs/superpowers/{specs,plans}/2026-10-05-temuraya-landing*.md`.
-  Owner still to fill: WhatsApp number, prices, demo invitations with Canva
-  photos, screenshots/taglines; and approve migration
-  `20261005000002_drop_theme_demo_column.sql` in production.
+  Demo invitations, screenshots and taglines were filled in #23 (owner may
+  later swap the "Sample N" images for Canva photos). Owner still to run
+  migration `20261005000002_drop_theme_demo_column.sql` in production.
 - 2026-10-05 brand: the platform is named **Temuraya** (temu raya). Owner
   chose it for being event-agnostic. `temuraya.com` and `temuraya.co` were
   available (Vercel registry check), `.id` / `.co.id` unchecked (`.co.id`
   needs business documents). Alternatives considered: Hadiraya, Jumparaya,
   Sambutraya, Hadirin. Known risk: loose association with the Temu app.
-  Admin login, sidebar and metadata renamed to Temuraya with a "T"
-  monogram. Pending: buy domain, PDKI trademark check.
+  Admin login, sidebar and metadata renamed to Temuraya; the "T" monogram
+  was replaced by the gapura mark in #24. Pending: buy domain, PDKI
+  trademark check.
 - 2026-10-05 admin redesign: the admin shell follows the login page palette
   (forest #1f2b25, paper #f4f5f1, ink #17201b, sage #53634e) through a
   `:root:has([data-admin-theme])` token override in `globals.css`, so shadcn
