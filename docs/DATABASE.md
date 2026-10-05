@@ -62,10 +62,19 @@ themes
 - category text NOT NULL
 - description text
 - preview_image_path text
-- is_active boolean DEFAULT true
+- is_active boolean DEFAULT true        -- admin theme picker
+- tagline text                          -- marketing card line
+- event_types text[] DEFAULT '{wedding}' -- catalogue filter, values from invitations.type
+- screenshot_paths text[] DEFAULT '{}'  -- marketing screenshots, first = cover
+- is_listed boolean DEFAULT false       -- shown on the marketing site
+- sort_order int DEFAULT 0
 - created_at timestamptz
 - updated_at timestamptz
 ```
+
+Never add a foreign key from `themes` back to `invitations`: a second link
+between the two tables makes PostgREST embeds such as `theme:themes(*)`
+ambiguous and breaks every invitation query (happened on 2026-10-05).
 
 Pilot theme:
 
@@ -371,6 +380,46 @@ Admin can:
 
 ---
 
+### Demo invitations
+
+`invitations.is_demo boolean DEFAULT false`, with a unique partial index on
+`(theme_id) WHERE is_demo`: at most one demo per theme. A demo invitation is
+edited in the admin like any other, rendered only at `/demo/[themeSlug]`,
+never reachable at `/[slug]`, never expires, and rejects RSVP, wishes and
+analytics writes. Dashboards and the invitation list exclude demos.
+
+---
+
+### package_offers
+
+Commercial fields per package; entitlements stay in code
+(`src/lib/packages/entitlements.ts`).
+
+```sql
+package_offers
+- package_key text PK CHECK (intimate | signature | grand)
+- price_idr integer NULL CHECK (>= 0)  -- NULL shows "Tanya harga"
+- price_note text
+- is_visible boolean DEFAULT true
+- updated_at timestamptz
+```
+
+---
+
+### site_settings
+
+Single row (`id boolean PK DEFAULT true CHECK (id)`).
+
+```sql
+site_settings
+- whatsapp_number text NULL CHECK (E.164 digits, no +)
+- whatsapp_message text NOT NULL  -- placeholders {template} {paket} {acara}
+- instagram_url text
+- updated_at timestamptz
+```
+
+---
+
 ### analytics_events
 
 Keep analytics minimal.
@@ -519,6 +568,13 @@ Browser
 → Zod validation
 → controlled insert
 ```
+
+### Marketing site
+
+`package_offers`, `site_settings` and `themes` rows with `is_listed = true`
+are readable by `anon`; only authenticated admins write them. Demo
+invitation content is read server-side with the service client, like the
+public invitation loader.
 
 ### Admin
 

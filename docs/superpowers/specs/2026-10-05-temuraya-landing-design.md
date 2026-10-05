@@ -167,11 +167,16 @@ theme nav moves up by the bar height in demo mode).
 | `tagline` | `text` | One line on cards |
 | `event_types` | `text[] not null default '{wedding}'` | Catalogue filter; values from the invitation `type` check |
 | `screenshot_paths` | `text[] not null default '{}'` | Detail page gallery, phone mockups (first = cover) |
-| `demo_invitation_id` | `uuid null references invitations(id) on delete set null` | Which invitation `/demo/[slug]` renders |
 | `is_listed` | `boolean not null default false` | Shown on the marketing site (separate from `is_active`, which gates the admin theme picker) |
 | `sort_order` | `int not null default 0` | Catalogue order |
 
 `description` and `preview_image_path` already exist and are reused.
+
+The demo of a theme is the invitation with `is_demo = true` and that
+`theme_id` (unique partial index, one per theme). There is deliberately no
+`themes.demo_invitation_id`: a second foreign key between the two tables
+makes PostgREST embeds such as `theme:themes(*)` ambiguous (this broke
+production briefly on 2026-10-05 before the key was dropped).
 
 ### 7.3 `package_offers`
 
