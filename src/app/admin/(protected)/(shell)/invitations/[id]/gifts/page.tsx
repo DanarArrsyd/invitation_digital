@@ -3,7 +3,16 @@ import { notFound } from "next/navigation";
 import { ConfirmDeleteForm } from "@/components/admin/confirm-delete-form";
 import { FormField } from "@/components/admin/form-field";
 import { FormMessage } from "@/components/admin/form-message";
+import {
+  FieldGrid,
+  Panel,
+  PanelBody,
+  PanelFooter,
+  PanelHeader,
+  SettingsSection,
+} from "@/components/admin/settings-section";
 import { SubmitButton } from "@/components/admin/submit-button";
+import { UnsavedHint } from "@/components/admin/unsaved-hint";
 import { Input } from "@/components/ui/input";
 import { getInvitationDetail } from "@/server/invitations/queries";
 
@@ -60,48 +69,62 @@ export default async function GiftsPage({
   const { invitation, gifts } = detail;
 
   return (
-    <div className="flex flex-col gap-6">
-      <FormMessage tone="error">{error}</FormMessage>
+    <div className="flex flex-col">
+      <FormMessage tone="error" className="mb-2">{error}</FormMessage>
 
-      {gifts.map((gift) => (
-        <section key={gift.id} className="rounded-lg border border-border bg-card p-4">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="min-w-0 truncate text-sm font-medium text-foreground">
-              {gift.provider_name} · {gift.account_name}
-            </h2>
-            <ConfirmDeleteForm
-              action={deleteGiftAccountAction}
-              hiddenFields={{ id: gift.id, invitationId: invitation.id }}
-              title="Hapus rekening ini?"
-              description={`Rekening ${gift.provider_name} a.n. ${gift.account_name} akan hilang dari undangan. Tindakan ini tidak bisa dibatalkan.`}
-            />
-          </div>
-
-          <form action={upsertGiftAccountAction} className="grid gap-3 sm:grid-cols-2">
-            <input type="hidden" name="id" value={gift.id} />
-            <input type="hidden" name="invitationId" value={invitation.id} />
-            <input type="hidden" name="sortOrder" value={gift.sort_order} />
-
-            <GiftFields idPrefix={`gift-${gift.id}`} gift={gift} />
-
-            <SubmitButton className="w-fit sm:col-span-2">Simpan</SubmitButton>
-          </form>
-        </section>
-      ))}
-
-      <form
-        action={upsertGiftAccountAction}
-        className="grid max-w-lg gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-2"
+      <SettingsSection
+        id="gifts"
+        title="Rekening hadiah"
+        description="Tampil di bagian Tanda Kasih dengan tombol salin nomor. Bisa rekening bank atau dompet digital."
       >
-        <input type="hidden" name="invitationId" value={invitation.id} />
-        <input type="hidden" name="sortOrder" value={gifts.length} />
+        {gifts.map((gift, index) => (
+          <Panel key={gift.id}>
+            <PanelHeader
+              index={index + 1}
+              title={gift.provider_name}
+              meta={`a.n. ${gift.account_name} · ${gift.account_number}`}
+              actions={
+                <ConfirmDeleteForm
+                  action={deleteGiftAccountAction}
+                  hiddenFields={{ id: gift.id, invitationId: invitation.id }}
+                  title="Hapus rekening ini?"
+                  description={`Rekening ${gift.provider_name} a.n. ${gift.account_name} akan hilang dari undangan. Tindakan ini tidak bisa dibatalkan.`}
+                />
+              }
+            />
+            <form action={upsertGiftAccountAction}>
+              <input type="hidden" name="id" value={gift.id} />
+              <input type="hidden" name="invitationId" value={invitation.id} />
+              <input type="hidden" name="sortOrder" value={gift.sort_order} />
+              <PanelBody>
+                <FieldGrid>
+                  <GiftFields idPrefix={`gift-${gift.id}`} gift={gift} />
+                </FieldGrid>
+              </PanelBody>
+              <PanelFooter>
+                <UnsavedHint />
+                <SubmitButton>Simpan rekening</SubmitButton>
+              </PanelFooter>
+            </form>
+          </Panel>
+        ))}
 
-        <GiftFields idPrefix="gift-new" />
-
-        <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
-          Tambah rekening
-        </SubmitButton>
-      </form>
+        <Panel className="border-dashed bg-[color-mix(in_oklch,var(--card),var(--muted)_30%)] shadow-none">
+          <PanelHeader title="Tambah rekening" meta={`Rekening ke-${gifts.length + 1}`} />
+          <form action={upsertGiftAccountAction}>
+            <input type="hidden" name="invitationId" value={invitation.id} />
+            <input type="hidden" name="sortOrder" value={gifts.length} />
+            <PanelBody>
+              <FieldGrid>
+                <GiftFields idPrefix="gift-new" />
+              </FieldGrid>
+            </PanelBody>
+            <PanelFooter>
+              <SubmitButton pendingText="Menambahkan...">Tambah rekening</SubmitButton>
+            </PanelFooter>
+          </form>
+        </Panel>
+      </SettingsSection>
     </div>
   );
 }

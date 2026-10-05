@@ -31,11 +31,11 @@ function StatStrip({ title, stats }: { title: string; stats: { label: string; va
   return (
     <div>
       <h3 className="text-xs font-medium text-muted-foreground">{title}</h3>
-      <dl className="mt-2 flex flex-wrap divide-x divide-border rounded-lg border border-border bg-card">
+      <dl className="mt-2 grid grid-cols-2 divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-[0_1px_2px_rgba(23,32,27,0.04)] sm:flex sm:divide-x">
         {stats.map((stat) => (
-          <div key={stat.label} className="min-w-28 flex-1 px-4 py-3">
+          <div key={stat.label} className="min-w-28 flex-1 px-5 py-4">
             <dt className="text-xs text-muted-foreground">{stat.label}</dt>
-            <dd className="text-xl font-semibold text-foreground tabular-nums">{stat.value}</dd>
+            <dd className="mt-1 text-2xl font-semibold tracking-[-0.02em] text-foreground tabular-nums">{stat.value}</dd>
           </div>
         ))}
       </dl>
@@ -71,7 +71,7 @@ export default async function ResponsesPage({
       <FormMessage tone="error">{error}</FormMessage>
 
       <section className="flex flex-col gap-4">
-        <h2 className="text-sm font-semibold text-foreground">Ringkasan</h2>
+        <h2 className="text-[0.9375rem] font-semibold tracking-[-0.01em] text-foreground">Ringkasan</h2>
         <StatStrip
           title="Respons tamu"
           stats={[
@@ -98,7 +98,7 @@ export default async function ResponsesPage({
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className="text-sm font-semibold text-foreground">RSVP</h2>
+        <h2 className="text-[0.9375rem] font-semibold tracking-[-0.01em] text-foreground">RSVP</h2>
 
         {rsvps.length === 0 ? (
           <EmptyState
@@ -106,7 +106,7 @@ export default async function ResponsesPage({
             description="Konfirmasi kehadiran dari tamu akan muncul di sini begitu undangan diterbitkan dan dibagikan."
           />
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-border bg-card">
+          <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-[0_1px_2px_rgba(23,32,27,0.04)]">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -140,7 +140,7 @@ export default async function ResponsesPage({
 
       <section className="flex flex-col gap-4">
         <div>
-          <h2 className="text-sm font-semibold text-foreground">Ucapan</h2>
+          <h2 className="text-[0.9375rem] font-semibold tracking-[-0.01em] text-foreground">Ucapan</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Ucapan langsung tampil di undangan. Sembunyikan yang tidak pantas; hapus hanya jika perlu
             dihilangkan permanen.
@@ -155,17 +155,25 @@ export default async function ResponsesPage({
             {wishes.map((wish) => (
               <li
                 key={wish.id}
-                className={`flex flex-col gap-3 rounded-lg border border-border p-4 sm:flex-row sm:items-start sm:justify-between ${
-                  wish.is_visible ? "bg-card" : "bg-muted/50"
+                className={`flex flex-col gap-3 rounded-xl border border-border p-4 shadow-[0_1px_2px_rgba(23,32,27,0.04)] sm:flex-row sm:items-start sm:justify-between sm:px-5 ${
+                  wish.is_visible ? "bg-card" : "border-dashed bg-muted/50 opacity-80"
                 }`}
               >
-                <div className="min-w-0">
+                <div className="flex min-w-0 gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-xs font-semibold text-secondary-foreground uppercase"
+                  >
+                    {wish.guest_name.trim().charAt(0) || "?"}
+                  </span>
+                  <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-sm font-medium text-foreground">{wish.guest_name}</p>
                     {!wish.is_visible ? <Badge variant="outline">Disembunyikan</Badge> : null}
                   </div>
                   <p className="mt-1 text-sm break-words whitespace-pre-line text-muted-foreground">{wish.message}</p>
                   <p className="mt-1 text-xs text-muted-foreground">{formatDateTime(wish.created_at)}</p>
+                  </div>
                 </div>
 
                 <div className="flex shrink-0 gap-2">

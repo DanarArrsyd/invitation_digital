@@ -179,6 +179,22 @@ test("a raced downgrade returns the database's Dress Code package message", asyn
   assert.equal(result.error, "Dress Code membutuhkan paket Signature.");
 });
 
+// Layout-only admin wrappers: render their children so page content stays assertable.
+function settingsSectionStub() {
+  const React = nodeRequire("react");
+  const wrap = ({ children, title, description }) =>
+    React.createElement("div", null, title ?? null, description ?? null, children);
+  return {
+    SettingsSection: wrap,
+    Panel: wrap,
+    PanelBody: wrap,
+    PanelFooter: wrap,
+    PanelHeader: ({ title, meta, actions }) => React.createElement("div", null, title, meta ?? null, actions ?? null),
+    FieldGrid: wrap,
+    UsageMeter: () => null,
+  };
+}
+
 function renderAdminPage(path, packageKey) {
   const invitation = {
     id: invitationId,
@@ -205,6 +221,9 @@ function renderAdminPage(path, packageKey) {
     "@/components/admin/form-field": { FormField: ({ children }) => children },
     "@/components/admin/form-message": { FormMessage: ({ children }) => children ?? null },
     "@/components/admin/submit-button": { SubmitButton: "button" },
+    "@/components/admin/settings-section": settingsSectionStub(),
+    "@/components/admin/unsaved-hint": { UnsavedHint: () => null },
+    "@/components/admin/file-drop": { FileDrop: "file-drop" },
     "@/components/ui/button": { Button: "button" },
     "@/components/ui/input": { Input: "input" },
     "@/components/ui/label": { Label: "label" },
@@ -248,6 +267,8 @@ test("package selector makes keyboard focus visible on every radio card", () => 
     "@/components/ui/badge": { Badge: "span" },
     "@/components/admin/form-message": { FormMessage: ({ children }) => children ?? null },
     "@/components/admin/submit-button": { SubmitButton: "button" },
+    "@/components/admin/settings-section": settingsSectionStub(),
+    "@/components/admin/unsaved-hint": { UnsavedHint: () => null },
     "@/lib/packages/entitlements": entitlements,
     "./package-actions": { updateInvitationPackageAction: () => {} },
   }).PackageForm;

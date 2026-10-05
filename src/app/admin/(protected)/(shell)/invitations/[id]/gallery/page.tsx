@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { FormMessage } from "@/components/admin/form-message";
 import { EmptyState } from "@/components/admin/empty-state";
 import { SubmitButton } from "@/components/admin/submit-button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Panel, PanelBody, PanelFooter, SettingsSection, UsageMeter } from "@/components/admin/settings-section";
+import { FileDrop } from "@/components/admin/file-drop";
 import { getPackageDefinition, type PackageKey } from "@/lib/packages/entitlements";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
 import { getInvitationDetail } from "@/server/invitations/queries";
@@ -39,43 +39,56 @@ export default async function GalleryPage({
   }));
 
   return (
-    <div className="flex flex-col gap-6">
-      <FormMessage tone="error">{error}</FormMessage>
-      <p className="text-sm text-muted-foreground">
-        {gallery.length} dari {packageDefinition.limits.maxGalleryImages} foto · Paket {packageDefinition.label} · drag foto untuk mengubah urutan
-      </p>
+    <div className="flex flex-col">
+      <FormMessage tone="error" className="mb-2">{error}</FormMessage>
 
-      {items.length === 0 ? (
-        <EmptyState
-          title="Belum ada foto"
-          description="Upload foto untuk mengisi galeri undangan."
-        />
-      ) : (
-        <GalleryGrid invitationId={invitation.id} items={items} />
-      )}
-
-      <form
-        action={uploadGalleryItemsAction}
-        className="flex max-w-md flex-col gap-3 rounded-lg border border-dashed border-border p-4"
+      <SettingsSection
+        id="gallery"
+        title="Galeri foto"
+        description={
+          <>
+            <p>
+              {gallery.length} dari {packageDefinition.limits.maxGalleryImages} foto · Paket {packageDefinition.label} · drag foto untuk mengubah urutan
+            </p>
+            <UsageMeter used={gallery.length} limit={packageDefinition.limits.maxGalleryImages} unit="foto" />
+          </>
+        }
       >
-        <input type="hidden" name="invitationId" value={invitation.id} />
+        {items.length === 0 ? (
+          <EmptyState title="Belum ada foto" description="Unggah foto untuk mengisi galeri undangan." />
+        ) : (
+          <Panel className="p-4 sm:p-5">
+            <GalleryGrid invitationId={invitation.id} items={items} />
+          </Panel>
+        )}
 
-        <fieldset disabled={limitReached} className="flex flex-col gap-3 border-0 p-0">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="gallery-files">Foto (bisa pilih banyak sekaligus)</Label>
-            <Input id="gallery-files" type="file" name="files" accept="image/png,image/jpeg,image/webp" multiple required />
-          </div>
-
-          <SubmitButton className="w-fit" pendingText="Mengunggah...">
-            Unggah
-          </SubmitButton>
-        </fieldset>
-        {limitReached ? (
-          <p className="text-sm text-muted-foreground">
-            Batas galeri paket tercapai. Hapus foto atau upgrade paket.
-          </p>
-        ) : null}
-      </form>
+        <Panel className="border-dashed bg-[color-mix(in_oklch,var(--card),var(--muted)_30%)] shadow-none">
+          <form action={uploadGalleryItemsAction}>
+            <input type="hidden" name="invitationId" value={invitation.id} />
+            <fieldset disabled={limitReached} className="border-0 p-0 disabled:opacity-60">
+              <PanelBody>
+                <FileDrop
+                  id="gallery-files"
+                  name="files"
+                  accept="image/png,image/jpeg,image/webp"
+                  multiple
+                  required
+                  label="Tambah foto ke galeri"
+                  hint="Bisa pilih banyak sekaligus. PNG, JPG atau WebP."
+                />
+              </PanelBody>
+              <PanelFooter>
+                {limitReached ? (
+                  <p className="mr-auto text-sm text-muted-foreground">
+                    Batas galeri paket tercapai. Hapus foto atau upgrade paket.
+                  </p>
+                ) : null}
+                <SubmitButton pendingText="Mengunggah...">Unggah foto</SubmitButton>
+              </PanelFooter>
+            </fieldset>
+          </form>
+        </Panel>
+      </SettingsSection>
     </div>
   );
 }

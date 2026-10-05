@@ -4,10 +4,18 @@ import { ColorListInput } from "@/components/admin/color-list-input";
 import { ConfirmDeleteForm } from "@/components/admin/confirm-delete-form";
 import { FormField } from "@/components/admin/form-field";
 import { FormMessage } from "@/components/admin/form-message";
+import {
+  FieldGrid,
+  Panel,
+  PanelBody,
+  PanelFooter,
+  PanelHeader,
+  SettingsSection,
+} from "@/components/admin/settings-section";
 import { SubmitButton } from "@/components/admin/submit-button";
+import { UnsavedHint } from "@/components/admin/unsaved-hint";
+import { FileDrop } from "@/components/admin/file-drop";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { getRequiredPackageForFeature, PACKAGE_DEFINITIONS, type PackageKey } from "@/lib/packages/entitlements";
 import { getMediaPublicUrl } from "@/lib/supabase/storage";
@@ -38,172 +46,165 @@ export default async function ContentPage({
   const dressCodePackage = getRequiredPackageForFeature("dressCode");
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col">
       {error || saved ? (
-        <div className="-mb-4">
+        <div className="mb-2 flex flex-col gap-2">
           <FormMessage tone="error">{error}</FormMessage>
-          <FormMessage tone="success">{!error && saved ? "Tersimpan." : null}</FormMessage>
+          <FormMessage tone="success">{!error && saved ? "Perubahan tersimpan." : null}</FormMessage>
         </div>
       ) : null}
 
-      <section>
-        <h2 className="text-sm font-semibold text-foreground">Pembuka &amp; penutup</h2>
-        <form action={updateContentAction} className="mt-4 flex max-w-lg flex-col gap-4">
-          <input type="hidden" name="invitationId" value={invitation.id} />
+      <SettingsSection
+        id="texts"
+        title="Pembuka & penutup"
+        description="Kutipan tampil di awal undangan, pesan pembuka di bawah nama, dan pesan penutup di bagian akhir. Kosongkan untuk menyembunyikan."
+      >
+        <Panel>
+          <form action={updateContentAction}>
+            <input type="hidden" name="invitationId" value={invitation.id} />
+            <PanelBody>
+              <FormField id="openingQuote" label="Kutipan pembuka" hint="Misalnya ayat atau kutipan puisi beserta sumbernya.">
+                <Textarea id="openingQuote" name="openingQuote" defaultValue={invitation.opening_quote ?? ""} rows={3} />
+              </FormField>
+              <FormField id="openingMessage" label="Pesan pembuka">
+                <Textarea id="openingMessage" name="openingMessage" defaultValue={invitation.opening_message ?? ""} rows={3} />
+              </FormField>
+              <FormField id="closingMessage" label="Pesan penutup">
+                <Textarea id="closingMessage" name="closingMessage" defaultValue={invitation.closing_message ?? ""} rows={3} />
+              </FormField>
+            </PanelBody>
+            <PanelFooter>
+              <UnsavedHint />
+              <SubmitButton>Simpan teks</SubmitButton>
+            </PanelFooter>
+          </form>
+        </Panel>
+      </SettingsSection>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="openingQuote">Kutipan pembuka</Label>
-            <Textarea
-              id="openingQuote"
-              name="openingQuote"
-              defaultValue={invitation.opening_quote ?? ""}
-              rows={2}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="openingMessage">Pesan pembuka</Label>
-            <Textarea
-              id="openingMessage"
-              name="openingMessage"
-              defaultValue={invitation.opening_message ?? ""}
-              rows={3}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="closingMessage">Pesan penutup</Label>
-            <Textarea
-              id="closingMessage"
-              name="closingMessage"
-              defaultValue={invitation.closing_message ?? ""}
-              rows={3}
-            />
-          </div>
-
-          <SubmitButton className="mt-2 w-fit">Simpan</SubmitButton>
-        </form>
-      </section>
-
-      <Separator />
-
-      <section>
-        <h2 className="text-sm font-semibold text-foreground">Dress Code</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {dressCodeLocked && dressCodePackage
+      <SettingsSection
+        id="dress-code"
+        title="Dress Code"
+        description={
+          dressCodeLocked && dressCodePackage
             ? `Tersedia di ${PACKAGE_DEFINITIONS[dressCodePackage].label}. Konten tersimpan tetap disimpan.`
-            : "Aktifkan section ini lewat tab Features."}
-        </p>
-        <form action={updateDressCodeAction} className="mt-4 flex max-w-lg flex-col gap-4">
-          <input type="hidden" name="invitationId" value={invitation.id} />
-          <fieldset disabled={dressCodeLocked} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="dressCodeDescription">Deskripsi</Label>
-              <Textarea
-                id="dressCodeDescription"
-                name="description"
-                defaultValue={dressCode?.description ?? ""}
-                rows={2}
-                placeholder="Kami dengan hormat menganjurkan tamu untuk mengenakan busana dengan nuansa warna berikut."
-              />
-            </div>
-
-            <div className="flex flex-col gap-3 rounded-lg border border-border p-4">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="group1Label">Label grup 1</Label>
-                <Input id="group1Label" name="group1Label" defaultValue={group1?.label ?? ""} placeholder="Pria" />
-              </div>
-              <ColorListInput name="group1Colors" defaultValue={group1?.colors.join(", ") ?? ""} label="Warna grup 1" />
-            </div>
-
-            <div className="flex flex-col gap-3 rounded-lg border border-border p-4">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="group2Label">Label grup 2</Label>
-                <Input id="group2Label" name="group2Label" defaultValue={group2?.label ?? ""} placeholder="Wanita" />
-              </div>
-              <ColorListInput name="group2Colors" defaultValue={group2?.colors.join(", ") ?? ""} label="Warna grup 2" />
-            </div>
-
-            <SubmitButton className="mt-2 w-fit">Simpan</SubmitButton>
-          </fieldset>
-        </form>
-      </section>
-
-      <Separator />
-
-      <section>
-        <h2 className="text-sm font-semibold text-foreground">Love Story</h2>
-
-        <div className="mt-4 flex flex-col gap-4">
-          {stories.map((story) => (
-            <div key={story.id} className="rounded-lg border border-border bg-card p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium text-foreground">
-                    {story.year_label ?? story.story_date ?? ""} — {story.title}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">{story.description}</p>
-                  {story.image_path ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={getMediaPublicUrl(story.image_path) ?? undefined}
-                      alt=""
-                      className="mt-2 h-24 w-24 rounded-md object-cover"
-                    />
-                  ) : null}
+            : "Saran warna busana untuk tamu, bisa dibagi dua kelompok. Tampil bila bagian Dress Code dinyalakan di Fitur."
+        }
+      >
+        <Panel>
+          <form action={updateDressCodeAction}>
+            <input type="hidden" name="invitationId" value={invitation.id} />
+            <fieldset disabled={dressCodeLocked} className="disabled:opacity-60">
+              <PanelBody>
+                <FormField id="dressCodeDescription" label="Deskripsi">
+                  <Textarea
+                    id="dressCodeDescription"
+                    name="description"
+                    defaultValue={dressCode?.description ?? ""}
+                    rows={2}
+                    placeholder="Kami dengan hormat menganjurkan tamu untuk mengenakan busana dengan nuansa warna berikut."
+                  />
+                </FormField>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="flex flex-col gap-4 rounded-xl border border-border bg-[color-mix(in_oklch,var(--card),var(--muted)_30%)] p-4">
+                    <FormField id="group1Label" label="Kelompok 1">
+                      <Input id="group1Label" name="group1Label" defaultValue={group1?.label ?? ""} placeholder="Pria" />
+                    </FormField>
+                    <ColorListInput name="group1Colors" defaultValue={group1?.colors.join(", ") ?? ""} label="Warna kelompok 1" />
+                  </div>
+                  <div className="flex flex-col gap-4 rounded-xl border border-border bg-[color-mix(in_oklch,var(--card),var(--muted)_30%)] p-4">
+                    <FormField id="group2Label" label="Kelompok 2">
+                      <Input id="group2Label" name="group2Label" defaultValue={group2?.label ?? ""} placeholder="Wanita" />
+                    </FormField>
+                    <ColorListInput name="group2Colors" defaultValue={group2?.colors.join(", ") ?? ""} label="Warna kelompok 2" />
+                  </div>
                 </div>
+              </PanelBody>
+              <PanelFooter>
+                <UnsavedHint />
+                <SubmitButton>Simpan dress code</SubmitButton>
+              </PanelFooter>
+            </fieldset>
+          </form>
+        </Panel>
+      </SettingsSection>
+
+      <SettingsSection
+        id="stories"
+        title="Love Story"
+        description="Perjalanan pasangan, tampil berurutan seperti linimasa. Setiap cerita bisa diberi satu foto."
+      >
+        {stories.map((story, index) => (
+          <Panel key={story.id}>
+            <PanelHeader
+              index={index + 1}
+              title={story.title}
+              meta={story.year_label ?? story.story_date ?? undefined}
+              actions={
                 <ConfirmDeleteForm
                   action={deleteStoryAction}
                   hiddenFields={{ id: story.id, invitationId: invitation.id }}
                   title="Hapus cerita ini?"
                   description={`"${story.title}" akan dihapus dari Love Story. Tindakan ini tidak bisa dibatalkan.`}
                 />
-              </div>
-
-              <form action={uploadStoryImageAction} className="mt-3 flex flex-wrap items-center gap-2">
-                <input type="hidden" name="invitationId" value={invitation.id} />
-                <input type="hidden" name="storyId" value={story.id} />
-                <Input
-                  type="file"
-                  name="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  aria-label={`Foto untuk cerita ${story.title}`}
-                  className="max-w-xs"
-                  required
-                />
-                <SubmitButton variant="outline" size="sm" pendingText="Mengunggah...">
+              }
+            />
+            <form action={uploadStoryImageAction}>
+              <input type="hidden" name="invitationId" value={invitation.id} />
+              <input type="hidden" name="storyId" value={story.id} />
+              <PanelBody className="sm:flex-row sm:items-center">
+                {story.image_path ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={getMediaPublicUrl(story.image_path) ?? undefined}
+                    alt=""
+                    className="aspect-[4/3] w-32 shrink-0 rounded-lg border border-border object-cover"
+                  />
+                ) : null}
+                <div className="flex min-w-0 flex-1 flex-col gap-3">
+                  {story.description ? <p className="text-sm leading-6 text-muted-foreground">{story.description}</p> : null}
+                  <FileDrop
+                    accept="image/png,image/jpeg,image/webp"
+                    required
+                    label={story.image_path ? "Ganti foto cerita" : "Tambahkan foto cerita"}
+                  />
+                </div>
+              </PanelBody>
+              <PanelFooter>
+                <SubmitButton variant="outline" pendingText="Mengunggah...">
                   Unggah foto
                 </SubmitButton>
-              </form>
-            </div>
-          ))}
+              </PanelFooter>
+            </form>
+          </Panel>
+        ))}
 
-          <form
-            action={upsertStoryAction}
-            className="grid max-w-lg gap-3 rounded-lg border border-dashed border-border p-4 sm:grid-cols-2"
-          >
+        <Panel className="border-dashed bg-[color-mix(in_oklch,var(--card),var(--muted)_30%)] shadow-none">
+          <PanelHeader title="Tambah cerita" meta={`Cerita ke-${stories.length + 1}`} />
+          <form action={upsertStoryAction}>
             <input type="hidden" name="invitationId" value={invitation.id} />
             <input type="hidden" name="sortOrder" value={stories.length} />
-
-            <FormField id="story-new-title" label="Judul" className="sm:col-span-2">
-              <Input id="story-new-title" name="title" required />
-            </FormField>
-            <FormField id="story-new-yearLabel" label="Label tahun">
-              <Input id="story-new-yearLabel" name="yearLabel" placeholder="2019" />
-            </FormField>
-            <FormField id="story-new-storyDate" label="Tanggal">
-              <Input id="story-new-storyDate" name="storyDate" type="date" />
-            </FormField>
-            <FormField id="story-new-description" label="Cerita" className="sm:col-span-2">
-              <Textarea id="story-new-description" name="description" rows={2} />
-            </FormField>
-
-            <SubmitButton className="w-fit sm:col-span-2" pendingText="Menambahkan...">
-              Tambah cerita
-            </SubmitButton>
+            <PanelBody>
+              <FieldGrid>
+                <FormField id="story-new-title" label="Judul" className="sm:col-span-2">
+                  <Input id="story-new-title" name="title" required />
+                </FormField>
+                <FormField id="story-new-yearLabel" label="Label tahun" hint="Ditampilkan menggantikan tanggal.">
+                  <Input id="story-new-yearLabel" name="yearLabel" placeholder="2019" />
+                </FormField>
+                <FormField id="story-new-storyDate" label="Tanggal">
+                  <Input id="story-new-storyDate" name="storyDate" type="date" />
+                </FormField>
+                <FormField id="story-new-description" label="Cerita" className="sm:col-span-2">
+                  <Textarea id="story-new-description" name="description" rows={3} />
+                </FormField>
+              </FieldGrid>
+            </PanelBody>
+            <PanelFooter>
+              <SubmitButton pendingText="Menambahkan...">Tambah cerita</SubmitButton>
+            </PanelFooter>
           </form>
-        </div>
-      </section>
+        </Panel>
+      </SettingsSection>
     </div>
   );
 }

@@ -21,7 +21,13 @@ export function FormMessage({
   return (
     <p
       role={tone === "error" ? "alert" : "status"}
-      className={cn("text-sm", tone === "error" ? "text-destructive" : "text-success", className)}
+      className={cn(
+        "rounded-xl border px-4 py-3 text-sm",
+        tone === "error"
+          ? "border-destructive/25 bg-destructive/5 text-destructive"
+          : "border-[#c9d8c4] bg-[#eef4ec] text-[#24452b]",
+        className,
+      )}
     >
       {children}
     </p>
