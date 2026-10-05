@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { DemoBar } from "@/components/marketing/demo-bar";
+import { shareMetadata } from "@/lib/marketing/share-metadata";
 import { isPackageKey, type PackageKey } from "@/lib/packages/entitlements";
 import { getDemoInvitation, getListedTemplate, getSiteSettings } from "@/server/marketing/queries";
 import "@/themes/theme-fonts";
@@ -24,9 +25,14 @@ function demoGuest(raw: string | undefined): Guest {
 
 export async function generateMetadata({ params }: Pick<DemoPageProps, "params">): Promise<Metadata> {
   const template = await getListedTemplate((await params).themeSlug);
+  if (!template) return { title: "Demo tidak tersedia | Temuraya", robots: { index: false, follow: false } };
+  const title = `Demo ${template.name} | Temuraya`;
+  const description = `Coba langsung undangan digital ${template.name}: buka sampul, RSVP, ucapan dan peta lokasi.`;
   return {
-    title: template ? `Demo ${template.name} | Temuraya` : "Demo tidak tersedia | Temuraya",
+    title,
+    description,
     robots: { index: false, follow: false },
+    ...shareMetadata(title, description),
   };
 }
 

@@ -5,11 +5,16 @@ import { OrderLink } from "@/components/marketing/order-link";
 import { mk } from "@/components/marketing/styles";
 import { TemplateCard } from "@/components/marketing/template-card";
 import { EVENT_TYPE_LABELS, isEventType } from "@/lib/marketing/event-types";
+import { shareMetadata } from "@/lib/marketing/share-metadata";
 import { getListedTemplates, getSiteSettings } from "@/server/marketing/queries";
 
 export const metadata: Metadata = {
   title: "Template undangan",
   description: "Semua template undangan digital Temuraya. Lihat demo setiap template sesuai paket sebelum memesan.",
+  ...shareMetadata(
+    "Template undangan digital | Temuraya",
+    "Semua template undangan digital Temuraya. Lihat demo setiap template sesuai paket sebelum memesan.",
+  ),
 };
 
 export default async function TemplateCataloguePage({

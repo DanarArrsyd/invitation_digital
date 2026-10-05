@@ -44,6 +44,38 @@ function transpile(url) {
   }).outputText;
 }
 
+const SANDBOX_GLOBALS = { URL, Buffer, process, fetch, AbortSignal, TextEncoder, TextDecoder };
+const aliasCache = new Map();
+
+/** Loads a src module behind an "@/..." import, resolving its own imports the same way. */
+function loadAlias(name, overrides = {}) {
+  if (Object.hasOwn(overrides, name)) return overrides[name];
+  if (name === "server-only") return {};
+  if (!name.startsWith("@/")) return nodeRequire(name);
+  if (aliasCache.has(name)) return aliasCache.get(name);
+  const base = new URL(`../src/${name.slice(2)}`, import.meta.url);
+  const url = [".ts", ".tsx"].map((ext) => new URL(`${base.href}${ext}`)).find((candidate) => {
+    try {
+      readFileSync(candidate);
+      return true;
+    } catch {
+      return false;
+    }
+  });
+  const exports = {};
+  aliasCache.set(name, exports);
+  vm.runInNewContext(transpile(url), {
+    ...SANDBOX_GLOBALS,
+    exports,
+    module: { exports },
+    require(dependency) {
+      if (dependency.startsWith("./")) return loadAlias(`${name.slice(0, name.lastIndexOf("/"))}/${dependency.slice(2)}`, overrides);
+      return loadAlias(dependency, overrides);
+    },
+  });
+  return exports;
+}
+
 function loadShareModule() {
   try {
     const exports = {};
@@ -53,7 +85,7 @@ function loadShareModule() {
       URL,
       require(name) {
         if (name === "@/lib/utils/coupleName") return { getCoupleDisplayName };
-        return nodeRequire(name);
+        return loadAlias(name);
       },
     });
     return exports;
@@ -89,12 +121,13 @@ function loadOpenGraphImage(loaderResult) {
   try {
     const exports = {};
     vm.runInNewContext(transpile(new URL("../src/app/(public)/[slug]/opengraph-image.tsx", import.meta.url)), {
+      ...SANDBOX_GLOBALS,
       exports,
       module: { exports },
       require(name) {
         if (name === "@/lib/share/invitation-share") return loadShareModule();
         if (name === "@/server/public/invitation-loader") return { getPublicInvitationBySlug: async () => loaderResult };
-        return nodeRequire(name);
+        return loadAlias(name);
       },
     });
     return exports;

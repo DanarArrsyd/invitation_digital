@@ -18,6 +18,15 @@ implementation plans remain the source of truth:
 ## Product decisions that must survive future sessions
 
 - The platform is a reusable invitation product, not a one-off wedding site.
+- 2026-10-05 share banners: every shared link shows a 1200×630 banner.
+  Invitation links (`/[slug]`) use the invitation's theme colours, names,
+  date, venue and cover; `/template/[slug]` and `/demo/[slug]` show the
+  template's screenshots; `/template` shows the catalogue; everything else
+  uses the static `src/app/opengraph-image.png`. Kit: `src/lib/og/`
+  (share-styles, banners, assets with sharp re-encoding so WebP uploads
+  work). Fonts are static woff copies in `assets/og-fonts/`. A new theme
+  needs an entry in `src/lib/og/share-styles.ts` (a test enforces it);
+  without one it falls back to the Temuraya style.
 - 2026-10-05 performance + logo: the brand mark is the "gapura" (double
   arch framing a T, brass star at the apex), component
   `src/components/brand/temuraya-mark.tsx`; `node scripts/brand/render-icons.mjs
