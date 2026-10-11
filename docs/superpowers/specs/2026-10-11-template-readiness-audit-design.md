@@ -140,7 +140,7 @@ Matrix sizes:
   at 375×812: every other `jenis`, every other `kondisi`, the no-guest link,
   and one reduced-motion pass. 5 × (12 + 5 + 2 + 1 + 1) = 105 pages.
 - **Full (`--full`):** every combination of template, package, `jenis`,
-  `kondisi` and viewport, 900 pages.
+  `kondisi` and viewport: 5 × 3 × 6 × 3 × 4 = 1,080 pages.
 - Viewports follow `docs/DESIGN.md` §28.7: 320×568, 375×812, 768×1024,
   1280×800.
 - `--theme`, `--viewport` filters for quick re-runs.
