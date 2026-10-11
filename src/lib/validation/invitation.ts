@@ -18,6 +18,7 @@ export const RESERVED_INVITATION_SLUGS = [
   "login",
   "paket",
   "privasi",
+  "qa-matrix",
   "robots",
   "sitemap",
   "syarat",
