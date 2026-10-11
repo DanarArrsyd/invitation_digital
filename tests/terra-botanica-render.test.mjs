@@ -752,11 +752,14 @@ test("countdown interprets the event target as the same WIB instant in every vie
   for (const timezone of ["UTC", "Asia/Jakarta", "America/Los_Angeles"]) {
     const environment = { ...process.env, TZ: timezone, TB_TIMEZONE_PROBE: "1" };
     for (const key of Object.keys(environment)) if (key.startsWith("NODE_TEST_")) delete environment[key];
-    const result = spawnSync(process.execPath, ["--test", "--test-name-pattern=^countdown timezone probe$", fileURLToPath(import.meta.url)], {
+    // TAP output is the same on a TTY and in CI, unlike the default reporter's
+    // "✔". The exit status alone is not enough: a pattern that matches no test
+    // also exits 0, so the probe's own "ok" line proves it ran.
+    const result = spawnSync(process.execPath, ["--test", "--test-reporter=tap", "--test-name-pattern=^countdown timezone probe$", fileURLToPath(import.meta.url)], {
       env: environment, encoding: "utf8",
     });
-    assert.match(result.stdout, /✔ countdown timezone probe/, `${timezone}: ${result.stdout}\n${result.stderr}`);
     assert.equal(result.status, 0, `${timezone}: ${result.stdout}\n${result.stderr}`);
+    assert.match(result.stdout, /^ok \d+ - countdown timezone probe$/m, `${timezone}: ${result.stdout}\n${result.stderr}`);
   }
 });
 

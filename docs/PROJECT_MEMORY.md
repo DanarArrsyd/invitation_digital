@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 5 October 2026 (Asia/Jakarta)
+Last updated: 11 October 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -31,6 +31,18 @@ after every merge):
 | #24 | Performance pass, gapura logo and icons, share banners (OG images) |
 | #25 | Bottom nav tiered per package (Intimate 5 / Signature 7 / Grand 9) |
 | #26 | Turnstile explicit render; demos need no token; Indonesian form errors |
+| #27 | Session checkpoint and New Template Checklist (`docs/DESIGN.md` §28) |
+| #28–#30 | Kelir Kencana template, 1000 px wayang figures, catalogue shots and per-demo event types |
+| #31 | Template catalogue cards fill their grid cell |
+| #32 | Drawn action arrows instead of text arrows in every theme |
+| #33 | Admin editor and invitation list redesign |
+
+Production runs `main` `c7c1b95` (PR #33), verified 2026-10-11. On that date
+all five templates × three packages on `/demo/[slug]?paket=` showed bottom-nav
+stops exactly per `NAV_SECTIONS_BY_PACKAGE` (Intimate 5, Signature 7, Grand 9),
+each with its icon. `/demo/[slug]` without `?paket=` stays on Signature (owner
+decision); the demo rows hold Grand-sized content so `?paket=grand` can show
+every section.
 
 Rules for future templates are collected in `docs/DESIGN.md` §28 (New
 Template Checklist). Read it before starting a template.
@@ -56,7 +68,7 @@ Working notes:
   `.git/info/exclude`) and are deleted afterwards; run `npx next typegen`
   (or remove `.next/dev/types`) after deleting a route.
 
-## Kelir Kencana (5 October 2026, branch `claude/relaxed-davinci-9i8qkb`)
+## Kelir Kencana (5 October 2026, PRs #28–#30)
 
 Fifth template, wayang kulit "Pagelaran Semalam Suntuk". Spec:
 `docs/superpowers/specs/2026-10-05-kelir-kencana-theme-design.md`; approved
@@ -71,9 +83,11 @@ in `public/demo/kelir-kencana/`, test `tests/kelir-kencana.test.mjs`.
   originals (supplied after PR #28). The owner confirmed on 2026-10-05
   that they may be used commercially.
 - PR #28 merged (`7876f3d`). Migration `kelir_kencana_theme` and the Kelir
-  demo block were applied to production on 2026-10-05 (event types kept as
-  wedding, engagement, aqiqah, birthday, graduation; `build-seed.mjs` still
-  writes `wedding` only, so a full reseed narrows them).
+  demo block were applied to production on 2026-10-05 (event types
+  wedding, engagement, aqiqah, birthday, graduation). Since PR #30 each demo
+  in `scripts/demo/content.mjs` carries its own `eventTypes`, and
+  `build-seed.mjs` writes them, so a full reseed keeps Kelir's five types
+  (regenerated with no diff on 2026-10-11).
 
 ## Product decisions that must survive future sessions
 
@@ -190,10 +204,14 @@ in `public/demo/kelir-kencana/`, test `tests/kelir-kencana.test.mjs`.
 
 ## Working location and repository state
 
-Since 2 October 2026 the repository is a standalone clone of
-`github.com/DanarArrsyd/invitation_digital` at
-`/Users/ekadanararrasyid/VS Code/invitation_digital`, and `main` is the
+The repository is `github.com/DanarArrsyd/invitation_digital`; `main` is the
 source of truth and the production branch (merges auto-deploy on Vercel).
+Local clones live at `/Users/ekadanararrasyid/Developer/invitation_digital`
+(since October 2026) and formerly `/Users/ekadanararrasyid/VS Code/invitation_digital`.
+Always `git fetch` and compare with `origin/main` before resuming: on
+2026-10-11 a local clone 19 PRs behind led a session to redo Terra work that
+had shipped in PR #15. Remote branches on 2026-10-11: `main` and
+`design/terra-identity-at0kh3` only (merged branches were deleted).
 
 History: the themes were originally built inside a parent `VS Code`
 repository under the `invitation_digital/` prefix (the Codex worktree
@@ -665,10 +683,11 @@ plan in `docs/superpowers/plans/` after the previous one merges.
   aria-hidden (`eb44c12` Cobalt, `51d150f` Ivory/Terra/Midnight).
 - All four themes now carry their 2026-10-03 identity spec; the branch is
   reset to `main` `d2666b7`.
-- Open: owner to check each theme on a real phone (`/rayhana-febry` Ivory,
-  `/sample-1` Terra, `/sample-2` Midnight, `/sample-3` Cobalt); Midnight's
-  chandelier stays deferred; the environmental countdown-timezone test should
-  assert on exit status instead of `✔`.
+- Open: owner to check each theme on a real phone through
+  `/demo/<theme-slug>` (the `/sample-N` invitations were removed in PR #19);
+  Midnight's chandelier stays deferred. The countdown-timezone test now runs
+  its probe with the TAP reporter and asserts exit status plus the probe's
+  own `ok` line (fixed 2026-10-11).
 
 #### Checkpoint — Cobalt "Surat Cinta dari Mediterania" (merged, 2026-10-04)
 

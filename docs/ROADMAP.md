@@ -126,9 +126,11 @@ Acceptance:
 
 ## Package Entitlements Foundation
 
-Status: Implemented locally, with the package-key migration applied remotely;
-the event-capacity and package-integrity migrations and production rollout are
-pending review.
+Status: Live in production (code on `main` since the September rollout; package
+nav tiers verified on 2026-10-11). The remote application of
+`20260923000001_atomic_event_capacity.sql` and
+`20260923000002_package_integrity.sql` has not been re-verified since; confirm
+in the Supabase migration history before relying on the downgrade trigger.
 This is managed-service infrastructure, not customer self-service.
 
 - Invitations persist an Intimate, Signature, or Grand package key. The
