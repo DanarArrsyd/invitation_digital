@@ -76,7 +76,8 @@ shared code.
   - `paket`: `intimate | signature | grand` (default `signature`)
   - `jenis`: an `InvitationType` (default `wedding`)
   - `kondisi`: `lengkap | minim | panjang` (default `lengkap`)
-  - `to`: guest name (default "Nama Tamu Anda")
+  - `to`: guest name (default "Nama Tamu Anda"); `to=none` renders with no
+    guest, for the no-guest link case in `docs/DESIGN.md` §28.7
 - Builds a `PublicInvitation` from `scripts/demo/content.mjs` (names, events,
   stories, gifts, wishes, `/demo/<theme>/` images) through a pure builder
   `src/lib/qa/fixture-invitation.ts`, then applies the package exactly as
@@ -121,18 +122,27 @@ Undangan", waits for the opener, screenshots the full page, and records:
 - nav stop count compared with the package's expected stops (after
   dropping sections with no content);
 - any wedding-only string ("Mempelai", "The Wedding Of", "Pernikahan",
-  "mempelai") on a non-wedding page.
+  "mempelai") on a non-wedding page;
+- on phone widths, every nav item at least 52 px tall and no nav label cut
+  (`scrollWidth > clientWidth` on the label).
+
+The fixture itself must not inject wedding-only text into non-wedding
+pages (event titles, quote, gift account names), so the check only catches
+theme copy.
 
 Output goes to `qa-output/<run-timestamp>/` (gitignored): screenshots,
 `report.json`, and `summary.md` listing every failed check.
 
 Matrix sizes:
 
-- **Core (default):** 5 templates × 3 packages × 4 viewports (320×568,
-  390×844, 768×1024, 1440×900) with `jenis=wedding, kondisi=lengkap`, plus
-  every other `jenis` and `kondisi` at 390×844 for every template on
-  Signature. About 150 pages.
-- **Full (`--full`):** every combination, 900 pages.
+- **Core (default):** 5 templates × 3 packages × 4 viewports with
+  `jenis=wedding, kondisi=lengkap`, plus, for every template on Signature
+  at 375×812: every other `jenis`, every other `kondisi`, the no-guest link,
+  and one reduced-motion pass. 5 × (12 + 5 + 2 + 1 + 1) = 105 pages.
+- **Full (`--full`):** every combination of template, package, `jenis`,
+  `kondisi` and viewport, 900 pages.
+- Viewports follow `docs/DESIGN.md` §28.7: 320×568, 375×812, 768×1024,
+  1280×800.
 - `--theme`, `--viewport` filters for quick re-runs.
 
 The runner exits non-zero when any check fails, so it can gate a PR
@@ -164,7 +174,7 @@ theme registry, so new templates are covered automatically.
 ### Round B — Visual on phones
 
 From the screenshots (cover, each section, `minim` and `panjang`, at 320
-and 390 px): spacing, type hierarchy, clipped or colliding text, empty
+and 375 px): spacing, type hierarchy, clipped or colliding text, empty
 states that look intended, signature motion moments. Includes the
 landscape cover button. A separate owner step checks every template on a
 real phone through `/demo/<slug>`; findings from that step are added to the
