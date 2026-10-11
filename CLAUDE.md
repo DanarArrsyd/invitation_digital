@@ -16,6 +16,9 @@ The theme identity redesign is complete and live: Ivory (PR #14), Terra
 #19–#26: cleanup, admin redesign, brand, marketing site, demos, performance,
 logo, share banners, nav tiers, Turnstile fix) is live; its checkpoint and
 owner to-dos are in `docs/PROJECT_MEMORY.md` "Checkpoint — 5 October 2026".
+PRs #29–#33 (Kelir assets, catalogue cards, drawn arrows, admin editor) are
+live too; production is `main` `c7c1b95` as of 2026-10-11. Run `git fetch`
+and compare with `origin/main` before trusting this checkpoint.
 Branch `design/terra-identity-at0kh3` is reset to `main` after each merge.
 Deferred: Midnight's gold-line chandelier. Ask the user before merging any PR
 (merges to `main` deploy production).
