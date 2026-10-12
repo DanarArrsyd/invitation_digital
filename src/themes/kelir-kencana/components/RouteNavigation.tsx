@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-import type { NavSectionKey } from "@/lib/packages/nav-sections";
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 import { useActiveSection } from "@/themes/shared/use-active-section";
 import { useNavRailScroll } from "@/themes/shared/use-nav-rail-scroll";
 

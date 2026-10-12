@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 
-import type { NavSectionKey } from "@/lib/packages/nav-sections";
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 
 // Pagelaran glyphs on a 24px grid. `kk-nav-accent` marks the one detail per
 // glyph that takes the prada stroke (kencana when active).

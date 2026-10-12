@@ -33,7 +33,7 @@ const code = (source) => source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:
 export const RULES = [
   {
     name: "themes never reach Supabase or the package (§28.2)",
-    check: (_file, source) => (/supabase|package_key|packageKey|PACKAGE_DEFINITIONS|@\/lib\/packages\/entitlements/.test(code(source)) ? ["imports or names Supabase or the package"] : []),
+    check: (_file, source) => (/supabase|package_key|packageKey|PACKAGE_DEFINITIONS|@\/lib\/packages\//.test(code(source)) ? ["imports or names Supabase or the package"] : []),
   },
   {
     name: "photos go through next/image, never a raw <img> (§28.4)",
@@ -77,6 +77,8 @@ test("each rule catches a violation", () => {
     "no typed arrows in markup (§28.5)": "<span>Kirim →</span>",
     "Turnstile sits inside its form (§28.5)": "<form></form><TurnstileWidget />",
   };
+  // Nav keys come through @/themes/shared/nav-priority, never @/lib/packages.
+  assert.ok(RULES[0].check("x.tsx", 'import type { NavSectionKey } from "@/lib/packages/nav-sections";').length > 0);
   for (const rule of RULES) {
     assert.ok(bad[rule.name], `self-test snippet for ${rule.name}`);
     assert.ok(rule.check("x.tsx", bad[rule.name]).length > 0, `${rule.name} catches its violation`);

@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 
-import type { NavSectionKey } from "@/lib/packages/nav-sections";
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 
 // Seaside travel-folio glyphs drawn on a 24px grid. `cr-route-accent` marks the
 // one detail per glyph that takes the tangerine (or, when active, cobalt) stroke.
