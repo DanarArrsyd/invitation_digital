@@ -148,3 +148,31 @@ test("Ivory, Terra and Midnight compress their cover on short screens", () => {
     assert.match(css, new RegExp(`@media \\(max-height: \\d+px\\)\\s*\\{[^@]*\\.${selector}`), `${slug} has a short-screen cover rule for .${selector}`);
   }
 });
+
+test("short-screen cover rules tighten rows only, never the two-column gap", () => {
+  // A `gap` shorthand in a max-height block would also collapse the column gap of
+  // two-column covers on landscape phones and short laptop windows.
+  for (const slug of THEME_SLUGS) {
+    const css = readFileSync(join(themesRoot, slug, "ThemeStyles.tsx"), "utf8");
+    for (const [, block] of css.matchAll(/@media \(max-height: \d+px\)\s*\{([^@]*)/g)) {
+      assert.doesNotMatch(block, /-cover-frame\s*\{[^}]*(^|[\s;{])gap:/m, `${slug}: use row-gap in short-screen cover rules`);
+    }
+  }
+});
+
+test("Ivory's one-name title keeps its own scale on short screens", () => {
+  // Non-couple invitations (birthday, aqiqah, ...) use a smaller title than the couple names.
+  const cover = readFileSync(join(themesRoot, "nusantara-ivory", "CoverGate.tsx"), "utf8");
+  const css = readFileSync(join(themesRoot, "nusantara-ivory", "ThemeStyles.tsx"), "utf8");
+  assert.match(cover, /<h1 key="names" className="ni-cover-title /, "the one-name <h1> has its own class");
+  assert.match(css, /@media \(max-height: \d+px\)\s*\{[^@]*\.ni-cover-title \{ font-size: clamp\([^)]*11vw/, "short-screen title keeps the 11vw scale");
+});
+
+test("Ivory hides its monogram only where the button would not fit", () => {
+  // Real phones lose ~150px to browser bars (375×812 → ~635px); the monogram
+  // still fits there, measured 2026-10-12: 615px at 375×635, 634px at 360×640.
+  const css = readFileSync(join(themesRoot, "nusantara-ivory", "ThemeStyles.tsx"), "utf8");
+  const hide = css.match(/@media \(max-height: (\d+)px\)\s*\{\s*\.ni-cover-monogram, \.ni-cover-greeting \{ display: none; \}/);
+  assert.ok(hide, "the monogram/greeting rule exists");
+  assert.ok(Number(hide[1]) <= 620, `hidden up to ${hide[1]}px tall; must stay visible on phones with browser bars`);
+});

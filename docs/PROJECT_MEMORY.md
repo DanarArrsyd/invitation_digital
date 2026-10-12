@@ -107,7 +107,7 @@ in `public/demo/kelir-kencana/`, test `tests/kelir-kencana.test.mjs`.
   priority (that dropped Mempelai on Signature/Grand). Stops are tiered per
   package in `src/lib/packages/nav-sections.ts`: Intimate 5 (Beranda,
   Mempelai, Acara, RSVP, Kado), Signature 7 (+Galeri, Ucapan), Grand 9
-  (+Cerita, Streaming). The loader passes `invitation.navSections`, not the
+  (+Cerita, Live). The loader passes `invitation.navSections`, not the
   package key (the public payload must not reveal the package). Phone bars
   scroll sideways inside themselves past five; DESIGN.md §12a updated.
 - 2026-10-05 share banners: every shared link shows a 1200×630 banner.

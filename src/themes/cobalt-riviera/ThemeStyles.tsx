@@ -173,7 +173,7 @@ export function ThemeStyles() {
       /* Short phones: smaller names keep "Buka undangan" above the fold. */
       @media (max-height: 700px) {
         .cr-cover-names { font-size: clamp(3rem, 14vw, 5rem); }
-        .cr-cover-frame { gap: .75rem; }
+        .cr-cover-frame { row-gap: .75rem; }
         .cr-cover-open { grid-template-columns: 2.75rem minmax(0, 1fr); }
         .cr-cover-open .cr-sun-mark { width: 2.75rem; }
       }

@@ -856,7 +856,7 @@ export function ThemeStyles() {
       /* Short screens: tighter cover rhythm keeps "Buka undangan" above the fold.
          Placed after the phone and desktop cover rules so it wins. */
       @media (max-height: 700px) {
-        .ma-cover-frame { gap: 1rem; }
+        .ma-cover-frame { row-gap: 1rem; }
         /* Landscape phones: names sized by width alone grow past the screen. */
         .ma-cover-names { font-size: clamp(2.75rem, min(19vw, 15svh), 10.5rem); }
         .ma-cover-intro { margin-bottom: .75rem; }

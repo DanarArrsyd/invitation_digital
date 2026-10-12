@@ -141,7 +141,7 @@ export function CoverGate({
                           <span>{couple[1]}</span>
                         </h1>
                       ) : (
-                        <h1 key="names" className="ni-cover-names ni-script mt-6 text-[clamp(2.8rem,11vw,5.2rem)]">
+                        <h1 key="names" className="ni-cover-title ni-script mt-6 text-[clamp(2.8rem,11vw,5.2rem)]">
                           {displayName}
                         </h1>
                       ),

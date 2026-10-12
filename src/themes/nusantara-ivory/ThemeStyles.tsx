@@ -170,10 +170,12 @@ const CSS = `
 @media (max-height: 860px) {
   .ni-cover-pad { padding-block: clamp(1.5rem, 5svh, 3rem); }
   .ni-cover-names { font-size: clamp(2.6rem, min(15vw, 9svh), 7rem); margin-top: clamp(.5rem, 2svh, 1.5rem); }
+  /* One-name titles (birthday, aqiqah, ...) keep their smaller scale. */
+  .ni-cover-title { font-size: clamp(2.6rem, min(11vw, 7svh), 5.2rem); margin-top: clamp(.5rem, 2svh, 1.5rem); }
   .ni-cover-gap { margin-top: clamp(.6rem, 2.2svh, 1.75rem); }
   .ni-cover-cta { margin-top: clamp(1rem, 3.5svh, 2.75rem); }
 }
-@media (max-height: 640px) {
+@media (max-height: 620px) {
   .ni-cover-monogram, .ni-cover-greeting { display: none; }
 }
 .ni-hero { min-height: 80svh; display: grid; align-items: center; }
