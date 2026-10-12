@@ -110,7 +110,8 @@ async function runCase(browser, c, outDir) {
     const step = Math.round(height * 0.9);
     for (let y = 0, shot = 1; y < total; y += step, shot += 1) {
       await page.evaluate((top) => window.scrollTo(0, top), y);
-      await page.waitForTimeout(c.reducedMotion ? 150 : 600);
+      // Long enough for a typed label (38 ms per character) to finish.
+      await page.waitForTimeout(c.reducedMotion ? 150 : 900);
       await page.screenshot({ path: join(outDir, `${c.id}__open-${String(shot).padStart(2, "0")}.jpg`), type: "jpeg", quality: 70, caret: "initial" });
     }
     await page.evaluate(() => window.scrollTo(0, 0));
