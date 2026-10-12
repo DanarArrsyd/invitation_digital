@@ -48,8 +48,8 @@ export const RULES = [
     },
   },
   {
-    name: "no typed ↗ or ↓ arrows in markup (§28.5)",
-    check: (_file, source) => (/[↗↓]/.test(code(source)) ? ["types an arrow character; use src/themes/shared/action-icons.tsx"] : []),
+    name: "no typed arrows in markup (§28.5)",
+    check: (_file, source) => (/[↗↓→]/.test(code(source)) ? ["types an arrow character; use src/themes/shared/action-icons.tsx"] : []),
   },
   {
     name: "Turnstile sits inside its form (§28.5)",
@@ -74,7 +74,7 @@ test("each rule catches a violation", () => {
     "themes never reach Supabase or the package (§28.2)": 'import { createClient } from "@/lib/supabase/server";',
     "photos go through next/image, never a raw <img> (§28.4)": "return <img src={src} alt={alt} />;",
     "next/image uses isOptimizableImage (§28.4)": 'import Image from "next/image";\n<Image src={src} alt="" fill />',
-    "no typed ↗ or ↓ arrows in markup (§28.5)": "<span>Buka Maps ↗</span>",
+    "no typed arrows in markup (§28.5)": "<span>Kirim →</span>",
     "Turnstile sits inside its form (§28.5)": "<form></form><TurnstileWidget />",
   };
   for (const rule of RULES) {

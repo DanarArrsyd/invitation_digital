@@ -9,6 +9,7 @@ import type { Wish } from "@/types/invitation";
 import { Section } from "../components/Section";
 import { Spotlight } from "../components/Spotlight";
 import { WishBubbles } from "../components/WishBubbles";
+import { ForwardArrowIcon } from "@/themes/shared/action-icons";
 
 const PAGE_SIZE = 5;
 
@@ -71,7 +72,7 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
             <TurnstileWidget />
             {state.status === "error" ? <p className="ma-form-error" role="alert">{state.message}</p> : null}
             <button className="ma-form-submit" type="submit" disabled={isPending}>
-              <span>{isPending ? "Mengirim..." : "Kirim Ucapan"}</span><span aria-hidden="true">→</span>
+              <span>{isPending ? "Mengirim..." : "Kirim Ucapan"}</span><span aria-hidden="true"><ForwardArrowIcon /></span>
             </button>
           </form>
         )}

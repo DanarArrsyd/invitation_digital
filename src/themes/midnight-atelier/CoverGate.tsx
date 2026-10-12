@@ -6,6 +6,7 @@ import { useInvitationCover } from "@/themes/shared/use-invitation-cover";
 
 import { ChampagneToast } from "./components/ChampagneToast";
 import { FloatingNav, type NavItem } from "./components/FloatingNav";
+import { ForwardArrowIcon } from "@/themes/shared/action-icons";
 
 function formatEventDate(value: string | null): string | null {
   if (!value) return null;
@@ -89,7 +90,7 @@ export function CoverGate({
               aria-controls="ma-content"
             >
               <span>Buka undangan</span>
-              <span aria-hidden="true">→</span>
+              <span aria-hidden="true"><ForwardArrowIcon /></span>
             </button>
           </div>
         </div>
