@@ -841,9 +841,12 @@ is incomplete, not that the test is wrong.
 
 ### 28.7 QA before review
 
-- Run the QA matrix (`npm run dev`, then `npm run qa:matrix`, with
-  `playwright-core` installed outside the project and `--chromium <path>`
-  if it has no bundled browser). It renders `/qa-matrix/<theme>` (404 in
+- Run the QA matrix (`npm run dev`, then `npm run qa:matrix`). It needs
+  `playwright-core` installed outside the project, found through
+  `PLAYWRIGHT_CORE=<absolute path to node_modules/playwright-core>`, and
+  `--chromium <path>` when that install has no browser (e.g. the Chrome app
+  binary). Exit 0 = pass, 1 = checks failed (`qa-output/<run>/summary.md`),
+  2 = setup or usage error. It renders `/qa-matrix/<theme>` (404 in
   production) for every package, invitation type, data condition and the
   widths below, and fails on overflow, console errors, broken images, an
   off-screen open button, nav/tier mismatches, short or cut nav items, and

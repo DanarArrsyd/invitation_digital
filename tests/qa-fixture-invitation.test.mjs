@@ -111,3 +111,18 @@ test("a no-guest link renders without a guest", () => {
   assert.equal(build({ guestName: null }).guest, null);
   assert.deepEqual([...QA_CONDITIONS], ["lengkap", "minim", "panjang"]);
 });
+
+test("non-wedding fixtures carry no wedding wishes, love story or ceremony labels", () => {
+  // Fixture text only: themes may render real guests' wishes, so this is not a runner check.
+  const WEDDING_FLAVOUR = /menempuh hidup baru|sakinah|kalian berdua|cinta kalian|pasangan|sakral|akad|adat/i;
+  for (const demo of DEMOS) {
+    for (const type of ["birthday", "aqiqah", "graduation", "corporate"]) {
+      const { invitation } = buildQaFixture(demo, library, { packageKey: "grand", type, condition: "lengkap", guestName: QA_DEFAULT_GUEST });
+      const text = JSON.stringify([invitation.wishes, invitation.stories, invitation.events.map((event) => event.eventType)]);
+      assert.doesNotMatch(text, WEDDING_FLAVOUR, `${demo.theme}/${type}`);
+      assert.ok(invitation.stories.length > 0 && invitation.wishes.length > 0, "sections keep content");
+    }
+    const engagement = buildQaFixture(demo, library, { packageKey: "grand", type: "engagement", condition: "lengkap", guestName: QA_DEFAULT_GUEST }).invitation;
+    assert.doesNotMatch(JSON.stringify([engagement.wishes, engagement.events.map((event) => event.eventType)]), /menempuh hidup baru|sakinah|sakral|akad|adat/i, `${demo.theme}/engagement`);
+  }
+});

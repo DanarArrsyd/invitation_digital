@@ -44,6 +44,9 @@ function makeCase(theme, { paket = "signature", jenis = "wedding", kondisi = "le
 
 export function buildCases({ full = false, theme, viewport } = {}) {
   if (theme && !THEMES.includes(theme)) throw new Error(`Unknown theme "${theme}". Known: ${THEMES.join(", ")}`);
+  if (viewport && !VIEWPORTS.some((vp) => vp.name === viewport)) {
+    throw new Error(`Unknown viewport "${viewport}". Known: ${VIEWPORTS.map((vp) => vp.name).join(", ")}`);
+  }
   const themes = theme ? [theme] : THEMES;
   const phone = VIEWPORTS[1];
   const cases = [];
@@ -83,6 +86,13 @@ export function evaluate(c, probe) {
   for (const src of probe.brokenImages) failures.push(`image failed: ${src}`);
   if (!probe.openButtonVisible) failures.push('"Buka Undangan" is not inside the first viewport');
 
+  // Full data fills every section, so a tier section missing from the page is
+  // a theme that silently dropped it. Sparse data may drop sections on purpose.
+  if (c.kondisi === "lengkap") {
+    for (const key of probe.navSections.filter((section) => !probe.presentSections.includes(section))) {
+      failures.push(`tier promises ${key} but the page has no -${NAV_ANCHOR_SUFFIX[key]} section`);
+    }
+  }
   const expected = probe.navSections.filter((key) => probe.presentSections.includes(key));
   if (probe.navLabels.length !== expected.length) {
     failures.push(`nav shows ${probe.navLabels.length} stops, expected ${expected.length} (${expected.join(", ")})`);

@@ -96,6 +96,22 @@ const TYPE_COPY: Record<Exclude<InvitationType, "wedding">, { noun: string; even
   corporate: { noun: "Peluncuran", events: ["Pembukaan", "Sesi utama", "Jamuan malam"] },
 };
 
+// The demo's wishes, love story and event eyebrows ("Sakral", "Adat") are
+// wedding copy; other types get neutral samples so the audit only sees the
+// theme's own words.
+const NEUTRAL_EVENT_LABELS = ["Acara utama", "Perayaan", "Ramah tamah"] as const;
+const NEUTRAL_WISHES = [
+  { name: "Tamu Sample 1", message: "Selamat dan sukses selalu! Semoga acaranya berjalan lancar." },
+  { name: "Tamu Sample 2", message: "Turut berbahagia, doa terbaik untuk keluarga." },
+  { name: "Tamu Sample 3", message: "Maaf belum bisa hadir, doa terbaik dari jauh." },
+  { name: "Tamu Sample 4", message: "Semoga selalu diberi kesehatan dan kebahagiaan." },
+] as const;
+const MILESTONE_STORIES = [
+  { title: "Awal perjalanan", year: "2019", description: "Cerita contoh: langkah pertama yang dikenang keluarga." },
+  { title: "Tumbuh bersama", year: "2022", description: "Cerita contoh: tahun-tahun penuh pelajaran dan teman baru." },
+  { title: "Hari ini", year: "2026", description: "Cerita contoh: momen yang ingin dirayakan bersama orang terdekat." },
+] as const;
+
 const LONG_WORD = "Kusumawardhaniprameswaridewantarisekararum";
 const LONG = {
   name: `Raden Ajeng ${LONG_WORD}`,
@@ -141,7 +157,7 @@ export function buildQaFixture(
       const address = long ? LONG.address : event.address;
       return {
         id: `qa-event-${index + 1}`,
-        eventType: event.type,
+        eventType: wedding ? event.type : NEUTRAL_EVENT_LABELS[index % NEUTRAL_EVENT_LABELS.length],
         title: copy ? copy.events[index % copy.events.length] : event.title,
         eventDate: event.date,
         startTime: `${event.start}:00`,
@@ -170,7 +186,7 @@ export function buildQaFixture(
 
   const stories = minimal
     ? []
-    : library.stories.map((story, index) => ({
+    : (soloRole ? MILESTONE_STORIES : library.stories).map((story, index) => ({
         id: `qa-story-${index + 1}`,
         title: story.title,
         storyDate: null,
@@ -194,7 +210,7 @@ export function buildQaFixture(
 
   const wishes = minimal
     ? []
-    : library.wishes.map((wish, index) => ({
+    : (wedding ? library.wishes : NEUTRAL_WISHES).map((wish, index) => ({
         id: `qa-wish-${index + 1}`,
         guestId: null,
         guestName: wish.name,

@@ -15,12 +15,21 @@ import { join } from "node:path";
 
 import { buildCases, caseUrl, evaluate, NAV_ANCHOR_SUFFIX } from "./matrix-cases.mjs";
 
+// Exit 2 for every setup or usage error, so exit 1 always means "checks failed".
+function usageError(message) {
+  console.error(message);
+  process.exit(2);
+}
+
 const require = createRequire(import.meta.url);
 let chromium;
 try {
-  ({ chromium } = require("playwright-core"));
+  ({ chromium } = require(process.env.PLAYWRIGHT_CORE ?? "playwright-core"));
 } catch {
-  ({ chromium } = require(process.env.PLAYWRIGHT_CORE ?? "playwright"));
+  usageError(
+    "playwright-core not found. Install it outside the project (e.g. `npm install --prefix ~/.qa-tools playwright-core`) " +
+      "and run with PLAYWRIGHT_CORE=~/.qa-tools/node_modules/playwright-core.",
+  );
 }
 
 const args = process.argv.slice(2);
@@ -29,7 +38,12 @@ const option = (name, fallback) => {
   return index >= 0 && args[index + 1] ? args[index + 1] : fallback;
 };
 const baseUrl = option("base-url", "http://localhost:3000");
-const cases = buildCases({ full: args.includes("--full"), theme: option("theme"), viewport: option("viewport") });
+let cases;
+try {
+  cases = buildCases({ full: args.includes("--full"), theme: option("theme"), viewport: option("viewport") });
+} catch (error) {
+  usageError(error.message);
+}
 
 // Runs inside the page; keep it self-contained.
 const PROBE = (suffixes) => {
@@ -62,8 +76,7 @@ async function preflight() {
     const response = await fetch(url, { signal: AbortSignal.timeout(20000) });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
   } catch (error) {
-    console.error(`Cannot open ${url} (${error.message}). Start "npm run dev" first, or pass --base-url.`);
-    process.exit(2);
+    usageError(`Cannot open ${url} (${error.message}). Start "npm run dev" first, or pass --base-url.`);
   }
 }
 
