@@ -55,6 +55,10 @@ PDKI check and the optional JWT signing keys reported done by the owner).
 
 Working notes:
 
+- Template QA matrix (2026-10-11): `npm run qa:matrix` against `npm run dev`;
+  dev-only route `/qa-matrix/<theme>?paket=&jenis=&kondisi=&to=`, output in
+  `qa-output/` (gitignored). It replaces the throwaway `src/app/qa-fixture`
+  pages for template checks.
 - Destructive SQL (DELETE/DROP/TRUNCATE) through the Supabase MCP waits for
   owner confirmation and times out; give the owner the SQL instead.
 - This sandbox cannot reach Supabase, Vercel or Cloudflare over plain HTTP:

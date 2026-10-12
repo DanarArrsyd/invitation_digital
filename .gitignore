@@ -52,3 +52,6 @@ supabase/.temp/
 
 # visual QA screenshots: kept locally, too heavy for the repo
 docs/visual-review/**/*.png
+
+# template QA matrix output (scripts/qa/matrix.mjs)
+qa-output/
