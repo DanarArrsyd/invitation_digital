@@ -165,6 +165,17 @@ const CSS = `
 .ni-gate-leaf--left .ni-gate-gunungan { left: 100%; }
 .ni-gate-leaf--right .ni-gate-gunungan { left: 0; }
 .ni-gate-scroll { position: absolute; inset: 0; z-index: 1; overflow-x: hidden; overflow-y: auto; }
+/* Short screens: "Buka Undangan" must show without scrolling. Unlayered, so
+   these outrank the cover's Tailwind spacing utilities. */
+@media (max-height: 860px) {
+  .ni-cover-pad { padding-block: clamp(1.5rem, 5svh, 3rem); }
+  .ni-cover-names { font-size: clamp(2.6rem, min(15vw, 9svh), 7rem); margin-top: clamp(.5rem, 2svh, 1.5rem); }
+  .ni-cover-gap { margin-top: clamp(.6rem, 2.2svh, 1.75rem); }
+  .ni-cover-cta { margin-top: clamp(1rem, 3.5svh, 2.75rem); }
+}
+@media (max-height: 640px) {
+  .ni-cover-monogram, .ni-cover-greeting { display: none; }
+}
 .ni-hero { min-height: 80svh; display: grid; align-items: center; }
 .ni-hero .ni-hero-floral { width: clamp(280px, 45vw, 620px); left: -8%; right: auto; bottom: -8%; opacity: .13; transform: rotate(-12deg); }
 .ni-hero-inner { position: relative; display: grid; align-items: center; gap: 3rem; width: 100%; max-width: 1440px; margin-inline: auto; padding: clamp(3.5rem, 6vw, 6rem) var(--ni-gutter); }

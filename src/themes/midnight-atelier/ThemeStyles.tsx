@@ -853,6 +853,15 @@ export function ThemeStyles() {
         .ma-hero-text-only .ma-hero-copy { grid-column: 2; grid-row: 1; margin-bottom: clamp(3rem, 7vw, 7rem); }
         .ma-gallery-columns { columns: 3; }
       }
+      /* Short screens: tighter cover rhythm keeps "Buka undangan" above the fold.
+         Placed after the phone and desktop cover rules so it wins. */
+      @media (max-height: 700px) {
+        .ma-cover-frame { gap: 1rem; }
+        /* Landscape phones: names sized by width alone grow past the screen. */
+        .ma-cover-names { font-size: clamp(2.75rem, min(19vw, 15svh), 10.5rem); }
+        .ma-cover-intro { margin-bottom: .75rem; }
+        .ma-cover-stage time { margin-top: 1rem; }
+      }
       /* In CSS, not markup: the server cannot know the guest's motion setting. */
       @media (prefers-reduced-motion: reduce) {
         .ma-gate[data-opened] :is(.ma-cover, .ma-cover-frame, .ma-cover-masthead, .ma-cover-recipient, .ma-cover-names) { transition: none; }

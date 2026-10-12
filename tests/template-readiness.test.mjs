@@ -141,3 +141,10 @@ test("Terra's tablet nav leaves room for its widest label", () => {
   const horizontal = parseFloat(tablet[1].split(/\s+/)[1]);
   assert.ok(horizontal <= 0.4, `horizontal padding ${tablet[1]} leaves the label too little room`);
 });
+
+test("Ivory, Terra and Midnight compress their cover on short screens", () => {
+  for (const [slug, selector] of [["nusantara-ivory", "ni-cover-names"], ["terra-botanica", "tb-cover-layout"], ["midnight-atelier", "ma-cover"]]) {
+    const css = readFileSync(join(themesRoot, slug, "ThemeStyles.tsx"), "utf8");
+    assert.match(css, new RegExp(`@media \\(max-height: \\d+px\\)\\s*\\{[^@]*\\.${selector}`), `${slug} has a short-screen cover rule for .${selector}`);
+  }
+});

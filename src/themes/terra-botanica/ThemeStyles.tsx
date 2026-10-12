@@ -272,6 +272,14 @@ export function ThemeStyles() {
     .tb-theme .tb-gallery-grid[data-settle="waiting"] .tb-gallery-item { opacity: 0; transform: translateY(-48px) rotate(calc(var(--tb-tilt, 0deg) * -6)); }
     .tb-theme .tb-gallery-grid[data-settle="settled"] .tb-gallery-item { transition: transform .8s cubic-bezier(.3, 1.3, .5, 1) var(--tb-drop-delay, 0s), opacity .4s ease var(--tb-drop-delay, 0s); }
     /* Narrow phones: Courier is wide, so labels get the item's full width at 10.5px. */
+    /* Short screens: keep "Buka Undangan" above the fold. */
+    @media (max-height: 700px) {
+      .tb-theme .tb-cover-layout { gap: clamp(1rem, 3.5svh, 2.5rem); padding-top: max(2rem, env(safe-area-inset-top)); padding-bottom: max(2rem, env(safe-area-inset-bottom)); }
+      .tb-theme .tb-journal-label { margin-bottom: 1rem; }
+      .tb-theme .tb-cover-names { font-size: clamp(2.6rem, min(13vw, 9svh), 7.5rem); }
+      .tb-theme .tb-cover-date { margin-top: 1rem; }
+      .tb-theme .tb-cover-recipient .tb-action { margin-top: 1rem; }
+    }
     @media (max-width: 360px) { .tb-theme .tb-nav a { padding-inline: 0; font-size: 10.5px; } }
     @media (min-width: 768px) {
       /* Wider screens: a compact centred bar, items still equal in width. */
