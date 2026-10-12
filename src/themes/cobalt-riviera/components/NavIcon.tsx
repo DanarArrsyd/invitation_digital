@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 
-import type { ThemeSectionKey } from "@/themes/section-contract";
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 
 // Seaside travel-folio glyphs drawn on a 24px grid. `cr-route-accent` marks the
 // one detail per glyph that takes the tangerine (or, when active, cobalt) stroke.
@@ -80,28 +80,14 @@ export const ROUTE_ICON_GLYPHS = {
       <path d="M12 8c-1.4-2.4-4.5-3.1-4.5-1.2C7.5 7.8 9.6 8 12 8Zm0 0c1.4-2.4 4.5-3.1 4.5-1.2 0 1-2.1 1.2-4.5 1.2Z" />
     </>
   ),
-} satisfies Partial<Record<ThemeSectionKey, ReactElement>>;
+} satisfies Record<NavSectionKey, ReactElement>;
 
-// Compass rose for any section key without a dedicated glyph.
-const COMPASS = (
-  <>
-    <circle cx="12" cy="12" r="8.5" />
-    <path d="M12 6.5 14 12l-2 5.5-2-5.5Z" />
-    <path className="cr-route-accent" d="M12 6.5 14 12h-4Z" />
-  </>
-);
 
-function hasGlyph(section: ThemeSectionKey): section is keyof typeof ROUTE_ICON_GLYPHS {
-  return Object.hasOwn(ROUTE_ICON_GLYPHS, section);
-}
-
-export function NavIcon({ section, className }: { section: ThemeSectionKey; className?: string }) {
-  const dedicated = hasGlyph(section);
-
+export function NavIcon({ section, className }: { section: NavSectionKey; className?: string }) {
   return (
     <svg
       className={className}
-      data-icon={dedicated ? section : "compass"}
+      data-icon={section}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -111,7 +97,7 @@ export function NavIcon({ section, className }: { section: ThemeSectionKey; clas
       aria-hidden="true"
       focusable="false"
     >
-      {dedicated ? ROUTE_ICON_GLYPHS[section] : COMPASS}
+      {ROUTE_ICON_GLYPHS[section]}
     </svg>
   );
 }

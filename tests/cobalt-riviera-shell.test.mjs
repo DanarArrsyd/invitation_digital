@@ -233,7 +233,7 @@ test("route navigation pairs every visible label with one decorative nautical ic
   }
 });
 
-test("every section key the route builder can emit has a dedicated icon, with a compass fallback", () => {
+test("every section key the route builder can emit has a dedicated, decorative icon", () => {
   const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
   const { NavIcon, ROUTE_ICON_GLYPHS } = loadTheme().load("themes/cobalt-riviera/components/NavIcon");
   const { NAV_SECTION_KEYS } = loadTheme().load("lib/packages/nav-sections");
@@ -245,10 +245,8 @@ test("every section key the route builder can emit has a dedicated icon, with a 
     assert.equal(svg?.getAttribute("data-icon"), section);
     assert.ok(svg.querySelector("path, circle, rect"), `${section} draws a glyph`);
     assert.equal(svg.getAttribute("stroke-width"), "1.5");
+    assert.equal(svg.getAttribute("aria-hidden"), "true");
   }
-  const fallback = new JSDOM(renderToStaticMarkup(React.createElement(NavIcon, { section: "closing" }))).window.document.querySelector("svg");
-  assert.equal(fallback?.getAttribute("data-icon"), "compass");
-  assert.equal(fallback.getAttribute("aria-hidden"), "true");
 });
 
 test("generic guest, reduced motion, and disabled music keep the shell operable without audio", async () => {
@@ -256,7 +254,7 @@ test("generic guest, reduced motion, and disabled music keep the shell operable 
   const view = await mountShell({ reducedMotion: true }, invitation, null, 390);
   try {
     assert.equal(view.document.querySelector(".cr-cover-guest-name")?.textContent, "Bapak/Ibu/Saudara/i");
-    assert.equal(view.document.querySelector(".cr-gate")?.getAttribute("data-reduced-motion"), "true");
+    assert.equal(view.document.querySelector(".cr-gate")?.hasAttribute("data-reduced-motion"), false);
     await act(async () => view.document.querySelector(".cr-cover-open").click());
     assert.equal(view.document.getElementById("cr-content").hidden, false);
     assert.equal(view.document.querySelector("audio"), null);
@@ -277,7 +275,7 @@ test("shell CSS defines the receding-wave timing, instant motion fallback, mobil
   assert.match(css, /@media\s*\(max-width:\s*767px\)/);
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
   assert.match(css, /safe-area-inset-bottom/);
-  assert.match(css, /data-reduced-motion="true"/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.cr-gate\[data-opened\]/);
   assert.match(css, /\.cr-music[^}]*bottom:\s*var\(--cr-mobile-nav-clearance\)/s);
   assert.match(css, /\.cr-route-nav\s*\{[^}]*--cr-focus-ring:\s*var\(--cr-cobalt\)/s);
   assert.match(css, /\.cr-route-nav a\[aria-current="location"\]\s*\{[^}]*--cr-focus-ring:\s*var\(--cr-sea-ink\)/s);

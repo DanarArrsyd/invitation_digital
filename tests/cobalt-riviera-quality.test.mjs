@@ -225,14 +225,14 @@ test("reduced motion, keyboard focus handoff, and rejected audio keep the invita
     assert.ok(open);
     await act(async () => open.click());
     await act(async () => Promise.resolve());
-    assert.equal(view.document.querySelector(".cr-gate").dataset.reducedMotion, "true");
+    assert.equal(view.document.querySelector(".cr-gate").hasAttribute("data-reduced-motion"), false, "reduced motion lives in CSS so server and client markup match");
     assert.equal(view.document.getElementById("cr-content").hidden, false);
     assert.equal(view.document.activeElement, view.document.getElementById("cr-content"));
     assert.equal(playAttempts, 1);
     assert.deepEqual(calls, [["cobalt-quality", "guest-token"]]);
     assert.ok(view.document.querySelector('button[aria-label="Putar musik"]'));
     const css = view.document.querySelector("style").textContent;
-    assert.match(css, /data-reduced-motion="true"/);
+    assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.cr-gate\[data-opened\]/);
     assert.match(css, /prefers-reduced-motion:\s*reduce/);
     assert.match(css, /animation:\s*none\s*!important/);
     assert.match(css, /transition:\s*none\s*!important/);

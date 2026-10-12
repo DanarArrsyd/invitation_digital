@@ -853,8 +853,11 @@ export function ThemeStyles() {
         .ma-hero-text-only .ma-hero-copy { grid-column: 2; grid-row: 1; margin-bottom: clamp(3rem, 7vw, 7rem); }
         .ma-gallery-columns { columns: 3; }
       }
-      .ma-gate[data-reduced-motion="true"] :is(.ma-cover, .ma-cover-frame, .ma-cover-masthead, .ma-cover-recipient, .ma-cover-names) { transition: none; }
-      .ma-gate[data-reduced-motion="true"] :is(.ma-flute, .ma-toast-ring, .ma-toast-bubble) { animation: none; }
+      /* In CSS, not markup: the server cannot know the guest's motion setting. */
+      @media (prefers-reduced-motion: reduce) {
+        .ma-gate[data-opened] :is(.ma-cover, .ma-cover-frame, .ma-cover-masthead, .ma-cover-recipient, .ma-cover-names) { transition: none; }
+        .ma-gate[data-opened] :is(.ma-flute, .ma-toast-ring, .ma-toast-bubble) { animation: none; }
+      }
       @media (prefers-reduced-motion: reduce) {
         .ma-theme, .ma-theme *, .ma-theme *::before, .ma-theme *::after {
           animation: none !important;

@@ -15,8 +15,8 @@ export const KELIR_KENCANA_TOKENS = {
     prada: "#8E2B1F",
     /** Kencana — gold on malam; ornament only on kelir (2.4:1). */
     kencana: "#C09435",
-    /** Kencana deepened for text on kelir (AA). */
-    kencanaInk: "#84601D",
+    /** Kencana deepened for text on kelir and kelirDeep (AA on both). */
+    kencanaInk: "#7A581B",
   },
 } as const;
 

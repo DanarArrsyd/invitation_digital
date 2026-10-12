@@ -671,7 +671,10 @@ export function ThemeStyles() {
       }
 
       /* ---------- Reduced motion ---------- */
-      .kk-gate[data-reduced-motion="true"] :is(.kk-cover, .kk-cover-copy, .kk-stage-gunungan, .kk-stage-figure) { transition: none; }
+      /* In CSS, not markup: the server cannot know the guest's motion setting. */
+      @media (prefers-reduced-motion: reduce) {
+        .kk-gate[data-opened] :is(.kk-cover, .kk-cover-copy, .kk-stage-gunungan, .kk-stage-figure) { transition: none; }
+      }
       @media (prefers-reduced-motion: reduce) {
         .kk-theme, .kk-theme *, .kk-theme *::before, .kk-theme *::after {
           animation: none !important;

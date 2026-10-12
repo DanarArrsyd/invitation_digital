@@ -15,13 +15,16 @@ renders with full data) passed on all 105 pages.
 | Template | Check | Cases | Example case | Verified detail | Proposed round | Severity |
 |---|---|---|---|---|---|---|
 | All five | Wedding-only copy on non-wedding pages | 25 (5 per template) | `terra-botanica` signature birthday 375 | The nav label "Mempelai" is hard-coded; also the couple heading in Ivory | C | Important |
-| Midnight, Cobalt, Kelir | Hydration mismatch under reduced motion | 3 (1 per template) | `midnight-atelier` signature wedding 375, reduced motion | `CoverGate` renders `data-reduced-motion={useReducedMotion()}`: empty on the server, `true` on the client. React leaves the server value, so the theme's reduced-motion cover rules never apply. Breaks §28.1 (server and first client render must match) | A | Important |
+| Midnight, Cobalt, Kelir | Hydration mismatch under reduced motion | 3 (1 per template) | `midnight-atelier` signature wedding 375, reduced motion | `CoverGate` renders `data-reduced-motion={useReducedMotion()}`: `false` on the server, `true` on the client, so React logs a hydration error and keeps the server value. Breaks §28.1 (server and first client render must match). Guests still saw no cover motion: each theme's global reduced-motion block already sets `transition`/`animation: none !important` | A | Important |
 | Nusantara Ivory | "Buka Undangan" outside the first screen | 7 | signature wedding 1280×800; all packages at 320×568; `panjang` at 375 | At 1280×800 the button sits at 819–867 px inside the scrolling gate (`ni-gate-scroll`, 915 px tall): reachable only by scrolling, invisible on a common laptop screen | B | Important |
 | Terra Botanica | "Buka Undangan" outside the first screen | 3 | all packages at 320×568 | The recipient block starts near the fold; the button is below it | B | Important |
 | Midnight Atelier | "Buka Undangan" outside the first screen | 3 | all packages at 320×568 | Button at 532–585 px on a 568 px screen (17 px cut) | B | Important |
 | Terra Botanica | Nav label cut | 3 | grand wedding 768×1024; signature and grand at 320 | "Beran…", "Mempe…", "Strea…" truncate with an ellipsis, at 768 px too where the bar has room | B | Important |
 | Nusantara Ivory | Nav label cut | 2 | signature and grand wedding 320×568 | "Mempe…", "Strea…" | B | Important |
 | Cobalt Riviera | Nav label cut | 1 | grand wedding 320×568 | "Strea…" | B | Important |
+
+Fixed in round A (2026-10-12): the three reduced-motion hydration rows
+(Midnight, Cobalt, Kelir); their `…__375__rm` cases now pass the matrix.
 
 Not yet covered by the matrix and still to audit by hand in each round:
 §28 items without an automatic check (round A), visual rhythm and empty
@@ -30,8 +33,20 @@ and copy beyond the wedding-only words (round C).
 
 ## Round A — Technical (§28)
 
-| Template | Location | Finding | Severity | Evidence | Status |
-|---|---|---|---|---|---|
+Audited 2026-10-12 against §28.2–§28.5 for all five templates. Passing
+everywhere: no Supabase or package access, `pickNavItems` with `data-nav-id`
+and `useNavRailScroll`, the nine §28.2 anchors, `next/image` with
+`isOptimizableImage` and no raw `<img>`, shared action icons, Turnstile
+inside all ten forms.
+
+| # | Template | Location | Finding | Severity | Evidence | Status |
+|---|---|---|---|---|---|---|
+| A1 | Midnight, Cobalt, Kelir | `CoverGate.tsx`, `ThemeStyles.tsx` | `data-reduced-motion={useReducedMotion()}` differed between server and client: a hydration error on every reduced-motion visit. The cover itself did not move for those guests, because the global reduced-motion block already stopped it; the scoped cover rules were redundant and stay only as documentation of intent | Important (§28.1) | `tests/template-hydration.test.mjs` | Fixed: no attribute; scoped rules in `@media (prefers-reduced-motion: reduce)` |
+| A2 | Kelir | `tokens.ts` (`kencanaInk`) | Small gold eyebrow on `kelirDeep` at 4.03:1 | Important | `tests/kelir-kencana-contrast.test.mjs` | Fixed: `#84601D` → `#7A581B` (4.57:1) |
+| A3 | All | tests | Automatable §28 rules unguarded | Important | `tests/template-readiness.test.mjs`, `tests/template-hydration.test.mjs` | Fixed |
+| A4 | Cobalt, Kelir | `components/NavIcon.tsx` | Nav glyphs typed `Partial` with a fallback glyph | Minor | readiness test "full NavSectionKey record" | Fixed |
+| A5 | Midnight | cover, RSVP and wish buttons | Typed "→" instead of a drawn arrow | Minor | readiness rule "no typed arrows" | Fixed: shared `ForwardArrowIcon` |
+| A6 | All (shared) | `src/themes/shared/GalleryLightbox.tsx` | Previous/next buttons use typed "←" / "→" (not emoji-prone, but not drawn like other arrows) | Minor | found while widening the arrow check | Open: owner to decide |
 
 ## Round B — Visual on phones
 

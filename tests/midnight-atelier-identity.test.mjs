@@ -291,7 +291,7 @@ test("the cover toasts with two champagne flutes and still opens on the first ta
   assert.match(sheet, /\[data-opened="true"\] \.ma-flute-left\s*\{[^}]*animation:/);
   assert.match(sheet, /\[data-opened="true"\] \.ma-toast-ring\s*\{[^}]*animation:/);
   assert.match(sheet, /\[data-opened="true"\] \.ma-cover\s*\{[^}]*transition:[^}]*opacity[^}]*1000ms/, "the cover lingers for the toast, then fades");
-  assert.match(sheet, /data-reduced-motion="true"\] :is\([^)]*\.ma-flute[^)]*\)\s*\{[^}]*animation:\s*none/);
+  assert.match(sheet, /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.ma-gate\[data-opened\] :is\([^)]*\.ma-flute[^)]*\)\s*\{[^}]*animation:\s*none/);
   assert.doesNotMatch(sheet, /ma-curtain/);
 });
 

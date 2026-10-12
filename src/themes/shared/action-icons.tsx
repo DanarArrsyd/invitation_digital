@@ -28,6 +28,15 @@ export function DownloadArrowIcon({ className = "" }: { className?: string }) {
   );
 }
 
+/** Moves on (open, send): a thin horizontal arrow. */
+export function ForwardArrowIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={`theme-action-icon ${className}`} aria-hidden="true" focusable="false" {...STROKE}>
+      <path d="M4 12h15M14 7l5 5-5 5" />
+    </svg>
+  );
+}
+
 /** Google's mark, kept in its own four colours regardless of theme. */
 export function GoogleGlyph({ className = "" }: { className?: string }) {
   return (

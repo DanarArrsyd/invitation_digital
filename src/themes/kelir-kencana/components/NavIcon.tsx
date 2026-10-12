@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 
-import type { ThemeSectionKey } from "@/themes/section-contract";
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
 
 // Pagelaran glyphs on a 24px grid. `kk-nav-accent` marks the one detail per
 // glyph that takes the prada stroke (kencana when active).
@@ -74,22 +74,14 @@ export const NAV_ICON_GLYPHS = {
       <path d="M12 6.5c-1.4-2.4-4.5-3.1-4.5-1.2 0 1 2.1 1.2 4.5 1.2Zm0 0c1.4-2.4 4.5-3.1 4.5-1.2 0 1-2.1 1.2-4.5 1.2Z" />
     </>
   ),
-} satisfies Partial<Record<ThemeSectionKey, ReactElement>>;
+} satisfies Record<NavSectionKey, ReactElement>;
 
-// A plain diamond for any section key without a dedicated glyph.
-const DIAMOND = <path className="kk-nav-accent" d="m12 5 5 7-5 7-5-7Z" />;
 
-function hasGlyph(section: ThemeSectionKey): section is keyof typeof NAV_ICON_GLYPHS {
-  return Object.hasOwn(NAV_ICON_GLYPHS, section);
-}
-
-export function NavIcon({ section, className }: { section: ThemeSectionKey; className?: string }) {
-  const dedicated = hasGlyph(section);
-
+export function NavIcon({ section, className }: { section: NavSectionKey; className?: string }) {
   return (
     <svg
       className={className}
-      data-icon={dedicated ? section : "diamond"}
+      data-icon={section}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -99,7 +91,7 @@ export function NavIcon({ section, className }: { section: ThemeSectionKey; clas
       aria-hidden="true"
       focusable="false"
     >
-      {dedicated ? NAV_ICON_GLYPHS[section] : DIAMOND}
+      {NAV_ICON_GLYPHS[section]}
     </svg>
   );
 }

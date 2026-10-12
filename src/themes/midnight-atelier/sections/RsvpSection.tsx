@@ -8,6 +8,7 @@ import { useRsvpForm } from "@/themes/shared/use-public-forms";
 import { DanceCard } from "../components/DanceCard";
 import { Section } from "../components/Section";
 import { Spotlight } from "../components/Spotlight";
+import { ForwardArrowIcon } from "@/themes/shared/action-icons";
 
 export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
   invitationId: string;
@@ -90,7 +91,7 @@ export function RsvpSection({ invitationId, slug, guestToken, guestName }: {
             <TurnstileWidget />
             {state.status === "error" ? <p className="ma-form-error" role="alert">{state.message}</p> : null}
             <button className="ma-form-submit" type="submit" disabled={isPending || !attendance}>
-              <span>{isPending ? "Mengirim..." : "Kirim Konfirmasi"}</span><span aria-hidden="true">→</span>
+              <span>{isPending ? "Mengirim..." : "Kirim Konfirmasi"}</span><span aria-hidden="true"><ForwardArrowIcon /></span>
             </button>
           </form>
         )}
