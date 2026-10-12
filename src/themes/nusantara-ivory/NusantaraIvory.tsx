@@ -47,7 +47,7 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
       ? { id: "ni-galeri", label: "Galeri", icon: "gallery", section: "gallery" }
       : null,
     features.livestream && hasLivestreamLink(invitation.events)
-      ? { id: "ni-livestream", label: "Streaming", icon: "broadcast", section: "livestream" }
+      ? { id: "ni-livestream", label: "Live", icon: "broadcast", section: "livestream" }
       : null,
     features.rsvp ? { id: "ni-rsvp", label: "RSVP", icon: "message", section: "rsvp" } : null,
     features.wishes ? { id: "ni-ucapan", label: "Ucapan", icon: "pen", section: "wishes" } : null,

@@ -112,3 +112,14 @@ test("every theme with a NavIcon component keys it by the full NavSectionKey rec
     assert.match(source, /NavSectionKey/, `${slug} NavIcon covers every NavSectionKey`);
   }
 });
+
+test("every theme labels the livestream nav stop \"Live\" and keeps its -livestream anchor", () => {
+  for (const slug of THEME_SLUGS) {
+    const hits = themeFiles(slug)
+      .map((file) => readFileSync(file, "utf8"))
+      .filter((source) => /id: "[a-z]{2}-livestream"/.test(source));
+    assert.equal(hits.length, 1, `${slug} builds one livestream nav item`);
+    assert.match(hits[0], /id: "[a-z]{2}-livestream"[^}]*label: "Live"/, `${slug} labels it Live`);
+    assert.doesNotMatch(hits[0], /label: "Streaming"/);
+  }
+});

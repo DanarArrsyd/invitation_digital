@@ -44,7 +44,7 @@ export function buildKelirRouteItems(invitation: PublicInvitation): KelirRouteIt
     features.story && invitation.stories.length > 0 ? { id: "kk-cerita", section: "story", label: "Cerita" } : null,
     features.gallery && invitation.gallery.length > 0 ? { id: "kk-galeri", section: "gallery", label: "Galeri" } : null,
     features.livestream && hasLivestreamLink(invitation.events)
-      ? { id: "kk-livestream", section: "livestream", label: "Streaming" }
+      ? { id: "kk-livestream", section: "livestream", label: "Live" }
       : null,
     features.rsvp ? { id: "kk-rsvp", section: "rsvp", label: "RSVP" } : null,
     features.wishes ? { id: "kk-ucapan", section: "wishes", label: "Ucapan" } : null,

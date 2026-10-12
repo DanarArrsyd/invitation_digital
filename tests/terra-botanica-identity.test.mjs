@@ -439,7 +439,7 @@ test("the bottom nav shows the package's stops in page order", () => {
   grand.features = { ...grand.features, story: true, livestream: true };
   grand.events = grand.events.map((event) => ({ ...event, livestreamUrl: "https://youtube.com/live/x" }));
   const grandLabels = labels(grand);
-  assert.ok(grandLabels.includes("Streaming") && grandLabels.length > 7, `Grand adds more stops (${grandLabels})`);
+  assert.ok(grandLabels.includes("Live") && grandLabels.length > 7, `Grand adds more stops (${grandLabels})`);
   const noGift = navInvitation();
   noGift.features = { ...noGift.features, gift: false };
   assert.deepEqual(Array.from(buildTerraNavItems(noGift), (item) => item.section), ["hero", "couple", "events", "gallery", "rsvp", "wishes"]);

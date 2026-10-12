@@ -33,7 +33,7 @@ export function buildTerraNavItems(invitation: PublicInvitation): NavItem[] {
     features.story && invitation.stories.length > 0 ? { id: "tb-cerita", section: "story", label: "Cerita" } : null,
     features.gallery && invitation.gallery.length > 0 ? { id: "tb-galeri", section: "gallery", label: "Galeri" } : null,
     features.livestream && hasLivestreamLink(invitation.events)
-      ? { id: "tb-livestream", section: "livestream", label: "Streaming" }
+      ? { id: "tb-livestream", section: "livestream", label: "Live" }
       : null,
     features.rsvp ? { id: "tb-rsvp", section: "rsvp", label: "RSVP" } : null,
     features.wishes ? { id: "tb-ucapan", section: "wishes", label: "Ucapan" } : null,
