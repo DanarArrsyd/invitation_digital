@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-import type { ThemeSectionKey } from "@/themes/section-contract";
+import type { NavSectionKey } from "@/lib/packages/nav-sections";
 import { useActiveSection } from "@/themes/shared/use-active-section";
 import { useNavRailScroll } from "@/themes/shared/use-nav-rail-scroll";
 
@@ -10,7 +10,7 @@ import { NavIcon } from "./NavIcon";
 
 export interface KelirRouteItem {
   id: `kk-${string}`;
-  section: ThemeSectionKey;
+  section: NavSectionKey;
   label: string;
 }
 

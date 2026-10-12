@@ -233,7 +233,7 @@ test("route navigation pairs every visible label with one decorative nautical ic
   }
 });
 
-test("every section key the route builder can emit has a dedicated icon, with a compass fallback", () => {
+test("every section key the route builder can emit has a dedicated, decorative icon", () => {
   const { buildCobaltRouteItems } = loadTheme().load("themes/cobalt-riviera/CobaltRiviera");
   const { NavIcon, ROUTE_ICON_GLYPHS } = loadTheme().load("themes/cobalt-riviera/components/NavIcon");
   const { NAV_SECTION_KEYS } = loadTheme().load("lib/packages/nav-sections");
@@ -245,10 +245,8 @@ test("every section key the route builder can emit has a dedicated icon, with a 
     assert.equal(svg?.getAttribute("data-icon"), section);
     assert.ok(svg.querySelector("path, circle, rect"), `${section} draws a glyph`);
     assert.equal(svg.getAttribute("stroke-width"), "1.5");
+    assert.equal(svg.getAttribute("aria-hidden"), "true");
   }
-  const fallback = new JSDOM(renderToStaticMarkup(React.createElement(NavIcon, { section: "closing" }))).window.document.querySelector("svg");
-  assert.equal(fallback?.getAttribute("data-icon"), "compass");
-  assert.equal(fallback.getAttribute("aria-hidden"), "true");
 });
 
 test("generic guest, reduced motion, and disabled music keep the shell operable without audio", async () => {

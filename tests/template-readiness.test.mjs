@@ -95,3 +95,15 @@ for (const rule of RULES) {
     assert.deepEqual(failures, []);
   });
 }
+
+test("every theme with a NavIcon component keys it by the full NavSectionKey record (§28.3)", () => {
+  for (const slug of THEME_SLUGS) {
+    const path = join(themesRoot, slug, "components", "NavIcon.tsx");
+    let source;
+    try { source = readFileSync(path, "utf8"); } catch { continue; }
+    assert.doesNotMatch(source, /Partial<Record</, `${slug} NavIcon must not be Partial`);
+    assert.doesNotMatch(source, /hasGlyph|COMPASS|DIAMOND/, `${slug} NavIcon must not need a fallback glyph`);
+    // Terra aliases the key type (TerraNavSection = NavSectionKey), so check the name, not the exact generic.
+    assert.match(source, /NavSectionKey/, `${slug} NavIcon covers every NavSectionKey`);
+  }
+});
