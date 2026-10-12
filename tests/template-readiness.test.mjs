@@ -99,10 +99,13 @@ for (const rule of RULES) {
 }
 
 test("every theme with a NavIcon component keys it by the full NavSectionKey record (§28.3)", () => {
-  for (const slug of THEME_SLUGS) {
-    const path = join(themesRoot, slug, "components", "NavIcon.tsx");
-    let source;
-    try { source = readFileSync(path, "utf8"); } catch { continue; }
+  // Themes whose nav imports ./NavIcon must ship it; a rename or move fails here
+  // instead of silently dropping that theme from the check.
+  const withNavIcon = THEME_SLUGS.filter((slug) =>
+    themeFiles(slug).some((file) => /(FloatingNav|RouteNavigation)\.tsx$/.test(file) && /from "\.\/NavIcon"/.test(readFileSync(file, "utf8"))));
+  assert.ok(withNavIcon.length >= 4, `expected the NavIcon themes, found ${withNavIcon.join(", ")}`);
+  for (const slug of withNavIcon) {
+    const source = readFileSync(join(themesRoot, slug, "components", "NavIcon.tsx"), "utf8");
     assert.doesNotMatch(source, /Partial<Record</, `${slug} NavIcon must not be Partial`);
     assert.doesNotMatch(source, /hasGlyph|COMPASS|DIAMOND/, `${slug} NavIcon must not need a fallback glyph`);
     // Terra aliases the key type (TerraNavSection = NavSectionKey), so check the name, not the exact generic.
