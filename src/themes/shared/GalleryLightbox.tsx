@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import type { GalleryItem } from "@/types/invitation";
 
 import { useGalleryLightbox } from "./use-gallery-lightbox";
+import { BackArrowIcon, ForwardArrowIcon } from "./action-icons";
 
 export type GalleryLightboxClasses = {
   dialog: string;
@@ -50,11 +51,11 @@ export function GalleryLightbox({
               {gallery.length > 1 ? (
                 <>
                   <button type="button" className={classes.button} onClick={() => show(openIndex - 1)}>
-                    <span aria-hidden="true">←</span>
+                    <BackArrowIcon />
                     <span className="sr-only">Foto sebelumnya</span>
                   </button>
                   <button type="button" className={classes.button} onClick={() => show(openIndex + 1)}>
-                    <span aria-hidden="true">→</span>
+                    <ForwardArrowIcon />
                     <span className="sr-only">Foto berikutnya</span>
                   </button>
                 </>
