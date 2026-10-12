@@ -23,6 +23,9 @@ renders with full data) passed on all 105 pages.
 | Nusantara Ivory | Nav label cut | 2 | signature and grand wedding 320×568 | "Mempe…", "Strea…" | B | Important |
 | Cobalt Riviera | Nav label cut | 1 | grand wedding 320×568 | "Strea…" | B | Important |
 
+Fixed in round A (2026-10-12): the three reduced-motion hydration rows
+(Midnight, Cobalt, Kelir); their `…__375__rm` cases now pass the matrix.
+
 Not yet covered by the matrix and still to audit by hand in each round:
 §28 items without an automatic check (round A), visual rhythm and empty
 states (round B, plus the owner's real-phone pass through `/demo/<slug>`),
@@ -30,8 +33,20 @@ and copy beyond the wedding-only words (round C).
 
 ## Round A — Technical (§28)
 
-| Template | Location | Finding | Severity | Evidence | Status |
-|---|---|---|---|---|---|
+Audited 2026-10-12 against §28.2–§28.5 for all five templates. Passing
+everywhere: no Supabase or package access, `pickNavItems` with `data-nav-id`
+and `useNavRailScroll`, the nine §28.2 anchors, `next/image` with
+`isOptimizableImage` and no raw `<img>`, shared action icons, Turnstile
+inside all ten forms.
+
+| # | Template | Location | Finding | Severity | Evidence | Status |
+|---|---|---|---|---|---|---|
+| A1 | Midnight, Cobalt, Kelir | `CoverGate.tsx`, `ThemeStyles.tsx` | `data-reduced-motion={useReducedMotion()}` differed between server and client; the reduced-motion cover rules never applied | Important | `tests/template-hydration.test.mjs` | Fixed: rules in `@media (prefers-reduced-motion: reduce)` |
+| A2 | Kelir | `tokens.ts` (`kencanaInk`) | Small gold eyebrow on `kelirDeep` at 4.03:1 | Important | `tests/kelir-kencana-contrast.test.mjs` | Fixed: `#84601D` → `#7A581B` (4.57:1) |
+| A3 | All | tests | Automatable §28 rules unguarded | Important | `tests/template-readiness.test.mjs`, `tests/template-hydration.test.mjs` | Fixed |
+| A4 | Cobalt, Kelir | `components/NavIcon.tsx` | Nav glyphs typed `Partial` with a fallback glyph | Minor | readiness test "full NavSectionKey record" | Fixed |
+| A5 | Midnight | cover, RSVP and wish buttons | Typed "→" instead of a drawn arrow | Minor | readiness rule "no typed arrows" | Fixed: shared `ForwardArrowIcon` |
+| A6 | All (shared) | `src/themes/shared/GalleryLightbox.tsx` | Previous/next buttons use typed "←" / "→" (not emoji-prone, but not drawn like other arrows) | Minor | found while widening the arrow check | Open: owner to decide |
 
 ## Round B — Visual on phones
 
