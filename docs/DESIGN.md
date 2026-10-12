@@ -841,6 +841,14 @@ is incomplete, not that the test is wrong.
 
 ### 28.7 QA before review
 
+- Run the QA matrix (`npm run dev`, then `npm run qa:matrix`, with
+  `playwright-core` installed outside the project and `--chromium <path>`
+  if it has no bundled browser). It renders `/qa-matrix/<theme>` (404 in
+  production) for every package, invitation type, data condition and the
+  widths below, and fails on overflow, console errors, broken images, an
+  off-screen open button, nav/tier mismatches, short or cut nav items, and
+  wedding-only copy on other event types. Add a new theme to
+  `scripts/demo/content.mjs` and it joins the matrix.
 - Widths 320, 375, 768 and 1280, for Intimate, Signature and Grand: no
   horizontal overflow, nav stops match the tier, labels never cut, items at
   least 52px tall on phones.

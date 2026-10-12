@@ -30,6 +30,10 @@ export const NAV_ANCHOR_SUFFIX = {
 };
 
 const WEDDING_ONLY = [/mempelai/i, /the wedding of/i, /pernikahan/i];
+// Turnstile rejects localhost (error 110200) and Chrome echoes each failed
+// response as a URL-less console line; the app's own failed requests are
+// still reported with their URL below.
+const CONSOLE_NOISE = [/\[Cloudflare Turnstile\]/, /^Failed to load resource:/];
 const PHONE_MAX_WIDTH = 767;
 const MIN_NAV_ITEM_HEIGHT = 52;
 
@@ -70,8 +74,12 @@ export function caseUrl(baseUrl, c) {
 export function evaluate(c, probe) {
   const failures = [];
   if (probe.scrollWidth > probe.innerWidth) failures.push(`horizontal overflow: ${probe.scrollWidth}px > ${probe.innerWidth}px`);
-  for (const error of probe.consoleErrors) failures.push(`console error: ${error}`);
-  for (const request of probe.failedRequests) failures.push(`failed request: ${request}`);
+  for (const error of probe.consoleErrors) {
+    if (!CONSOLE_NOISE.some((pattern) => pattern.test(error))) failures.push(`console error: ${error}`);
+  }
+  for (const request of probe.failedRequests) {
+    if (!probe.origin || request.startsWith(probe.origin)) failures.push(`failed request: ${request}`);
+  }
   for (const src of probe.brokenImages) failures.push(`image failed: ${src}`);
   if (!probe.openButtonVisible) failures.push('"Buka Undangan" is not inside the first viewport');
 

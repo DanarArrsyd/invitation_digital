@@ -59,3 +59,17 @@ test("the 52px rule applies to phones only", () => {
   const desktop = { ...phone, viewport: VIEWPORTS[3] };
   assert.deepEqual(evaluate(desktop, { ...clean, scrollWidth: 1280, innerWidth: 1280, navItemHeights: [40] }), []);
 });
+
+test("third-party noise is ignored; the app's own failures still count", () => {
+  const noisy = {
+    ...clean,
+    origin: "http://localhost:3000",
+    consoleErrors: ["[Cloudflare Turnstile] Error: 110200.", "Failed to load resource: the server responded with a status of 400 ()", "TypeError: x is undefined"],
+    failedRequests: ["https://challenges.cloudflare.com/cdn-cgi/x (HTTP 400)", "http://localhost:3000/_next/image?url=%2Fdemo%2Fa.jpg (HTTP 404)"],
+  };
+  const failures = evaluate(phone, noisy);
+  assert.deepEqual(failures, [
+    "console error: TypeError: x is undefined",
+    "failed request: http://localhost:3000/_next/image?url=%2Fdemo%2Fa.jpg (HTTP 404)",
+  ]);
+});
