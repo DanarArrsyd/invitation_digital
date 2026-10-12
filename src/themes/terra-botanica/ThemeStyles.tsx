@@ -244,6 +244,8 @@ export function ThemeStyles() {
     .tb-theme .tb-nav-label { display: block; max-width: 100%; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tb-theme .tb-nav a[aria-current="location"] { background: var(--tb-moss); color: var(--tb-bone); }
     .tb-theme .tb-nav a:focus-visible { outline-offset: -3px; }
+    /* Narrow phones: Courier is wide, so labels get the item's full width at 10.5px. */
+    @media (max-width: 360px) { .tb-theme .tb-nav a { padding-inline: 0; font-size: 10.5px; } }
     .tb-theme .tb-music { position: fixed; z-index: 30; right: max(1rem, env(safe-area-inset-right)); bottom: calc(var(--tb-nav-space) + .75rem); display: grid; place-items: center; min-width: 48px; min-height: 48px; border: 1px solid var(--tb-moss); background: var(--tb-bone); color: var(--tb-moss); cursor: pointer; }
     /* Climbing vine: fixed to the page edge inside the gutter; its growth is
        a CSS read of --tb-progress, written by useScrollProgress. */
@@ -275,7 +277,7 @@ export function ThemeStyles() {
       /* Wider screens: a compact centred bar, items still equal in width. */
       .tb-theme .tb-nav { width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; }
       .tb-theme .tb-nav ul { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: .25rem; padding: .35rem; }
-      .tb-theme .tb-nav a { padding: .4rem .9rem; font-size: .8125rem; }
+      .tb-theme .tb-nav a { padding: .4rem .35rem; font-size: .8125rem; }
       .tb-theme .tb-nav-icon { width: 20px; height: 20px; }
       .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; }
       .tb-theme .tb-wishes > .tb-section-inner { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: start; }

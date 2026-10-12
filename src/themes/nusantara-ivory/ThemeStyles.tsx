@@ -346,6 +346,11 @@ const CSS = `
   text-overflow: ellipsis;
 }
 .ni-floating-nav-btn[data-active] .ni-floating-nav-label { font-weight: 600; }
+/* Narrow phones: give each label the full width of its fifth of the bar. */
+@media (max-width: 360px) {
+  .ni-floating-nav-btn { padding-inline: 0; }
+  .ni-floating-nav-label { letter-spacing: 0; }
+}
 /* Tablet/desktop: the rail hugs its items, centred, in inscription capitals. */
 @media (min-width: 768px) {
   .ni-floating-nav-rail { width: auto; max-width: 100%; padding: 6px; gap: 2px; }

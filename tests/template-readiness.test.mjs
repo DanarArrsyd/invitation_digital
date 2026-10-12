@@ -133,3 +133,11 @@ test("dress-code swatches are decorative: no hex text, list hidden from screen r
     assert.match(source, /<(ul|Stagger)[^>]*aria-hidden="true"/, `${slug} hides the swatch list from screen readers`);
   }
 });
+
+test("Terra's tablet nav leaves room for its widest label", () => {
+  const css = readFileSync(join(themesRoot, "terra-botanica", "ThemeStyles.tsx"), "utf8");
+  const tablet = css.match(/\.tb-theme \.tb-nav a \{ padding: ([^;]+);/);
+  assert.ok(tablet, "tablet nav padding rule");
+  const horizontal = parseFloat(tablet[1].split(/\s+/)[1]);
+  assert.ok(horizontal <= 0.4, `horizontal padding ${tablet[1]} leaves the label too little room`);
+});
