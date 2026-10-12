@@ -28,11 +28,10 @@ export function DressCodeSection({ dressCode }: { dressCode: DressCodeSettings }
             {groups.map((group, index) => (
               <Reveal key={group.label} variant="up" delay={0.14 + index * 0.08} className="ni-dresscode-group">
                 <p className="ni-eyebrow">{group.label}</p>
-                <Stagger className="ni-dresscode-swatches" gap={0.06} delay={0.05}>
+                <Stagger className="ni-dresscode-swatches" gap={0.06} delay={0.05} aria-hidden="true">
                   {group.colors.map((color) => (
                     <StaggerItem key={color} className="ni-dresscode-swatch">
-                      <span className="ni-dresscode-dot" style={{ background: color }} aria-hidden="true" />
-                      <span className="ni-dresscode-hex">{color}</span>
+                      <span className="ni-dresscode-dot" style={{ background: color }} />
                     </StaggerItem>
                   ))}
                 </Stagger>

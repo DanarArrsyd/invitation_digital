@@ -235,8 +235,11 @@ test("countdown uses four non-negative units and clamps an elapsed target to zer
 test("dress code keeps valid labelled swatches and livestream keeps only safe links", () => {
   const document = render(fixture({ events: [event(0), event(1, { livestreamUrl: "javascript:alert(1)" })] }));
   assert.match(document.querySelector("#ma-dress-code")?.textContent ?? "", /Black tie with a touch of oxblood/);
-  const colors = [...document.querySelectorAll("#ma-dress-code .ma-dress-swatch + span")].map((node) => node.textContent);
-  assert.deepEqual(colors, ["#0A0A0C", "#6D1727"]);
+  // Swatches are decorative (owner decision 2026-10-12): colours drawn, no hex text, list hidden from screen readers.
+  const colors = [...document.querySelectorAll("#ma-dress-code .ma-dress-swatch")].map((node) => node.getAttribute("style"));
+  assert.deepEqual(colors, ["background-color:#0A0A0C", "background-color:#6D1727"]);
+  assert.doesNotMatch(document.querySelector("#ma-dress-code").textContent, /#[0-9a-f]{6}/i);
+  assert.equal(document.querySelector("#ma-dress-code ul").getAttribute("aria-hidden"), "true");
   const streams = [...document.querySelectorAll("#ma-livestream a")];
   assert.equal(streams.length, 1);
   assert.equal(streams[0].getAttribute("href"), "https://stream.example.test/event-0");

@@ -123,3 +123,13 @@ test("every theme labels the livestream nav stop \"Live\" and keeps its -livestr
     assert.doesNotMatch(hits[0], /label: "Streaming"/);
   }
 });
+
+test("dress-code swatches are decorative: no hex text, list hidden from screen readers", () => {
+  for (const slug of THEME_SLUGS) {
+    const path = join(themesRoot, slug, "sections", "DressCodeSection.tsx");
+    const source = readFileSync(path, "utf8");
+    assert.doesNotMatch(source, />\s*\{color\}\s*</, `${slug} prints the hex code`);
+    // The swatch list itself (ul, or Ivory's Stagger), not some other decorative div.
+    assert.match(source, /<(ul|Stagger)[^>]*aria-hidden="true"/, `${slug} hides the swatch list from screen readers`);
+  }
+});

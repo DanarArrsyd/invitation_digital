@@ -780,7 +780,7 @@ test("countdown cleans an active timer on unmount and skips timers without a usa
   assert.equal(scheduled.mock.callCount(), 1);
 });
 
-test("dress code retains visible swatch labels and omits absent or disabled content", () => {
+test("dress code shows its description and group, decorative swatches, and omits absent or disabled content", () => {
   const invitation = gatheringFixture(1, { theme: { slug: "terra-botanica", settings: { dressCode: {
     description: "Busana nyaman untuk kebun", groups: [{ label: "Keluarga", colors: ["#53634E", "#B6634B"] }],
   } } } });
@@ -789,11 +789,10 @@ test("dress code retains visible swatch labels and omits absent or disabled cont
   assert.ok(section);
   assert.match(section.textContent, /Busana nyaman untuk kebun/);
   assert.match(section.textContent, /Keluarga/);
-  for (const label of ["#53634E", "#B6634B"]) {
-    const swatch = [...section.querySelectorAll("li")].find(node => node.textContent.includes(label));
-    assert.ok(swatch, `${label} is a visible label`);
-    assert.equal(swatch.querySelector('[aria-hidden="true"]').style.backgroundColor.length > 0, true);
-  }
+  // Swatches are decorative (owner decision 2026-10-12): no hex text, the list is hidden from screen readers.
+  assert.doesNotMatch(section.textContent, /#[0-9a-f]{6}/i);
+  assert.equal(section.querySelector("ul").getAttribute("aria-hidden"), "true");
+  assert.deepEqual([...section.querySelectorAll(".tb-dress-swatch")].map(node => node.style.backgroundColor.length > 0), [true, true]);
   for (const input of [
     gatheringFixture(1, { theme: { slug: "terra-botanica", settings: {} } }),
     gatheringFixture(1, { theme: { slug: "terra-botanica", settings: { dressCode: { description: " ", groups: [] } } } }),

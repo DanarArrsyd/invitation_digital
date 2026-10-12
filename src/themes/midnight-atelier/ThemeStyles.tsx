@@ -371,7 +371,7 @@ export function ThemeStyles() {
       .ma-dress-groups { display: grid; gap: 2.5rem; }
       .ma-dress-group { border-top: 1px solid var(--ma-oxblood); padding-top: 1rem; }
       .ma-dress-group h3 { margin: 0 0 1.5rem; color: var(--ma-oxblood); font-size: .82rem; font-weight: 500; }
-      .ma-dress-group ul { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+      .ma-dress-group ul { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0; padding: 0; list-style: none; }
       .ma-dress-group li { display: flex; min-width: 0; align-items: center; gap: 1rem; font-size: .8rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
       .ma-dress-swatch { flex: 0 0 auto; width: 48px; height: 48px; border: 1px solid color-mix(in srgb, var(--ma-ink) 35%, transparent); }
       .ma-story > .ma-section-inner { display: grid; align-content: start; gap: clamp(3.5rem, 10vw, 7rem); }

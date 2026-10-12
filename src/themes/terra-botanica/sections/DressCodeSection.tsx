@@ -15,8 +15,8 @@ export function DressCodeSection({ dressCode }: { dressCode: DressCodeSettings |
           {dressCode.groups.map((group) => (
             <div key={group.label} className="tb-dress-group">
               <h3>{group.label}</h3>
-              <ul>{group.colors.map((color) => (
-                <li key={color}><span className="tb-dress-swatch" style={{ backgroundColor: color }} aria-hidden="true" /><span>{color}</span></li>
+              <ul aria-hidden="true">{group.colors.map((color) => (
+                <li key={color}><span className="tb-dress-swatch" style={{ backgroundColor: color }} /></li>
               ))}</ul>
             </div>
           ))}

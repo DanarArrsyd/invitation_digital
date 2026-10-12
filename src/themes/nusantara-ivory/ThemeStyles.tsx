@@ -251,7 +251,6 @@ const CSS = `
   border-radius: 999px;
   box-shadow: 0 0 0 1px rgba(168,122,61,0.35), 0 6px 16px -10px rgba(74,63,52,0.5);
 }
-.ni-dresscode-hex { font-size: .62rem; letter-spacing: .08em; color: var(--ni-brown-soft); }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
 .ni-rsvp-option { position: relative; display: block; cursor: pointer; }
 .ni-rsvp-option span { display: flex; font-family: var(--ni-display-face); min-height: 52px; align-items: center; justify-content: center; padding: 0 1rem; border: 1px solid var(--ni-line); color: var(--ni-brown); font-size: .72rem; letter-spacing: .26em; text-transform: uppercase; text-align: center; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }

@@ -17,11 +17,10 @@ export function DressCodeSection({ dressCode }: { dressCode: DressCodeSettings |
           {dressCode.groups.map((group) => (
             <section key={group.label} className="cr-dress-group" aria-label={group.label}>
               <h3>{group.label}</h3>
-              <ul>
+              <ul aria-hidden="true">
                 {group.colors.map((color) => (
                   <li key={color}>
-                    <span className="cr-dress-swatch" style={{ backgroundColor: color }} aria-hidden="true" />
-                    <span>{color}</span>
+                    <span className="cr-dress-swatch" style={{ backgroundColor: color }} />
                   </li>
                 ))}
               </ul>

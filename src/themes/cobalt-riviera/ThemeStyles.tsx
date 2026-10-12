@@ -602,7 +602,7 @@ export function ThemeStyles() {
       }
       .cr-dress-group h3 { margin: 0; font: 680 .78rem/1 var(--cr-label); letter-spacing: .1em; text-transform: uppercase; }
       .cr-dress-group ul { display: flex; margin: 0; padding: 0; flex-wrap: wrap; gap: 1rem; list-style: none; }
-      .cr-dress-group li { display: grid; min-width: 5.5rem; grid-template-columns: 2rem minmax(0, 1fr); align-items: center; gap: .55rem; font: 620 .72rem/1 var(--cr-label); }
+      .cr-dress-group li { display: block; }
       .cr-dress-swatch { display: block; width: 2rem; aspect-ratio: 1; border: 1px solid var(--cr-sea-ink); }
       .cr-livestream { --cr-focus-ring: ${colors.citron}; min-height: auto; }
       .cr-livestream .cr-section-inner { display: grid; min-height: 58svh; align-content: center; gap: clamp(2rem, 6vw, 4rem); }
