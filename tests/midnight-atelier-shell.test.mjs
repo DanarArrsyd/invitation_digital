@@ -305,7 +305,7 @@ test("reduced motion and disabled music keep the shell operable without audio", 
   const invitation = fixture({ features: { ...features, music: false } });
   const view = await mountShell({ reducedMotion: true }, invitation);
   try {
-    assert.equal(view.document.querySelector(".ma-gate")?.getAttribute("data-reduced-motion"), "true");
+    assert.equal(view.document.querySelector(".ma-gate")?.hasAttribute("data-reduced-motion"), false);
     await act(async () => view.document.querySelector(".ma-cover-open").click());
     assert.equal(view.document.getElementById("ma-content").hidden, false);
     assert.equal(view.document.querySelector("audio"), null);
@@ -320,10 +320,10 @@ test("shell CSS defines distinct mobile and desktop navigation with a reduced-mo
   const document = new JSDOM(renderShell()).window.document;
   const css = document.querySelector("style")?.textContent ?? "";
   assert.match(css, /data-opened="true"\] \.ma-flute-left\s*\{[^}]*animation:/);
-  assert.match(css, /data-reduced-motion="true"\][^{]*\.ma-flute/);
+  assert.match(css, /\.ma-gate\[data-opened\] :is\([^)]*\.ma-flute/);
   assert.match(css, /@media\s*\(max-width:\s*767px\)/);
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
   assert.match(css, /safe-area-inset-bottom/);
-  assert.match(css, /data-reduced-motion="true"/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.doesNotMatch(css, /linear-gradient|conic-gradient/); // radial light is confined by midnight-atelier-identity
 });

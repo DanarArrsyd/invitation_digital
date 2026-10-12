@@ -303,7 +303,7 @@ test("the cover is a cobalt sea whose two foam-edged waves recede on the first t
   assert.match(sheet, /\[data-opened="true"\] \.cr-wave-front\s*\{[^}]*transform:\s*translateY\(-112%\)/);
   assert.match(sheet, /\[data-opened="true"\] \.cr-wave-back\s*\{[^}]*transform:\s*translateY\(-112%\)[^}]*transition-delay:\s*150ms/);
   assert.match(sheet, /\[data-opened="true"\] \.cr-cover\s*\{[^}]*transition:[^}]*opacity 400ms ease 1000ms/, "the cover lingers for the tide, then fades");
-  assert.match(sheet, /data-reduced-motion="true"\] :is\([^)]*\.cr-wave[^)]*\)\s*\{\s*transition:\s*none/);
+  assert.match(sheet, /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.cr-gate\[data-opened\] :is\([^)]*\.cr-wave[^)]*\)\s*\{\s*transition:\s*none/);
   assert.match(sheet, /@media \(max-height: 700px\)\s*\{\s*\.cr-cover-names\s*\{\s*font-size:/, "short phones keep the open button on screen");
   for (const selector of [".cr-wave", ".cr-sand-names", ".cr-cover-frame"]) {
     for (const body of rules(sheet, selector)) {

@@ -51,7 +51,6 @@ export function CoverGate({
     opened,
     playing,
     canPlayMusic,
-    reducedMotion,
     audioRef,
     contentRef,
     openInvitation,
@@ -61,7 +60,7 @@ export function CoverGate({
   const names = displayName.split(/\s+&\s+/);
 
   return (
-    <div className="cr-gate" data-opened={opened} data-reduced-motion={reducedMotion}>
+    <div className="cr-gate" data-opened={opened}>
       {canPlayMusic ? <audio ref={audioRef} src={musicUrl ?? undefined} loop preload="none" /> : null}
 
       <div id="cr-cover" className="cr-cover" aria-hidden={opened || undefined} inert={opened}>

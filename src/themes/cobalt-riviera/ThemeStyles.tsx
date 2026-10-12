@@ -1150,7 +1150,10 @@ export function ThemeStyles() {
         .cr-person { padding-right: 8vw; }
         .cr-person[data-position="right"] { padding-right: 0; padding-left: 8vw; }
       }
-      .cr-gate[data-reduced-motion="true"] :is(.cr-cover, .cr-cover-frame, .cr-wave, .cr-sand-names, .cr-cover-open .cr-sun-mark) { transition: none; }
+      /* In CSS, not markup: the server cannot know the guest's motion setting. */
+      @media (prefers-reduced-motion: reduce) {
+        .cr-gate[data-opened] :is(.cr-cover, .cr-cover-frame, .cr-wave, .cr-sand-names, .cr-cover-open .cr-sun-mark) { transition: none; }
+      }
       @media (prefers-reduced-motion: reduce) {
         .cr-theme, .cr-theme *, .cr-theme *::before, .cr-theme *::after {
           animation: none !important;

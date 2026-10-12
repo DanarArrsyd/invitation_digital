@@ -256,7 +256,7 @@ test("generic guest, reduced motion, and disabled music keep the shell operable 
   const view = await mountShell({ reducedMotion: true }, invitation, null, 390);
   try {
     assert.equal(view.document.querySelector(".cr-cover-guest-name")?.textContent, "Bapak/Ibu/Saudara/i");
-    assert.equal(view.document.querySelector(".cr-gate")?.getAttribute("data-reduced-motion"), "true");
+    assert.equal(view.document.querySelector(".cr-gate")?.hasAttribute("data-reduced-motion"), false);
     await act(async () => view.document.querySelector(".cr-cover-open").click());
     assert.equal(view.document.getElementById("cr-content").hidden, false);
     assert.equal(view.document.querySelector("audio"), null);
@@ -277,7 +277,7 @@ test("shell CSS defines the receding-wave timing, instant motion fallback, mobil
   assert.match(css, /@media\s*\(max-width:\s*767px\)/);
   assert.match(css, /@media\s*\(min-width:\s*768px\)/);
   assert.match(css, /safe-area-inset-bottom/);
-  assert.match(css, /data-reduced-motion="true"/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.cr-gate\[data-opened\]/);
   assert.match(css, /\.cr-music[^}]*bottom:\s*var\(--cr-mobile-nav-clearance\)/s);
   assert.match(css, /\.cr-route-nav\s*\{[^}]*--cr-focus-ring:\s*var\(--cr-cobalt\)/s);
   assert.match(css, /\.cr-route-nav a\[aria-current="location"\]\s*\{[^}]*--cr-focus-ring:\s*var\(--cr-sea-ink\)/s);
