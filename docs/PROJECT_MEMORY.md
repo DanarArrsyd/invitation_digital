@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 11 October 2026 (Asia/Jakarta)
+Last updated: 13 October 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -14,6 +14,57 @@ implementation plans remain the source of truth:
 - `docs/superpowers/plans/2026-09-30-midnight-atelier-theme.md`
 - `docs/superpowers/specs/2026-10-01-cobalt-riviera-theme-design.md`
 - `docs/superpowers/plans/2026-10-01-cobalt-riviera-theme.md`
+
+## Checkpoint — 13 October 2026 (Phase 9: template audit done)
+
+Phase 9 "Commercial Hardening" (`docs/ROADMAP.md`) runs as sub-projects. There
+are no customers and no promotion deadline yet; the owner wants a tidy
+foundation first. Order agreed on 2026-10-11:
+
+0. Template readiness audit. **Done.**
+1. Error monitoring. **Next**, starting with brainstorming.
+2. Data lifecycle.
+3. Abuse guards.
+4. Legal.
+5. Vercel/Supabase plan review.
+
+The audit followed the spec
+`docs/superpowers/specs/2026-10-11-template-readiness-audit-design.md`, with
+one plan per round in `docs/superpowers/plans/2026-10-1[1-3]-*`. The findings
+report is `docs/qa/2026-10-template-audit.md`.
+
+| PR | What |
+|---|---|
+| #34 | Small fixes before Phase 9 |
+| #35 | QA matrix tool: `/qa-matrix/[theme]` dev route, `npm run qa:matrix` runner, fixture builder |
+| #36 | Round A, technical (§28): reduced-motion hydration fix in Midnight, Cobalt and Kelir; Kelir gold contrast; readiness and hydration tests |
+| #37 | Round B, visual on phones: "Buka Undangan" on the first screen on short screens; nav labels fit at 320 px; "Live" nav label; no hex codes on dress-code swatches; drawn lightbox arrows |
+| #38 | Round C, event types: shared copy deck `src/themes/shared/event-copy.ts` so each type reads as its own invitation; Terra specimen per type; neutral Ivory hero alt |
+
+Production runs `main` `6c24c6d` (PR #38), deployed 2026-10-13. Core QA matrix
+results:
+
+- before the audit: 105 pages, 43 with failures;
+- after round C: 105 pages, 0 with failures.
+
+`npm test` passes 528/528.
+
+Open items:
+
+- B10: on Ivory in landscape at 844×390 the button sits 18 px below the
+  fold. Won't fix; the gate scrolls.
+- Owner to-do: a real-phone check through `/demo/<slug>`, especially the
+  birthday and aqiqah copy.
+- Deferred minors from round C:
+  - the event-copy test doesn't assert that Kelir's closing fallback, the
+    wishes prompt and the countdown heading are present;
+  - Ivory `CoverGate`'s eyebrow type can narrow to `string`;
+  - Ivory's parent-name filter doesn't trim.
+
+Rules added for new templates (`docs/DESIGN.md` §28):
+
+- Take event-type copy from `eventCopy` / `parentLineFor`.
+- Run the QA matrix before review.
 
 ## Checkpoint — 5 October 2026 (Temuraya launch session)
 
@@ -215,7 +266,8 @@ Local clones live at `/Users/ekadanararrasyid/Developer/invitation_digital`
 Always `git fetch` and compare with `origin/main` before resuming: on
 2026-10-11 a local clone 19 PRs behind led a session to redo Terra work that
 had shipped in PR #15. Remote branches on 2026-10-11: `main` and
-`design/terra-identity-at0kh3` only (merged branches were deleted).
+`design/terra-identity-at0kh3` only (merged branches were deleted). Phase 9
+work uses one `feat/…` branch per PR; delete it after the merge.
 
 History: the themes were originally built inside a parent `VS Code`
 repository under the `invitation_digital/` prefix (the Codex worktree
