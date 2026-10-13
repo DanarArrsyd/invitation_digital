@@ -17,12 +17,13 @@ function formatWishDate(value: string): string | null {
   return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" }).format(date);
 }
 
-export function WishesSection({ invitationId, slug, guestToken, guestName, wishes }: {
+export function WishesSection({ invitationId, slug, guestToken, guestName, wishes, prompt }: {
   invitationId: string;
   slug: string;
   guestToken: string | null;
   guestName: string | null;
   wishes: Wish[];
+  prompt: string;
 }) {
   const { state, formAction, isPending, formRef, onSubmit } = useWishForm();
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
@@ -40,7 +41,7 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
         <header className="cr-interaction-heading cr-interaction-heading-dark">
           <p>Pesan dari perjalanan</p>
           <h2 id="cr-wishes-heading">Doa &amp; ucapan</h2>
-          <span>Tinggalkan pesan untuk hari yang akan kami kenang bersama.</span>
+          <span>{prompt}</span>
         </header>
 
         {state.status === "success" ? (

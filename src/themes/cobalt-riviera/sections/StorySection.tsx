@@ -15,20 +15,20 @@ function storyDateLabel(value: string | null): string | null {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
-export function StorySection({ stories }: { stories: InvitationStory[] }) {
+export function StorySection({ stories, heading }: { stories: InvitationStory[]; heading: string }) {
   if (stories.length === 0) return null;
 
   return (
     <Section id="cr-cerita" labelledBy="cr-story-heading" tone="pool" className="cr-story">
       <header className="cr-story-heading">
-        <p>Catatan perjalanan kami</p>
-        <h2 id="cr-story-heading">Cerita yang membawa kami ke sini</h2>
+        <p>Catatan perjalanan</p>
+        <h2 id="cr-story-heading">{heading}</h2>
       </header>
 
       <div
         className="cr-story-rail"
         role="region"
-        aria-label="Kronologi cerita pasangan"
+        aria-label="Kronologi cerita"
         tabIndex={0}
       >
         <ol className="cr-story-list">

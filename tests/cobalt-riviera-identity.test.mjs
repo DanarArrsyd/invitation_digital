@@ -723,7 +723,7 @@ test("every guest-facing label speaks Bahasa Indonesia; Italian stays a tagged a
 
   const party = invitation({ type: "birthday", features: { ...invitation().features, countdown: false } });
   const birthday = new JSDOM(renderToStaticMarkup(React.createElement(CobaltRiviera, { invitation: party, guest: null }))).window.document;
-  assertIndonesian(guestCopy(birthday), ["Undangan perayaan", "Perayaan", "Tuan rumah", "Tandai kalender Anda", "Simpan tanggalnya"]);
+  assertIndonesian(guestCopy(birthday), ["Undangan perayaan", "Ulang Tahun", "Yang dirayakan", "Tandai kalender Anda", "Simpan tanggalnya"]);
   assert.ok(!guestCopy(birthday).includes("Pernikahan"), "a birthday is never called a wedding");
   assertItalianAccents(birthday);
   assert.equal(birthday.querySelector(".cr-hero-horizon-route")?.getAttribute("lang"), "it", "the photo-less horizon carries Saluti");
