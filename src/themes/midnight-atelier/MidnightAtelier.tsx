@@ -1,5 +1,6 @@
 import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
+import { eventCopy } from "@/themes/shared/event-copy";
 import { pickNavItems } from "@/themes/shared/nav-priority";
 import { hasLivestreamLink } from "@/themes/shared/external-url";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
@@ -26,7 +27,7 @@ export function buildMidnightNavItems(invitation: PublicInvitation): NavItem[] {
   const { features } = invitation;
   const candidates: (NavItem | null)[] = [
     { id: "ma-beranda", section: "hero", label: "Beranda" },
-    invitation.people.length > 0 ? { id: "ma-mempelai", section: "couple", label: "Mempelai" } : null,
+    invitation.people.length > 0 ? { id: "ma-mempelai", section: "couple", label: eventCopy(invitation.type).peopleNavLabel } : null,
     invitation.events.length > 0 ? { id: "ma-acara", section: "events", label: "Acara" } : null,
     features.story && invitation.stories.length > 0 ? { id: "ma-cerita", section: "story", label: "Cerita" } : null,
     features.gallery && invitation.gallery.length > 0 ? { id: "ma-galeri", section: "gallery", label: "Galeri" } : null,
@@ -52,6 +53,7 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
     dressCode,
   } = buildThemeViewModel(invitation, guest);
   const navItems = buildMidnightNavItems(invitation);
+  const copy = eventCopy(invitation.type);
 
   return (
     <div
@@ -63,7 +65,7 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
         invitationId={invitation.id}
         guestToken={guest?.token ?? null}
         label={invitation.type === "wedding" ? "Midnight Atelier" : "Undangan malam"}
-        intro={invitation.type === "wedding" ? "Pernikahan" : "Perayaan"}
+        intro={copy.eventName}
         displayName={coupleDisplayName}
         eventDate={invitation.eventDate ?? primaryEvent?.eventDate ?? null}
         guestDisplayName={guestDisplayName}
@@ -82,6 +84,8 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
             people={invitation.people}
             settings={invitation.theme.settings}
             invitationType={invitation.type}
+            eyebrow={invitation.type === "wedding" ? "Dua insan" : copy.peopleEyebrow}
+            heading={copy.peopleHeading}
           />
           <EventsSection
             events={invitation.events}
@@ -94,7 +98,7 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
             calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
           />
           <DressCodeSection dressCode={dressCode} />
-          {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
+          {invitation.features.story ? <StorySection stories={invitation.stories} heading={copy.storyHeading} /> : null}
           {invitation.features.gallery ? (
             <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} />
           ) : null}
@@ -114,9 +118,10 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
               guestToken={guest?.token ?? null}
               guestName={guestDisplayName}
               wishes={invitation.wishes}
+              prompt={copy.wishesPrompt}
             />
           ) : null}
-          {invitation.features.gift ? <GiftSection gifts={invitation.gifts} /> : null}
+          {invitation.features.gift ? <GiftSection gifts={invitation.gifts} intro={copy.giftIntro} /> : null}
           <ClosingSection
             displayName={coupleDisplayName}
             message={invitation.content.closingMessage}

@@ -15,14 +15,14 @@ function storyDateLabel(value: string | null): string | null {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
-export function StorySection({ stories }: { stories: InvitationStory[] }) {
+export function StorySection({ stories, heading }: { stories: InvitationStory[]; heading: string }) {
   if (stories.length === 0) return null;
 
   return (
     <Section id="ma-cerita" labelledBy="ma-story-heading" tone="pearl" className="ma-story">
       <Spotlight className="ma-chapter-heading">
         <p>{`${String(stories.length).padStart(2, "0")} babak perjalanan`}</p>
-        <h2 id="ma-story-heading">Cerita kami</h2>
+        <h2 id="ma-story-heading">{heading}</h2>
       </Spotlight>
 
       <ol className="ma-story-list">
