@@ -4,7 +4,7 @@ import { ChapterHeading } from "../components/ChapterHeading";
 import { Section } from "../components/Section";
 import { GiftSlip } from "./GiftSlip";
 
-export function GiftSection({ gifts }: { gifts: GiftAccount[] }) {
+export function GiftSection({ gifts, intro }: { gifts: GiftAccount[]; intro: string }) {
   if (gifts.length === 0) return null;
 
   return (
@@ -13,7 +13,7 @@ export function GiftSection({ gifts }: { gifts: GiftAccount[] }) {
         id="kk-gift-heading"
         eyebrow="Amplop digital"
         title="Tanda Kasih"
-        lede="Doa restu Anda sudah lebih dari cukup. Bila berkenan memberi tanda kasih, informasinya ada di bawah ini."
+        lede={intro}
       />
       <ol className="kk-gift-list">
         {gifts.map((gift, index) => <GiftSlip key={gift.id} gift={gift} index={index} />)}
