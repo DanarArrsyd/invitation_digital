@@ -31,7 +31,7 @@ export function buildMidnightNavItems(invitation: PublicInvitation): NavItem[] {
     features.story && invitation.stories.length > 0 ? { id: "ma-cerita", section: "story", label: "Cerita" } : null,
     features.gallery && invitation.gallery.length > 0 ? { id: "ma-galeri", section: "gallery", label: "Galeri" } : null,
     features.livestream && hasLivestreamLink(invitation.events)
-      ? { id: "ma-livestream", section: "livestream", label: "Streaming" }
+      ? { id: "ma-livestream", section: "livestream", label: "Live" }
       : null,
     features.rsvp ? { id: "ma-rsvp", section: "rsvp", label: "RSVP" } : null,
     features.wishes ? { id: "ma-ucapan", section: "wishes", label: "Ucapan" } : null,

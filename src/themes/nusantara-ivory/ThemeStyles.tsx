@@ -165,6 +165,19 @@ const CSS = `
 .ni-gate-leaf--left .ni-gate-gunungan { left: 100%; }
 .ni-gate-leaf--right .ni-gate-gunungan { left: 0; }
 .ni-gate-scroll { position: absolute; inset: 0; z-index: 1; overflow-x: hidden; overflow-y: auto; }
+/* Short screens: "Buka Undangan" must show without scrolling. Unlayered, so
+   these outrank the cover's Tailwind spacing utilities. */
+@media (max-height: 860px) {
+  .ni-cover-pad { padding-block: clamp(1.5rem, 5svh, 3rem); }
+  .ni-cover-names { font-size: clamp(2.6rem, min(15vw, 9svh), 7rem); margin-top: clamp(.5rem, 2svh, 1.5rem); }
+  /* One-name titles (birthday, aqiqah, ...) keep their smaller scale. */
+  .ni-cover-title { font-size: clamp(2.6rem, min(11vw, 7svh), 5.2rem); margin-top: clamp(.5rem, 2svh, 1.5rem); }
+  .ni-cover-gap { margin-top: clamp(.6rem, 2.2svh, 1.75rem); }
+  .ni-cover-cta { margin-top: clamp(1rem, 3.5svh, 2.75rem); }
+}
+@media (max-height: 620px) {
+  .ni-cover-monogram, .ni-cover-greeting { display: none; }
+}
 .ni-hero { min-height: 80svh; display: grid; align-items: center; }
 .ni-hero .ni-hero-floral { width: clamp(280px, 45vw, 620px); left: -8%; right: auto; bottom: -8%; opacity: .13; transform: rotate(-12deg); }
 .ni-hero-inner { position: relative; display: grid; align-items: center; gap: 3rem; width: 100%; max-width: 1440px; margin-inline: auto; padding: clamp(3.5rem, 6vw, 6rem) var(--ni-gutter); }
@@ -251,7 +264,6 @@ const CSS = `
   border-radius: 999px;
   box-shadow: 0 0 0 1px rgba(168,122,61,0.35), 0 6px 16px -10px rgba(74,63,52,0.5);
 }
-.ni-dresscode-hex { font-size: .62rem; letter-spacing: .08em; color: var(--ni-brown-soft); }
 .ni-rsvp-panel { border: 1px solid var(--ni-sand); }
 .ni-rsvp-option { position: relative; display: block; cursor: pointer; }
 .ni-rsvp-option span { display: flex; font-family: var(--ni-display-face); min-height: 52px; align-items: center; justify-content: center; padding: 0 1rem; border: 1px solid var(--ni-line); color: var(--ni-brown); font-size: .72rem; letter-spacing: .26em; text-transform: uppercase; text-align: center; transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
@@ -347,6 +359,11 @@ const CSS = `
   text-overflow: ellipsis;
 }
 .ni-floating-nav-btn[data-active] .ni-floating-nav-label { font-weight: 600; }
+/* Narrow phones: give each label the full width of its fifth of the bar. */
+@media (max-width: 360px) {
+  .ni-floating-nav-btn { padding-inline: 0; }
+  .ni-floating-nav-label { letter-spacing: 0; }
+}
 /* Tablet/desktop: the rail hugs its items, centred, in inscription capitals. */
 @media (min-width: 768px) {
   .ni-floating-nav-rail { width: auto; max-width: 100%; padding: 6px; gap: 2px; }

@@ -341,7 +341,7 @@ Stops grow with the package (`src/lib/packages/nav-sections.ts`
 |---|---|
 | Intimate | Beranda, Mempelai, Acara, RSVP, Kado |
 | Signature | + Galeri, Ucapan |
-| Grand | + Cerita, Streaming |
+| Grand | + Cerita, Live |
 
 A higher package always keeps every stop of the one below. A stop drops out
 only when its section isn't rendered (feature off or no content). Items keep
@@ -783,7 +783,7 @@ is incomplete, not that the test is wrong.
   then `pickNavItems(candidates, invitation.navSections)`. Never cap or rank
   items inside the theme.
 - Package tiers come from `src/lib/packages/nav-sections.ts`: Intimate 5,
-  Signature 7, Grand 9. Each tier keeps the one below. A Streaming stop
+  Signature 7, Grand 9. Each tier keeps the one below. A Live stop (livestream)
   appears only on Grand, and only when an event has a usable livestream link
   (`hasLivestreamLink`).
 - An icon for every `NavSectionKey` (TypeScript requires the full record),

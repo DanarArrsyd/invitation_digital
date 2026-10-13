@@ -201,7 +201,10 @@ test("horizon countdown has four non-negative units and clamps elapsed events to
 test("wardrobe strip labels valid colors and broadcast row keeps only safe links", () => {
   const document = render(fixture({ events: [event(0), event(1, { livestreamUrl: "javascript:alert(1)" })] }));
   assert.match(document.querySelector("#cr-dress-code")?.textContent ?? "", /Resort formal/);
-  assert.deepEqual([...document.querySelectorAll("#cr-dress-code .cr-dress-swatch + span")].map((node) => node.textContent), ["#F06A3C", "#F3CF4C"]);
+  // Swatches are decorative (owner decision 2026-10-12): colours drawn, no hex text, list hidden from screen readers.
+  assert.deepEqual([...document.querySelectorAll("#cr-dress-code .cr-dress-swatch")].map((node) => node.getAttribute("style")), ["background-color:#F06A3C", "background-color:#F3CF4C"]);
+  assert.doesNotMatch(document.querySelector("#cr-dress-code").textContent, /#[0-9a-f]{6}/i);
+  assert.equal(document.querySelector("#cr-dress-code ul").getAttribute("aria-hidden"), "true");
   const streams = [...document.querySelectorAll("#cr-livestream a")];
   assert.equal(streams.length, 1);
   assert.equal(streams[0].getAttribute("href"), "https://stream.example.test/event-0");

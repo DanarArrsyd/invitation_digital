@@ -271,11 +271,21 @@ export function ThemeStyles() {
     .tb-theme .tb-gallery-item::before { content: ""; position: absolute; z-index: 1; top: -9px; left: 50%; width: 64px; height: 18px; margin-left: -32px; background: rgba(217, 164, 65, .45); transform: rotate(-4deg); pointer-events: none; }
     .tb-theme .tb-gallery-grid[data-settle="waiting"] .tb-gallery-item { opacity: 0; transform: translateY(-48px) rotate(calc(var(--tb-tilt, 0deg) * -6)); }
     .tb-theme .tb-gallery-grid[data-settle="settled"] .tb-gallery-item { transition: transform .8s cubic-bezier(.3, 1.3, .5, 1) var(--tb-drop-delay, 0s), opacity .4s ease var(--tb-drop-delay, 0s); }
+    /* Narrow phones: Courier is wide, so labels get the item's full width at 10.5px. */
+    /* Short screens: keep "Buka Undangan" above the fold. */
+    @media (max-height: 700px) {
+      .tb-theme .tb-cover-layout { gap: clamp(1rem, 3.5svh, 2.5rem); padding-top: max(2rem, env(safe-area-inset-top)); padding-bottom: max(2rem, env(safe-area-inset-bottom)); }
+      .tb-theme .tb-journal-label { margin-bottom: 1rem; }
+      .tb-theme .tb-cover-names { font-size: clamp(2.6rem, min(13vw, 9svh), 7.5rem); }
+      .tb-theme .tb-cover-date { margin-top: 1rem; }
+      .tb-theme .tb-cover-recipient .tb-action { margin-top: 1rem; }
+    }
+    @media (max-width: 360px) { .tb-theme .tb-nav a { padding-inline: 0; font-size: 10.5px; } }
     @media (min-width: 768px) {
       /* Wider screens: a compact centred bar, items still equal in width. */
       .tb-theme .tb-nav { width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; }
       .tb-theme .tb-nav ul { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: .25rem; padding: .35rem; }
-      .tb-theme .tb-nav a { padding: .4rem .9rem; font-size: .8125rem; }
+      .tb-theme .tb-nav a { padding: .4rem .35rem; font-size: .8125rem; }
       .tb-theme .tb-nav-icon { width: 20px; height: 20px; }
       .tb-theme .tb-rsvp > .tb-section-inner, .tb-theme .tb-gift > .tb-section-inner { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; }
       .tb-theme .tb-wishes > .tb-section-inner { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: start; }

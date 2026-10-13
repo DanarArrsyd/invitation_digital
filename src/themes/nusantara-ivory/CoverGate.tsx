@@ -111,7 +111,7 @@ export function CoverGate({
             ))}
 
             <motion.div className="ni-gate-scroll" variants={gate.content}>
-              <div className="relative flex min-h-full items-center justify-center px-7 py-16">
+              <div className="ni-cover-pad relative flex min-h-full items-center justify-center px-7 py-16">
                 {/* Entrance stagger is CSS (.ni-cover-stagger + animation-delay),
                     so it runs before hydration and respects reduced motion. */}
                 <div className="ni-cover-content relative flex flex-col items-center text-center">
@@ -124,7 +124,7 @@ export function CoverGate({
                       ) : null,
 
                       initials ? (
-                        <div key="monogram" className="mt-5">
+                        <div key="monogram" className="ni-cover-monogram mt-5">
                           <MonogramBadge initials={initials} />
                         </div>
                       ) : null,
@@ -132,7 +132,7 @@ export function CoverGate({
                       couple ? (
                         <h1
                           key="names"
-                          className="ni-script mt-6 flex flex-col items-center text-[clamp(3.4rem,15vw,7rem)]"
+                          className="ni-cover-names ni-script mt-6 flex flex-col items-center text-[clamp(3.4rem,15vw,7rem)]"
                         >
                           <span>{couple[0]}</span>
                           <span className="my-1 text-[0.5em]" style={{ color: "var(--ni-gold)" }}>
@@ -141,19 +141,19 @@ export function CoverGate({
                           <span>{couple[1]}</span>
                         </h1>
                       ) : (
-                        <h1 key="names" className="ni-script mt-6 text-[clamp(2.8rem,11vw,5.2rem)]">
+                        <h1 key="names" className="ni-cover-title ni-script mt-6 text-[clamp(2.8rem,11vw,5.2rem)]">
                           {displayName}
                         </h1>
                       ),
 
-                      <div key="divider" className="mt-7 flex justify-center">
+                      <div key="divider" className="ni-cover-gap mt-7 flex justify-center">
                         <OrnamentDivider />
                       </div>,
 
                       eventDate ? (
                         <p
                           key="date"
-                          className="ni-caps mt-6 text-[0.8rem] tracking-[0.3em] uppercase"
+                          className="ni-cover-gap ni-caps mt-6 text-[0.8rem] tracking-[0.3em] uppercase"
                           style={{ color: "var(--ni-brown-soft)" }}
                         >
                           {formatEventDate(eventDate)}
@@ -163,7 +163,7 @@ export function CoverGate({
                       (
                         <div
                           key="guest"
-                          className="ni-recipient mx-auto mt-8 flex w-full max-w-[min(380px,74vw)] flex-col items-center gap-2 border-t border-b px-4 py-5"
+                          className="ni-cover-gap ni-recipient mx-auto mt-8 flex w-full max-w-[min(380px,74vw)] flex-col items-center gap-2 border-t border-b px-4 py-5"
                           style={{ borderColor: "var(--ni-line)" }}
                         >
                           <p
@@ -175,11 +175,11 @@ export function CoverGate({
                           <p className="ni-serif text-[1.45rem] leading-snug text-[var(--ni-ink)]">
                             {guestDisplayName?.trim() || "Bapak/Ibu/Saudara/i"}
                           </p>
-                          <p className="ni-body mt-1 text-base">Dengan hormat, kami mengundang Anda untuk hadir.</p>
+                          <p className="ni-cover-greeting ni-body mt-1 text-base">Dengan hormat, kami mengundang Anda untuk hadir.</p>
                         </div>
                       ),
 
-                      <div key="cta" className="mt-11">
+                      <div key="cta" className="ni-cover-cta mt-11">
                         <button
                           type="button"
                           onClick={openInvitation}

@@ -283,7 +283,7 @@ test("the Ivory bar shows the package's stops through the shared nav list, in pa
   const live = invitation().events.map((event) => ({ ...event, livestreamUrl: "https://youtube.com/live/x" }));
   assert.deepEqual(
     navLabels({ ...full, navSections: NAV.grand, features: { ...ALL_FEATURES, livestream: true }, events: live }),
-    ["Beranda", "Mempelai", "Acara", "Cerita", "Galeri", "Streaming", "RSVP", "Ucapan", "Kado"],
+    ["Beranda", "Mempelai", "Acara", "Cerita", "Galeri", "Live", "RSVP", "Ucapan", "Kado"],
   );
 
   const browsing = navLabels({

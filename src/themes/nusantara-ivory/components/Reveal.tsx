@@ -161,11 +161,14 @@ export function Stagger({
   className,
   gap = 0.09,
   delay = 0,
+  "aria-hidden": ariaHidden,
 }: {
   children: React.ReactNode;
   className?: string;
   gap?: number;
   delay?: number;
+  /** For purely decorative groups (e.g. dress-code swatches). */
+  "aria-hidden"?: "true";
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion() ?? false;
@@ -175,6 +178,7 @@ export function Stagger({
     <motion.div
       ref={ref}
       className={className}
+      aria-hidden={ariaHidden}
       initial="hidden"
       animate={show || reduced ? "visible" : "hidden"}
       variants={{

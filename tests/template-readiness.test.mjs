@@ -112,3 +112,67 @@ test("every theme with a NavIcon component keys it by the full NavSectionKey rec
     assert.match(source, /NavSectionKey/, `${slug} NavIcon covers every NavSectionKey`);
   }
 });
+
+test("every theme labels the livestream nav stop \"Live\" and keeps its -livestream anchor", () => {
+  for (const slug of THEME_SLUGS) {
+    const hits = themeFiles(slug)
+      .map((file) => readFileSync(file, "utf8"))
+      .filter((source) => /id: "[a-z]{2}-livestream"/.test(source));
+    assert.equal(hits.length, 1, `${slug} builds one livestream nav item`);
+    assert.match(hits[0], /id: "[a-z]{2}-livestream"[^}]*label: "Live"/, `${slug} labels it Live`);
+    assert.doesNotMatch(hits[0], /label: "Streaming"/);
+  }
+});
+
+test("dress-code swatches are decorative: no hex text, list hidden from screen readers", () => {
+  for (const slug of THEME_SLUGS) {
+    const path = join(themesRoot, slug, "sections", "DressCodeSection.tsx");
+    const source = readFileSync(path, "utf8");
+    assert.doesNotMatch(source, />\s*\{color\}\s*</, `${slug} prints the hex code`);
+    // The swatch list itself (ul, or Ivory's Stagger), not some other decorative div.
+    assert.match(source, /<(ul|Stagger)[^>]*aria-hidden="true"/, `${slug} hides the swatch list from screen readers`);
+  }
+});
+
+test("Terra's tablet nav leaves room for its widest label", () => {
+  const css = readFileSync(join(themesRoot, "terra-botanica", "ThemeStyles.tsx"), "utf8");
+  const tablet = css.match(/\.tb-theme \.tb-nav a \{ padding: ([^;]+);/);
+  assert.ok(tablet, "tablet nav padding rule");
+  const horizontal = parseFloat(tablet[1].split(/\s+/)[1]);
+  assert.ok(horizontal <= 0.4, `horizontal padding ${tablet[1]} leaves the label too little room`);
+});
+
+test("Ivory, Terra and Midnight compress their cover on short screens", () => {
+  for (const [slug, selector] of [["nusantara-ivory", "ni-cover-names"], ["terra-botanica", "tb-cover-layout"], ["midnight-atelier", "ma-cover"]]) {
+    const css = readFileSync(join(themesRoot, slug, "ThemeStyles.tsx"), "utf8");
+    assert.match(css, new RegExp(`@media \\(max-height: \\d+px\\)\\s*\\{[^@]*\\.${selector}`), `${slug} has a short-screen cover rule for .${selector}`);
+  }
+});
+
+test("short-screen cover rules tighten rows only, never the two-column gap", () => {
+  // A `gap` shorthand in a max-height block would also collapse the column gap of
+  // two-column covers on landscape phones and short laptop windows.
+  for (const slug of THEME_SLUGS) {
+    const css = readFileSync(join(themesRoot, slug, "ThemeStyles.tsx"), "utf8");
+    for (const [, block] of css.matchAll(/@media \(max-height: \d+px\)\s*\{([^@]*)/g)) {
+      assert.doesNotMatch(block, /-cover-frame\s*\{[^}]*(^|[\s;{])gap:/m, `${slug}: use row-gap in short-screen cover rules`);
+    }
+  }
+});
+
+test("Ivory's one-name title keeps its own scale on short screens", () => {
+  // Non-couple invitations (birthday, aqiqah, ...) use a smaller title than the couple names.
+  const cover = readFileSync(join(themesRoot, "nusantara-ivory", "CoverGate.tsx"), "utf8");
+  const css = readFileSync(join(themesRoot, "nusantara-ivory", "ThemeStyles.tsx"), "utf8");
+  assert.match(cover, /<h1 key="names" className="ni-cover-title /, "the one-name <h1> has its own class");
+  assert.match(css, /@media \(max-height: \d+px\)\s*\{[^@]*\.ni-cover-title \{ font-size: clamp\([^)]*11vw/, "short-screen title keeps the 11vw scale");
+});
+
+test("Ivory hides its monogram only where the button would not fit", () => {
+  // Real phones lose ~150px to browser bars (375×812 → ~635px); the monogram
+  // still fits there, measured 2026-10-12: 615px at 375×635, 634px at 360×640.
+  const css = readFileSync(join(themesRoot, "nusantara-ivory", "ThemeStyles.tsx"), "utf8");
+  const hide = css.match(/@media \(max-height: (\d+)px\)\s*\{\s*\.ni-cover-monogram, \.ni-cover-greeting \{ display: none; \}/);
+  assert.ok(hide, "the monogram/greeting rule exists");
+  assert.ok(Number(hide[1]) <= 620, `hidden up to ${hide[1]}px tall; must stay visible on phones with browser bars`);
+});

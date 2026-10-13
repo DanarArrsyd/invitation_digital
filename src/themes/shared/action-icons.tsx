@@ -28,6 +28,15 @@ export function DownloadArrowIcon({ className = "" }: { className?: string }) {
   );
 }
 
+/** Goes back (previous photo): a thin horizontal arrow. */
+export function BackArrowIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={`theme-action-icon ${className}`} aria-hidden="true" focusable="false" {...STROKE}>
+      <path d="M20 12H5M10 7l-5 5 5 5" />
+    </svg>
+  );
+}
+
 /** Moves on (open, send): a thin horizontal arrow. */
 export function ForwardArrowIcon({ className = "" }: { className?: string }) {
   return (

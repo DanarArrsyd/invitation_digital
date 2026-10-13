@@ -107,7 +107,7 @@ in `public/demo/kelir-kencana/`, test `tests/kelir-kencana.test.mjs`.
   priority (that dropped Mempelai on Signature/Grand). Stops are tiered per
   package in `src/lib/packages/nav-sections.ts`: Intimate 5 (Beranda,
   Mempelai, Acara, RSVP, Kado), Signature 7 (+Galeri, Ucapan), Grand 9
-  (+Cerita, Streaming). The loader passes `invitation.navSections`, not the
+  (+Cerita, Live). The loader passes `invitation.navSections`, not the
   package key (the public payload must not reveal the package). Phone bars
   scroll sideways inside themselves past five; DESIGN.md §12a updated.
 - 2026-10-05 share banners: every shared link shows a 1200×630 banner.
@@ -394,7 +394,7 @@ CoverGate — photo-free opening, guest personalization, music and focus handoff
   │    ├─ maps       Valid HTTP(S) URL and enabled feature only
   │    └─ calendar   Valid supplied positive same-day interval only
   ├─ tb-countdown    WIB countdown; clamps/stops at zero
-  ├─ tb-dress-code   Text-labelled swatches; color is never the only signal
+  ├─ tb-dress-code   Description and group label carry the guidance; swatches are decorative (owner decision 2026-10-12)
   ├─ tb-cerita       Travel-journal stories, including text-only entries
   ├─ tb-galeri       Organic collage for sparse or package-capacity galleries
   ├─ tb-livestream   Enabled feature plus usable event URL only

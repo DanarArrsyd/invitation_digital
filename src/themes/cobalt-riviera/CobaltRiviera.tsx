@@ -36,7 +36,7 @@ export function buildCobaltRouteItems(invitation: PublicInvitation): RivieraRout
     features.story && invitation.stories.length > 0 ? { id: "cr-cerita", section: "story", label: "Cerita" } : null,
     features.gallery && invitation.gallery.length > 0 ? { id: "cr-galeri", section: "gallery", label: "Galeri" } : null,
     features.livestream && hasLivestreamLink(invitation.events)
-      ? { id: "cr-livestream", section: "livestream", label: "Streaming" }
+      ? { id: "cr-livestream", section: "livestream", label: "Live" }
       : null,
     features.rsvp ? { id: "cr-rsvp", section: "rsvp", label: "RSVP" } : null,
     features.wishes ? { id: "cr-ucapan", section: "wishes", label: "Ucapan" } : null,
