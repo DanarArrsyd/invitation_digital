@@ -15,12 +15,13 @@ function formatWishDate(value: string): string | null {
   return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" }).format(date);
 }
 
-export function WishesSection({ invitationId, slug, guestToken, guestName, wishes }: {
+export function WishesSection({ invitationId, slug, guestToken, guestName, wishes, prompt }: {
   invitationId: string;
   slug: string;
   guestToken: string | null;
   guestName: string | null;
   wishes: Wish[];
+  prompt: string;
 }) {
   const { state, formAction, isPending, formRef, onSubmit } = useWishForm();
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
@@ -31,7 +32,7 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
         id="kk-wishes-heading"
         eyebrow="Doa dan ucapan"
         title="Ucapan & Doa"
-        lede="Tinggalkan pesan untuk hari yang akan kami kenang bersama."
+        lede={prompt}
       />
 
       {state.status === "success" ? (

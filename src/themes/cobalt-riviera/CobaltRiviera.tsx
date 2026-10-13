@@ -1,3 +1,4 @@
+import { eventCopy } from "@/themes/shared/event-copy";
 import { pickNavItems, type NavSectionKey } from "@/themes/shared/nav-priority";
 import { hasLivestreamLink } from "@/themes/shared/external-url";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
@@ -31,7 +32,7 @@ export function buildCobaltRouteItems(invitation: PublicInvitation): RivieraRout
   const { features } = invitation;
   const candidates: (CobaltRouteCandidate | null)[] = [
     { id: "cr-beranda", section: "hero", label: "Beranda" },
-    invitation.people.length > 0 ? { id: "cr-mempelai", section: "couple", label: "Mempelai" } : null,
+    invitation.people.length > 0 ? { id: "cr-mempelai", section: "couple", label: eventCopy(invitation.type).peopleNavLabel } : null,
     invitation.events.length > 0 ? { id: "cr-acara", section: "events", label: "Acara" } : null,
     features.story && invitation.stories.length > 0 ? { id: "cr-cerita", section: "story", label: "Cerita" } : null,
     features.gallery && invitation.gallery.length > 0 ? { id: "cr-galeri", section: "gallery", label: "Galeri" } : null,
@@ -57,6 +58,7 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
     closingImageUrl,
   } = buildThemeViewModel(invitation, guest);
   const routeItems = buildCobaltRouteItems(invitation);
+  const copy = eventCopy(invitation.type);
   const finalGalleryImage = invitation.gallery.at(-1);
   const closingImage = finalGalleryImage?.imageUrl === closingImageUrl ? finalGalleryImage : null;
   const closingImageAlt = closingImage?.altText || closingImage?.caption || null;
@@ -71,7 +73,7 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
         invitationId={invitation.id}
         guestToken={guest?.token ?? null}
         label={invitation.type === "wedding" ? "Cobalt Riviera" : "Undangan perayaan"}
-        intro={invitation.type === "wedding" ? "Pernikahan" : "Perayaan"}
+        intro={copy.eventName}
         displayName={coupleDisplayName}
         eventDate={invitation.eventDate ?? primaryEvent?.eventDate ?? null}
         guestDisplayName={guestDisplayName}
@@ -93,6 +95,8 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
             people={invitation.people}
             settings={invitation.theme.settings}
             invitationType={invitation.type}
+            eyebrow={copy.peopleEyebrow}
+            heading={copy.peopleHeading}
           />
           <EventsSection
             events={invitation.events}
@@ -103,9 +107,10 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
             target={countdownTarget}
             calendarEvent={calendarEvent}
             calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
+            heading={copy.countdownHeading}
           />
           <DressCodeSection dressCode={dressCode} />
-          {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
+          {invitation.features.story ? <StorySection stories={invitation.stories} heading={copy.storyHeading} /> : null}
           {invitation.features.gallery ? (
             <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} />
           ) : null}
@@ -125,9 +130,10 @@ export function CobaltRiviera({ invitation, guest }: ThemeComponentProps) {
               guestToken={guest?.token ?? null}
               guestName={guestDisplayName}
               wishes={invitation.wishes}
+              prompt={copy.wishesPrompt}
             />
           ) : null}
-          {invitation.features.gift ? <GiftSection gifts={invitation.gifts} /> : null}
+          {invitation.features.gift ? <GiftSection gifts={invitation.gifts} intro={copy.giftIntro} /> : null}
           <ClosingSection
             displayName={coupleDisplayName}
             message={invitation.content.closingMessage}

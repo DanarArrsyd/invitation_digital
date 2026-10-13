@@ -4,11 +4,11 @@ import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 import { TypedText } from "../components/TypedText";
 
-export function StorySection({ stories }: { stories: InvitationStory[] }) {
+export function StorySection({ stories, heading }: { stories: InvitationStory[]; heading: string }) {
   if (stories.length === 0) return null;
   return (
     <Section id="tb-cerita" labelledBy="tb-story-heading" tone="bone" className="tb-story">
-      <SectionHeading id="tb-story-heading" title="Cerita kita" />
+      <SectionHeading id="tb-story-heading" title={heading} />
       <ol className="tb-story-entries">
         {stories.map((story) => {
           const date = story.storyDate ? new Date(`${story.storyDate}T12:00:00Z`) : null;

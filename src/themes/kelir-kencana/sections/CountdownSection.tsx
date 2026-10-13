@@ -44,10 +44,12 @@ export function CountdownSection({
   target,
   calendarEvent,
   calendarUid,
+  heading,
 }: {
   target: number | null;
   calendarEvent: CalendarEventInput | null;
   calendarUid: string;
+  heading: string;
 }) {
   const hasTarget = target !== null && Number.isFinite(target);
   if (!hasTarget && !calendarEvent) return null;
@@ -61,7 +63,7 @@ export function CountdownSection({
     >
       <div className="kk-countdown-heading">
         <p className="kk-eyebrow">{hasTarget ? "Hitung mundur" : "Tandai kalender Anda"}</p>
-        <h2 id="kk-countdown-heading">{hasTarget ? "Menuju hari bahagia" : "Simpan tanggalnya"}</h2>
+        <h2 id="kk-countdown-heading">{hasTarget ? heading : "Simpan tanggalnya"}</h2>
       </div>
       <div className="kk-countdown-board">
         {hasTarget ? <CountdownClock key={target} target={target} /> : null}

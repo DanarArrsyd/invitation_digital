@@ -5,21 +5,20 @@ import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 import { GiftAccountCard } from "./GiftAccountCard";
 
-export function GiftSection({ gifts }: { gifts: GiftAccount[] }) {
+export function GiftSection({ gifts, heading, intro }: { gifts: GiftAccount[]; heading: string; intro: string }) {
   if (gifts.length === 0) return null;
 
   return (
     <Section id="ni-kado" tone="dark" lattice>
       <div className="grid gap-10 md:grid-cols-12 md:gap-14">
         <div className="md:col-span-4">
-          <SectionHeading eyebrow="Tanda Kasih" title="Wedding Gift" align="left" tone="light" />
+          <SectionHeading eyebrow="Tanda Kasih" title={heading} align="left" tone="light" />
           <Reveal delay={0.1}>
             <p
               className="mt-6 max-w-[32ch] text-[0.9rem] leading-[1.75]"
               style={{ color: "var(--ni-on-dark-muted)" }}
             >
-              Doa restu Anda adalah hadiah terindah. Bila berkenan memberi tanda kasih, berikut
-              informasi yang dapat digunakan.
+              {intro}
             </p>
           </Reveal>
         </div>

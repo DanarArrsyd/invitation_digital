@@ -16,12 +16,12 @@ function storyDateLabel(value: string | null): string | null {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
-export function StorySection({ stories }: { stories: InvitationStory[] }) {
+export function StorySection({ stories, heading }: { stories: InvitationStory[]; heading: string }) {
   if (stories.length === 0) return null;
 
   return (
     <Section id="kk-cerita" labelledBy="kk-story-heading" className="kk-story">
-      <ChapterHeading id="kk-story-heading" eyebrow="Lakon kami" title="Cerita Kami" />
+      <ChapterHeading id="kk-story-heading" eyebrow="Lakon kami" title={heading} />
 
       <ol className="kk-story-list">
         {stories.map((story) => {

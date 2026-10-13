@@ -807,7 +807,7 @@ test("every guest-facing label speaks Bahasa Indonesia, the dance card included"
   const { MidnightAtelier } = createLoader()("index");
   const evening = invitation({ type: "birthday", features: { ...invitation().features, countdown: false } });
   const { document } = new JSDOM(renderToStaticMarkup(React.createElement(MidnightAtelier, { invitation: evening, guest: null }))).window;
-  assertIndonesian(guestCopy(document), ["Undangan malam", "Perayaan", "Tuan rumah", "Tandai kalender Anda", "Simpan tanggalnya"]);
+  assertIndonesian(guestCopy(document), ["Undangan malam", "Ulang Tahun", "Yang dirayakan", "Tandai kalender Anda", "Simpan tanggalnya"]);
 });
 
 test("the dance card follows the attendance that was submitted, not a choice changed while sending", async () => {

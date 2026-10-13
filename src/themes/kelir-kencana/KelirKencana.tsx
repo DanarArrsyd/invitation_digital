@@ -1,7 +1,8 @@
+import { eventCopy } from "@/themes/shared/event-copy";
 import { pickNavItems, type NavSectionKey } from "@/themes/shared/nav-priority";
 import { hasLivestreamLink } from "@/themes/shared/external-url";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
-import type { InvitationType, PublicInvitation } from "@/types/invitation";
+import type { PublicInvitation } from "@/types/invitation";
 import type { ThemeComponentProps } from "@/types/theme";
 
 import type { KelirRouteItem } from "./components/RouteNavigation";
@@ -24,22 +25,13 @@ import { ThemeStyles } from "./ThemeStyles";
 
 type KelirRouteCandidate = KelirRouteItem & { section: NavSectionKey };
 
-const EVENT_NAMES: Record<InvitationType, string> = {
-  wedding: "Pernikahan",
-  engagement: "Lamaran",
-  birthday: "Ulang Tahun",
-  aqiqah: "Tasyakuran Aqiqah",
-  graduation: "Wisuda",
-  corporate: "Perayaan",
-};
-
 // Every candidate already uses a NavSectionKey, so none is remapped or dropped
 // before the package's stop list (themes/shared/nav-priority) picks the bar.
 export function buildKelirRouteItems(invitation: PublicInvitation): KelirRouteItem[] {
   const { features } = invitation;
   const candidates: (KelirRouteCandidate | null)[] = [
     { id: "kk-beranda", section: "hero", label: "Beranda" },
-    invitation.people.length > 0 ? { id: "kk-mempelai", section: "couple", label: "Mempelai" } : null,
+    invitation.people.length > 0 ? { id: "kk-mempelai", section: "couple", label: eventCopy(invitation.type).peopleNavLabel } : null,
     invitation.events.length > 0 ? { id: "kk-acara", section: "events", label: "Acara" } : null,
     features.story && invitation.stories.length > 0 ? { id: "kk-cerita", section: "story", label: "Cerita" } : null,
     features.gallery && invitation.gallery.length > 0 ? { id: "kk-galeri", section: "gallery", label: "Galeri" } : null,
@@ -68,7 +60,7 @@ export function KelirKencana({ invitation, guest }: ThemeComponentProps) {
   const finalGalleryImage = invitation.gallery.at(-1);
   const closingImage = finalGalleryImage?.imageUrl === closingImageUrl ? finalGalleryImage : null;
   const closingImageAlt = closingImage?.altText || closingImage?.caption || null;
-  const eventName = EVENT_NAMES[invitation.type] ?? "Perayaan";
+  const copy = eventCopy(invitation.type);
   const eventDate = invitation.eventDate ?? primaryEvent?.eventDate ?? null;
 
   return (
@@ -80,7 +72,7 @@ export function KelirKencana({ invitation, guest }: ThemeComponentProps) {
       <CoverGate
         invitationId={invitation.id}
         guestToken={guest?.token ?? null}
-        intro={`Pagelaran ${eventName}`}
+        intro={`Pagelaran ${copy.eventName}`}
         displayName={coupleDisplayName}
         eventDate={eventDate}
         guestDisplayName={guestDisplayName}
@@ -90,7 +82,7 @@ export function KelirKencana({ invitation, guest }: ThemeComponentProps) {
       >
         <main>
           <HeroSection
-            eyebrow={invitation.type === "wedding" ? "The Wedding Of" : eventName}
+            eyebrow={copy.coverEyebrow}
             displayName={coupleDisplayName}
             eventDate={eventDate}
             venueSummary={invitation.venueSummary}
@@ -103,6 +95,8 @@ export function KelirKencana({ invitation, guest }: ThemeComponentProps) {
             people={invitation.people}
             settings={invitation.theme.settings}
             invitationType={invitation.type}
+            eyebrow={copy.peopleEyebrow}
+            heading={copy.peopleHeading}
           />
           <EventsSection
             events={invitation.events}
@@ -113,9 +107,10 @@ export function KelirKencana({ invitation, guest }: ThemeComponentProps) {
             target={countdownTarget}
             calendarEvent={calendarEvent}
             calendarUid={`${invitation.id}-${primaryEvent?.id ?? "main"}@invitation.digital`}
+            heading={copy.countdownHeading}
           />
           <DressCodeSection dressCode={dressCode} />
-          {invitation.features.story ? <StorySection stories={invitation.stories} /> : null}
+          {invitation.features.story ? <StorySection stories={invitation.stories} heading={copy.storyHeading} /> : null}
           {invitation.features.gallery ? (
             <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} />
           ) : null}
@@ -135,12 +130,14 @@ export function KelirKencana({ invitation, guest }: ThemeComponentProps) {
               guestToken={guest?.token ?? null}
               guestName={guestDisplayName}
               wishes={invitation.wishes}
+              prompt={copy.wishesPrompt}
             />
           ) : null}
-          {invitation.features.gift ? <GiftSection gifts={invitation.gifts} /> : null}
+          {invitation.features.gift ? <GiftSection gifts={invitation.gifts} intro={copy.giftIntro} /> : null}
           <ClosingSection
             displayName={coupleDisplayName}
             message={invitation.content.closingMessage}
+            fallbackMessage={copy.closingLine}
             imageUrl={closingImageUrl}
             imageAlt={closingImageAlt}
           />

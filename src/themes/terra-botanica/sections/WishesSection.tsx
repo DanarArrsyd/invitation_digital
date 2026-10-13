@@ -14,12 +14,13 @@ function formatWishDate(iso: string): string {
   return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(iso));
 }
 
-export function WishesSection({ invitationId, slug, guestToken, guestName, wishes }: {
+export function WishesSection({ invitationId, slug, guestToken, guestName, wishes, prompt }: {
   invitationId: string;
   slug: string;
   guestToken: string | null;
   guestName: string | null;
   wishes: Wish[];
+  prompt: string;
 }) {
   const { state, formAction, isPending, formRef, onSubmit } = useWishForm();
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
@@ -28,7 +29,7 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
     <Section id="tb-ucapan" labelledBy="tb-wishes-heading" tone="bone" className="tb-wishes">
       <div className="tb-interaction-intro">
         <SectionHeading id="tb-wishes-heading" title="Doa & ucapan">
-          <p>Tinggalkan pesan untuk hari yang kami kenang bersama.</p>
+          <p>{prompt}</p>
         </SectionHeading>
         {state.status === "success" ? (
           <div className="tb-wish-sent">

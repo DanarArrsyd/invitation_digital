@@ -1,4 +1,5 @@
 import { getPersonInstagram } from "@/lib/utils/instagram";
+import { parentLineFor } from "@/themes/shared/event-copy";
 import type { InvitationPerson, InvitationType } from "@/types/invitation";
 
 import { GununganRule } from "../components/Gunungan";
@@ -6,12 +7,6 @@ import { KelirImage } from "../components/KelirImage";
 import { ChapterHeading } from "../components/ChapterHeading";
 import { Section } from "../components/Section";
 import { WayangFigure, type WayangName } from "../components/WayangFigure";
-
-function parentLabel(role: InvitationPerson["role"]): string {
-  if (role === "bride") return "Putri dari";
-  if (role === "groom") return "Putra dari";
-  return "Keluarga";
-}
 
 function roleLabel(role: InvitationPerson["role"]): string | null {
   if (role === "bride") return "Mempelai Wanita";
@@ -27,10 +22,12 @@ function figureFor(role: InvitationPerson["role"]): WayangName | null {
   return null;
 }
 
-export function CoupleSection({ people, settings, invitationType }: {
+export function CoupleSection({ people, settings, invitationType, eyebrow, heading }: {
   people: InvitationPerson[];
   settings: Record<string, unknown>;
   invitationType: InvitationType;
+  eyebrow: string;
+  heading: string;
 }) {
   if (people.length === 0) return null;
   const wedding = invitationType === "wedding";
@@ -40,8 +37,8 @@ export function CoupleSection({ people, settings, invitationType }: {
       <ChapterHeading
         id="kk-couple-heading"
         act="Jejer"
-        eyebrow={wedding ? "Yang berbahagia" : "Yang mengundang"}
-        title={wedding ? "Mempelai" : "Tuan rumah"}
+        eyebrow={eyebrow}
+        title={heading}
       />
 
       <div className="kk-people">
@@ -49,6 +46,7 @@ export function CoupleSection({ people, settings, invitationType }: {
           const instagram = getPersonInstagram(settings, person.id);
           const parents = [person.fatherName, person.motherName]
             .filter((name): name is string => Boolean(name?.trim()));
+          const parentLine = parentLineFor(invitationType, person.role);
           const initial = (person.nickname || person.fullName).trim().charAt(0) || "•";
           const figure = wedding ? figureFor(person.role) : null;
           const role = wedding ? roleLabel(person.role) : null;
@@ -80,9 +78,9 @@ export function CoupleSection({ people, settings, invitationType }: {
                 <div className="kk-person-copy">
                   {role ? <p className="kk-eyebrow">{role}</p> : null}
                   <h3 className="kk-script">{person.fullName}</h3>
-                  {parents.length > 0 ? (
+                  {parents.length > 0 && parentLine ? (
                     <div className="kk-parents">
-                      <p>{parentLabel(person.role)}</p>
+                      <p>{parentLine}</p>
                       <p>{parents.map((name, parentIndex) => (
                         <span key={`${person.id}-${parentIndex}`}>
                           {parentIndex > 0 ? <span className="kk-parent-join"> &amp; </span> : null}

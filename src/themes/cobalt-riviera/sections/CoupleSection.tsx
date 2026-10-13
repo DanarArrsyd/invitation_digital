@@ -1,28 +1,25 @@
 import { getPersonInstagram } from "@/lib/utils/instagram";
+import { parentLineFor } from "@/themes/shared/event-copy";
 import type { InvitationPerson, InvitationType } from "@/types/invitation";
 
 import { CeramicLine } from "../components/RivieraOrnaments";
 import { RivieraImage } from "../components/RivieraImage";
 import { Section } from "../components/Section";
 
-function parentLabel(role: InvitationPerson["role"]): string {
-  if (role === "bride") return "Putri dari";
-  if (role === "groom") return "Putra dari";
-  return "Keluarga";
-}
-
-export function CoupleSection({ people, settings, invitationType }: {
+export function CoupleSection({ people, settings, invitationType, eyebrow, heading }: {
   people: InvitationPerson[];
   settings: Record<string, unknown>;
   invitationType: InvitationType;
+  eyebrow: string;
+  heading: string;
 }) {
   if (people.length === 0) return null;
 
   return (
     <Section id="cr-mempelai" labelledBy="cr-couple-heading" tone="porcelain" className="cr-couple">
       <header className="cr-chapter-heading">
-        <p>{invitationType === "wedding" ? "Yang berbahagia" : "Tuan rumah"}</p>
-        <h2 id="cr-couple-heading">{invitationType === "wedding" ? "Mempelai" : "Yang mengundang"}</h2>
+        <p>{eyebrow}</p>
+        <h2 id="cr-couple-heading">{heading}</h2>
         <CeramicLine />
       </header>
 
@@ -31,6 +28,7 @@ export function CoupleSection({ people, settings, invitationType }: {
           const instagram = getPersonInstagram(settings, person.id);
           const parents = [person.fatherName, person.motherName]
             .filter((name): name is string => Boolean(name?.trim()));
+          const parentLine = parentLineFor(invitationType, person.role);
           const initial = (person.nickname || person.fullName).trim().charAt(0) || "•";
 
           return (
@@ -56,9 +54,9 @@ export function CoupleSection({ people, settings, invitationType }: {
               <div className="cr-person-copy">
                 <p className="cr-person-route">Kartu pos {String(index + 1).padStart(2, "0")}</p>
                 <h3 className="cr-script">{person.fullName}</h3>
-                {parents.length > 0 ? (
+                {parents.length > 0 && parentLine ? (
                   <div className="cr-parents">
-                    <p>{parentLabel(person.role)}</p>
+                    <p>{parentLine}</p>
                     <p>{parents.map((name, parentIndex) => (
                       <span key={`${person.id}-${parentIndex}`}>
                         {parentIndex > 0 ? <span className="cr-parent-join"> &amp; </span> : null}

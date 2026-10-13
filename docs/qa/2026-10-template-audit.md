@@ -31,10 +31,14 @@ matrix after round B: 105 pages, the only failures are the 25 round C
 wedding-only copy cases (Ivory, Midnight and Cobalt re-run after the review
 fixes: 21 pages each, copy failures only).
 
+Fixed in round C (2026-10-13): the wedding-only copy row. Core matrix after
+round C: 105 pages, 0 with failures.
+
 Not yet covered by the matrix and still to audit by hand in each round:
 §28 items without an automatic check (round A), visual rhythm and empty
 states (round B, plus the owner's real-phone pass through `/demo/<slug>`),
-and copy beyond the wedding-only words (round C).
+and copy beyond the wedding-only words (covered by
+`tests/template-event-copy.test.mjs` since round C).
 
 ## Round A — Technical (§28)
 
@@ -75,5 +79,11 @@ the nav lists only rendered sections.
 
 ## Round C — Event types
 
-| Template | Location | Finding | Severity | Evidence | Status |
-|---|---|---|---|---|---|
+| # | Template | Location | Finding | Severity | Evidence | Status |
+|---|---|---|---|---|---|---|
+| C1 | All five | nav, people heading | "Mempelai" on every non-wedding page (25 matrix cases) | Important | matrix "wedding-only copy" | Fixed: deck `peopleHeading` / `peopleNavLabel` |
+| C2 | All five | story, gift, wishes, countdown, Kelir closing | Wedding sentences for every type ("Doa restu…", "hari bahagia", "Cerita kami") | Important | `tests/template-event-copy.test.mjs` | Fixed: shared deck `src/themes/shared/event-copy.ts`, own sentences per type |
+| C3 | All five | people parents line | "Putra/i dari", "Keluarga", "Orang tua" for non-couple roles; parents shown on corporate pages | Minor | same | Fixed: `parentLineFor` per type; hidden for corporate |
+| C4 | Terra, Midnight, Cobalt, Kelir | cover | "Rosa amoris", "Perayaan" / "Undangan" for every non-wedding type | Minor | same | Fixed: a specimen per type (Terra); `eventName` / `coverEyebrow` |
+| C5 | Cobalt | story rail | aria-label "Kronologi cerita pasangan" announced on every type | Minor | same (aria-labels) | Fixed: "Kronologi cerita" |
+| C6 | Ivory | `HeroSection.tsx` | Hero photo alt "Foto prewedding …" read out on every type (found in the final review) | Important | same (now scans image alts) | Fixed: "Potret …", like the other four heroes |

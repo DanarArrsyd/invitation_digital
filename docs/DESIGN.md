@@ -771,8 +771,13 @@ is incomplete, not that the test is wrong.
   couple bought).
 - Every optional section follows `invitation.features` and renders nothing
   when its content is empty. Feature toggles are never removed per customer.
-- Copy follows `invitation.type`: wedding eyebrows ("The Wedding Of",
-  "Mempelai") only for weddings; other event types read naturally.
+- Copy follows `invitation.type` through `src/themes/shared/event-copy.ts`
+  (`eventCopy`, `parentLineFor`): cover eyebrow, people heading and nav label,
+  parents line, story, countdown, wishes prompt, gift intro and the default
+  closing. A new theme takes these strings from the deck instead of writing
+  its own; theme accents (Terra's specimen, Midnight's "Dua insan") stay in
+  the theme. `tests/template-event-copy.test.mjs` renders every theme for
+  every type.
 - Section anchors use the theme prefix and these suffixes so nav, tests and
   share links agree: `-beranda`, `-mempelai`, `-acara`, `-cerita`, `-galeri`,
   `-livestream`, `-rsvp`, `-ucapan`, `-kado`.

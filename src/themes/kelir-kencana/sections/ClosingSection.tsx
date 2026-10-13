@@ -5,9 +5,10 @@ import { WayangFigure } from "../components/WayangFigure";
 
 // Tancep kayon: back on the dark stage, the gold gunungan is planted between
 // the two figures, now in full colour as the dalang sees them.
-export function ClosingSection({ displayName, message, imageUrl, imageAlt }: {
+export function ClosingSection({ displayName, message, fallbackMessage, imageUrl, imageAlt }: {
   displayName: string;
   message: string | null;
+  fallbackMessage: string;
   imageUrl: string | null;
   imageAlt: string | null;
 }) {
@@ -35,7 +36,7 @@ export function ClosingSection({ displayName, message, imageUrl, imageAlt }: {
       <p className="kk-eyebrow"><span className="kk-act">Tancep Kayon</span></p>
       {message?.trim()
         ? <p className="kk-closing-message">{message}</p>
-        : <p className="kk-closing-message">Merupakan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.</p>}
+        : <p className="kk-closing-message">{fallbackMessage}</p>}
       <h2 id="kk-closing-heading" className="kk-script">{displayName}</h2>
     </Section>
   );
