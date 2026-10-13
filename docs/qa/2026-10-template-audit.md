@@ -86,3 +86,4 @@ the nav lists only rendered sections.
 | C3 | All five | people parents line | "Putra/i dari", "Keluarga", "Orang tua" for non-couple roles; parents shown on corporate pages | Minor | same | Fixed: `parentLineFor` per type; hidden for corporate |
 | C4 | Terra, Midnight, Cobalt, Kelir | cover | "Rosa amoris", "Perayaan" / "Undangan" for every non-wedding type | Minor | same | Fixed: a specimen per type (Terra); `eventName` / `coverEyebrow` |
 | C5 | Cobalt | story rail | aria-label "Kronologi cerita pasangan" announced on every type | Minor | same (aria-labels) | Fixed: "Kronologi cerita" |
+| C6 | Ivory | `HeroSection.tsx` | Hero photo alt "Foto prewedding …" read out on every type (found in the final review) | Important | same (now scans image alts) | Fixed: "Potret …", like the other four heroes |
