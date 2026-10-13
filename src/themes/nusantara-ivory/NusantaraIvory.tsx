@@ -1,3 +1,4 @@
+import { eventCopy } from "@/themes/shared/event-copy";
 import { hasLivestreamLink } from "@/themes/shared/external-url";
 import { pickNavItems } from "@/themes/shared/nav-priority";
 import { buildThemeViewModel } from "@/themes/shared/view-model";
@@ -33,12 +34,13 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
     heroImageUrl,
     closingImageUrl,
   } = buildThemeViewModel(invitation, guest);
-  const eyebrow = invitation.type === "wedding" ? "The Wedding Of" : null;
+  const copy = eventCopy(invitation.type);
+  const eyebrow = copy.coverEyebrow;
 
   // Page order; pickNavItems keeps the stops the invitation's package includes.
   const navCandidates: (NavItem | null)[] = [
     { id: "ni-beranda", label: "Beranda", icon: "home", section: "hero" },
-    invitation.people.length > 0 ? { id: "ni-mempelai", label: "Mempelai", icon: "heart", section: "couple" } : null,
+    invitation.people.length > 0 ? { id: "ni-mempelai", label: copy.peopleNavLabel, icon: "heart", section: "couple" } : null,
     { id: "ni-acara", label: "Acara", icon: "calendar", section: "events" },
     features.story && invitation.stories.length > 0
       ? { id: "ni-cerita", label: "Cerita", icon: "book", section: "story" }
@@ -85,7 +87,7 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
           openingMessage={invitation.content.openingMessage}
         />
 
-        <CoupleSection people={invitation.people} settings={invitation.theme.settings} />
+        <CoupleSection people={invitation.people} settings={invitation.theme.settings} invitationType={invitation.type} heading={copy.peopleHeading} />
 
         <EventsSection
           events={invitation.events}
@@ -104,7 +106,7 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
 
         {dressCode ? <DressCodeSection dressCode={dressCode} /> : null}
 
-        {features.story ? <StorySection stories={invitation.stories} /> : null}
+        {features.story ? <StorySection stories={invitation.stories} heading={copy.storyHeading} /> : null}
 
         {features.gallery ? <GallerySection gallery={invitation.gallery} /> : null}
 
@@ -129,7 +131,13 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
           />
         ) : null}
 
-        {features.gift ? <GiftSection gifts={invitation.gifts} /> : null}
+        {features.gift ? (
+          <GiftSection
+            gifts={invitation.gifts}
+            heading={invitation.type === "wedding" ? "Wedding Gift" : "Kado Digital"}
+            intro={copy.giftIntro}
+          />
+        ) : null}
 
         <ClosingSection
           closingMessage={invitation.content.closingMessage}

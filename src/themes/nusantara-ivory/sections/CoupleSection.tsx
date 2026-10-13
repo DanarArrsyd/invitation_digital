@@ -1,7 +1,8 @@
 import { getPersonInstagram, type InstagramProfile } from "@/lib/utils/instagram";
 import { EditorialImage } from "../components/EditorialImage";
 import { FloralCorner, BotanicalDivider } from "../components/Botanical";
-import type { InvitationPerson } from "@/types/invitation";
+import { parentLineFor } from "@/themes/shared/event-copy";
+import type { InvitationPerson, InvitationType } from "@/types/invitation";
 
 import { OrnamentCorner } from "../components/Ornament";
 import { Reveal } from "../components/Reveal";
@@ -31,15 +32,17 @@ function PersonPortrait({ person }: { person: InvitationPerson }) {
 
 function PersonDetails({
   person,
+  invitationType,
   align,
   instagram,
 }: {
   person: InvitationPerson;
+  invitationType: InvitationType;
   align: "left" | "right";
   instagram?: InstagramProfile | null;
 }) {
   const parents = [person.fatherName, person.motherName].filter(Boolean).join(" & ");
-  const childOf = person.role === "bride" ? "Putri dari" : person.role === "groom" ? "Putra dari" : "Putra/i dari";
+  const childOf = parentLineFor(invitationType, person.role);
   const display = person.nickname || person.fullName;
   const hasSubtitle = Boolean(person.nickname) && person.fullName !== person.nickname;
 
@@ -64,7 +67,7 @@ function PersonDetails({
         style={{ background: "linear-gradient(90deg, var(--ni-gold), transparent)" }}
       />
 
-      {parents ? (
+      {parents && childOf ? (
         <p className="ni-body max-w-[34ch] text-base">
           {childOf} <span className="text-[var(--ni-brown)]">{parents}</span>
         </p>
@@ -85,13 +88,18 @@ function PersonDetails({
   );
 }
 
-export function CoupleSection({ people, settings }: { people: InvitationPerson[]; settings?: Record<string, unknown> }) {
+export function CoupleSection({ people, settings, invitationType, heading }: {
+  people: InvitationPerson[];
+  settings?: Record<string, unknown>;
+  invitationType: InvitationType;
+  heading: string;
+}) {
   if (people.length === 0) return null;
 
   return (
     <Section id="ni-mempelai" tone="ivory" wide>
       <div className="flex flex-wrap items-end justify-between gap-6">
-        <SectionHeading title="Mempelai" />
+        <SectionHeading title={heading} />
         <Reveal variant="fade"><BotanicalDivider /></Reveal>
       </div>
       <div className="ni-couple-grid">
@@ -101,14 +109,14 @@ export function CoupleSection({ people, settings }: { people: InvitationPerson[]
               <FloralCorner />
               <Reveal variant="mask" delay={index % 2 * .1}><PersonPortrait person={person} /></Reveal>
               <Reveal className="ni-person-details" delay={.12}>
-                <PersonDetails person={person} instagram={getPersonInstagram(settings, person.id)} align={index % 2 ? "right" : "left"} />
+                <PersonDetails person={person} invitationType={invitationType} instagram={getPersonInstagram(settings, person.id)} align={index % 2 ? "right" : "left"} />
               </Reveal>
             </> : <>
               <div className="ni-monogram ni-serif" aria-hidden="true">
                 <OrnamentCorner tone="gold" />
                 {(person.nickname || person.fullName).charAt(0)}
               </div>
-              <Reveal><PersonDetails person={person} instagram={getPersonInstagram(settings, person.id)} align="left" /></Reveal>
+              <Reveal><PersonDetails person={person} invitationType={invitationType} instagram={getPersonInstagram(settings, person.id)} align="left" /></Reveal>
             </>}
           </article>
         ))}

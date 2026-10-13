@@ -5,12 +5,12 @@ import { Reveal } from "../components/Reveal";
 import { Section } from "../components/Section";
 import { SectionHeading } from "../components/SectionHeading";
 
-export function StorySection({ stories }: { stories: InvitationStory[] }) {
+export function StorySection({ stories, heading }: { stories: InvitationStory[]; heading: string }) {
   if (stories.length === 0) return null;
 
   return (
     <Section id="ni-cerita" className="ni-story" tone="cream">
-      <SectionHeading title="Perjalanan Kami" align="left" />
+      <SectionHeading title={heading} align="left" />
 
       <div className="relative mt-14 md:mt-20">
         {/* Connector line — decorative, sits left on mobile and centred on desktop. */}
