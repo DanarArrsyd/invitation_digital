@@ -17,12 +17,13 @@ function formatEventDate(value: string | null): string | null {
 }
 
 export function CoverGate({
-  invitationId, guestToken, label, displayName, eventDate, guestDisplayName,
+  invitationId, guestToken, label, specimen, displayName, eventDate, guestDisplayName,
   musicEnabled, musicUrl, navItems, children,
 }: {
   invitationId: string;
   guestToken: string | null;
   label: string;
+  specimen: string;
   displayName: string;
   eventDate: string | null;
   guestDisplayName: string | null;
@@ -59,7 +60,7 @@ export function CoverGate({
                 ) : displayName}
               </h1>
               {dateLabel ? <time className="tb-cover-date" dateTime={eventDate ?? undefined}>{dateLabel}</time> : null}
-              <p className="tb-specimen tb-label" aria-hidden="true">Rosa amoris · No. 01</p>
+              <p className="tb-specimen tb-label" aria-hidden="true">{`${specimen} · No. 01`}</p>
             </div>
             <div className="tb-cover-recipient">
               <p>Kepada Yth.</p>
