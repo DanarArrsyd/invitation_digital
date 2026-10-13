@@ -362,7 +362,7 @@ test("the hero photo is a 3:4 portrait that follows the title in reading order",
   const heading = hero.querySelector("h1");
   const image = hero.querySelector("img");
   assert.ok(image, "hero renders the cover photo");
-  assert.equal(image.getAttribute("alt"), "Foto prewedding Alya & Bima");
+  assert.equal(image.getAttribute("alt"), "Potret Alya & Bima");
   assert.ok(heading.compareDocumentPosition(image) & Node.DOCUMENT_POSITION_FOLLOWING, "title precedes the photo");
 
   const styles = readFileSync(resolve(ivoryRoot, "ThemeStyles.tsx"), "utf8");

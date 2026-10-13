@@ -63,7 +63,7 @@ function createLoader() {
 
 const GLOBALS = ["window", "document", "navigator", "HTMLElement", "Node", "Element", "IntersectionObserver", "ResizeObserver", "requestAnimationFrame", "cancelAnimationFrame", "getComputedStyle"];
 
-/** Mounts, presses "Buka Undangan", and returns the guest's text and aria-labels. */
+/** Mounts, presses "Buka Undangan", and returns the guest's text, aria-labels and image alts. */
 async function openedCopy(element) {
   const dom = new JSDOM(`<div id="root"></div>`, { url: "https://invitation.test/", pretendToBeVisual: true });
   const { window } = dom;
@@ -94,7 +94,10 @@ async function openedCopy(element) {
     const document = window.document;
     for (const style of document.querySelectorAll("style")) style.remove();
     const text = document.body.textContent.replace(/\s+/g, " ");
-    const labels = [...document.querySelectorAll("[aria-label]")].map((node) => node.getAttribute("aria-label"));
+    const labels = [
+      ...[...document.querySelectorAll("[aria-label]")].map((node) => node.getAttribute("aria-label")),
+      ...[...document.querySelectorAll("img[alt]")].map((node) => node.getAttribute("alt")),
+    ];
     const people = document.querySelector("[id$='-mempelai']")?.textContent.replace(/\s+/g, " ") ?? "";
     await React.act(async () => root.unmount());
     return { text, labels, people };
