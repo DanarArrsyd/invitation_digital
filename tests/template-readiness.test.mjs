@@ -65,7 +65,7 @@ export const RULES = [
 ];
 
 test("the registry lists every theme directory", () => {
-  assert.deepEqual([...THEME_SLUGS].sort(), ["cobalt-riviera", "kelir-kencana", "midnight-atelier", "nusantara-ivory", "terra-botanica"]);
+  assert.deepEqual([...THEME_SLUGS].sort(), ["cobalt-riviera", "kelir-kencana", "midnight-atelier", "nusantara-ivory", "rona-cetak", "terra-botanica"]);
   for (const slug of THEME_SLUGS) assert.ok(themeFiles(slug).length > 5, `${slug} has source files`);
 });
 

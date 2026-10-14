@@ -3,6 +3,7 @@ import { TerraBotanica } from "./terra-botanica";
 import { MidnightAtelier, MIDNIGHT_ATELIER_SECTIONS } from "./midnight-atelier";
 import { CobaltRiviera, COBALT_RIVIERA_SECTIONS } from "./cobalt-riviera";
 import { KelirKencana, KELIR_KENCANA_SECTIONS } from "./kelir-kencana";
+import { RonaCetak } from "./rona-cetak";
 import { defineThemeSectionManifest } from "./section-contract";
 import type { ThemeRegistry } from "@/types/theme";
 
@@ -27,6 +28,13 @@ export const NUSANTARA_IVORY_SECTIONS = defineThemeSectionManifest({
   closing: true,
 });
 
+export const RONA_CETAK_SECTIONS = defineThemeSectionManifest({
+  cover: true, hero: true, quote: true, couple: true, parents: true,
+  events: true, countdown: true, maps: true, calendar: true, dressCode: true,
+  story: true, gallery: true, livestream: true, rsvp: true, wishes: true,
+  gift: true, instagram: true, closing: true,
+});
+
 export const TERRA_BOTANICA_SECTIONS = defineThemeSectionManifest({
   cover: true,
   hero: true,
@@ -49,6 +57,15 @@ export const TERRA_BOTANICA_SECTIONS = defineThemeSectionManifest({
 });
 
 export const themeRegistry: ThemeRegistry = {
+  "rona-cetak": {
+    component: RonaCetak,
+    category: "wedding",
+    preview: {
+      name: "Rona Cetak",
+      palette: ["#FFF8F0", "#792342", "#DC735F"],
+    },
+    sections: RONA_CETAK_SECTIONS,
+  },
   "cobalt-riviera": {
     component: CobaltRiviera,
     category: "wedding",

@@ -23,10 +23,22 @@ const NAMES = {
   "midnight-atelier": "Midnight Atelier",
   "cobalt-riviera": "Cobalt Riviera",
   "kelir-kencana": "Kelir Kencana",
+  "rona-cetak": "Rona Cetak",
 };
 
-function html({ from, to, ink, label, caption, width, height }) {
+function html({ theme, from, to, ink, label, caption, width, height }) {
   const short = Math.min(width, height);
+  if (theme === "rona-cetak") {
+    return `<!doctype html><html><head><style>
+      html,body{margin:0;width:${width}px;height:${height}px}
+      body{display:grid;place-items:center;background:${from};color:${ink};font-family:Arial,Helvetica,sans-serif;overflow:hidden}
+      .sheet{position:absolute;inset:${Math.round(short * .055)}px;border:2px solid ${ink}}
+      .bar{position:absolute;top:${Math.round(short * .055)}px;right:${Math.round(short * .055)}px;width:${Math.round(short * .12)}px;height:48%;background:${to}}
+      .text{position:relative;width:70%;text-align:left}
+      .label{font-size:${Math.round(short * .11)}px;line-height:.95;letter-spacing:-.08em;font-weight:900}
+      .caption{margin-top:${Math.round(short * .045)}px;padding-top:${Math.round(short * .02)}px;border-top:2px solid ${ink};font-size:${Math.round(short * .024)}px;letter-spacing:.17em;text-transform:uppercase}
+    </style></head><body><div class="bar"></div><div class="sheet"></div><div class="text"><div class="label">${label}</div><div class="caption">${caption}</div></div></body></html>`;
+  }
   return `<!doctype html><html><head><style>
     html,body{margin:0;width:${width}px;height:${height}px}
     body{display:flex;align-items:center;justify-content:center;
@@ -47,6 +59,7 @@ function html({ from, to, ink, label, caption, width, height }) {
 const browser = await chromium.launch({ executablePath: process.argv[2] || undefined });
 const page = await browser.newPage();
 for (const demo of DEMOS) {
+  if (process.env.DEMO_THEME && demo.theme !== process.env.DEMO_THEME) continue;
   const dir = new URL(`../../public/demo/${demo.theme}/`, import.meta.url);
   await mkdir(dir, { recursive: true });
   const palette = PALETTES[demo.theme];
@@ -54,7 +67,7 @@ for (const demo of DEMOS) {
     const [from, to, ink] = palette[index % palette.length];
     await page.setViewportSize({ width: slot.width, height: slot.height });
     await page.setContent(
-      html({ from, to, ink, label: `Sample ${index + 1}`, caption: NAMES[demo.theme], width: slot.width, height: slot.height }),
+      html({ theme: demo.theme, from, to, ink, label: `Sample ${index + 1}`, caption: NAMES[demo.theme], width: slot.width, height: slot.height }),
     );
     await page.screenshot({ path: new URL(slot.file, dir).pathname, type: "jpeg", quality: 80 });
   }

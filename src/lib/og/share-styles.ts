@@ -5,7 +5,7 @@
  * one added to the catalogue before its banner style, falls back to the
  * Temuraya brand style, so every link still gets a banner.
  */
-export type ShareScript = "great-vibes" | "herr-von-muellerhoff" | "imperial-script" | "corinthia" | "mea-culpa";
+export type ShareScript = "great-vibes" | "herr-von-muellerhoff" | "imperial-script" | "corinthia" | "mea-culpa" | "instrument-serif";
 
 export interface ShareStyle {
   /** Main canvas behind the text. */
@@ -29,6 +29,14 @@ export const BRAND_SHARE_STYLE: ShareStyle = {
 };
 
 export const THEME_SHARE_STYLES: Record<string, ShareStyle> = {
+  "rona-cetak": {
+    background: "#FFF8F0",
+    panel: "#792342",
+    ink: "#29242A",
+    muted: "#655B60",
+    accent: "#DC735F",
+    script: "instrument-serif",
+  },
   "nusantara-ivory": {
     background: "#F8F1E4",
     panel: "#E9DCC4",

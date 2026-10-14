@@ -1,0 +1,11 @@
+.rc-font-script {
+  --font-rc-script: "Instrument Serif";
+}
+
+.rc-font-label {
+  --font-rc-label: "Archivo Variable";
+}
+
+.rc-font-text {
+  --font-rc-text: "Archivo Variable";
+}

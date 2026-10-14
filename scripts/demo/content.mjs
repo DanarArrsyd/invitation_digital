@@ -39,6 +39,12 @@ export const PALETTES = {
     ["#8E2B1F", "#5E1C14", "#F2E7D0"],
     ["#C09435", "#84601D", "#1C1510"],
   ],
+  "rona-cetak": [
+    ["#FFF8F0", "#F2D5D5", "#792342"],
+    ["#792342", "#572038", "#FFF8F0"],
+    ["#DC735F", "#BA594D", "#29242A"],
+    ["#F2D5D5", "#E9BFC2", "#29242A"],
+  ],
 };
 
 /** Image slots per template, in "Sample N" order. */
@@ -187,6 +193,27 @@ export const DEMOS = [
       { type: "Perayaan", title: "Resepsi", date: "2027-10-16", start: "11:00", end: "14:00", venue: "Pendopo Sample", address: "Jl. Contoh No. 17, Surakarta", livestream: "https://www.youtube.com/" },
     ],
     dressCode: { description: "Batik bernuansa sogan atau merah prada.", groups: [{ label: "Tamu", colors: ["#3D2314", "#8E2B1F", "#C09435"] }] },
+  },
+  {
+    theme: "rona-cetak",
+    sortOrder: 6,
+    eventTypes: ["wedding", "engagement", "birthday", "aqiqah", "graduation", "corporate"],
+    tagline: "Kisah berdua dalam tinta dan kertas.",
+    description:
+      "Rangkaian kartu cetak kontemporer dengan tipografi tegas, kertas hangat, tinta raspberry, dan aksen koral. Rincian acara tersusun seperti program yang dibuat khusus untuk para tamu.\n\nCocok untuk pernikahan modern yang hangat dan ekspresif.",
+    title: "Pernikahan Nara & Saka",
+    eventDate: "2027-11-20",
+    venue: "Studio Sample, Bandung",
+    people: [
+      { role: "bride", fullName: "Nara Adeline", nickname: "Nara", father: "Bapak Sample Adi", mother: "Ibu Sample Lina", bio: "Putri pertama" },
+      { role: "groom", fullName: "Saka Pramudya", nickname: "Saka", father: "Bapak Sample Jaya", mother: "Ibu Sample Ratih", bio: "Putra kedua" },
+    ],
+    events: [
+      { type: "Sakral", title: "Akad Nikah", date: "2027-11-20", start: "09:00", end: "10:30", venue: "Ruang Sample", address: "Jl. Contoh No. 5, Bandung" },
+      { type: "Perayaan", title: "Resepsi", date: "2027-11-20", start: "12:00", end: "15:00", venue: "Studio Sample", address: "Jl. Contoh No. 20, Bandung", livestream: "https://www.youtube.com/" },
+      { type: "Pertemuan", title: "Makan Malam Keluarga", date: "2027-11-21", start: "18:00", end: "20:00", venue: "Ruang Keluarga Sample", address: "Jl. Contoh No. 9, Bandung" },
+    ],
+    dressCode: { description: "Busana rapi dengan warna hangat atau netral.", groups: [{ label: "Tamu", colors: ["#792342", "#DC735F", "#FFF8F0"] }] },
   },
 ].map((demo) => ({ ...common, ...demo }));
 

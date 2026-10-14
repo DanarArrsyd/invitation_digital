@@ -45,6 +45,7 @@ function loadThemeContract() {
       KelirKencana: () => null,
       KELIR_KENCANA_SECTIONS: Object.fromEntries(contract.THEME_SECTION_KEYS.map((key) => [key, true])),
     },
+    "./rona-cetak": { RonaCetak: () => null },
     "./section-contract": contract,
   });
   return { ...contract, themeRegistry };
@@ -71,5 +72,6 @@ test("every registered theme exposes its approved preview metadata", () => {
     "terra-botanica": { name: "Terra Botanica", palette: ["#F2EBDD", "#B5653E", "#4E5B3A"] },
     "midnight-atelier": { name: "Midnight Atelier", palette: ["#14121A", "#5E1A22", "#D8C08A"] },
     "kelir-kencana": { name: "Kelir Kencana", palette: ["#1C1510", "#F2E7D0", "#8E2B1F"] },
+    "rona-cetak": { name: "Rona Cetak", palette: ["#FFF8F0", "#792342", "#DC735F"] },
   });
 });
