@@ -57,6 +57,7 @@ function loadSection(theme, name, actions = {}) {
     exports, module: { exports }, FormData: globalThis.FormData,
     require(moduleName) {
       if (moduleName === "@/themes/shared/use-public-forms") return shared;
+      if (moduleName === "@/themes/shared/format-wish-date") return { formatWishDate: () => "14 Okt 2026" };
       if (moduleName === "@/components/TurnstileWidget") return { TurnstileWidget: inert };
       if (moduleName.endsWith("/Reveal")) return { Reveal: passthrough };
       if (moduleName.endsWith("/Section")) return { Section: passthrough };

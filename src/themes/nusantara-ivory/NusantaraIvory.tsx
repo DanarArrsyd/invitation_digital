@@ -128,6 +128,7 @@ export function NusantaraIvory({ invitation, guest }: ThemeComponentProps) {
             guestToken={guest?.token ?? null}
             guestName={guestDisplayName}
             wishes={invitation.wishes}
+            timeZone={invitation.timeZone}
           />
         ) : null}
 

@@ -3,6 +3,8 @@
 import { useState, type FormEvent } from "react";
 
 import { TurnstileWidget } from "@/components/TurnstileWidget";
+import type { InvitationTimeZone } from "@/lib/invitations/time-zones";
+import { formatWishDate } from "@/themes/shared/format-wish-date";
 import { useWishForm, useWishPagination } from "@/themes/shared/use-public-forms";
 import type { Wish } from "@/types/invitation";
 
@@ -11,19 +13,14 @@ import { WishBottle } from "../components/WishBottle";
 
 const PAGE_SIZE = 5;
 
-function formatWishDate(value: string): string | null {
-  const date = new Date(value);
-  if (!Number.isFinite(date.getTime())) return null;
-  return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" }).format(date);
-}
-
-export function WishesSection({ invitationId, slug, guestToken, guestName, wishes, prompt }: {
+export function WishesSection({ invitationId, slug, guestToken, guestName, wishes, prompt, timeZone }: {
   invitationId: string;
   slug: string;
   guestToken: string | null;
   guestName: string | null;
   wishes: Wish[];
   prompt: string;
+  timeZone?: InvitationTimeZone;
 }) {
   const { state, formAction, isPending, formRef, onSubmit } = useWishForm();
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
@@ -88,7 +85,7 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
           <>
             <ol className="cr-wishes-list">
               {wishes.slice(0, visibleCount).map((wish, index) => {
-                const date = formatWishDate(wish.createdAt);
+                const date = formatWishDate(wish.createdAt, timeZone);
                 return (
                   <li className="cr-wish-entry" key={wish.id} data-wish-id={wish.id}>
                     <span className="cr-wish-route" aria-hidden="true">R{String(index + 1).padStart(2, "0")}</span>
