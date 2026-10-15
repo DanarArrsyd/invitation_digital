@@ -1,6 +1,8 @@
 "use client";
 
 import { TurnstileWidget } from "@/components/TurnstileWidget";
+import type { InvitationTimeZone } from "@/lib/invitations/time-zones";
+import { formatWishDate } from "@/themes/shared/format-wish-date";
 import { useWishForm, useWishPagination } from "@/themes/shared/use-public-forms";
 import type { Wish } from "@/types/invitation";
 
@@ -9,17 +11,14 @@ import { SectionHeading } from "../components/SectionHeading";
 
 const PAGE_SIZE = 5;
 
-function formatWishDate(iso: string): string {
-  return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(iso));
-}
-
-export function WishesSection({ invitationId, slug, guestToken, guestName, wishes, prompt }: {
+export function WishesSection({ invitationId, slug, guestToken, guestName, wishes, prompt, timeZone }: {
   invitationId: string;
   slug: string;
   guestToken: string | null;
   guestName: string | null;
   wishes: Wish[];
   prompt: string;
+  timeZone?: InvitationTimeZone;
 }) {
   const { state, formAction, isPending, formRef, onSubmit } = useWishForm();
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
@@ -75,7 +74,7 @@ export function WishesSection({ invitationId, slug, guestToken, guestName, wishe
                 <li key={wish.id} data-wish-id={wish.id}>
                   <div className="rc-wish-meta">
                     <strong>{wish.guestName}</strong>
-                    <time dateTime={wish.createdAt}>{formatWishDate(wish.createdAt)}</time>
+                    <time dateTime={wish.createdAt}>{formatWishDate(wish.createdAt, timeZone)}</time>
                   </div>
                   <p>{wish.message}</p>
                 </li>

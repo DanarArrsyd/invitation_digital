@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 import { TurnstileWidget } from "@/components/TurnstileWidget";
+import type { InvitationTimeZone } from "@/lib/invitations/time-zones";
+import { formatWishDate } from "@/themes/shared/format-wish-date";
 import { useFocusOnSuccess, useWishForm, useWishPagination } from "@/themes/shared/use-public-forms";
 import type { Wish } from "@/types/invitation";
 
@@ -14,24 +16,20 @@ import { SectionHeading } from "../components/SectionHeading";
 const PAGE_SIZE = 5;
 const MAX_MESSAGE_LENGTH = 500;
 
-function formatWishDate(iso: string): string {
-  return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" }).format(
-    new Date(iso),
-  );
-}
-
 export function WishesSection({
   invitationId,
   slug,
   guestToken,
   guestName,
   wishes,
+  timeZone,
 }: {
   invitationId: string;
   slug: string;
   guestToken: string | null;
   guestName: string | null;
   wishes: Wish[];
+  timeZone?: InvitationTimeZone;
 }) {
   const { state, formAction, isPending, formRef, onSubmit } = useWishForm();
   const { visibleCount, showMore } = useWishPagination(wishes.length, PAGE_SIZE);
@@ -137,7 +135,7 @@ export function WishesSection({
                         className="shrink-0 text-[0.65rem] tracking-[0.2em] uppercase"
                         style={{ color: "var(--ni-gold-ink)" }}
                       >
-                        {formatWishDate(wish.createdAt)}
+                        {formatWishDate(wish.createdAt, timeZone)}
                       </p>
                     </div>
                     <p className="ni-body mt-2 text-base break-words whitespace-pre-line">

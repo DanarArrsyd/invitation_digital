@@ -119,6 +119,7 @@ export function MidnightAtelier({ invitation, guest }: ThemeComponentProps) {
               guestName={guestDisplayName}
               wishes={invitation.wishes}
               prompt={copy.wishesPrompt}
+              timeZone={invitation.timeZone}
             />
           ) : null}
           {invitation.features.gift ? <GiftSection gifts={invitation.gifts} intro={copy.giftIntro} /> : null}

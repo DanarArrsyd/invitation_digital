@@ -34,6 +34,7 @@ function createLoader() {
       require(name) {
         if (name === "next/image") return { __esModule: true, default: ({ src, alt }) => React.createElement("img", { src, alt }) };
         if (name === "next/script") return { __esModule: true, default: () => null };
+        if (name === "@/components/TurnstileWidget") return { TurnstileWidget: () => null };
         if (name === "@/app/(public)/[slug]/actions") {
           return { trackCoverOpenedAction: async () => {}, submitRsvpAction: async () => ({}), submitWishAction: async () => ({}) };
         }
@@ -56,6 +57,7 @@ function createLoader() {
 
 const load = createLoader();
 const calendar = load(resolve(sourceRoot, "themes/shared/calendar"));
+const { formatWishDate } = load(resolve(sourceRoot, "themes/shared/format-wish-date"));
 
 test("settings.timeZone resolves to a supported zone and defaults to WIB", () => {
   assert.equal(resolveInvitationTimeZone({ timeZone: "Asia/Makassar" }), "Asia/Makassar");
@@ -87,6 +89,15 @@ test("calendar exports use the invitation's zone", () => {
 
   const wib = calendar.calendarEventForEvent(event, "Alya & Bima");
   assert.match(calendar.buildIcsCalendar(wib, "uid", new Date("2030-01-01T00:00:00Z")), /DTSTART:20301020T030000Z/);
+});
+
+test("wish dates use the invitation's zone at the UTC date boundary", () => {
+  const timestamp = "2026-10-14T16:30:00Z";
+  assert.equal(formatWishDate(timestamp, "Asia/Jakarta"), "14 Okt 2026");
+  assert.equal(formatWishDate(timestamp, "Asia/Makassar"), "15 Okt 2026");
+  assert.equal(formatWishDate(timestamp, "Asia/Jayapura"), "15 Okt 2026");
+  assert.equal(formatWishDate(timestamp), "14 Okt 2026");
+  assert.equal(formatWishDate("invalid"), null);
 });
 
 const THEMES = [
@@ -131,5 +142,20 @@ for (const [entry, exportName, slug, eventsSelector] of THEMES) {
     assert.doesNotMatch(wita, /\bWIB\b/);
     assert.match(render({ timeZone: "Asia/Jayapura" }), /12:00 WIT(?!A)/);
     assert.match(render({}), /12:00 WIB/, "invitations saved before the setting existed stay WIB");
+  });
+}
+
+for (const [entry, exportName, slug] of THEMES) {
+  test(`${slug}: wish dates follow the invitation zone in server markup`, () => {
+    const Theme = load(resolve(sourceRoot, entry))[exportName];
+    const render = (timeZone) => {
+      const data = invitation(slug);
+      data.timeZone = timeZone;
+      data.features.wishes = true;
+      data.wishes = [{ id: "wish", guestName: "Tamu", message: "Selamat!", createdAt: "2026-10-14T16:30:00Z" }];
+      return renderToStaticMarkup(React.createElement(Theme, { invitation: data, guest: null }));
+    };
+    assert.match(render("Asia/Jakarta"), /14 Okt 2026/);
+    assert.match(render("Asia/Makassar"), /15 Okt 2026/);
   });
 }

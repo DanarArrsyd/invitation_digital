@@ -78,7 +78,7 @@ export function RonaCetak({ invitation, guest }: ThemeComponentProps) {
         {invitation.features.gallery ? <GallerySection gallery={invitation.gallery} displayName={coupleDisplayName} /> : null}
         <LivestreamSection events={invitation.events} enabled={invitation.features.livestream} />
         {invitation.features.rsvp ? <RsvpSection invitationId={invitation.id} slug={invitation.slug} guestToken={guest?.token ?? null} guestName={guestDisplayName} /> : null}
-        {invitation.features.wishes ? <WishesSection invitationId={invitation.id} slug={invitation.slug} guestToken={guest?.token ?? null} guestName={guestDisplayName} wishes={invitation.wishes} prompt={copy.wishesPrompt} /> : null}
+        {invitation.features.wishes ? <WishesSection invitationId={invitation.id} slug={invitation.slug} guestToken={guest?.token ?? null} guestName={guestDisplayName} wishes={invitation.wishes} prompt={copy.wishesPrompt} timeZone={invitation.timeZone} /> : null}
         {invitation.features.gift ? <GiftSection gifts={invitation.gifts} intro={copy.giftIntro} /> : null}
         <ClosingSection displayName={coupleDisplayName} message={invitation.content.closingMessage} fallbackMessage={copy.closingLine} imageUrl={closingImageUrl} imageAlt={closingImageAlt} />
       </CoverGate>
