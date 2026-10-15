@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 
 /**
  * Uploaded invitation media is served from the Supabase public bucket.
@@ -30,4 +31,8 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// The runtime hooks work without this wrapper. Only enable build-time source
+// map upload after the owner configures the Sentry project and upload token.
+export default process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
+  ? withSentryConfig(nextConfig, { telemetry: false })
+  : nextConfig;
