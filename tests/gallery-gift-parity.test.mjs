@@ -23,6 +23,7 @@ const THEMES = [
   { name: "midnight-atelier", gallery: ["sections/GallerySection", "GallerySection"], gift: ["sections/GiftAccountLedger", "GiftAccountLedger"] },
   { name: "cobalt-riviera", gallery: ["sections/GallerySection", "GallerySection"], gift: ["sections/GiftReceipt", "GiftReceipt"] },
   { name: "kelir-kencana", gallery: ["sections/GallerySection", "GallerySection"], gift: ["sections/GiftSlip", "GiftSlip"] },
+  { name: "rona-cetak", gallery: ["sections/GallerySection", "GallerySection"], gift: ["sections/GiftAccountCard", "GiftAccountCard"] },
 ];
 
 const passthrough = ({ children, id }) => React.createElement(id ? "section" : "div", id ? { id } : null, children);

@@ -45,6 +45,14 @@ const THEME_FONTS = {
       /--font-kk-body:\s*"Gelasio Variable"/,
     ],
   },
+  "rona-cetak": {
+    packages: [/@fontsource-variable\/archivo/, /@fontsource\/instrument-serif/],
+    faces: [
+      /--font-rc-script:\s*"Instrument Serif"/,
+      /--font-rc-label:\s*"Archivo Variable"/,
+      /--font-rc-text:\s*"Archivo Variable"/,
+    ],
+  },
 };
 
 test("each wedding theme bundles its own fonts instead of downloading Google fonts at build time", async () => {

@@ -45,3 +45,9 @@ import "@fontsource/marcellus/400.css";
 import "@fontsource-variable/gelasio";
 import "@fontsource-variable/gelasio/wght-italic.css";
 import "./kelir-kencana/fonts.css";
+
+// rona-cetak
+import "@fontsource-variable/archivo";
+import "@fontsource/instrument-serif/400.css";
+import "@fontsource/instrument-serif/400-italic.css";
+import "./rona-cetak/fonts.css";

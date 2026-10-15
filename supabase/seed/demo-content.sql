@@ -362,4 +362,75 @@ Cocok untuk pernikahan adat Jawa, tasyakuran, dan acara keluarga yang ingin bern
   is_listed = true
 where slug = 'kelir-kencana';
 
+-- Pernikahan Nara & Saka (rona-cetak)
+do $$
+declare
+  inv_id uuid;
+begin
+  insert into public.invitations (
+    type, title, slug, theme_id, status, event_date, venue_summary, package_key, is_demo,
+    published_at, expires_at, cover_image_path, opening_quote, opening_message, closing_message, settings
+  )
+  select 'wedding', 'Pernikahan Nara & Saka', 'demo-rona-cetak', t.id, 'published', '2027-11-20', 'Studio Sample, Bandung',
+    'grand', true, now(), null, '/demo/rona-cetak/cover.jpg',
+    'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan dari jenismu sendiri, supaya kamu merasa tenteram kepadanya. (QS. Ar-Rum: 21)', 'Dengan memohon rahmat Tuhan Yang Maha Esa, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia kami.', 'Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir. Terima kasih atas doa dan restunya.', '{"features":{"music":false,"countdown":true,"maps":true,"story":true,"gallery":true,"dressCode":true,"livestream":true,"rsvp":true,"wishes":true,"gift":true,"guestPersonalization":true},"timeZone":"Asia/Jakarta","dressCode":{"description":"Busana rapi dengan warna hangat atau netral.","groups":[{"label":"Tamu","colors":["#792342","#DC735F","#FFF8F0"]}]}}'::jsonb
+  from public.themes t where t.slug = 'rona-cetak'
+  returning id into inv_id;
+
+  insert into public.invitation_people (invitation_id, role, full_name, nickname, father_name, mother_name, photo_path, bio, sort_order)
+  values
+    (inv_id, 'bride', 'Nara Adeline', 'Nara', 'Bapak Sample Adi', 'Ibu Sample Lina', '/demo/rona-cetak/person-1.jpg', 'Putri pertama', 0),
+    (inv_id, 'groom', 'Saka Pramudya', 'Saka', 'Bapak Sample Jaya', 'Ibu Sample Ratih', '/demo/rona-cetak/person-2.jpg', 'Putra kedua', 1);
+
+  insert into public.invitation_events (invitation_id, event_type, title, event_date, start_time, end_time, venue_name, address, maps_url, livestream_url, sort_order)
+  values
+    (inv_id, 'Sakral', 'Akad Nikah', '2027-11-20', '09:00', '10:30', 'Ruang Sample', 'Jl. Contoh No. 5, Bandung', 'https://www.google.com/maps/search/?api=1&query=Ruang%20Sample%2C%20Jl.%20Contoh%20No.%205%2C%20Bandung', null, 0),
+    (inv_id, 'Perayaan', 'Resepsi', '2027-11-20', '12:00', '15:00', 'Studio Sample', 'Jl. Contoh No. 20, Bandung', 'https://www.google.com/maps/search/?api=1&query=Studio%20Sample%2C%20Jl.%20Contoh%20No.%2020%2C%20Bandung', 'https://www.youtube.com/', 1),
+    (inv_id, 'Pertemuan', 'Makan Malam Keluarga', '2027-11-21', '18:00', '20:00', 'Ruang Keluarga Sample', 'Jl. Contoh No. 9, Bandung', 'https://www.google.com/maps/search/?api=1&query=Ruang%20Keluarga%20Sample%2C%20Jl.%20Contoh%20No.%209%2C%20Bandung', null, 2);
+
+  insert into public.invitation_stories (invitation_id, title, year_label, description, image_path, sort_order)
+  values
+    (inv_id, 'Pertama bertemu', '2019', 'Cerita contoh: kami bertemu di sebuah acara kampus dan mulai berbincang tanpa henti.', '/demo/rona-cetak/story-1.jpg', 0),
+    (inv_id, 'Menjalin cerita', '2022', 'Cerita contoh: dari teman dekat menjadi pasangan yang saling menguatkan.', '/demo/rona-cetak/story-2.jpg', 1),
+    (inv_id, 'Melangkah bersama', '2026', 'Cerita contoh: dengan restu keluarga, kami memutuskan untuk melangkah ke jenjang berikutnya.', '/demo/rona-cetak/story-3.jpg', 2);
+
+  insert into public.gallery_items (invitation_id, image_path, alt_text, aspect_ratio, sort_order)
+  values
+    (inv_id, '/demo/rona-cetak/gallery-01.jpg', 'Foto contoh 1', 'portrait_3_4', 0),
+    (inv_id, '/demo/rona-cetak/gallery-02.jpg', 'Foto contoh 2', 'landscape_4_3', 1),
+    (inv_id, '/demo/rona-cetak/gallery-03.jpg', 'Foto contoh 3', 'square_1_1', 2),
+    (inv_id, '/demo/rona-cetak/gallery-04.jpg', 'Foto contoh 4', 'portrait_4_5', 3),
+    (inv_id, '/demo/rona-cetak/gallery-05.jpg', 'Foto contoh 5', 'landscape_16_9', 4),
+    (inv_id, '/demo/rona-cetak/gallery-06.jpg', 'Foto contoh 6', 'portrait_3_4', 5),
+    (inv_id, '/demo/rona-cetak/gallery-07.jpg', 'Foto contoh 7', 'square_1_1', 6),
+    (inv_id, '/demo/rona-cetak/gallery-08.jpg', 'Foto contoh 8', 'landscape_4_3', 7),
+    (inv_id, '/demo/rona-cetak/gallery-09.jpg', 'Foto contoh 9', 'portrait_4_5', 8),
+    (inv_id, '/demo/rona-cetak/gallery-10.jpg', 'Foto contoh 10', 'portrait_3_4', 9),
+    (inv_id, '/demo/rona-cetak/gallery-11.jpg', 'Foto contoh 11', 'landscape_16_9', 10),
+    (inv_id, '/demo/rona-cetak/gallery-12.jpg', 'Foto contoh 12', 'square_1_1', 11);
+
+  insert into public.gift_accounts (invitation_id, provider_type, provider_name, account_number, account_name, sort_order)
+  values
+    (inv_id, 'bank', 'Bank Sample', '1234567890', 'Nama Mempelai Sample', 0),
+    (inv_id, 'ewallet', 'Dompet Digital Sample', '081200000000', 'Nama Mempelai Sample', 1);
+
+  insert into public.wishes (invitation_id, guest_name, message, is_visible, created_at)
+  values
+    (inv_id, 'Tamu Sample 1', 'Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah.', true, now() - interval '5 hours'),
+    (inv_id, 'Tamu Sample 2', 'Bahagia selalu untuk kalian berdua. Semoga langgeng sampai kakek nenek.', true, now() - interval '10 hours'),
+    (inv_id, 'Tamu Sample 3', 'Turut berbahagia! Maaf belum bisa hadir, doa terbaik dari jauh.', true, now() - interval '15 hours'),
+    (inv_id, 'Tamu Sample 4', 'Semoga cinta kalian terus tumbuh setiap hari. Selamat!', true, now() - interval '20 hours');
+end $$;
+
+update public.themes set
+  tagline = 'Kisah berdua dalam tinta dan kertas.',
+  description = 'Rangkaian kartu cetak kontemporer dengan tipografi tegas, kertas hangat, tinta raspberry, dan aksen koral. Rincian acara tersusun seperti program yang dibuat khusus untuk para tamu.
+
+Cocok untuk pernikahan modern yang hangat dan ekspresif.',
+  event_types = array['wedding', 'engagement', 'birthday', 'aqiqah', 'graduation', 'corporate']::text[],
+  screenshot_paths = array['/demo/rona-cetak/screen-1.jpg', '/demo/rona-cetak/screen-2.jpg', '/demo/rona-cetak/screen-3.jpg']::text[],
+  sort_order = 6,
+  is_listed = true
+where slug = 'rona-cetak';
+
 commit;

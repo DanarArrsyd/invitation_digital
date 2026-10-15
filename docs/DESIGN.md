@@ -865,3 +865,19 @@ is incomplete, not that the test is wrong.
 - `npm test`, lint, TypeScript, and a Vercel preview build. After merge,
   marketing and demo data caches refresh within 10 minutes (`revalidate
   600`); judge cached pages after that.
+
+## 29. Rona Cetak — Theme #006
+
+Rona Cetak treats the invitation as a contemporary two-colour print suite.
+Warm paper, raspberry ink and restrained coral replace the palace, garden,
+ballroom, coast and wayang motifs of the five earlier themes. Archivo makes
+the names, numbered event programme and navigation direct and readable;
+Instrument Serif italic is used sparingly as an accent. The cover is a stack
+of offset sheets with a clear open action. The public page follows with a
+3:4 editorial portrait, programme rows, rectangular gallery prints, reply
+slip forms and a raspberry closing sheet.
+
+The theme uses the shared 18-capability manifest, event-type copy deck,
+navigation selection, forms and lightbox. Its own visual design and release
+boundary are recorded in
+`docs/superpowers/specs/2026-10-15-rona-cetak-theme-design.md`.

@@ -73,7 +73,7 @@ function invitation(themeSlug) {
 test("every registered theme slug resolve through the real public renderer", () => {
   const { themeRegistry } = loadSource("themes/registry");
   const { ThemeRenderer } = loadSource("themes/ThemeRenderer");
-  assert.deepEqual(Object.keys(themeRegistry).sort(), ["cobalt-riviera", "kelir-kencana", "midnight-atelier", "nusantara-ivory", "terra-botanica"]);
+  assert.deepEqual(Object.keys(themeRegistry).sort(), ["cobalt-riviera", "kelir-kencana", "midnight-atelier", "nusantara-ivory", "rona-cetak", "terra-botanica"]);
   assert.equal(themeRegistry["terra-botanica"].preview.name, "Terra Botanica");
   assert.equal(themeRegistry["terra-botanica"].category, "wedding");
   assert.deepEqual([...themeRegistry["terra-botanica"].preview.palette], ["#F2EBDD", "#B5653E", "#4E5B3A"]);
@@ -89,6 +89,7 @@ test("every registered theme slug resolve through the real public renderer", () 
     "terra-botanica": "TerraBotanica",
     "midnight-atelier": "MidnightAtelier",
     "kelir-kencana": "KelirKencana",
+    "rona-cetak": "RonaCetak",
   };
   for (const [slug, componentName] of Object.entries(expectedComponents)) {
     const resolved = ThemeRenderer({ invitation: invitation(slug), guest: null });

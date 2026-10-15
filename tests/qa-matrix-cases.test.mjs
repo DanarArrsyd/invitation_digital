@@ -3,12 +3,12 @@ import test from "node:test";
 
 import { buildCases, caseUrl, evaluate, THEMES, VIEWPORTS } from "../scripts/qa/matrix-cases.mjs";
 
-test("the core matrix is 105 unique pages over the §28.7 viewports", () => {
+test("the core matrix is 126 unique pages over the §28.7 viewports", () => {
   const cases = buildCases();
-  assert.equal(cases.length, 105);
-  assert.equal(new Set(cases.map((c) => c.id)).size, 105);
+  assert.equal(cases.length, 126);
+  assert.equal(new Set(cases.map((c) => c.id)).size, 126);
   assert.deepEqual(VIEWPORTS.map((v) => `${v.width}x${v.height}`), ["320x568", "375x812", "768x1024", "1280x800"]);
-  assert.equal(THEMES.length, 5);
+  assert.equal(THEMES.length, 6);
   for (const theme of THEMES) {
     const own = cases.filter((c) => c.theme === theme);
     assert.equal(own.filter((c) => c.jenis !== "wedding").length, 5, `${theme}: every other type`);
@@ -18,7 +18,7 @@ test("the core matrix is 105 unique pages over the §28.7 viewports", () => {
 });
 
 test("the full matrix and the filters", () => {
-  assert.equal(buildCases({ full: true }).length, 1080);
+  assert.equal(buildCases({ full: true }).length, 1296);
   assert.ok(buildCases({ theme: "kelir-kencana" }).every((c) => c.theme === "kelir-kencana"));
   assert.ok(buildCases({ viewport: "320" }).every((c) => c.viewport.width === 320));
   assert.throws(() => buildCases({ theme: "nope" }), /Unknown theme/);

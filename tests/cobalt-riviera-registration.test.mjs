@@ -15,6 +15,7 @@ const themeSlugs = [
   "kelir-kencana",
   "midnight-atelier",
   "nusantara-ivory",
+  "rona-cetak",
   "terra-botanica",
 ];
 const capabilityKeys = [
