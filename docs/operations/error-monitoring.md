@@ -8,6 +8,14 @@ For readable stack frames, add `SENTRY_ORG`, `SENTRY_PROJECT`, and build-only `S
 
 With no DSN, capture is disabled. `npm run typecheck`, lint, tests, and build still run locally.
 
+## Active setup (2026-10-16)
+
+- Sentry organization: `eka-danar-orgs` (US region); project: `javascript-nextjs`.
+- Both DSN variables are configured in Vercel Preview and Production. Production capture starts only when the monitoring PR is merged and deployed.
+- The project uses default and server-side data scrubbers, with IP storage disabled. An email alert to the organization owner covers new and regressed issues, throttled to once per issue per hour.
+- Browser capture and redaction were verified on Preview; server capture and redaction were verified with the production SDK configuration locally. Source-map upload is pending a scoped Sentry auth token.
+- The existing Preview Turnstile site key rejects Vercel's per-deployment hostname (`110200`). Do not substitute Cloudflare's always-pass test keys while Preview shares the live Supabase project. Fix hostname authorization or isolate Preview data before testing public form submissions there.
+
 ## Triage
 
 1. Check the Sentry issue's first seen time, affected release, exception type, and stack frame. Payload fields such as guest name, invitation URL, form value, raw message, absolute local path, and server hostname should be absent. If any appear, disable the DSN and fix the scrubber before resuming. Sentry can still infer approximate geography from the event's delivery IP even when IP storage is disabled.
