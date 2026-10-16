@@ -4,8 +4,10 @@ import Link from "next/link";
 
 import { EmptyState } from "@/components/admin/empty-state";
 import { PageHeader } from "@/components/admin/page-header";
+import { SubmitButton } from "@/components/admin/submit-button";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { listPendingInvitationDeletions } from "@/server/invitations/deletion";
 import {
   countInvitationsByStatus,
   listInvitations,
@@ -14,6 +16,7 @@ import {
 } from "@/server/invitations/queries";
 
 import { INVITATION_LIST_COLUMNS, InvitationListRow } from "./InvitationListRow";
+import { retryInvitationMediaCleanupAction } from "./actions";
 
 export const metadata: Metadata = {
   title: "Undangan",
@@ -44,12 +47,16 @@ function listHref(status: string, search: string, sort: InvitationSort): string 
 export default async function InvitationsListPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; q?: string; sort?: string }>;
+  searchParams: Promise<{ status?: string; q?: string; sort?: string; deleted?: string; cleanup?: string }>;
 }) {
-  const { status = "all", q = "", sort: sortParam } = await searchParams;
+  const { status = "all", q = "", sort: sortParam, deleted, cleanup } = await searchParams;
   const search = q.trim();
   const sort: InvitationSort = sortParam === "event" ? "event" : "recent";
-  const [invitations, counts] = await Promise.all([listInvitations(status, search, sort), countInvitationsByStatus()]);
+  const [invitations, counts, pendingDeletions] = await Promise.all([
+    listInvitations(status, search, sort),
+    countInvitationsByStatus(),
+    listPendingInvitationDeletions(),
+  ]);
   const isFiltered = status !== "all" || search !== "";
 
   return (
@@ -64,6 +71,38 @@ export default async function InvitationsListPage({
           </Link>
         }
       />
+
+      {deleted === "1" || cleanup === "done" ? (
+        <p role="status" className="rounded-xl border border-border bg-card px-4 py-3 text-sm">
+          {deleted === "1" ? "Undangan dan medianya berhasil dihapus." : "Pembersihan media selesai."}
+        </p>
+      ) : null}
+
+      {pendingDeletions.length > 0 ? (
+        <section aria-labelledby="pending-media-cleanup" className="rounded-xl border border-destructive/40 bg-card p-4">
+          <h2 id="pending-media-cleanup" className="text-sm font-semibold">Pembersihan media tertunda</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Data undangan sudah dihapus. Ulangi pembersihan file sampai antrean ini kosong.
+          </p>
+          <ul className="mt-3 space-y-2">
+            {pendingDeletions.map((job) => (
+              <li key={job.invitation_id} className="flex flex-wrap items-center justify-between gap-3 text-sm">
+                <span className="break-all font-mono">{job.slug}</span>
+                <form action={retryInvitationMediaCleanupAction}>
+                  <input type="hidden" name="invitationId" value={job.invitation_id} />
+                  <SubmitButton variant="outline" size="sm" pendingText="Membersihkan...">
+                    Coba lagi
+                  </SubmitButton>
+                </form>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : cleanup === "pending" ? (
+        <p role="status" className="rounded-xl border border-border bg-card px-4 py-3 text-sm">
+          Tidak ada pembersihan media yang tertunda.
+        </p>
+      ) : null}
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <nav aria-label="Filter status" className="-mx-1 flex gap-0.5 overflow-x-auto rounded-xl bg-muted p-1 lg:mx-0">

@@ -27,7 +27,11 @@ Phase 9 sub-project 2, data lifecycle, is now on `codex/data-lifecycle`. Owner
 policy: keep expired invitation data and media until deliberate admin deletion;
 retain raw analytics for 90 days, preserving only anonymous daily counts. The
 implementation and rollout notes are in `docs/operations/data-lifecycle.md`.
-Do not merge without owner approval, since `main` deploys Production.
+PR #43 was merged as `987bed7`; its Supabase migration was applied before
+merge, and Vercel Production returned HTTP 200 for the landing page, catalogue,
+and Ivory demo. The next PR is manual invitation deletion on
+`codex/invitation-deletion`, with a durable Storage cleanup queue. Do not merge
+without owner approval, since `main` deploys Production.
 
 ## Checkpoint — 15 October 2026 (Phase 9: error monitoring in review)
 

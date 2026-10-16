@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { validatePackageCapacity, type PackageKey } from "@/lib/packages/entitlements";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { INVITATION_MEDIA_BUCKET } from "@/lib/supabase/storage";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { type MediaKind, validateMediaFile } from "@/lib/validation/media";
@@ -38,8 +39,7 @@ async function uploadObject(
 
 async function removeObject(path: string | null): Promise<void> {
   if (!path) return;
-  const supabase = await createSupabaseServerClient();
-  await supabase.storage.from(INVITATION_MEDIA_BUCKET).remove([path]);
+  await createSupabaseAdminClient().storage.from(INVITATION_MEDIA_BUCKET).remove([path]);
 }
 
 export async function uploadPersonPhoto(
@@ -51,18 +51,29 @@ export async function uploadPersonPhoto(
   if ("error" in result) return { error: result.error };
 
   const supabase = await createSupabaseServerClient();
-  const { data: existing } = await supabase
+  const { data: existing, error: lookupError } = await supabase
     .from("invitation_people")
     .select("photo_path")
     .eq("id", personId)
+    .eq("invitation_id", invitationId)
     .single();
+  if (lookupError || !existing) {
+    await removeObject(result.path);
+    return { error: lookupError?.message ?? "Orang tidak ditemukan." };
+  }
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("invitation_people")
     .update({ photo_path: result.path })
-    .eq("id", personId);
+    .eq("id", personId)
+    .eq("invitation_id", invitationId)
+    .select("id")
+    .maybeSingle();
 
-  if (error) return { error: error.message };
+  if (error || !updated) {
+    await removeObject(result.path);
+    return { error: error?.message ?? "Orang tidak ditemukan." };
+  }
 
   await removeObject(existing?.photo_path ?? null);
   return null;
@@ -76,18 +87,27 @@ export async function uploadCoverImage(
   if ("error" in result) return { error: result.error };
 
   const supabase = await createSupabaseServerClient();
-  const { data: existing } = await supabase
+  const { data: existing, error: lookupError } = await supabase
     .from("invitations")
     .select("cover_image_path")
     .eq("id", invitationId)
     .single();
+  if (lookupError || !existing) {
+    await removeObject(result.path);
+    return { error: lookupError?.message ?? "Undangan tidak ditemukan." };
+  }
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("invitations")
     .update({ cover_image_path: result.path })
-    .eq("id", invitationId);
+    .eq("id", invitationId)
+    .select("id")
+    .maybeSingle();
 
-  if (error) return { error: error.message };
+  if (error || !updated) {
+    await removeObject(result.path);
+    return { error: error?.message ?? "Undangan tidak ditemukan." };
+  }
 
   await removeObject(existing?.cover_image_path ?? null);
   return null;
@@ -101,18 +121,27 @@ export async function uploadMusic(
   if ("error" in result) return { error: result.error };
 
   const supabase = await createSupabaseServerClient();
-  const { data: existing } = await supabase
+  const { data: existing, error: lookupError } = await supabase
     .from("invitations")
     .select("music_path")
     .eq("id", invitationId)
     .single();
+  if (lookupError || !existing) {
+    await removeObject(result.path);
+    return { error: lookupError?.message ?? "Undangan tidak ditemukan." };
+  }
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("invitations")
     .update({ music_path: result.path })
-    .eq("id", invitationId);
+    .eq("id", invitationId)
+    .select("id")
+    .maybeSingle();
 
-  if (error) return { error: error.message };
+  if (error || !updated) {
+    await removeObject(result.path);
+    return { error: error?.message ?? "Undangan tidak ditemukan." };
+  }
 
   await removeObject(existing?.music_path ?? null);
   return null;
@@ -181,18 +210,29 @@ export async function uploadStoryImage(
   if ("error" in result) return { error: result.error };
 
   const supabase = await createSupabaseServerClient();
-  const { data: existing } = await supabase
+  const { data: existing, error: lookupError } = await supabase
     .from("invitation_stories")
     .select("image_path")
     .eq("id", storyId)
+    .eq("invitation_id", invitationId)
     .single();
+  if (lookupError || !existing) {
+    await removeObject(result.path);
+    return { error: lookupError?.message ?? "Cerita tidak ditemukan." };
+  }
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("invitation_stories")
     .update({ image_path: result.path })
-    .eq("id", storyId);
+    .eq("id", storyId)
+    .eq("invitation_id", invitationId)
+    .select("id")
+    .maybeSingle();
 
-  if (error) return { error: error.message };
+  if (error || !updated) {
+    await removeObject(result.path);
+    return { error: error?.message ?? "Cerita tidak ditemukan." };
+  }
 
   await removeObject(existing?.image_path ?? null);
   return null;

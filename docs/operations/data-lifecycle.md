@@ -34,4 +34,8 @@ If the job fails, inspect `cron.job_run_details` and fix the failure before retr
 
 ## Manual deletion
 
-The application currently has no whole-invitation delete action. Existing child-row deletes are manual. A whole-invitation delete must first account for database cascades and all files under `invitations/<id>/` in Storage, including orphaned uploads; it needs a separate confirmation and recovery workflow. Until then, expired invitations remain in admin and their data stays intact.
+The admin Publish page offers whole-invitation deletion for non-demo invitations after they have been pulled from public access. The admin must type the exact slug in the confirmation dialog. `queue_invitation_deletion` verifies the admin profile, demo flag, status, and slug inside one transaction, then deletes the invitation and inserts a durable Storage cleanup job. Invitation child rows, including RSVP, wishes, and analytics, cascade with the invitation. The public cache is invalidated immediately.
+
+The server then lists and removes every object below `invitations/<id>/`, including unreferenced uploads. It deletes the cleanup job only after Storage removal succeeds. If Storage is unavailable, the job remains visible at `/admin/invitations`, where the admin can retry. Successful retries remove the job. Demo invitations have no delete control and are also rejected by the database function.
+
+Apply `supabase/migrations/20261016000002_invitation_deletion_queue.sql` before deploying the delete UI. The function is not a scheduled purge: it runs only after an admin confirms a specific invitation. Before deleting a real customer's invitation, verify the separate database and Storage backup is restorable; Supabase Free does not provide downloadable database backups.

@@ -15,7 +15,8 @@ import { getInvitationDetail } from "@/server/invitations/queries";
 import { resolveInvitationFeatures } from "@/server/public/normalize";
 
 import { CopyLinkButton } from "../guests/CopyLinkButton";
-import { publishAction, unpublishAction } from "./actions";
+import { deleteInvitationAction, publishAction, unpublishAction } from "./actions";
+import { ConfirmInvitationDeleteForm } from "./ConfirmInvitationDeleteForm";
 
 function formatDateTime(iso: string | null): string {
   if (!iso) return "—";
@@ -144,6 +145,32 @@ export default async function PublishPage({
           </PanelFooter>
         </Panel>
       </SettingsSection>
+
+      {!invitation.is_demo ? (
+        <SettingsSection
+          id="delete"
+          title="Hapus undangan"
+          description="Data undangan dan seluruh respons tamu tetap tersimpan setelah masa berlaku habis, sampai admin menghapusnya."
+        >
+          <Panel>
+            <PanelBody>
+              <p className="text-sm text-muted-foreground">
+                Penghapusan bersifat permanen dan mencakup data tamu, RSVP, ucapan, statistik, serta file media.
+                {isPublished ? " Tarik undangan dari publik terlebih dahulu." : ""}
+              </p>
+            </PanelBody>
+            {!isPublished ? (
+              <PanelFooter className="justify-end">
+                <ConfirmInvitationDeleteForm
+                  action={deleteInvitationAction}
+                  invitationId={invitation.id}
+                  slug={invitation.slug}
+                />
+              </PanelFooter>
+            ) : null}
+          </Panel>
+        </SettingsSection>
+      ) : null}
 
       <SettingsSection
         id="readiness"

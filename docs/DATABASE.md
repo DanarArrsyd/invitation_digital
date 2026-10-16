@@ -462,6 +462,15 @@ analytics_daily
 `unique_daily_visitors` counts distinct sessions within each day; summing days
 does not equal lifetime unique people. See `docs/operations/data-lifecycle.md`.
 
+### invitation_deletion_jobs
+
+A temporary cleanup queue for whole-invitation deletion. `invitation_id` is a
+UUID primary key without a foreign key to `invitations`, so a queued Storage
+cleanup survives the invitation's database cascade. Each row holds the deleted
+slug, creation time, and last cleanup error. The row is removed once every
+object under `invitations/<invitation_id>/` has been removed. Only an admin can
+read jobs; only the guarded deletion function creates them.
+
 ---
 
 ## 4. Invitation Settings JSON
