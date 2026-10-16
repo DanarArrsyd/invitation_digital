@@ -10,7 +10,7 @@ With no DSN, capture is disabled. `npm run typecheck`, lint, tests, and build st
 
 ## Triage
 
-1. Check the Sentry issue's first seen time, affected release, exception type, and stack frame. Payload fields such as guest name, invitation URL, form value, and raw message should be absent. If any appear, disable the DSN and fix the scrubber before resuming.
+1. Check the Sentry issue's first seen time, affected release, exception type, and stack frame. Payload fields such as guest name, invitation URL, form value, raw message, absolute local path, and server hostname should be absent. If any appear, disable the DSN and fix the scrubber before resuming. Sentry can still infer approximate geography from the event's delivery IP even when IP storage is disabled.
 2. Correlate the time and route with Vercel Runtime Logs. For server 5xx errors, use `vercel logs --environment production --status-code 5xx --since 1h` from the linked project.
 3. Reproduce on a preview using demo or QA fixtures. Never use a real invitation for diagnostic writes.
 4. Fix on a branch, run the relevant checks, verify the preview, and request approval before merging to production.
