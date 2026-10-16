@@ -19,8 +19,9 @@ owner to-dos are in `docs/PROJECT_MEMORY.md` "Checkpoint — 5 October 2026".
 PRs #29–#33 (Kelir assets, catalogue cards, drawn arrows, admin editor) are
 live too. Phase 9 (Commercial Hardening) started 2026-10-11; its first
 sub-project, the template readiness audit (PRs #34–#38), is done, and
-production is `main` `6c24c6d` as of 2026-10-13. Next: Phase 9 sub-project 1,
-error monitoring (see PROJECT_MEMORY "Checkpoint — 13 October 2026"). Run `git fetch`
+production includes Phase 9 error monitoring (PR #42, `805ad9f`) as of
+2026-10-16. Next: Phase 9 data lifecycle on `codex/data-lifecycle` (see
+`docs/PROJECT_MEMORY.md` and `docs/operations/data-lifecycle.md`). Run `git fetch`
 and compare with `origin/main` before trusting this checkpoint.
 Branch `design/terra-identity-at0kh3` is reset to `main` after each merge.
 Deferred: Midnight's gold-line chandelier. Ask the user before merging any PR

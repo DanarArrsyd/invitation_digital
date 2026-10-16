@@ -422,7 +422,10 @@ site_settings
 
 ### analytics_events
 
-Keep analytics minimal.
+Keep analytics minimal. Raw rows are kept for 90 complete UTC days, then
+folded into `analytics_daily` and deleted by a daily Supabase Cron job. The
+aggregate stores counts by invitation and UTC date, without session or guest
+identifiers. Expiration of an invitation never deletes its content or media.
 
 ```sql
 analytics_events
@@ -445,6 +448,19 @@ wish_submitted
 ```
 
 Do not build a full analytics warehouse.
+
+```sql
+analytics_daily
+- invitation_id uuid FK invitations(id) ON DELETE CASCADE
+- day date
+- total_opens bigint
+- unique_daily_visitors bigint
+- cover_opened bigint
+- PRIMARY KEY (invitation_id, day)
+```
+
+`unique_daily_visitors` counts distinct sessions within each day; summing days
+does not equal lifetime unique people. See `docs/operations/data-lifecycle.md`.
 
 ---
 

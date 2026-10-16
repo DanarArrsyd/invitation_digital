@@ -82,13 +82,13 @@ function loadFeatureAdminPage(section, packageKey, settings = {}, { empty = fals
       { id: "rsvp-2", invitation_id: "invitation-id", guest_id: null, guest_name: "Bima", attendance: "not_attending", created_at: "2026-09-01T00:00:00Z", updated_at: "2026-09-01T00:00:00Z" },
     ],
     wishes: [],
-    analytics_events: [
-      { event_type: "invitation_open", session_id: "session-1" },
-      { event_type: "invitation_open", session_id: "session-1" },
-      { event_type: "cover_opened", session_id: "session-1" },
-    ],
   };
-  const supabase = { from(table) {
+  const supabase = { rpc(functionName, args) {
+    tableReads.push(functionName);
+    assert.equal(functionName, "get_invitation_analytics_summary");
+    assert.equal(args.p_invitation_id, "invitation-id");
+    return Promise.resolve({ data: [{ total_opens: 2, unique_daily_visitors: 1, cover_opened: 1 }], error: null });
+  }, from(table) {
     tableReads.push(table);
     const query = {
       select: () => query,
@@ -178,7 +178,7 @@ test("responses admin skips analytics reads for locked packages but keeps RSVP t
   for (const packageKey of ["intimate", "signature"]) {
     const { Page, tableReads } = loadFeatureAdminPage("responses", packageKey);
     const html = await renderAdminPage(Page);
-    assert.equal(tableReads.includes("analytics_events"), false);
+    assert.equal(tableReads.includes("get_invitation_analytics_summary"), false);
     assert.match(html, /Statistik kunjungan tersedia di Grand/);
     assert.match(html, /RSVP masuk<\/dt><dd[^>]*>2<\/dd>/);
     assert.match(html, />Hadir<\/dt><dd[^>]*>1<\/dd>/);
@@ -192,9 +192,9 @@ test("responses admin skips analytics reads for locked packages but keeps RSVP t
 test("responses admin queries and renders visitor analytics for Grand alongside RSVP data", async () => {
   const { Page, tableReads } = loadFeatureAdminPage("responses", "grand");
   const html = await renderAdminPage(Page);
-  assert.equal(tableReads.filter((table) => table === "analytics_events").length, 1);
+  assert.equal(tableReads.filter((table) => table === "get_invitation_analytics_summary").length, 1);
   assert.match(html, /Dibuka<\/dt><dd[^>]*>2<\/dd>/);
-  assert.match(html, /Pengunjung unik<\/dt><dd[^>]*>1<\/dd>/);
+  assert.match(html, /Pengunjung unik harian<\/dt><dd[^>]*>1<\/dd>/);
   assert.match(html, /Membuka cover<\/dt><dd[^>]*>1<\/dd>/);
   assert.match(html, /RSVP masuk<\/dt><dd[^>]*>2<\/dd>/);
   assert.match(html, /Alya/);
@@ -204,7 +204,7 @@ test("responses admin queries and renders visitor analytics for Grand alongside 
 test("locked responses admin retains empty and error states", async () => {
   const { Page, tableReads } = loadFeatureAdminPage("responses", "intimate", {}, { empty: true });
   const html = await renderAdminPage(Page, { error: "Response failed" });
-  assert.equal(tableReads.includes("analytics_events"), false);
+  assert.equal(tableReads.includes("get_invitation_analytics_summary"), false);
   assert.match(html, /Belum ada RSVP/);
   assert.match(html, /Belum ada ucapan/);
   assert.match(html, /Response failed/);
@@ -214,7 +214,7 @@ test("locked responses admin retains empty and error states", async () => {
 test("responses admin returns not found before analytics when the invitation is missing", async () => {
   const { Page, tableReads } = loadFeatureAdminPage("responses", "grand", {}, { missing: true });
   await assert.rejects(renderAdminPage(Page), /NOT_FOUND/);
-  assert.equal(tableReads.includes("analytics_events"), false);
+  assert.equal(tableReads.includes("get_invitation_analytics_summary"), false);
 });
 
 // Missing entitlement validation would accept a gated toggle and write the other
