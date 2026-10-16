@@ -240,30 +240,31 @@ export async function getInvitationResponses(invitationId: string): Promise<Invi
 
 export interface InvitationAnalyticsSummary {
   totalOpens: number;
-  uniqueVisitors: number;
+  uniqueDailyVisitors: number;
   coverOpened: number;
 }
 
 /**
  * RSVP/wishes counts come from their own tables (getInvitationResponses),
  * never from analytics_events — see docs/ROADMAP.md Phase 6 section 7. This only
- * covers what has no other source of truth: opens and unique sessions.
+ * covers what has no other source of truth: opens and unique sessions per UTC
+ * day. The database combines recent raw events with older daily aggregates.
  */
 export async function getInvitationAnalyticsSummary(
   invitationId: string,
 ): Promise<InvitationAnalyticsSummary> {
   const supabase = await createSupabaseServerClient();
 
-  const { data, error } = await supabase
-    .from("analytics_events")
-    .select("event_type, session_id")
-    .eq("invitation_id", invitationId);
+  const { data, error } = await supabase.rpc("get_invitation_analytics_summary", {
+    p_invitation_id: invitationId,
+  });
 
   if (error) throw new Error(error.message);
 
-  const opens = (data ?? []).filter((e) => e.event_type === "invitation_open");
-  const coverOpened = (data ?? []).filter((e) => e.event_type === "cover_opened").length;
-  const uniqueVisitors = new Set(opens.map((e) => e.session_id).filter(Boolean)).size;
-
-  return { totalOpens: opens.length, uniqueVisitors, coverOpened };
+  const summary = data?.[0];
+  return {
+    totalOpens: summary?.total_opens ?? 0,
+    uniqueDailyVisitors: summary?.unique_daily_visitors ?? 0,
+    coverOpened: summary?.cover_opened ?? 0,
+  };
 }

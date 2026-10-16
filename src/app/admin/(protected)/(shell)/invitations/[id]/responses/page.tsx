@@ -86,7 +86,7 @@ export default async function ResponsesPage({
             title="Kunjungan"
             stats={[
               { label: "Dibuka", value: analytics.totalOpens },
-              { label: "Pengunjung unik", value: analytics.uniqueVisitors },
+              { label: "Pengunjung unik harian", value: analytics.uniqueDailyVisitors },
               { label: "Membuka cover", value: analytics.coverOpened },
             ]}
           />

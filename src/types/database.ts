@@ -59,6 +59,38 @@ export type Database = {
           },
         ]
       }
+      analytics_daily: {
+        Row: {
+          invitation_id: string
+          day: string
+          total_opens: number
+          unique_daily_visitors: number
+          cover_opened: number
+        }
+        Insert: {
+          invitation_id: string
+          day: string
+          total_opens?: number
+          unique_daily_visitors?: number
+          cover_opened?: number
+        }
+        Update: {
+          invitation_id?: string
+          day?: string
+          total_opens?: number
+          unique_daily_visitors?: number
+          cover_opened?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_daily_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gallery_items: {
         Row: {
           alt_text: string | null
@@ -649,7 +681,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      archive_old_analytics_events: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      get_invitation_analytics_summary: {
+        Args: { p_invitation_id: string }
+        Returns: {
+          total_opens: number
+          unique_daily_visitors: number
+          cover_opened: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

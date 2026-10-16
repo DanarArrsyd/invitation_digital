@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 13 October 2026 (Asia/Jakarta)
+Last updated: 16 October 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -14,6 +14,20 @@ implementation plans remain the source of truth:
 - `docs/superpowers/plans/2026-09-30-midnight-atelier-theme.md`
 - `docs/superpowers/specs/2026-10-01-cobalt-riviera-theme-design.md`
 - `docs/superpowers/plans/2026-10-01-cobalt-riviera-theme.md`
+
+## Checkpoint — 16 October 2026 (Phase 9: data lifecycle in progress)
+
+PR #42 was merged as `805ad9f` and the Production Vercel
+deployment is Ready; the public root returned HTTP 200. Preview browser and
+local server Sentry events were verified with redaction. Production has DSNs
+configured but no synthetic error was sent. Source-map upload still needs a
+scoped Sentry token; Preview Turnstile rejects per-deployment hostnames.
+
+Phase 9 sub-project 2, data lifecycle, is now on `codex/data-lifecycle`. Owner
+policy: keep expired invitation data and media until deliberate admin deletion;
+retain raw analytics for 90 days, preserving only anonymous daily counts. The
+implementation and rollout notes are in `docs/operations/data-lifecycle.md`.
+Do not merge without owner approval, since `main` deploys Production.
 
 ## Checkpoint — 15 October 2026 (Phase 9: error monitoring in review)
 
