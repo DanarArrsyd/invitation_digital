@@ -15,6 +15,22 @@ implementation plans remain the source of truth:
 - `docs/superpowers/specs/2026-10-01-cobalt-riviera-theme-design.md`
 - `docs/superpowers/plans/2026-10-01-cobalt-riviera-theme.md`
 
+## Checkpoint — 15 October 2026 (Phase 9: error monitoring in review)
+
+Theme work through Rona Cetak is merged on `main` (`c4d7250` when this branch
+started). Phase 9 sub-project 1 is on `codex/error-monitoring` for review; it is
+not yet merged or active in production. The design is
+`docs/superpowers/specs/2026-10-15-error-monitoring-design.md`, and setup and
+triage are in `docs/operations/error-monitoring.md`.
+
+The integration covers unexpected browser and server exceptions through the
+Sentry Next.js SDK. Event delivery requires owner-provided Sentry DSNs; absent
+DSNs leave it disabled. Before merge, verify one controlled browser and server
+exception on a protected preview, inspect payload redaction, and configure a
+new/regression issue alert. Ask the owner before merging because `main`
+auto-deploys production. Continue with Phase 9 data lifecycle only after this
+sub-project is merged and activated.
+
 ## Checkpoint — 13 October 2026 (Phase 9: template audit done)
 
 Phase 9 "Commercial Hardening" (`docs/ROADMAP.md`) runs as sub-projects. There
