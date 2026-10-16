@@ -365,6 +365,9 @@ function loadGalleryUpload({ invitationResult, galleryResult } = {}) {
       if (name === "@/lib/supabase/server") {
         return { createSupabaseServerClient: async () => supabase };
       }
+      if (name === "@/lib/supabase/admin") {
+        return { createSupabaseAdminClient: () => supabase };
+      }
       if (name === "@/lib/validation/media") {
         return { validateMediaFile: () => ({ ok: true }) };
       }

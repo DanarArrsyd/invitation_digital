@@ -463,6 +463,27 @@ export type Database = {
           },
         ]
       }
+      invitation_deletion_jobs: {
+        Row: {
+          invitation_id: string
+          slug: string
+          created_at: string
+          last_error: string | null
+        }
+        Insert: {
+          invitation_id: string
+          slug: string
+          created_at?: string
+          last_error?: string | null
+        }
+        Update: {
+          invitation_id?: string
+          slug?: string
+          created_at?: string
+          last_error?: string | null
+        }
+        Relationships: []
+      }
       package_offers: {
         Row: {
           is_visible: boolean
@@ -692,6 +713,10 @@ export type Database = {
           unique_daily_visitors: number
           cover_opened: number
         }[]
+      }
+      queue_invitation_deletion: {
+        Args: { p_invitation_id: string; p_confirmation_slug: string }
+        Returns: string
       }
     }
     Enums: {

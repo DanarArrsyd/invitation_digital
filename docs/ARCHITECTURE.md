@@ -482,6 +482,12 @@ expires_at = published_at + 3 months
 
 A scheduled background job is not required for MVP if expiration can be determined at request time.
 
+Expiration never deletes data. An admin may delete a non-demo invitation only
+after pulling it from public access and confirming its slug. The guarded
+database function deletes the invitation and queues Storage cleanup atomically;
+the server removes all files under `invitations/<id>/`. A failed cleanup stays
+visible in admin for retry. See `docs/operations/data-lifecycle.md`.
+
 Example:
 
 ```ts
