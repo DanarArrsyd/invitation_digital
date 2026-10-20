@@ -46,6 +46,7 @@ function loadThemeContract() {
       KELIR_KENCANA_SECTIONS: Object.fromEntries(contract.THEME_SECTION_KEYS.map((key) => [key, true])),
     },
     "./rona-cetak": { RonaCetak: () => null },
+    "./janji-kota": { JanjiKota: () => null },
     "./section-contract": contract,
   });
   return { ...contract, themeRegistry };
@@ -68,6 +69,7 @@ test("every registered theme exposes its approved preview metadata", () => {
     palette: [...definition.preview.palette],
   }])), {
     "cobalt-riviera": { name: "Cobalt Riviera", palette: ["#1D3E9E", "#F7F4EC", "#E8743B"] },
+    "janji-kota": { name: "Janji Kota", palette: ["#F1F0EA", "#24303A", "#E6AE4B"] },
     "nusantara-ivory": { name: "Nusantara Ivory", palette: ["#F8F1E4", "#A87A3D", "#6B3E26"] },
     "terra-botanica": { name: "Terra Botanica", palette: ["#F2EBDD", "#B5653E", "#4E5B3A"] },
     "midnight-atelier": { name: "Midnight Atelier", palette: ["#14121A", "#5E1A22", "#D8C08A"] },

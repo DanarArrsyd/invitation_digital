@@ -51,3 +51,9 @@ import "@fontsource-variable/archivo";
 import "@fontsource/instrument-serif/400.css";
 import "@fontsource/instrument-serif/400-italic.css";
 import "./rona-cetak/fonts.css";
+
+// janji-kota
+import "@fontsource-variable/space-grotesk";
+import "@fontsource-variable/source-serif-4";
+import "@fontsource-variable/source-serif-4/wght-italic.css";
+import "./janji-kota/fonts.css";

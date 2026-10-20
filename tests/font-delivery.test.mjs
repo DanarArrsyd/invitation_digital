@@ -45,6 +45,14 @@ const THEME_FONTS = {
       /--font-kk-body:\s*"Gelasio Variable"/,
     ],
   },
+  "janji-kota": {
+    packages: [/@fontsource-variable\/space-grotesk/, /@fontsource-variable\/source-serif-4/],
+    faces: [
+      /--font-jk-script:\s*"Source Serif 4 Variable"/,
+      /--font-jk-label:\s*"Space Grotesk Variable"/,
+      /--font-jk-text:\s*"Space Grotesk Variable"/,
+    ],
+  },
   "rona-cetak": {
     packages: [/@fontsource-variable\/archivo/, /@fontsource\/instrument-serif/],
     faces: [

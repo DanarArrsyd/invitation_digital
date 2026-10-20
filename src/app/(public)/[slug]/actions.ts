@@ -20,6 +20,8 @@ function field(formData: FormData, key: string): string | undefined {
  * never awaited by the caller so it can't delay the opening animation.
  */
 export async function trackCoverOpenedAction(invitationId: string, guestToken: string | null) {
+  // Dev-only QA fixtures are not database invitations and must not make a write.
+  if (process.env.NODE_ENV !== "production" && invitationId.startsWith("qa-")) return;
   const supabase = createSupabaseAdminClient();
 
   let guestId: string | null = null;

@@ -1,0 +1,1 @@
+export { JanjiKota } from "./JanjiKota";

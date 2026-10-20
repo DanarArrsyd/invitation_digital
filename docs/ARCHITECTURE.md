@@ -276,9 +276,9 @@ implemented. Customer self-service and payments remain outside this foundation.
 
 Use a registry rather than conditional logic scattered around routes.
 
-`src/themes/registry.ts` registers Nusantara Ivory, Terra Botanica, Midnight
-Atelier, and Cobalt Riviera under `nusantara-ivory`, `terra-botanica`,
-`midnight-atelier`, and `cobalt-riviera`. Each definition has preview metadata
+`src/themes/registry.ts` registers the active public theme components, including
+Nusantara Ivory, Terra Botanica, Midnight Atelier, Cobalt Riviera, Kelir
+Kencana, Rona Cetak, and Janji Kota. Each definition has preview metadata
 and an explicit manifest covering every key in the typed 18-section contract
 (`src/themes/section-contract.ts`). Every public feature or layout added to one
 registered template must be represented in all registered templates in the
@@ -314,8 +314,7 @@ Do not delete it. Audit and reassign invitations that reference it only under
 separate authorization; after the row is inactive, roll back application code.
 There is no destructive down migration.
 
-The current registry has explicit `nusantara-ivory`, `terra-botanica`,
-`midnight-atelier`, and `cobalt-riviera` definitions. Each includes its
+The current registry has explicit definitions for all seven themes. Each includes its
 component, wedding category, preview metadata, and complete 18-section
 manifest; see `src/themes/registry.ts` for the typed implementation.
 

@@ -121,7 +121,7 @@ test("Cobalt declares every canonical section explicitly and keeps its registry 
   assert.ok(sectionKeys.every((key) => COBALT_RIVIERA_SECTIONS[key] === true));
   assert.deepEqual(
     Object.keys(themeRegistry).sort(),
-    ["cobalt-riviera", "kelir-kencana", "midnight-atelier", "nusantara-ivory", "rona-cetak", "terra-botanica"],
+    ["cobalt-riviera", "janji-kota", "kelir-kencana", "midnight-atelier", "nusantara-ivory", "rona-cetak", "terra-botanica"],
   );
   assert.deepEqual(
     Object.keys(themeRegistry["cobalt-riviera"].sections),
