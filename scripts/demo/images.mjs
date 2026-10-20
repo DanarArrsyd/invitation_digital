@@ -24,10 +24,24 @@ const NAMES = {
   "cobalt-riviera": "Cobalt Riviera",
   "kelir-kencana": "Kelir Kencana",
   "rona-cetak": "Rona Cetak",
+  "janji-kota": "Janji Kota",
 };
 
 function html({ theme, from, to, ink, label, caption, width, height }) {
   const short = Math.min(width, height);
+  if (theme === "janji-kota") {
+    return `<!doctype html><html><head><style>
+      html,body{margin:0;width:${width}px;height:${height}px}
+      body{position:relative;overflow:hidden;background:${from};color:${ink};font-family:Arial,Helvetica,sans-serif}
+      .building{position:absolute;bottom:0;width:36%;height:78%;left:0;background:${to};opacity:.68}
+      .building.second{left:auto;right:0;width:22%;height:92%;opacity:.48}
+      .window{position:absolute;left:9%;top:13%;width:2px;height:55%;background:${ink};opacity:.42;box-shadow:${Math.round(short*.14)}px 0 ${ink},${Math.round(short*.28)}px 0 ${ink}}
+      .horizon{position:absolute;left:0;right:0;top:67%;border-top:2px solid ${ink};opacity:.55}
+      .light{position:absolute;right:12%;top:19%;width:${Math.round(short*.13)}px;height:${Math.round(short*.13)}px;border-radius:50%;background:#E6AE4B}
+      .label{position:absolute;left:9%;right:9%;bottom:16%;font-size:${Math.round(short*.105)}px;font-weight:700;line-height:.95;letter-spacing:-.075em}
+      .caption{position:absolute;left:9%;bottom:9%;font-size:${Math.round(short*.025)}px;letter-spacing:.16em;text-transform:uppercase}
+    </style></head><body><div class="building"></div><div class="building second"></div><div class="window"></div><div class="horizon"></div><div class="light"></div><div class="label">${label}</div><div class="caption">${caption}</div></body></html>`;
+  }
   if (theme === "rona-cetak") {
     return `<!doctype html><html><head><style>
       html,body{margin:0;width:${width}px;height:${height}px}

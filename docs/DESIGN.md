@@ -881,3 +881,18 @@ The theme uses the shared 18-capability manifest, event-type copy deck,
 navigation selection, forms and lightbox. Its own visual design and release
 boundary are recorded in
 `docs/superpowers/specs/2026-10-15-rona-cetak-theme-design.md`.
+
+## 30. Janji Kota — Theme #007
+
+Janji Kota frames a wedding as an urban documentary: candid photographs,
+architectural lines, and a small warm light in an otherwise mineral palette.
+Concrete white, asphalt, steel, fog, and sodium amber distinguish it from the
+Nusantara, garden, ballroom, Riviera, wayang, and print-suite directions.
+Space Grotesk carries names and wayfinding; Source Serif 4 carries personal
+lines. The dark cover opens into a daylight portrait, clear people and event
+chapters, a mixed-ratio photo walk, guest interactions, and an evening closing.
+
+The theme uses the shared 18-capability manifest, event-type copy, package
+navigation, forms, lightbox, calendar, and image fallback behavior. Details and
+release order are in
+`docs/superpowers/specs/2026-10-20-janji-kota-theme-design.md`.

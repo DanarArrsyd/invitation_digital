@@ -45,6 +45,12 @@ export const PALETTES = {
     ["#DC735F", "#BA594D", "#29242A"],
     ["#F2D5D5", "#E9BFC2", "#29242A"],
   ],
+  "janji-kota": [
+    ["#F1F0EA", "#AAB8BB", "#242A2B"],
+    ["#24303A", "#242A2B", "#F1F0EA"],
+    ["#DEE3E1", "#AAB8BB", "#24303A"],
+    ["#E6AE4B", "#C98320", "#242A2B"],
+  ],
 };
 
 /** Image slots per template, in "Sample N" order. */
@@ -214,6 +220,27 @@ export const DEMOS = [
       { type: "Pertemuan", title: "Makan Malam Keluarga", date: "2027-11-21", start: "18:00", end: "20:00", venue: "Ruang Keluarga Sample", address: "Jl. Contoh No. 9, Bandung" },
     ],
     dressCode: { description: "Busana rapi dengan warna hangat atau netral.", groups: [{ label: "Tamu", colors: ["#792342", "#DC735F", "#FFF8F0"] }] },
+  },
+  {
+    theme: "janji-kota",
+    sortOrder: 7,
+    eventTypes: ["wedding", "engagement", "birthday", "aqiqah", "graduation", "corporate"],
+    tagline: "Di tengah kota, kita bertemu.",
+    description:
+      "Kisah dua orang di tengah kota: foto candid, garis arsitektur, dan cahaya lampu yang hangat. Nama dan momen pribadi menjadi pusat undangan, sementara rincian acara tetap terang dan mudah dibaca.\n\nCocok untuk pasangan yang ingin pernikahan modern dan personal.",
+    title: "Pernikahan Lani & Arga",
+    eventDate: "2027-12-11",
+    venue: "Ruang Kota Sample, Jakarta",
+    people: [
+      { role: "bride", fullName: "Lani Prameswari", nickname: "Lani", father: "Bapak Sample Surya", mother: "Ibu Sample Nita", bio: "Putri pertama" },
+      { role: "groom", fullName: "Arga Mahendra", nickname: "Arga", father: "Bapak Sample Rudi", mother: "Ibu Sample Wina", bio: "Putra kedua" },
+    ],
+    events: [
+      { type: "Sakral", title: "Akad Nikah", date: "2027-12-11", start: "09:00", end: "10:30", venue: "Masjid Sample", address: "Jl. Contoh No. 10, Jakarta" },
+      { type: "Perayaan", title: "Resepsi", date: "2027-12-11", start: "13:00", end: "16:00", venue: "Ruang Kota Sample", address: "Jl. Contoh No. 42, Jakarta", livestream: "https://www.youtube.com/" },
+      { type: "Pertemuan", title: "Makan Malam Keluarga", date: "2027-12-11", start: "19:00", end: "21:00", venue: "Ruang Keluarga Sample", address: "Jl. Contoh No. 7, Jakarta" },
+    ],
+    dressCode: { description: "Busana rapi dalam warna netral dengan aksen hangat.", groups: [{ label: "Tamu", colors: ["#24303A", "#AAB8BB", "#E6AE4B"] }] },
   },
 ].map((demo) => ({ ...common, ...demo }));
 

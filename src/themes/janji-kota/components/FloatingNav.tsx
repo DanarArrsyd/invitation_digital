@@ -1,0 +1,36 @@
+"use client";
+
+import { useMemo } from "react";
+import type { NavSectionKey } from "@/themes/shared/nav-priority";
+import { useActiveSection } from "@/themes/shared/use-active-section";
+import { useNavRailScroll } from "@/themes/shared/use-nav-rail-scroll";
+
+import { NavIcon } from "./NavIcon";
+
+export interface NavItem {
+  id: `jk-${string}`;
+  section: NavSectionKey;
+  label: string;
+}
+
+export function FloatingNav({ items }: { items: NavItem[] }) {
+  const ids = useMemo(() => items.map((item) => item.id), [items]);
+  const activeId = useActiveSection(ids);
+  const railRef = useNavRailScroll<HTMLUListElement>(activeId);
+  if (items.length === 0) return null;
+
+  return (
+    <nav className="jk-nav" aria-label="Navigasi undangan">
+      <ul ref={railRef}>
+        {items.map((item) => (
+          <li key={item.id} data-nav-id={item.id}>
+            <a href={`#${item.id}`} aria-current={activeId === item.id ? "location" : undefined}>
+              <NavIcon section={item.section} />
+              <span className="jk-nav-label">{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}

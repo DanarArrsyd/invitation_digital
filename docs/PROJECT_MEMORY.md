@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 16 October 2026 (Asia/Jakarta)
+Last updated: 20 October 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -14,6 +14,22 @@ implementation plans remain the source of truth:
 - `docs/superpowers/plans/2026-09-30-midnight-atelier-theme.md`
 - `docs/superpowers/specs/2026-10-01-cobalt-riviera-theme-design.md`
 - `docs/superpowers/plans/2026-10-01-cobalt-riviera-theme.md`
+- `docs/superpowers/specs/2026-10-20-janji-kota-theme-design.md`
+
+## Checkpoint — 20 October 2026 (Janji Kota PR review)
+
+`codex/janji-kota-theme` adds a seventh registered theme with an urban
+documentary wedding direction. The theme keeps all 18 public capabilities,
+the shared invitation data contract, six invitation types, and the existing
+server actions. Its fonts, fictional demo content and images, catalogue
+screenshots, OG style, and targeted idempotent catalogue/demo migrations are
+included. PR #45 has a Ready Vercel Preview. The migrations have not been
+applied to the remote database. The regenerated developer seed deletes all
+demos and must not be used for production activation. No real customer
+invitations were created. The 21-page
+theme QA matrix passed with no failures; the full test suite passed 564/564,
+as did typecheck, lint, and the production build. Production activation and
+merge are pending review.
 
 ## Checkpoint — 16 October 2026 (Phase 9: data lifecycle in progress)
 

@@ -29,6 +29,14 @@ export const BRAND_SHARE_STYLE: ShareStyle = {
 };
 
 export const THEME_SHARE_STYLES: Record<string, ShareStyle> = {
+  "janji-kota": {
+    background: "#F1F0EA",
+    panel: "#24303A",
+    ink: "#242A2B",
+    muted: "#4C5A5B",
+    accent: "#E6AE4B",
+    script: "instrument-serif",
+  },
   "rona-cetak": {
     background: "#FFF8F0",
     panel: "#792342",

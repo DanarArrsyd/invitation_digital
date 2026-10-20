@@ -107,6 +107,7 @@ const THEMES = [
   ["themes/cobalt-riviera/index", "CobaltRiviera", "cobalt-riviera", "#cr-acara"],
   ["themes/kelir-kencana/index", "KelirKencana", "kelir-kencana", "#kk-acara"],
   ["themes/rona-cetak/index", "RonaCetak", "rona-cetak", "#rc-acara"],
+  ["themes/janji-kota/index", "JanjiKota", "janji-kota", "#jk-acara"],
 ];
 
 function invitation(slug, overrides = {}) {
