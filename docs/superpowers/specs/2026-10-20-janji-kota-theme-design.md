@@ -22,8 +22,8 @@ The visual system is concrete white `#F1F0EA`, near-black asphalt `#242A2B`, blu
 - All 18 registered public capabilities are represented. Feature switches, optional content, and package navigation are resolved upstream; this theme never queries Supabase or reads package names.
 - Use the shared event-type copy deck, so the visual design can later host other invitation types without wedding-only strings baked into components.
 - Keep the first mobile viewport clear: recipient, names, date when supplied, and the open action. Respect 320px width, long names, slow or missing images, and reduced motion.
-- Add demo data and placeholder images, catalogue screenshots, self-hosted fonts, social share style, and an idempotent catalogue migration. No real customer content or remote database changes are part of this implementation.
+- Add demo data and placeholder images, catalogue screenshots, self-hosted fonts, social share style, and idempotent catalogue and targeted demo migrations. No real customer content or remote database changes are part of this implementation.
 
 ## Release
 
-Deploy the registry and media support before activating the catalogue row. Apply the migration and demo seed only after review; rollback deactivates the row and preserves referenced theme IDs and customer invitations.
+Deploy the registry and media support before activating the catalogue row. Apply the two Janji Kota migrations only after review; the general developer seed deletes and recreates every demo and must not be used for this production release. Rollback deactivates the row and preserves referenced theme IDs and customer invitations.
