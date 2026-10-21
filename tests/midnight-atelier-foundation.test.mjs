@@ -116,7 +116,7 @@ test("Midnight declares every canonical section explicitly and uses that manifes
 
   assert.deepEqual(Object.keys(MIDNIGHT_ATELIER_SECTIONS), sectionKeys);
   assert.ok(sectionKeys.every((key) => MIDNIGHT_ATELIER_SECTIONS[key] === true));
-  assert.deepEqual(Object.keys(themeRegistry).sort(), ["cobalt-riviera", "janji-kota", "kelir-kencana", "midnight-atelier", "nusantara-ivory", "rona-cetak", "terra-botanica"]);
+  assert.deepEqual(Object.keys(themeRegistry).sort(), ["benang-sriwijaya", "cobalt-riviera", "janji-kota", "kelir-kencana", "midnight-atelier", "nusantara-ivory", "rona-cetak", "terra-botanica"]);
   assert.deepEqual(Object.keys(themeRegistry["midnight-atelier"].sections), sectionKeys);
   assert.ok(sectionKeys.every((key) => themeRegistry["midnight-atelier"].sections[key] === true));
 });

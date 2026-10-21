@@ -8,7 +8,7 @@ test("the core matrix covers every theme over the §28.7 viewports", () => {
   assert.equal(cases.length, THEMES.length * 21);
   assert.equal(new Set(cases.map((c) => c.id)).size, cases.length);
   assert.deepEqual(VIEWPORTS.map((v) => `${v.width}x${v.height}`), ["320x568", "375x812", "768x1024", "1280x800"]);
-  assert.equal(THEMES.length, 7);
+  assert.equal(THEMES.length, 8);
   for (const theme of THEMES) {
     const own = cases.filter((c) => c.theme === theme);
     assert.equal(own.filter((c) => c.jenis !== "wedding").length, 5, `${theme}: every other type`);

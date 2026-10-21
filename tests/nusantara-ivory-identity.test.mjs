@@ -165,7 +165,7 @@ test("couple names use the script face and section titles stay in Cinzel", () =>
   assert.doesNotMatch(document.body.textContent, /Matur Nuwun/i, "thanks are in Bahasa Indonesia only");
 });
 
-test("the cover is a two-leaf gunungan gate that opens in the same tap", async () => {
+test("the cover is a two-leaf letter that opens in the same tap", async () => {
   let opens = 0;
   const cover = { ...OPENED_COVER, opened: false, openInvitation: () => { opens += 1; } };
   const { CoverGate } = createLoader({ cover })("CoverGate");
@@ -178,7 +178,7 @@ test("the cover is a two-leaf gunungan gate that opens in the same tap", async (
     assert.equal(leaves.length, 2);
     for (const leaf of leaves) {
       assert.equal(leaf.getAttribute("aria-hidden"), "true");
-      assert.ok(leaf.querySelector("svg.ni-gate-gunungan"), "each leaf carries half of the gunungan");
+      assert.ok(leaf.querySelector(".ni-letter-fold"), "each leaf carries a paper fold");
     }
     assert.match(view.document.querySelector("h1.ni-script").textContent, /Alya/);
     assert.match(view.document.body.textContent, /Bude Sri/);

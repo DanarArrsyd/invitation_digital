@@ -7,7 +7,7 @@ import { useInvitationCover } from "@/themes/shared/use-invitation-cover";
 
 import { MonogramBadge } from "./components/Botanical";
 import { FloatingNav, type NavItem } from "./components/FloatingNav";
-import { Gunungan, OrnamentDivider } from "./components/Ornament";
+import { OrnamentDivider } from "./components/Ornament";
 
 function formatEventDate(eventDate: string | null): string {
   if (!eventDate) return "";
@@ -29,9 +29,8 @@ function splitCoupleName(displayName: string): [string, string] | null {
 const GATE_EASE = [0.65, 0, 0.25, 1] as const;
 
 /**
- * Exit choreography for the gunungan gate. The cover only waits for its
- * leaves (it never fades), the text clears first, then the two halves slide
- * apart like a dalang parting the kayon. Reduced motion: a short fade.
+ * Exit choreography for the letter cover. The text clears first, then the
+ * paper leaves slide apart. Reduced motion: a short fade.
  */
 function gateVariants(reduced: boolean): Record<"cover" | "content" | "left" | "right", Variants> {
   if (reduced) {
@@ -106,7 +105,7 @@ export function CoverGate({
                 aria-hidden="true"
               >
                 <div className="ni-lattice absolute inset-0 opacity-[0.12]" />
-                <Gunungan className="ni-gate-gunungan" />
+                <span className="ni-letter-fold" />
               </motion.div>
             ))}
 
@@ -115,6 +114,7 @@ export function CoverGate({
                 {/* Entrance stagger is CSS (.ni-cover-stagger + animation-delay),
                     so it runs before hydration and respects reduced motion. */}
                 <div className="ni-cover-content relative flex flex-col items-center text-center">
+                  <p className="ni-letter-masthead" aria-hidden="true">Temuraya <span>·</span> Surat Undangan</p>
                   {(
                     [
                       eyebrow ? (

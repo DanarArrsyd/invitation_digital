@@ -29,6 +29,7 @@ export const BRAND_SHARE_STYLE: ShareStyle = {
 };
 
 export const THEME_SHARE_STYLES: Record<string, ShareStyle> = {
+  "benang-sriwijaya": { background: "#F6F0E6", panel: "#512735", ink: "#30251F", muted: "#725F57", accent: "#A97C42", script: "instrument-serif" },
   "janji-kota": {
     background: "#F1F0EA",
     panel: "#24303A",

@@ -11,6 +11,7 @@ import ts from "typescript";
 const nodeRequire = createRequire(import.meta.url);
 const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
 const themeSlugs = [
+  "benang-sriwijaya",
   "cobalt-riviera",
   "janji-kota",
   "kelir-kencana",

@@ -108,6 +108,7 @@ const THEMES = [
   ["themes/kelir-kencana/index", "KelirKencana", "kelir-kencana", "#kk-acara"],
   ["themes/rona-cetak/index", "RonaCetak", "rona-cetak", "#rc-acara"],
   ["themes/janji-kota/index", "JanjiKota", "janji-kota", "#jk-acara"],
+  ["themes/benang-sriwijaya/index", "BenangSriwijaya", "benang-sriwijaya", "#bs-acara"],
 ];
 
 function invitation(slug, overrides = {}) {

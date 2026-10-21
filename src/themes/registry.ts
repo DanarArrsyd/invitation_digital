@@ -5,6 +5,7 @@ import { CobaltRiviera, COBALT_RIVIERA_SECTIONS } from "./cobalt-riviera";
 import { KelirKencana, KELIR_KENCANA_SECTIONS } from "./kelir-kencana";
 import { RonaCetak } from "./rona-cetak";
 import { JanjiKota } from "./janji-kota";
+import { BenangSriwijaya } from "./benang-sriwijaya";
 import { defineThemeSectionManifest } from "./section-contract";
 import type { ThemeRegistry } from "@/types/theme";
 
@@ -43,6 +44,13 @@ export const JANJI_KOTA_SECTIONS = defineThemeSectionManifest({
   gift: true, instagram: true, closing: true,
 });
 
+export const BENANG_SRIWIJAYA_SECTIONS = defineThemeSectionManifest({
+  cover: true, hero: true, quote: true, couple: true, parents: true,
+  events: true, countdown: true, maps: true, calendar: true, dressCode: true,
+  story: true, gallery: true, livestream: true, rsvp: true, wishes: true,
+  gift: true, instagram: true, closing: true,
+});
+
 export const TERRA_BOTANICA_SECTIONS = defineThemeSectionManifest({
   cover: true,
   hero: true,
@@ -65,6 +73,12 @@ export const TERRA_BOTANICA_SECTIONS = defineThemeSectionManifest({
 });
 
 export const themeRegistry: ThemeRegistry = {
+  "benang-sriwijaya": {
+    component: BenangSriwijaya,
+    category: "wedding",
+    preview: { name: "Benang Sriwijaya", palette: ["#F6F0E6", "#512735", "#A97C42"] },
+    sections: BENANG_SRIWIJAYA_SECTIONS,
+  },
   "janji-kota": {
     component: JanjiKota,
     category: "wedding",
