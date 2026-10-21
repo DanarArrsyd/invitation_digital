@@ -882,6 +882,19 @@ navigation selection, forms and lightbox. Its own visual design and release
 boundary are recorded in
 `docs/superpowers/specs/2026-10-15-rona-cetak-theme-design.md`.
 
+## 31. Benang Sriwijaya — Theme #008
+
+Benang Sriwijaya follows an abstract woven line through ivory, mangosteen and
+restrained brass. Its cover is an off-centre paper composition; the public
+chapters alternate text and photography along one vertical thread. It takes
+the same normalized data and 18 capabilities as every registered theme, with
+copy for all supported invitation types. See
+`docs/superpowers/specs/2026-10-21-benang-sriwijaya-theme-design.md`.
+
+Nusantara Ivory's cover is now composed as a framed letter with a paper-fold
+opening, setting it apart from Kelir Kencana's wayang gunungan. Its other
+sections and capabilities retain their original editorial direction.
+
 ## 30. Janji Kota — Theme #007
 
 Janji Kota frames a wedding as an urban documentary: candid photographs,

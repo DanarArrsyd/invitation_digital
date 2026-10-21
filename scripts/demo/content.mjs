@@ -1,8 +1,9 @@
 /**
  * Demo invitations for the marketing site: one per template, rich enough that
  * every package shows its differences (3 events, 12 gallery photos, stories,
- * gifts, wishes, dress code). Names and places are fictional samples; images
- * are the "Sample N" placeholders generated into public/demo/<theme>/.
+ * gifts, wishes, dress code). Names and places are fictional samples. Most
+ * images are "Sample N" placeholders; the Benang and Ivory cover portraits
+ * are fictional editorial images described in the theme design spec.
  *
  * Used by scripts/demo/build-seed.mjs (SQL) and scripts/demo/images.mjs.
  */
@@ -50,6 +51,12 @@ export const PALETTES = {
     ["#24303A", "#242A2B", "#F1F0EA"],
     ["#DEE3E1", "#AAB8BB", "#24303A"],
     ["#E6AE4B", "#C98320", "#242A2B"],
+  ],
+  "benang-sriwijaya": [
+    ["#F6F0E6", "#E8D8C8", "#512735"],
+    ["#512735", "#30251F", "#F6F0E6"],
+    ["#EFE1D9", "#C4AA9A", "#512735"],
+    ["#A97C42", "#7E5635", "#FFFBF5"],
   ],
 };
 
@@ -241,6 +248,28 @@ export const DEMOS = [
       { type: "Pertemuan", title: "Makan Malam Keluarga", date: "2027-12-11", start: "19:00", end: "21:00", venue: "Ruang Keluarga Sample", address: "Jl. Contoh No. 7, Jakarta" },
     ],
     dressCode: { description: "Busana rapi dalam warna netral dengan aksen hangat.", groups: [{ label: "Tamu", colors: ["#24303A", "#AAB8BB", "#E6AE4B"] }] },
+  },
+
+  {
+    theme: "benang-sriwijaya",
+    sortOrder: 8,
+    eventTypes: ["wedding", "engagement", "birthday", "aqiqah", "graduation", "corporate"],
+    tagline: "Dua kisah, satu helai janji.",
+    description:
+      "Terinspirasi dari ritme tenun songket Palembang: helai garis, ruang foto yang lapang, dan kilau emas secukupnya. Sebuah undangan yang hangat dan anggun.\n\nCocok untuk pasangan yang ingin pernikahan elegan dengan sentuhan Indonesia.",
+    title: "Pernikahan Naya & Raka",
+    eventDate: "2028-02-12",
+    venue: "Balai Sample, Palembang",
+    people: [
+      { role: "bride", fullName: "Naya Maharani", nickname: "Naya", father: "Bapak Sample Surya", mother: "Ibu Sample Nita", bio: "Putri pertama" },
+      { role: "groom", fullName: "Raka Wiratama", nickname: "Raka", father: "Bapak Sample Rudi", mother: "Ibu Sample Wina", bio: "Putra kedua" },
+    ],
+    events: [
+      { type: "Sakral", title: "Akad Nikah", date: "2028-02-12", start: "09:00", end: "10:30", venue: "Masjid Sample", address: "Jl. Contoh No. 10, Palembang" },
+      { type: "Perayaan", title: "Resepsi", date: "2028-02-12", start: "13:00", end: "16:00", venue: "Balai Sample", address: "Jl. Contoh No. 42, Palembang", livestream: "https://www.youtube.com/" },
+      { type: "Pertemuan", title: "Makan Malam Keluarga", date: "2028-02-12", start: "19:00", end: "21:00", venue: "Ruang Keluarga Sample", address: "Jl. Contoh No. 7, Palembang" },
+    ],
+    dressCode: { description: "Busana rapi dalam warna marun, gading, atau netral.", groups: [{ label: "Tamu", colors: ["#512735", "#F6F0E6", "#A97C42"] }] },
   },
 ].map((demo) => ({ ...common, ...demo }));
 

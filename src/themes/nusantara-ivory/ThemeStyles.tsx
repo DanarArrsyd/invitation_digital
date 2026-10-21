@@ -154,16 +154,18 @@ const CSS = `
 @keyframes ni-cover-enter { from { opacity: 0; translate: 0 16px; } to { opacity: 1; translate: 0 0; } }
 .ni-cover-content { width: 100%; max-width: 640px; }
 .ni-cover-content > div { max-width: 100%; }
-/* Gunungan gate: two ivory leaves meeting at a gold seam, each clipping half
-   of one centred gunungan. The text layer scrolls independently so short
-   screens keep the gate fixed behind it. */
+/* Letter cover: two ivory paper leaves with a restrained fold line. The text
+   layer scrolls independently so short screens keep the open action visible. */
 .ni-gate { overflow: hidden; }
 .ni-gate-leaf { position: absolute; top: 0; bottom: 0; width: 50%; overflow: hidden; background: var(--ni-ivory); }
 .ni-gate-leaf--left { left: 0; box-shadow: inset -1px 0 0 var(--ni-line-strong); }
 .ni-gate-leaf--right { right: 0; }
-.ni-gate-gunungan { position: absolute; top: 50%; width: min(560px, 118vw); height: auto; color: var(--ni-gold); opacity: .5; transform: translate(-50%, -50%); }
-.ni-gate-leaf--left .ni-gate-gunungan { left: 100%; }
-.ni-gate-leaf--right .ni-gate-gunungan { left: 0; }
+.ni-letter-fold { position: absolute; top: 10%; bottom: 10%; width: 1px; background: var(--ni-gold); opacity: .18; }
+.ni-gate-leaf--left .ni-letter-fold { right: 18%; }
+.ni-gate-leaf--right .ni-letter-fold { left: 18%; }
+.ni-letter-masthead { margin-bottom: clamp(1.25rem, 4svh, 3rem); color: var(--ni-brown-soft); font-family: var(--ni-display-face); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; }
+.ni-letter-masthead span { margin-inline: .5em; color: var(--ni-gold); }
+.ni-cover-content { padding: clamp(1rem, 3vw, 2rem); border: 1px solid rgba(168,122,61,.34); background: rgba(255,251,244,.55); }
 .ni-gate-scroll { position: absolute; inset: 0; z-index: 1; overflow-x: hidden; overflow-y: auto; }
 /* Short screens: "Buka Undangan" must show without scrolling. Unlayered, so
    these outrank the cover's Tailwind spacing utilities. */

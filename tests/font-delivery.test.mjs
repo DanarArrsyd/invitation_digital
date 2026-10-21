@@ -5,6 +5,14 @@ import test from "node:test";
 const source = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const THEME_FONTS = {
+  "benang-sriwijaya": {
+    packages: [/@fontsource-variable\/cormorant-garamond/, /@fontsource-variable\/manrope/, /@fontsource\/tenor-sans/],
+    faces: [
+      /--font-bs-script:\s*"Cormorant Garamond Variable"/,
+      /--font-bs-label:\s*"Tenor Sans"/,
+      /--font-bs-text:\s*"Manrope Variable"/,
+    ],
+  },
   "nusantara-ivory": {
     packages: [/@fontsource\/great-vibes/, /@fontsource-variable\/cinzel/, /@fontsource-variable\/lora/],
     faces: [

@@ -1,0 +1,25 @@
+"use client";
+
+import { buildGoogleCalendarUrl, buildIcsCalendar, type CalendarEventInput } from "@/themes/shared/calendar";
+import { AppleGlyph, GoogleGlyph } from "@/themes/shared/action-icons";
+
+export function AddToCalendar({ event, uid }: { event: CalendarEventInput; uid: string }) {
+  function downloadIcs() {
+    const content = buildIcsCalendar(event, uid, new Date());
+    const url = URL.createObjectURL(new Blob([content], { type: "text/calendar;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${event.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase() || "event"}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div className="bs-calendar-actions">
+      <a href={buildGoogleCalendarUrl(event)} target="_blank" rel="noopener noreferrer" aria-label={`Google Kalender untuk ${event.title}`}><GoogleGlyph /> Google Kalender</a>
+      <button type="button" onClick={downloadIcs} aria-label={`Unduh kalender .ics untuk ${event.title}`}><AppleGlyph /> Unduh kalender .ics</button>
+    </div>
+  );
+}

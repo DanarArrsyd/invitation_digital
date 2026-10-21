@@ -57,3 +57,10 @@ import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/source-serif-4";
 import "@fontsource-variable/source-serif-4/wght-italic.css";
 import "./janji-kota/fonts.css";
+
+// benang-sriwijaya
+import "@fontsource-variable/cormorant-garamond";
+import "@fontsource-variable/cormorant-garamond/wght-italic.css";
+import "@fontsource-variable/manrope";
+import "@fontsource/tenor-sans/400.css";
+import "./benang-sriwijaya/fonts.css";

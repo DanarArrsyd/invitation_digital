@@ -25,10 +25,25 @@ const NAMES = {
   "kelir-kencana": "Kelir Kencana",
   "rona-cetak": "Rona Cetak",
   "janji-kota": "Janji Kota",
+  "benang-sriwijaya": "Benang Sriwijaya",
 };
 
 function html({ theme, from, to, ink, label, caption, width, height }) {
   const short = Math.min(width, height);
+  if (theme === "benang-sriwijaya") {
+    return `<!doctype html><html><head><style>
+      html,body{margin:0;width:${width}px;height:${height}px}
+      body{position:relative;overflow:hidden;background:${from};color:${ink};font-family:Georgia,serif}
+      .rail{position:absolute;top:4%;bottom:4%;left:7%;right:7%;border-inline:2px solid ${to}}
+      .rail:before,.rail:after{content:"";position:absolute;top:0;bottom:0;width:1px;background:${ink};opacity:.35}
+      .rail:before{left:12px}.rail:after{right:12px}
+      .thread{position:absolute;left:50%;top:0;bottom:0;width:2px;background:${to};opacity:.55}
+      .cross{position:absolute;left:17%;right:17%;top:48%;height:1px;background:${ink};opacity:.35;box-shadow:0 12px ${to},0 -12px ${to}}
+      .text{position:absolute;left:15%;right:15%;top:53%;transform:translateY(-50%);text-align:center}
+      .label{font-size:${Math.round(short*.115)}px;font-style:italic;line-height:1}
+      .caption{margin-top:${Math.round(short*.04)}px;font:700 ${Math.round(short*.024)}px Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}
+    </style></head><body><div class="rail"></div><div class="thread"></div><div class="cross"></div><div class="text"><div class="label">${label}</div><div class="caption">${caption}</div></div></body></html>`;
+  }
   if (theme === "janji-kota") {
     return `<!doctype html><html><head><style>
       html,body{margin:0;width:${width}px;height:${height}px}
@@ -78,6 +93,8 @@ for (const demo of DEMOS) {
   await mkdir(dir, { recursive: true });
   const palette = PALETTES[demo.theme];
   for (const [index, slot] of IMAGE_SLOTS.entries()) {
+    // These two covers use reviewed fictional editorial portraits, not Sample placeholders.
+    if (slot.file === "cover.jpg" && (demo.theme === "nusantara-ivory" || demo.theme === "benang-sriwijaya")) continue;
     const [from, to, ink] = palette[index % palette.length];
     await page.setViewportSize({ width: slot.width, height: slot.height });
     await page.setContent(
