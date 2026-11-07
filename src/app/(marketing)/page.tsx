@@ -28,7 +28,7 @@ export default async function LandingPage() {
       <HowToOrderSection />
       <FeaturesSection spotlight={templates[0] ?? null} />
       <PackagesSection offers={offers} settings={settings} />
-      <FaqSection />
+      <FaqSection templates={templates} />
       <ClosingSection settings={settings} />
     </>
   );

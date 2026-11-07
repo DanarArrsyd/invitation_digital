@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { OrderLink } from "@/components/marketing/order-link";
-import { PackageGrid } from "@/components/marketing/package-grid";
+import { PackageGrid, ServiceTermsNote } from "@/components/marketing/package-grid";
 import { PhoneMockup } from "@/components/marketing/phone-mockup";
 import { mk } from "@/components/marketing/styles";
 import { TemplateCard } from "@/components/marketing/template-card";
@@ -114,6 +114,7 @@ export default async function TemplateDetailPage({ params }: Params) {
           <div className="mt-10">
             <PackageGrid offers={offers} settings={settings} template={template} />
           </div>
+          <ServiceTermsNote className="mt-4" />
         </div>
       </section>
 
