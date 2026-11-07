@@ -17,7 +17,68 @@ implementation plans remain the source of truth:
 - `docs/superpowers/specs/2026-10-20-janji-kota-theme-design.md`
 - `docs/superpowers/specs/2026-10-21-benang-sriwijaya-theme-design.md`
 
-## Checkpoint — 7 November 2026 (current state; read this first)
+## Checkpoint — 7 November 2026, PR #48 (current state; read this first)
+
+Verified on 2026-11-07 against `origin/main`, Supabase and the Vercel
+Production deployment. The earlier 7 November checkpoint below still holds
+for templates, database, Phase 9 and owner to-dos, except where this section
+updates it.
+
+**Production:** `main` is at `7848b77` (PR #48, merged 2026-11-07), deployed
+and Ready on `invitation-digital-delta.vercel.app`. Working branch for this
+Claude Cloud session: `claude/adoring-fermi-zc66ck`, reset to `main` after
+the merge.
+
+**PR #48: marketing site ready for Instagram promotion traffic.**
+
+- Instagram link: stored in the database, not code. Production
+  `site_settings.instagram_url` was changed by SQL from
+  `https://www.instagram.com/danar_arrsyd/` to
+  `https://www.instagram.com/inv_temuraya/`. Admin Situs → Kontak edits it.
+- The Signature badge reads "Rekomendasi kami". "Paling dipilih" was removed
+  because no sales data supports it; do not reintroduce popularity claims
+  without data.
+- FAQ (`src/components/marketing/faq.ts`) is `buildFaqItems(templates)`. The
+  non-wedding answer is built from catalogue `event_types`, so it changes when
+  a template gains event types. Today: Janji Kota and Benang Sriwijaya cover
+  every event type; the other six are wedding only.
+- Order terms live in `src/lib/marketing/service-terms.ts`: 3 working days
+  from complete data, up to 2 revisions, 50% down payment with the balance at
+  publish. They appear under the package grid (landing and template detail)
+  and as the first FAQ item. Change them only there.
+- WhatsApp source attribution: every marketing WhatsApp button goes through
+  `OrderLink` (client component) and `buildOrderWhatsAppUrl`. The server
+  renders the default message; after hydration the link appends
+  `(Sumber: <utm_source>/<utm_campaign>)` from the URL or `sessionStorage`
+  (`temuraya:visit-source`). UTM values are cleaned to `[a-z0-9._-]`, max 60
+  characters. Hero has no WhatsApp button (left as designed).
+- Vercel Web Analytics: `@vercel/analytics` in the root layout through
+  `src/components/analytics/web-analytics.tsx`. `beforeSend` drops `/admin/*`
+  and strips `guest` and `to` from URLs so guest tokens and names never reach
+  Vercel. WhatsApp clicks send a `wa_click` custom event (`paket`, `source`),
+  which Vercel records only on Pro/Enterprise.
+- Tests: 584/584 pass; new `tests/order-link-source.test.mjs` covers
+  hydration without mismatch, source persistence, blocked storage, the click
+  event and analytics redaction.
+
+**Promotion links:**
+
+- `https://invitation-digital-delta.vercel.app/?utm_source=instagram&utm_campaign=poster-uts`
+- `https://invitation-digital-delta.vercel.app/?utm_source=whatsapp&utm_campaign=status-uts`
+
+**New owner to-dos:**
+
+- Enable Web Analytics in the Vercel dashboard (project `invitation-digital`
+  → Analytics → Enable). Until then the analytics script loads without
+  recording anything.
+- Confirm the Vercel plan. On Hobby, `wa_click` is not stored; the source is
+  still visible in each incoming WhatsApp message.
+- Real-phone check of the promotion links: the WhatsApp message must end with
+  the source, and a fresh tab on `/` must keep the default message. The
+  client-side step was verified only in jsdom tests, because this cloud
+  container cannot open Vercel hosts in a browser.
+
+## Checkpoint — 7 November 2026 (state before PR #48)
 
 Verified on 2026-11-07 against `origin/main`, Supabase and the branch list.
 

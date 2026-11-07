@@ -17,9 +17,11 @@ Kelir Kencana (#28), Rona Cetak (#40), Janji Kota (#45) and Benang Sriwijaya
 Temuraya launch work (PRs #19–#33) is live. Phase 9 (Commercial Hardening)
 sub-projects 0–2 are done: template audit (#34–#39), error monitoring (#42),
 data lifecycle (#43 retention, #44 deletion). Abuse guards are next.
-Production `main` is `fbe7889` (2026-10-21); the database has 0 customer
-invitations. The current checkpoint, open owner to-dos and PR table are in
-`docs/PROJECT_MEMORY.md` "Checkpoint — 7 November 2026"; operations notes are
+Production `main` is `7848b77` (PR #48, 2026-11-07: promotion readiness,
+WhatsApp source attribution, Vercel Web Analytics); the database has 0
+customer invitations. The current checkpoint, open owner to-dos and PR table
+are in `docs/PROJECT_MEMORY.md` "Checkpoint — 7 November 2026, PR #48" and the
+checkpoint below it; operations notes are
 in `docs/operations/`. Run `git fetch` and compare with `origin/main` before
 trusting this checkpoint.
 Branch `design/terra-identity-at0kh3` is reset to `main` after each merge.
