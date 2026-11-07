@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: 20 October 2026 (Asia/Jakarta)
+Last updated: 7 November 2026 (Asia/Jakarta)
 
 ## Purpose
 
@@ -15,6 +15,82 @@ implementation plans remain the source of truth:
 - `docs/superpowers/specs/2026-10-01-cobalt-riviera-theme-design.md`
 - `docs/superpowers/plans/2026-10-01-cobalt-riviera-theme.md`
 - `docs/superpowers/specs/2026-10-20-janji-kota-theme-design.md`
+- `docs/superpowers/specs/2026-10-21-benang-sriwijaya-theme-design.md`
+
+## Checkpoint — 7 November 2026 (current state; read this first)
+
+Verified on 2026-11-07 against `origin/main`, Supabase and the branch list.
+
+**Production:** `main` is at `fbe7889` (PR #46, merged 2026-10-21). Every
+remote branch (`codex/*`, `claude/relaxed-davinci-9i8qkb`,
+`design/terra-identity-at0kh3`) is fully merged; nothing is in review.
+Working branch for Claude Cloud sessions: `claude/relaxed-davinci-9i8qkb`,
+reset to `main` after each merge.
+
+**Templates (8, all registered, listed in the catalogue with a demo):**
+
+| # | Slug | Direction | PR |
+|---|---|---|---|
+| 1 | `nusantara-ivory` | Modern Nusantara editorial, ivory and gold (cover refreshed in #46) | #14, #17, #46 |
+| 2 | `terra-botanica` | "Herbarium Cinta" botanical journal | #15 |
+| 3 | `midnight-atelier` | "Malam di Ballroom" | #16 |
+| 4 | `cobalt-riviera` | "Surat Cinta dari Mediterania" | #18 |
+| 5 | `kelir-kencana` | Wayang kulit, "Pagelaran Semalam Suntuk" | #28–#30 |
+| 6 | `rona-cetak` | Contemporary two-colour printed suite | #40 |
+| 7 | `janji-kota` | Urban documentary wedding | #45 |
+| 8 | `benang-sriwijaya` | Palembang songket thread, ivory and mangosteen | #46 |
+
+**Database (Supabase `kcmddkxpwhphyqynghsl`):** all repository migrations are
+applied, the last being `benang_sriwijaya_theme` and `benang_sriwijaya_demo`
+(2026-10-21). It holds 8 demo invitations, one per theme, and **0 customer
+invitations**. The full developer seed (`supabase/seed/demo-content.sql`)
+deletes every demo first; never run it against production. Use the targeted
+per-theme demo migrations instead.
+
+**Merged since the 5 October checkpoint:**
+
+| PR | What |
+|---|---|
+| #28–#30 | Kelir Kencana, 1000 px wayang figures (owner-cleared for commercial use), per-demo `eventTypes` in `scripts/demo` |
+| #31 | Catalogue cards fill their grid cell |
+| #32 | Drawn action icons (`src/themes/shared/action-icons.tsx`); no ↗/↓ text arrows in themes (test-guarded) |
+| #33 | Admin editor and list redesign (DESIGN §27a: `SettingsSection`, `Panel`, `FileDrop`, `UnsavedHint`, readiness header, list with counts and "Acara terdekat") |
+| #34–#39 | Phase 9 sub-project 0: template readiness audit (QA matrix, rounds A–C, event-type copy deck) |
+| #40 | Rona Cetak theme |
+| #41 | Wish dates rendered in the invitation time zone |
+| #42 | Error monitoring (Sentry, error-only, private-data scrubbing) |
+| #43 | Data lifecycle: raw analytics kept 90 days, daily aggregates kept; Supabase Cron `archive-analytics-events-daily` |
+| #44 | Guarded manual invitation deletion with a durable Storage cleanup queue |
+| #45 | Janji Kota theme |
+| #46 | Benang Sriwijaya theme and Ivory cover refresh |
+
+**Phase 9 (Commercial Hardening) progress** (`docs/ROADMAP.md`):
+
+0. Template readiness audit: done (#34–#39).
+1. Error monitoring: done (#42).
+2. Data lifecycle: done (#43 retention, #44 deletion).
+3. Abuse guards: **next**, not started.
+4. Legal: not started.
+5. Vercel/Supabase plan review: not started.
+
+**Owner to-dos still open:**
+
+- Sentry source maps: add a scoped `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and
+  `SENTRY_PROJECT` to Vercel (`docs/operations/error-monitoring.md`).
+- Backups: Supabase is on Free (no downloadable backups). Before the first
+  real customer, take and restore-test a separate database and Storage backup
+  (`docs/operations/data-lifecycle.md`).
+- Turnstile rejects per-deployment Preview hostnames; test forms on
+  production or stub `window.turnstile`.
+- Real-phone check of `/demo/<slug>` for every template, especially birthday
+  and aqiqah copy.
+- End-to-end dry run of the first customer flow (create, publish, guest
+  links, RSVP/wishes with Turnstile, moderation, expiry) on production.
+- Planned follow-up from #33: select several guests to copy links or send by
+  WhatsApp (not built).
+
+**Deferred:** Midnight's gold-line chandelier; minor round-C items listed in
+the 13 October checkpoint.
 
 ## Checkpoint — 20 October 2026 (Janji Kota PR review)
 

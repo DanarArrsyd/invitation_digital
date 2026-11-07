@@ -11,19 +11,17 @@ authoritative for requirements.
 
 The theme identity redesign is complete and live: Ivory (PR #14), Terra
 (PR #15, `7750e29`), Midnight (PR #16, `202c787`), Ivory melati fix (PR #17,
-`13d9150`) and Cobalt (PR #18, `d2666b7`). Kelir Kencana (wayang, fifth template, PR #28,
-`7876f3d`) is live; see PROJECT_MEMORY "Kelir Kencana". The Temuraya launch work (PRs
-#19–#26: cleanup, admin redesign, brand, marketing site, demos, performance,
-logo, share banners, nav tiers, Turnstile fix) is live; its checkpoint and
-owner to-dos are in `docs/PROJECT_MEMORY.md` "Checkpoint — 5 October 2026".
-PRs #29–#33 (Kelir assets, catalogue cards, drawn arrows, admin editor) are
-live too. Phase 9 (Commercial Hardening) started 2026-10-11; its first
-sub-project, the template readiness audit (PRs #34–#38), is done, and
-production includes Phase 9 error monitoring (PR #42, `805ad9f`) as of
-2026-10-16. Analytics retention shipped in PR #43 (`987bed7`); manual deletion
-is in progress on `codex/invitation-deletion`. See
-`docs/PROJECT_MEMORY.md` and `docs/operations/data-lifecycle.md`. Run `git fetch`
-and compare with `origin/main` before trusting this checkpoint.
+`13d9150`) and Cobalt (PR #18, `d2666b7`). Later templates are live too:
+Kelir Kencana (#28), Rona Cetak (#40), Janji Kota (#45) and Benang Sriwijaya
+(#46), for 8 registered themes, each with a catalogue row and demo. The
+Temuraya launch work (PRs #19–#33) is live. Phase 9 (Commercial Hardening)
+sub-projects 0–2 are done: template audit (#34–#39), error monitoring (#42),
+data lifecycle (#43 retention, #44 deletion). Abuse guards are next.
+Production `main` is `fbe7889` (2026-10-21); the database has 0 customer
+invitations. The current checkpoint, open owner to-dos and PR table are in
+`docs/PROJECT_MEMORY.md` "Checkpoint — 7 November 2026"; operations notes are
+in `docs/operations/`. Run `git fetch` and compare with `origin/main` before
+trusting this checkpoint.
 Branch `design/terra-identity-at0kh3` is reset to `main` after each merge.
 Deferred: Midnight's gold-line chandelier. Ask the user before merging any PR
 (merges to `main` deploy production).
