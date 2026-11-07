@@ -146,3 +146,70 @@ test("media paths that start with / are app files and skip the storage bucket", 
   );
   assert.equal(storage.getMediaPublicUrl(null), null);
 });
+
+test("WhatsApp messages carry the visit source only when there is one", () => {
+  const template = "Halo Temuraya, saya mau pesan template {template} paket {paket} untuk {acara}.";
+  assert.equal(
+    whatsapp.appendSourceAttribution("Halo Temuraya, saya mau pesan paket Signature.", { source: "instagram", campaign: "poster-uts" }),
+    "Halo Temuraya, saya mau pesan paket Signature. (Sumber: instagram/poster-uts)",
+  );
+  assert.equal(whatsapp.appendSourceAttribution("Halo.", { source: "whatsapp", campaign: null }), "Halo. (Sumber: whatsapp)");
+  assert.equal(whatsapp.appendSourceAttribution("Halo.", null), "Halo.");
+  assert.equal(
+    whatsapp.buildOrderWhatsAppUrl("6281234567890", template, { paket: "Signature" }),
+    whatsapp.buildWhatsAppUrl("6281234567890", "Halo Temuraya, saya mau pesan paket Signature."),
+  );
+  assert.equal(
+    whatsapp.buildOrderWhatsAppUrl("6281234567890", template, { paket: "Signature" }, { source: "instagram", campaign: "poster-uts" }),
+    whatsapp.buildWhatsAppUrl("6281234567890", "Halo Temuraya, saya mau pesan paket Signature. (Sumber: instagram/poster-uts)"),
+  );
+});
+
+test("UTM values are cleaned before they reach a message", () => {
+  assert.equal(whatsapp.cleanSourceValue(" Instagram "), "instagram");
+  assert.equal(whatsapp.cleanSourceValue("poster uts!"), "poster-uts");
+  assert.equal(whatsapp.cleanSourceValue("Bayar ke rek. 123 <b>"), "bayar-ke-rek.-123-b");
+  assert.equal(whatsapp.cleanSourceValue("!!!"), null);
+  assert.equal(whatsapp.cleanSourceValue(""), null);
+  assert.equal(whatsapp.cleanSourceValue(null), null);
+  assert.equal(whatsapp.cleanSourceValue("a".repeat(100)).length, 60);
+});
+
+const serviceTerms = loadTs("lib/marketing/service-terms.ts");
+const faq = loadTs("components/marketing/faq.ts", {
+  "@/lib/marketing/event-types": eventTypes,
+  "@/lib/marketing/service-terms": serviceTerms,
+});
+const ALL_TYPES = ["wedding", "engagement", "birthday", "aqiqah", "graduation", "corporate"];
+
+test("the non-wedding FAQ answer follows the catalogue", () => {
+  assert.equal(
+    faq.describeNonWeddingTemplates([
+      { name: "Nusantara Ivory", eventTypes: ["wedding"] },
+      { name: "Janji Kota", eventTypes: ALL_TYPES },
+      { name: "Benang Sriwijaya", eventTypes: ALL_TYPES },
+    ]),
+    "Ada. Template Janji Kota dan Benang Sriwijaya bisa dipakai untuk lamaran, ulang tahun, aqiqah, wisuda, dan acara kantor. Template lain khusus pernikahan. Tanyakan lewat WhatsApp untuk kebutuhan Anda.",
+  );
+  assert.equal(
+    faq.describeNonWeddingTemplates([{ name: "Janji Kota", eventTypes: ALL_TYPES }]),
+    "Ada. Template Janji Kota bisa dipakai untuk lamaran, ulang tahun, aqiqah, wisuda, dan acara kantor. Tanyakan lewat WhatsApp untuk kebutuhan Anda.",
+  );
+  assert.equal(
+    faq.describeNonWeddingTemplates([
+      { name: "A", eventTypes: ["wedding", "birthday"] },
+      { name: "B", eventTypes: ["aqiqah", "graduation"] },
+    ]),
+    "Ada. Template A bisa dipakai untuk ulang tahun. Template B bisa dipakai untuk aqiqah dan wisuda. Tanyakan lewat WhatsApp untuk kebutuhan Anda.",
+  );
+  assert.match(faq.describeNonWeddingTemplates([{ name: "A", eventTypes: ["wedding"] }]), /sedang disiapkan/);
+});
+
+test("the FAQ states the order terms", () => {
+  const items = faq.buildFaqItems([]);
+  const terms = items.find((item) => item.question === "Berapa lama pengerjaannya?");
+  assert.ok(terms);
+  for (const fact of ["3 hari kerja", "data Anda kami terima lengkap", "revisi hingga 2 kali", "DP 50%", "pelunasan saat undangan terbit"]) {
+    assert.ok(terms.answer.includes(fact), fact);
+  }
+});

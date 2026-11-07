@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { getPackageHighlights } from "@/lib/marketing/package-features";
 import { describePackagePrice } from "@/lib/marketing/price";
+import { SERVICE_TERMS_SUMMARY } from "@/lib/marketing/service-terms";
 import { PACKAGE_DEFINITIONS } from "@/lib/packages/entitlements";
 import { cn } from "@/lib/utils";
 import type { MarketingTemplate, PackageOffer, SiteSettings } from "@/server/marketing/queries";
@@ -49,7 +50,7 @@ export function PackageGrid({
           >
             {highlighted ? (
               <span className="absolute -top-3 left-6 rounded-full bg-tr-paper px-3 py-1 text-xs font-medium text-tr-forest ring-1 ring-tr-forest">
-                Paling dipilih
+                Rekomendasi kami
               </span>
             ) : null}
             <h3 className="text-xl font-semibold tracking-[-0.02em]">{definition.label}</h3>
@@ -98,4 +99,9 @@ export function PackageGrid({
       })}
     </ul>
   );
+}
+
+/** One short line of order terms under the package cards. */
+export function ServiceTermsNote({ className }: { className?: string }) {
+  return <p className={cn("text-sm leading-6 text-tr-muted", className)}>{SERVICE_TERMS_SUMMARY.join(" · ")}.</p>;
 }

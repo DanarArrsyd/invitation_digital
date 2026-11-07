@@ -41,3 +41,44 @@ export function buildOrderMessage(template: string, values: Partial<OrderMessage
 export function buildWhatsAppUrl(number: string, message: string): string {
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
+
+/** Where a visitor came from, read from utm_source / utm_campaign. */
+export interface VisitSource {
+  source: string;
+  campaign: string | null;
+}
+
+const SOURCE_VALUE_MAX = 60;
+
+/**
+ * Keeps a UTM value safe to put in a pre-filled message: lowercase letters,
+ * digits, dot, dash and underscore only. Anything else becomes a dash, so a
+ * crafted link cannot write free text into the customer's message.
+ */
+export function cleanSourceValue(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const cleaned = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, SOURCE_VALUE_MAX);
+  return cleaned || null;
+}
+
+/** Adds "(Sumber: instagram/poster-uts)" when a source is known; otherwise the message is unchanged. */
+export function appendSourceAttribution(message: string, visit: VisitSource | null): string {
+  if (!visit) return message;
+  const label = visit.campaign ? `${visit.source}/${visit.campaign}` : visit.source;
+  return `${message} (Sumber: ${label})`;
+}
+
+/** The one place a marketing WhatsApp link is built. */
+export function buildOrderWhatsAppUrl(
+  number: string,
+  template: string,
+  values: Partial<OrderMessageValues>,
+  visit: VisitSource | null = null,
+): string {
+  return buildWhatsAppUrl(number, appendSourceAttribution(buildOrderMessage(template, values), visit));
+}

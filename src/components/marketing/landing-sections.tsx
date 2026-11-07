@@ -15,9 +15,9 @@ import type { MarketingTemplate, PackageOffer, SiteSettings } from "@/server/mar
 
 import { ArchMotif } from "./arch-motif";
 import { EventTypeChips } from "./event-type-chips";
-import { FAQ_ITEMS } from "./faq";
+import { buildFaqItems } from "./faq";
 import { OrderLink } from "./order-link";
-import { PackageGrid } from "./package-grid";
+import { PackageGrid, ServiceTermsNote } from "./package-grid";
 import { PhoneMockup } from "./phone-mockup";
 import { mk } from "./styles";
 import { TemplateCard } from "./template-card";
@@ -203,12 +203,13 @@ export function PackagesSection({ offers, settings }: { offers: PackageOffer[]; 
         <div className="mt-10">
           <PackageGrid offers={offers} settings={settings} />
         </div>
+        <ServiceTermsNote className="mt-4" />
       </div>
     </section>
   );
 }
 
-export function FaqSection() {
+export function FaqSection({ templates }: { templates: MarketingTemplate[] }) {
   return (
     <section id="faq" aria-labelledby="faq-heading" className={`${mk.container} scroll-mt-20 py-16 sm:py-20`}>
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
@@ -216,7 +217,7 @@ export function FaqSection() {
           Pertanyaan yang sering muncul
         </h2>
         <div className="divide-y divide-tr-line border-y border-tr-line">
-          {FAQ_ITEMS.map((item) => (
+          {buildFaqItems(templates).map((item) => (
             <details key={item.question} className="group py-1">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-left font-medium text-tr-ink [&::-webkit-details-marker]:hidden">
                 {item.question}
