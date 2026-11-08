@@ -61,6 +61,18 @@ the merge.
   hydration without mismatch, source persistence, blocked storage, the click
   event and analytics redaction.
 
+**Security update (same PR as this checkpoint, 8 November 2026):** `next`
+16.3.5 → 16.4.2 and `zod` 4.6.2 → 4.6.7, `eslint-config-next` follows
+`next`. 16.3.5 had critical advisories (RCE in `next/og` ImageResponse, in
+Image Optimization and in `use cache`; SSRF in Image Optimization; cache
+poisoning), all fixed by 16.4.1+. Remaining `npm audit --omit=dev` findings
+come only from tooling: the `shadcn` CLI (runtime uses only its CSS), the
+Sentry build plugin and ESLint. Deferred: `@sentry/nextjs` 11.11.0 (moderate,
+build tooling) until it is two weeks old; consider moving `shadcn` to
+`devDependencies`. Supabase advisors: `queue_invitation_deletion` being
+callable by `authenticated` is intentional (it checks admin inside); leaked
+password protection is off (dashboard Auth setting).
+
 **Promotion links:**
 
 - `https://invitation-digital-delta.vercel.app/?utm_source=instagram&utm_campaign=poster-uts`
