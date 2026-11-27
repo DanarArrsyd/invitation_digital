@@ -61,6 +61,7 @@ export async function updateSiteContactAction(formData: FormData) {
     whatsappNumber: text(formData, "whatsappNumber"),
     whatsappMessage: text(formData, "whatsappMessage"),
     instagramUrl: text(formData, "instagramUrl"),
+    tiktokUrl: text(formData, "tiktokUrl"),
   });
   if (!parsed.success) back("contact", { error: parsed.error.issues[0]?.message ?? "Input tidak valid" });
 

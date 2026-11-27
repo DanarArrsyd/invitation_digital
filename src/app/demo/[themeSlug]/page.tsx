@@ -11,15 +11,17 @@ import type { Guest } from "@/types/invitation";
 
 type DemoPageProps = {
   params: Promise<{ themeSlug: string }>;
-  searchParams: Promise<{ paket?: string; to?: string }>;
+  searchParams: Promise<{ paket?: string | string[]; to?: string | string[] }>;
 };
 
 const DEFAULT_PACKAGE: PackageKey = "signature";
 const DEFAULT_GUEST = "Nama Tamu Anda";
 
 /** The cover greets this name, showing how guest personalisation looks. */
-function demoGuest(raw: string | undefined): Guest {
-  const name = (raw ?? "").replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
+function demoGuest(raw: string | string[] | undefined): Guest {
+  // A repeated ?to= arrives as an array; the first value wins.
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  const name = (value ?? "").replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
   return { id: "demo-guest", displayName: name || DEFAULT_GUEST, token: "", notes: null };
 }
 

@@ -30,6 +30,7 @@ export async function updateSiteContact(input: {
   whatsappNumber: string | null;
   whatsappMessage: string;
   instagramUrl: string | null;
+  tiktokUrl: string | null;
 }): Promise<Result> {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.from("site_settings").upsert({
@@ -37,6 +38,7 @@ export async function updateSiteContact(input: {
     whatsapp_number: input.whatsappNumber,
     whatsapp_message: input.whatsappMessage,
     instagram_url: input.instagramUrl,
+    tiktok_url: input.tiktokUrl,
   });
   return error ? { error: error.message } : null;
 }

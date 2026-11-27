@@ -77,6 +77,10 @@ export default async function SiteContactPage() {
           <Input id="instagramUrl" name="instagramUrl" autoComplete="off" defaultValue={settings?.instagram_url ?? ""} />
         </FormField>
 
+        <FormField id="tiktokUrl" label="TikTok" hint="@username atau link tiktok.com. Opsional.">
+          <Input id="tiktokUrl" name="tiktokUrl" autoComplete="off" defaultValue={settings?.tiktok_url ?? ""} />
+        </FormField>
+
         <SubmitButton className="w-fit">Simpan kontak</SubmitButton>
       </form>
     </div>

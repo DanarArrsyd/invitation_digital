@@ -578,6 +578,7 @@ export type Database = {
         Row: {
           id: boolean
           instagram_url: string | null
+          tiktok_url: string | null
           updated_at: string
           whatsapp_message: string
           whatsapp_number: string | null
@@ -585,6 +586,7 @@ export type Database = {
         Insert: {
           id?: boolean
           instagram_url?: string | null
+          tiktok_url?: string | null
           updated_at?: string
           whatsapp_message?: string
           whatsapp_number?: string | null
@@ -592,6 +594,7 @@ export type Database = {
         Update: {
           id?: boolean
           instagram_url?: string | null
+          tiktok_url?: string | null
           updated_at?: string
           whatsapp_message?: string
           whatsapp_number?: string | null

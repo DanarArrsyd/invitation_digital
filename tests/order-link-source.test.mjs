@@ -110,6 +110,34 @@ test("without a source, or with blocked storage, the message stays default", asy
   assert.deepEqual(blocked.warnings, []);
 });
 
+test("?src=tiktok adds a readable line and survives navigation", async () => {
+  const landing = await renderAndHydrate("https://temuraya.test/?src=tiktok");
+  assert.equal(landing.serverText, DEFAULT);
+  assert.equal(landing.clientText, `${DEFAULT}\n(Saya lihat Temuraya dari TikTok)`);
+  assert.match(landing.link.href, /%0A\(Saya%20lihat%20Temuraya%20dari%20TikTok\)$/);
+  assert.deepEqual(landing.warnings, []);
+
+  const later = await renderAndHydrate("https://temuraya.test/template/nusantara-ivory", { storage: landing.stored });
+  assert.equal(later.clientText, `${DEFAULT}\n(Saya lihat Temuraya dari TikTok)`);
+});
+
+test("?src=instagram is accepted; other src values are ignored", async () => {
+  const instagram = await renderAndHydrate("https://temuraya.test/?src=Instagram");
+  assert.equal(instagram.clientText, `${DEFAULT}\n(Saya lihat Temuraya dari Instagram)`);
+  for (const url of ["https://temuraya.test/?src=abc", "https://temuraya.test/?src=", "https://temuraya.test/?src=hasOwnProperty"]) {
+    const ignored = await renderAndHydrate(url);
+    assert.equal(ignored.clientText, DEFAULT, url);
+    assert.equal(ignored.stored, null, url);
+  }
+});
+
+test("a tampered stored src value is ignored", async () => {
+  const result = await renderAndHydrate("https://temuraya.test/", {
+    storage: JSON.stringify({ source: "<b>x</b>", campaign: null, fromSrc: true }),
+  });
+  assert.equal(result.clientText, DEFAULT);
+});
+
 test("a click sends wa_click with paket and source", async () => {
   tracked.length = 0;
   const result = await renderAndHydrate("https://temuraya.test/?utm_source=instagram&utm_campaign=poster-uts");

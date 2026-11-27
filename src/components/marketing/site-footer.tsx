@@ -39,6 +39,17 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               <span className="sr-only"> (tab baru)</span>
             </a>
           ) : null}
+          {settings.tiktokUrl ? (
+            <a
+              href={settings.tiktokUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok Temuraya (tab baru)"
+              className="text-tr-muted hover:text-tr-ink"
+            >
+              TikTok
+            </a>
+          ) : null}
         </nav>
       </div>
       <div className={cn(mk.container, "border-t border-tr-line pt-5 text-xs text-tr-muted", settings.whatsappNumber ? "pb-28 sm:pb-5" : "pb-5")}>
