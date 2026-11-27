@@ -36,6 +36,11 @@ Keep Nusantara Ivory's route, data and features. Recompose only the cover as a l
 
 ## Demo photography
 
+**2026-11-27: both covers reverted to "Sample 1" placeholders** so all eight
+templates look alike in the catalogue until every template gets a portrait
+set. The portraits below remain in git history at `4117d89` and can be
+restored, or used as the reference style for the other six templates.
+
 Both cover portraits depict fictional couples. The generated source images were resized to 900 × 1200 JPEGs at `public/demo/benang-sriwijaya/cover.jpg` and `public/demo/nusantara-ivory/cover.jpg`; no customer photograph was replaced.
 
 - Benang prompt: “Create one photorealistic editorial portrait photograph for a fictional Indonesian wedding invitation demo. A young adult Indonesian couple (one woman, one man), elegant contemporary formalwear with subtle Palembang songket textile details in deep mangosteen and warm ivory, standing together in a refined heritage interior with warm natural side light. Calm intimate mood, candid rather than posed, beautiful authentic skin texture, premium magazine photography, vertical 3:4 framing, both faces clearly visible with ample negative space around them. No text, no logos, no ceremonial regalia, no stereotyped props, no AI-looking smooth skin. This is a fictional demo image, not a real client.”
