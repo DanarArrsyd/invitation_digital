@@ -93,8 +93,6 @@ for (const demo of DEMOS) {
   await mkdir(dir, { recursive: true });
   const palette = PALETTES[demo.theme];
   for (const [index, slot] of IMAGE_SLOTS.entries()) {
-    // These two covers use reviewed fictional editorial portraits, not Sample placeholders.
-    if (slot.file === "cover.jpg" && (demo.theme === "nusantara-ivory" || demo.theme === "benang-sriwijaya")) continue;
     const [from, to, ink] = palette[index % palette.length];
     await page.setViewportSize({ width: slot.width, height: slot.height });
     await page.setContent(
