@@ -42,10 +42,28 @@ export function buildWhatsAppUrl(number: string, message: string): string {
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
-/** Where a visitor came from, read from utm_source / utm_campaign. */
+/**
+ * Where a visitor came from: utm_source / utm_campaign, or a short `?src=`
+ * link from a social bio (see SOCIAL_SOURCES).
+ */
 export interface VisitSource {
   source: string;
   campaign: string | null;
+  /** True when the source came from `?src=`: the message gets a readable line instead of "(Sumber: …)". */
+  fromSrc?: boolean;
+}
+
+/** The only `?src=` values accepted, with the line added to the WhatsApp message. */
+export const SOCIAL_SOURCES = {
+  tiktok: "(Saya lihat Temuraya dari TikTok)",
+  instagram: "(Saya lihat Temuraya dari Instagram)",
+} as const;
+
+export type SocialSource = keyof typeof SOCIAL_SOURCES;
+
+export function parseSocialSource(value: string | null | undefined): SocialSource | null {
+  const key = value?.trim().toLowerCase();
+  return key && Object.hasOwn(SOCIAL_SOURCES, key) ? (key as SocialSource) : null;
 }
 
 const SOURCE_VALUE_MAX = 60;
@@ -66,9 +84,17 @@ export function cleanSourceValue(value: string | null | undefined): string | nul
   return cleaned || null;
 }
 
-/** Adds "(Sumber: instagram/poster-uts)" when a source is known; otherwise the message is unchanged. */
+/**
+ * Adds "(Sumber: instagram/poster-uts)" for a utm source, or a new line such
+ * as "(Saya lihat Temuraya dari TikTok)" for `?src=`. Without a source the
+ * message is unchanged.
+ */
 export function appendSourceAttribution(message: string, visit: VisitSource | null): string {
   if (!visit) return message;
+  if (visit.fromSrc) {
+    const social = parseSocialSource(visit.source);
+    return social ? `${message}\n${SOCIAL_SOURCES[social]}` : message;
+  }
   const label = visit.campaign ? `${visit.source}/${visit.campaign}` : visit.source;
   return `${message} (Sumber: ${label})`;
 }

@@ -55,7 +55,7 @@ test("package prices accept rupiah formats and blank means ask for a price", () 
 
 test("contact settings normalise the WhatsApp number and Instagram handle", () => {
   const parse = (values) =>
-    site.siteContactSchema.safeParse({ whatsappNumber: "", whatsappMessage: "Halo", instagramUrl: "", ...values });
+    site.siteContactSchema.safeParse({ whatsappNumber: "", whatsappMessage: "Halo", instagramUrl: "", tiktokUrl: "", ...values });
   assert.equal(parse({ whatsappNumber: "0812 3456 7890" }).data.whatsappNumber, "6281234567890");
   assert.equal(parse({ whatsappNumber: "" }).data.whatsappNumber, null);
   assert.match(parse({ whatsappNumber: "12ab" }).error.issues[0].message, /Nomor WhatsApp tidak valid/);
@@ -66,6 +66,21 @@ test("contact settings normalise the WhatsApp number and Instagram handle", () =
   );
   assert.equal(parse({ instagramUrl: "https://evil.example/instagram.com" }).success, false);
   assert.equal(parse({ whatsappMessage: "  " }).success, false);
+});
+
+test("contact settings normalise the TikTok handle", () => {
+  const parse = (tiktokUrl) =>
+    site.siteContactSchema.safeParse({ whatsappNumber: "", whatsappMessage: "Halo", instagramUrl: "", tiktokUrl });
+  const expected = "https://www.tiktok.com/@inv.temuraya";
+  assert.equal(parse("").data.tiktokUrl, null);
+  assert.equal(parse("@inv.temuraya").data.tiktokUrl, expected);
+  assert.equal(parse("inv.temuraya").data.tiktokUrl, expected);
+  assert.equal(parse("https://www.tiktok.com/@inv.temuraya").data.tiktokUrl, expected);
+  assert.equal(parse("https://www.tiktok.com/@inv.temuraya/?lang=id").data.tiktokUrl, expected);
+  assert.equal(parse("http://www.tiktok.com/@inv.temuraya").success, false);
+  assert.equal(parse("https://evil.example/@inv.temuraya").success, false);
+  assert.equal(parse("https://www.tiktok.com/video/123").success, false);
+  assert.equal(parse("<script>").success, false);
 });
 
 test("catalogue entries need a known event type", () => {

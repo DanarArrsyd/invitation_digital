@@ -17,6 +17,7 @@ export interface SiteSettings {
   whatsappNumber: string | null;
   whatsappMessage: string;
   instagramUrl: string | null;
+  tiktokUrl: string | null;
 }
 
 export interface PackageOffer {
@@ -43,6 +44,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   whatsappNumber: null,
   whatsappMessage: "Halo Temuraya, saya mau pesan template {template} paket {paket} untuk {acara}.",
   instagramUrl: null,
+  tiktokUrl: null,
 };
 
 async function loadSiteSettings(): Promise<SiteSettings> {
@@ -54,6 +56,7 @@ async function loadSiteSettings(): Promise<SiteSettings> {
     whatsappNumber: data.whatsapp_number,
     whatsappMessage: data.whatsapp_message,
     instagramUrl: data.instagram_url,
+    tiktokUrl: data.tiktok_url ?? null,
   };
 }
 

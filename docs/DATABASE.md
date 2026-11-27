@@ -415,6 +415,7 @@ site_settings
 - whatsapp_number text NULL CHECK (E.164 digits, no +)
 - whatsapp_message text NOT NULL  -- placeholders {template} {paket} {acara}
 - instagram_url text
+- tiktok_url text  -- normalised https://www.tiktok.com/@handle
 - updated_at timestamptz
 ```
 

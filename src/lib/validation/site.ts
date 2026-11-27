@@ -6,6 +6,22 @@ import { PACKAGE_KEYS } from "@/lib/packages/entitlements";
 
 const MAX_PRICE_IDR = 100_000_000;
 
+const TIKTOK_HANDLE = /^[A-Za-z0-9._]{2,24}$/;
+
+/** "@inv.temuraya", "inv.temuraya" or a tiktok.com/@handle link → "inv.temuraya". */
+function normalizeTikTokHandle(value: string): string | null {
+  const bare = value.startsWith("@") ? value.slice(1) : value;
+  if (TIKTOK_HANDLE.test(bare)) return bare;
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:" || !/(^|\.)tiktok\.com$/.test(url.hostname)) return null;
+    const handle = url.pathname.match(/^\/@([^/]+)\/?$/)?.[1];
+    return handle && TIKTOK_HANDLE.test(handle) ? handle : null;
+  } catch {
+    return null;
+  }
+}
+
 /** "Rp 149.000", "149.000", "149000" → 149000; empty → null ("Tanya harga"). */
 const priceSchema = z
   .string()
@@ -67,6 +83,16 @@ export const siteContactSchema = z.object({
         // fall through to the error below
       }
       context.addIssue({ code: "custom", message: "Isi dengan @username atau link instagram.com" });
+      return z.NEVER;
+    }),
+  tiktokUrl: z
+    .string()
+    .trim()
+    .transform((value, context) => {
+      if (value === "") return null;
+      const handle = normalizeTikTokHandle(value);
+      if (handle) return `https://www.tiktok.com/@${handle}`;
+      context.addIssue({ code: "custom", message: "Isi dengan @username atau link tiktok.com/@username" });
       return z.NEVER;
     }),
 });
